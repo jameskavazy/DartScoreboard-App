@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
 // players go here...
 
-
+// Test a new line of code for 2nd COMMIT
             Player user1 = new Player("user1", 0, 0);
             System.out.println(user1.name);
             user1.getPlayerScore();
