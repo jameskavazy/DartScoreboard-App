@@ -119,4 +119,15 @@
 
     </LinearLayout>
 
+
+    <EditText
+        android:textSize="60sp"
+        android:inputType="number"
+        android:id="@+id/inputScoreEditText"
+        android:layout_marginTop="200dp"
+        android:layout_gravity="center"
+        android:layout_width="300dp"
+        android:layout_height="100dp"
+        android:background="@color/grey"/>
+
 </LinearLayout>
