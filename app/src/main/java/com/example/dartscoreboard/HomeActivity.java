@@ -1,35 +1,54 @@
 package com.example.dartscoreboard;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-public class MainActivity extends AppCompatActivity {
+import androidx.appcompat.app.AppCompatActivity;
 
-    public void openActivity2() {
-        Intent intent = new Intent(this, Activity2.class);
-        startActivity(intent);
-    }
+public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button button;
-
+    Button fiveoBtn;
+    Button threeoBtn;
+    Button sevenBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setupUI();
+    }
+
+    private void setupUI() {
         setContentView(R.layout.activity_main);
-        button = (Button) findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openActivity2();
-            }
-        });
+        fiveoBtn = findViewById(R.id.fiveoBtn);
+        threeoBtn = findViewById(R.id.threeoBtn);
+        sevenBtn = findViewById(R.id.sevenoBtn);
+        fiveoBtn.setOnClickListener(this);
+        threeoBtn.setOnClickListener(this);
+        sevenBtn.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.fiveoBtn) {
+            Log.d("dom test", "fiveoBtn click");
+        } else if (v.getId() == R.id.threeoBtn) {
+            Log.d("dom test", "threeoBtn click");
+        } else if (v.getId() == R.id.sevenoBtn) {
+            Log.d("dom test", "sevenBtn click");
+        }
     }
 }
+
+
+
+
+
+
+
+
+
 
   /*      public static void main (String[]args){
 

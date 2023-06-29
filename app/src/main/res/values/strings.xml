@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Dart Scoreboard</string>
+    <string name="darts_scoreboard">Darts Scoreboard</string>
+    <string name="fiveo">501</string>
+    <string name="threeo">301</string>
+    <string name="seveno">170</string>
 </resources>
