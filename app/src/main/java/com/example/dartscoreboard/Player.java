@@ -2,9 +2,6 @@ package com.example.dartscoreboard;
 
 import java.util.Scanner;
 
-
-
-
 public class Player {
     String name;
     int playerScore;

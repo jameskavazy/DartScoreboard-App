@@ -29,8 +29,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             onFiveoBtnClicked();
         } else if (v.getId() == R.id.threeoBtn) {
             Log.d("dom test", "threeoBtn click");
+            onThreeoBtnClicked();
         } else if (v.getId() == R.id.sevenoBtn) {
             Log.d("dom test", "sevenBtn click");
+            onSevenOBtnClicked();
         }
     }
 
@@ -47,11 +49,21 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
    private void onFiveoBtnClicked() {
        Log.d("dom test", "onFiveoBtnClicked");
-       openGameActivity();
+       openFiveoGameActivity();
    }
 
-    private void openGameActivity() {
-        Log.d("dom test", "openGameActivity");
+   private void onThreeoBtnClicked() {
+        Log.d("dom test", "onThreeoBtnClicked");
+        openThreeoGameActivity();
+    }
+
+   private void onSevenOBtnClicked() {
+        Log.d("dom test", "onSevenOBtnClicked");
+        openSevenoGameActivity();
+   }
+
+    private void openFiveoGameActivity() {
+        Log.d("dom test", "openFiveoGameActivity");
         Bundle arguments = new Bundle();
         arguments.putSerializable("GAME_TYPE", GameType.FiveO);
         Intent intent = new Intent(this, GameActivity.class);
@@ -59,10 +71,28 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         startActivity(intent);
     }
 
+    private void openThreeoGameActivity() {
+        Log.d("dom test", "openThreeoGameActivity");
+        Bundle arguments = new Bundle();
+        arguments.putSerializable("GAME_TYPE", GameType.ThreeO);
+        Intent intent = new Intent(this, GameActivity.class);
+        intent.putExtras(arguments);
+        startActivity(intent);
+    }
+
+    private void openSevenoGameActivity() {
+        Log.d("dom test", "openSevenoGameActivity");
+        Bundle arguments = new Bundle();
+        arguments.putSerializable("GAME_TYPE", GameType.SevenO);
+        Intent intent = new Intent(this, GameActivity.class);
+        intent.putExtras(arguments);
+        startActivity(intent);
+    }
+
     enum GameType {
-        FiveO("FiveO", 501),
-        ThreeO("ThreeO", 301),
-        SevenO("SevenO", 170);
+        FiveO("501", 501),
+        ThreeO("301", 301),
+        SevenO("170", 170);
 
         String name;
         int startingScore;

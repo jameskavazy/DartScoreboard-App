@@ -104,7 +104,7 @@
             tools:text="1"/>
 
         <TextView
-            android:id="@+id/gameActivityPoints"
+            android:id="@+id/gameActivityPlayerCurrentScore"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -115,7 +115,7 @@
             android:textSize="30sp"
             app:layout_constraintStart_toEndOf="@id/gameActivityLegsTitle"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="180"/>
+            tools:text="501"/>
 
     </LinearLayout>
 

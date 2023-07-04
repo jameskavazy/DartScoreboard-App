@@ -2,12 +2,8 @@ package com.example.dartscoreboard;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Application;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -40,7 +36,7 @@ public class GameActivity extends AppCompatActivity {
     private void setupUI() {
         gameTitle = findViewById(R.id.gameActivityTitle);
         playerName = findViewById(R.id.gameActivityPlayerName);
-        playerCurrentScore = findViewById(R.id.gameActivityPoints);
+        playerCurrentScore = findViewById(R.id.gameActivityPlayerCurrentScore);
         inputScoreEditText = findViewById(R.id.inputScoreEditText);
 
         gameTitle.setText(getGameType().name);
@@ -101,7 +97,7 @@ public class GameActivity extends AppCompatActivity {
             Log.d("dom test", Integer.toString(scoreInt));
 
             if (scoreInt > 180) {
-                Toast.makeText(GameActivity.this, "Score cannt be over 180", Toast.LENGTH_SHORT).show();
+                Toast.makeText(GameActivity.this, "Invalid Score: Score cannot be over 180", Toast.LENGTH_SHORT).show();
             }
 
         } catch (NumberFormatException e) {
