@@ -1,5 +1,7 @@
 package com.example.dartscoreboard;
 
+import static java.lang.String.valueOf;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -50,7 +52,7 @@ public class GameActivity extends AppCompatActivity {
         playerName.setText(testPlayer.name);
         testPlayer.currentScore = getGameType().startingScore; // todo this may be called again
         int i = testPlayer.currentScore; // todo find commented out work from Dom underneath to get the current "typedScore" which is a Integer "parse" Int method. i is the current playerscore for test player.
-        playerCurrentScore.setText(String.valueOf(testPlayer.currentScore));
+        playerCurrentScore.setText(valueOf(testPlayer.currentScore));
 
 
         inputScoreEditText.setOnEditorActionListener((v, actionId, event) -> {
@@ -60,7 +62,6 @@ public class GameActivity extends AppCompatActivity {
                 InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(v.getWindowToken(),0);
                 ((EditText) findViewById(R.id.inputScoreEditText)).getText().clear();
-
                 return true;
             }
             return false;
@@ -107,12 +108,12 @@ public class GameActivity extends AppCompatActivity {
             // todo add logic to check valid input
            int scoreInt = Integer.parseInt(scoreString);
             Log.d("dom test", Integer.toString(scoreInt));
-
-
-            if (scoreInt > 180) {
-                Toast.makeText(GameActivity.this, "Invalid Score: Score cannot be over 180", Toast.LENGTH_SHORT).show();
-            }
-
+          //  scoreInt = currentTypedScore;
+            testPlayer.currentScore = subtract(scoreInt); // todo pass scoreInt into subtract method. Subtract(int
+            Log.d("dom test",valueOf(testPlayer.currentScore));
+//            if (scoreInt > 180) {
+//                Toast.makeText(GameActivity.this, "Invalid Score: Score cannot be over 180", Toast.LENGTH_SHORT).show();
+//            }
 
 
 
@@ -122,14 +123,14 @@ public class GameActivity extends AppCompatActivity {
 
     }
 
-    public int subtract() {
-        int new_score = testPlayer.currentScore - scoreInt;
-        if (( ((testPlayer.currentScore <= 180) && (testPlayer.currentScore >= 171)) || (testPlayer.currentScore == 169) || (testPlayer.currentScore == 168) || (testPlayer.currentScore == 166) || (testPlayer.currentScore == 165) || (testPlayer.currentScore == 163) || (testPlayer.currentScore == 162) || (testPlayer.currentScore == 159)) && (scoreInt == testPlayer.currentScore)){
+    public int subtract(int currentTypedScore) {
+        int newScore = testPlayer.currentScore - currentTypedScore;
+        if (( ((testPlayer.currentScore <= 180) && (testPlayer.currentScore >= 171)) || (testPlayer.currentScore == 169) || (testPlayer.currentScore == 168) || (testPlayer.currentScore == 166) || (testPlayer.currentScore == 165) || (testPlayer.currentScore == 163) || (testPlayer.currentScore == 162) || (testPlayer.currentScore == 159)) && (currentTypedScore == testPlayer.currentScore)){
             Toast.makeText(GameActivity.this, "Invalid Score", Toast.LENGTH_SHORT).show();
             return testPlayer.currentScore;
         }
-        if (new_score == 0 || new_score > 1) {
-            return new_score;
+        if (newScore == 0 || newScore > 1) {
+            return newScore;
         }
         else {
             Toast.makeText(GameActivity.this, "BUST", Toast.LENGTH_SHORT).show(); // toast
