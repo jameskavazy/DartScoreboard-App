@@ -59,6 +59,8 @@ public class GameActivity extends AppCompatActivity {
                 onScoreEntered(inputScoreEditText.getText().toString());
                 InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(v.getWindowToken(),0);
+                ((EditText) findViewById(R.id.inputScoreEditText)).getText().clear();
+
                 return true;
             }
             return false;
