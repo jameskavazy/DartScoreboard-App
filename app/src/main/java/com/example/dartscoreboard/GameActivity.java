@@ -59,8 +59,8 @@ public class GameActivity extends AppCompatActivity {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 Log.d("dom test", "IME_ACTION_DONE");
                 onScoreEntered(inputScoreEditText.getText().toString());
-                InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(v.getWindowToken(),0);
+//                InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+//                imm.hideSoftInputFromWindow(v.getWindowToken(),0);
                 ((EditText) findViewById(R.id.inputScoreEditText)).getText().clear();
                 return true;
             }
@@ -109,8 +109,9 @@ public class GameActivity extends AppCompatActivity {
            int scoreInt = Integer.parseInt(scoreString);
             Log.d("dom test", Integer.toString(scoreInt));
           //  scoreInt = currentTypedScore;
-            testPlayer.currentScore = subtract(scoreInt); // todo pass scoreInt into subtract method. Subtract(int
-            Log.d("dom test",valueOf(testPlayer.currentScore));
+            testPlayer.currentScore = subtract(scoreInt);
+            playerCurrentScore.setText(String.valueOf(testPlayer.currentScore));
+            Log.d("dom test","Current Score: " + testPlayer.currentScore);
 //            if (scoreInt > 180) {
 //                Toast.makeText(GameActivity.this, "Invalid Score: Score cannot be over 180", Toast.LENGTH_SHORT).show();
 //            }
@@ -129,7 +130,11 @@ public class GameActivity extends AppCompatActivity {
             Toast.makeText(GameActivity.this, "Invalid Score", Toast.LENGTH_SHORT).show();
             return testPlayer.currentScore;
         }
-        if (newScore == 0 || newScore > 1) {
+        if (newScore > 1) {
+            return newScore;
+        }
+        if (newScore == 0) {
+            Toast.makeText(GameActivity.this, testPlayer.name + "wins!", Toast.LENGTH_LONG).show();
             return newScore;
         }
         else {
@@ -150,9 +155,5 @@ public class GameActivity extends AppCompatActivity {
             Log.d("dom test", "Name: " + name);
         }
     }
-
-
-
-
 
 }
