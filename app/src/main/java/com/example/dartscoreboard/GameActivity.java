@@ -112,16 +112,9 @@ public class GameActivity extends AppCompatActivity {
             testPlayer.currentScore = subtract(scoreInt);
             playerCurrentScore.setText(String.valueOf(testPlayer.currentScore));
             Log.d("dom test","Current Score: " + testPlayer.currentScore);
-//            if (scoreInt > 180) {
-//                Toast.makeText(GameActivity.this, "Invalid Score: Score cannot be over 180", Toast.LENGTH_SHORT).show();
-//            }
-
-
-
         } catch (NumberFormatException e) {
             Log.d("dom test", e.getMessage());
         }
-
     }
 
     public int subtract(int currentTypedScore) {

@@ -14,6 +14,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private Button fiveoBtn;
     private Button threeoBtn;
     private Button sevenBtn;
+    private Button addPlayersBtn;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +35,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         } else if (v.getId() == R.id.sevenoBtn) {
             Log.d("dom test", "sevenBtn click");
             onSevenOBtnClicked();
+        } else if (v.getId() == R.id.addPlayerBtn) {
+            onAddPlayersBtnClicked();
         }
+
     }
 
     private void setupUI() {
@@ -42,9 +47,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         fiveoBtn = findViewById(R.id.fiveoBtn);
         threeoBtn = findViewById(R.id.threeoBtn);
         sevenBtn = findViewById(R.id.sevenoBtn);
+        addPlayersBtn = findViewById(R.id.addPlayerBtn);
         fiveoBtn.setOnClickListener(this);
         threeoBtn.setOnClickListener(this);
         sevenBtn.setOnClickListener(this);
+        addPlayersBtn.setOnClickListener(this);
     }
 
    private void onFiveoBtnClicked() {
@@ -60,6 +67,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
    private void onSevenOBtnClicked() {
         Log.d("dom test", "onSevenOBtnClicked");
         openSevenoGameActivity();
+   }
+
+   private void onAddPlayersBtnClicked(){
+        Log.d("dom test","onAddPlayersBtnClicked");
+        openAddPlayersActivity();
    }
 
     private void openFiveoGameActivity() {
@@ -86,6 +98,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         arguments.putSerializable("GAME_TYPE", GameType.SevenO);
         Intent intent = new Intent(this, GameActivity.class);
         intent.putExtras(arguments);
+        startActivity(intent);
+    }
+
+    private void openAddPlayersActivity() {
+        Log.d("dom test", "openAddPlayersActivity");
+        Intent intent = new Intent(this, AddPlayersActivity.class);
         startActivity(intent);
     }
 
