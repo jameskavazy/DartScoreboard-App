@@ -12,13 +12,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/darts_scoreboard"
-        android:textSize="30sp" />
+        android:textSize="50sp" />
 
     <Button
         android:id="@+id/fiveoBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="12dp"
         android:layout_marginTop="40dp"
         android:background="@color/black"
         android:text="@string/fiveo" />
@@ -27,7 +27,7 @@
         android:id="@+id/threeoBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="12dp"
         android:layout_marginTop="40dp"
         android:background="@color/black"
         android:text="@string/threeo" />
@@ -36,7 +36,7 @@
         android:id="@+id/sevenoBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="12dp"
         android:layout_marginTop="40dp"
         android:background="@color/black"
         android:text="@string/seveno" />
