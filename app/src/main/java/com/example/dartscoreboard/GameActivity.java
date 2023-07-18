@@ -100,6 +100,7 @@ public class GameActivity extends AppCompatActivity {
                 playerCurrentScore.setText(String.valueOf(testPlayer.currentScore));
                 Log.d("dom test","Current Score: " + testPlayer.currentScore);
 
+
             } else {
                 int scoreInt = Integer.parseInt(scoreString);
                 Log.d("dom test", Integer.toString(scoreInt));
@@ -107,6 +108,7 @@ public class GameActivity extends AppCompatActivity {
                 testPlayer2.currentScore = subtract(testPlayer2.currentScore, scoreInt);
                 playerCurrentScoreTwo.setText(String.valueOf(testPlayer2.currentScore));
                 Log.d("dom test","Current Score: " + testPlayer2.currentScore);
+
 
             }
 
@@ -121,16 +123,39 @@ public class GameActivity extends AppCompatActivity {
     public int subtract(int playerScore, int currentTypedScore) {
         int newScore = playerScore - currentTypedScore;
         if (( ((playerScore <= 180) && (playerScore >= 171)) || (playerScore == 169) || (playerScore == 168) || (playerScore == 166) || (playerScore == 165) || (playerScore == 163) || (playerScore == 162) || (playerScore == 159)) && (currentTypedScore == playerScore)){
+            if (testPlayer.playerTurn) {
+                testPlayer.playerTurn = true;
+                testPlayer2.playerTurn = false;
+            }
+            else {
+                testPlayer.playerTurn = false;
+                testPlayer2.playerTurn = true;
+            }
             Toast.makeText(GameActivity.this, "Invalid Score", Toast.LENGTH_SHORT).show();
             return playerScore;
         }
 
         if (currentTypedScore > 180) {
+            if (testPlayer.playerTurn) {
+                testPlayer.playerTurn = true;
+                testPlayer2.playerTurn = false;
+            }
+            else {
+                testPlayer.playerTurn = false;
+                testPlayer2.playerTurn = true;
+            }
             Toast.makeText(GameActivity.this, "Invalid Score", Toast.LENGTH_SHORT).show();
             return playerScore;
         }
 
         if (newScore > 1) {
+            if (testPlayer.playerTurn) {
+                testPlayer.playerTurn = false;
+                testPlayer2.playerTurn = true;
+            } else {
+                testPlayer2.playerTurn = false;
+                testPlayer.playerTurn = true;
+            }
             return newScore;
         }
         if (newScore == 0) {
@@ -142,9 +167,19 @@ public class GameActivity extends AppCompatActivity {
             return newScore;
         }
         else {
+            if (testPlayer.playerTurn) {
+                testPlayer.playerTurn = false;
+                testPlayer2.playerTurn = true;
+            }
+            else {
+                testPlayer.playerTurn = true;
+                testPlayer2.playerTurn = false;
+            }
             Toast.makeText(GameActivity.this, "BUST", Toast.LENGTH_SHORT).show(); // toast
-        }
+
         return playerScore;
+        }
+
     }
 
 //    private String setPlayerOneName(){
@@ -175,8 +210,9 @@ public class GameActivity extends AppCompatActivity {
                         if (actionId == EditorInfo.IME_ACTION_DONE) {
                             Log.d("dom test", "IME_ACTION_DONE");
                             onScoreEntered(inputScoreEditText.getText().toString());
-                            testPlayer.playerTurn = false; //todo create UI to indicate player turn
-                            testPlayer2.playerTurn = true;
+
+//                            testPlayer.playerTurn = false; //todo create UI to indicate player turn, if score is invalid, don't do this line
+//                            testPlayer2.playerTurn = true;
                             ((EditText) findViewById(R.id.inputScoreEditText)).getText().clear();
                             return true;
                         }
@@ -185,8 +221,8 @@ public class GameActivity extends AppCompatActivity {
                         if (actionId == EditorInfo.IME_ACTION_DONE) {
                             Log.d("dom test", "IME_ACTION_DONE");
                             onScoreEntered(inputScoreEditText.getText().toString());
-                            testPlayer2.playerTurn = false;
-                            testPlayer.playerTurn = true;
+//                            testPlayer2.playerTurn = false;
+//                            testPlayer.playerTurn = true;
                             ((EditText) findViewById(R.id.inputScoreEditText)).getText().clear();
                             return true;
                         }
