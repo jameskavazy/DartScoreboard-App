@@ -5,6 +5,7 @@ import static java.lang.String.valueOf;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
@@ -49,6 +50,9 @@ public class GameActivity extends AppCompatActivity {
         playerCurrentScoreTwo = findViewById(R.id.gameActivityPlayerTwoCurrentScore);
         inputScoreEditText = findViewById(R.id.inputScoreEditText);
 
+        playerName.setText(testPlayer.name);
+        playerNameTwo.setText(testPlayer2.name);
+
 
         gameTitle.setText(getGameType().name);
       //  playerName.setText(setPlayerOneName()); todo move this so that the information for player names is added on the home activity.
@@ -58,11 +62,10 @@ public class GameActivity extends AppCompatActivity {
         playerCurrentScore.setText(valueOf(testPlayer.currentScore));
         playerCurrentScoreTwo.setText(valueOf(testPlayer2.currentScore));
 
-
-
             if (testPlayer.playerTurn) {
                 testPlayer.turn();
-            } else {
+            }
+            else {
                 testPlayer2.turn();
             }
     }
@@ -93,23 +96,21 @@ public class GameActivity extends AppCompatActivity {
     private void onScoreEntered(String scoreString) {
         try {
             if (testPlayer.playerTurn) {
+
                 int scoreInt = Integer.parseInt(scoreString);
                 Log.d("dom test", Integer.toString(scoreInt));
-                //  scoreInt = currentTypedScore;
                 testPlayer.currentScore = subtract(testPlayer.currentScore, scoreInt);
+                Log.d("dom test","score subtract run");
                 playerCurrentScore.setText(String.valueOf(testPlayer.currentScore));
                 Log.d("dom test","Current Score: " + testPlayer.currentScore);
+            }
 
-
-            } else {
+            else {
                 int scoreInt = Integer.parseInt(scoreString);
                 Log.d("dom test", Integer.toString(scoreInt));
-                //  scoreInt = currentTypedScore;
                 testPlayer2.currentScore = subtract(testPlayer2.currentScore, scoreInt);
                 playerCurrentScoreTwo.setText(String.valueOf(testPlayer2.currentScore));
                 Log.d("dom test","Current Score: " + testPlayer2.currentScore);
-
-
             }
 
 
@@ -124,12 +125,18 @@ public class GameActivity extends AppCompatActivity {
         int newScore = playerScore - currentTypedScore;
         if (( ((playerScore <= 180) && (playerScore >= 171)) || (playerScore == 169) || (playerScore == 168) || (playerScore == 166) || (playerScore == 165) || (playerScore == 163) || (playerScore == 162) || (playerScore == 159)) && (currentTypedScore == playerScore)){
             if (testPlayer.playerTurn) {
+                playerName.setBackgroundColor(Color.GREEN);
+                playerNameTwo.setBackgroundColor(Color.WHITE);
                 testPlayer.playerTurn = true;
                 testPlayer2.playerTurn = false;
+
             }
             else {
+                playerNameTwo.setBackgroundColor(Color.GREEN);
+                playerName.setBackgroundColor(Color.WHITE);
                 testPlayer.playerTurn = false;
                 testPlayer2.playerTurn = true;
+
             }
             Toast.makeText(GameActivity.this, "Invalid Score", Toast.LENGTH_SHORT).show();
             return playerScore;
@@ -137,10 +144,14 @@ public class GameActivity extends AppCompatActivity {
 
         if (currentTypedScore > 180) {
             if (testPlayer.playerTurn) {
+                playerName.setBackgroundColor(Color.GREEN);
+                playerNameTwo.setBackgroundColor(Color.WHITE);
                 testPlayer.playerTurn = true;
                 testPlayer2.playerTurn = false;
             }
             else {
+                playerNameTwo.setBackgroundColor(Color.GREEN);
+                playerName.setBackgroundColor(Color.WHITE);
                 testPlayer.playerTurn = false;
                 testPlayer2.playerTurn = true;
             }
@@ -150,9 +161,13 @@ public class GameActivity extends AppCompatActivity {
 
         if (newScore > 1) {
             if (testPlayer.playerTurn) {
+                playerNameTwo.setBackgroundColor(Color.GREEN);
+                playerName.setBackgroundColor(Color.WHITE);
                 testPlayer.playerTurn = false;
                 testPlayer2.playerTurn = true;
             } else {
+                playerName.setBackgroundColor(Color.GREEN);
+                playerNameTwo.setBackgroundColor(Color.WHITE);
                 testPlayer2.playerTurn = false;
                 testPlayer.playerTurn = true;
             }
@@ -160,8 +175,12 @@ public class GameActivity extends AppCompatActivity {
         }
         if (newScore == 0) {
             if (testPlayer.playerTurn) {
+                playerName.setBackgroundColor(Color.GREEN);
+                playerNameTwo.setBackgroundColor(Color.WHITE);
                 Toast.makeText(GameActivity.this, testPlayer.name + "wins!", Toast.LENGTH_LONG).show();
             } else {
+                playerNameTwo.setBackgroundColor(Color.GREEN);
+                playerName.setBackgroundColor(Color.WHITE);
                 Toast.makeText(GameActivity.this, testPlayer2.name + "wins!", Toast.LENGTH_LONG).show();
             }
             return newScore;
@@ -204,7 +223,8 @@ public class GameActivity extends AppCompatActivity {
 
         private void turn(){
 
-                //determines score for processing
+
+            //determines score for processing
                 inputScoreEditText.setOnEditorActionListener((v, actionId, event) -> {
                     if (testPlayer.playerTurn) {
                         if (actionId == EditorInfo.IME_ACTION_DONE) {
