@@ -49,13 +49,14 @@ public class GameActivity extends AppCompatActivity {
         playerNameTwo = findViewById(R.id.gameActivityPlayerTwoName);
         playerCurrentScoreTwo = findViewById(R.id.gameActivityPlayerTwoCurrentScore);
         inputScoreEditText = findViewById(R.id.inputScoreEditText);
+        //testPlayer.name = setPlayerOneName();
 
         playerName.setText(testPlayer.name);
         playerNameTwo.setText(testPlayer2.name);
 
 
         gameTitle.setText(getGameType().name);
-      //  playerName.setText(setPlayerOneName()); todo move this so that the information for player names is added on the home activity.
+
 
         testPlayer.currentScore = getGameType().startingScore;// todo this may be called again
         testPlayer2.currentScore = getGameType().startingScore;
@@ -79,19 +80,7 @@ public class GameActivity extends AppCompatActivity {
         return gameType;
     }
 
-//    private void onScoreEntered(String scoreString) {
-//        try {
-//           int scoreInt = Integer.parseInt(scoreString);
-//            Log.d("dom test", Integer.toString(scoreInt));
-//          //  scoreInt = currentTypedScore;
-//            testPlayer.currentScore = subtract(testPlayer.currentScore, scoreInt);
-//            playerCurrentScore.setText(String.valueOf(testPlayer.currentScore));
-//            Log.d("dom test","Current Score: " + testPlayer.currentScore);
-//
-//        } catch (NumberFormatException e) {
-//            Log.d("dom test", e.getMessage());
-//        }
-//    }
+
 
     private void onScoreEntered(String scoreString) {
         try {
@@ -187,12 +176,18 @@ public class GameActivity extends AppCompatActivity {
         }
         else {
             if (testPlayer.playerTurn) {
+
                 testPlayer.playerTurn = false;
                 testPlayer2.playerTurn = true;
+                playerNameTwo.setBackgroundColor(Color.GREEN);
+                playerName.setBackgroundColor(Color.WHITE);
             }
             else {
                 testPlayer.playerTurn = true;
                 testPlayer2.playerTurn = false;
+                playerName.setBackgroundColor(Color.GREEN);
+                playerNameTwo.setBackgroundColor(Color.WHITE);
+
             }
             Toast.makeText(GameActivity.this, "BUST", Toast.LENGTH_SHORT).show(); // toast
 
@@ -201,12 +196,12 @@ public class GameActivity extends AppCompatActivity {
 
     }
 
-//    private String setPlayerOneName(){
-//        Intent intent = getIntent();
-//        playerNameKey = intent.getStringExtra("send_name_one");
-//        return playerNameKey;
-//
-//    }
+    private String setPlayerOneName(){
+        Intent intent = getIntent();
+        playerNameKey = intent.getStringExtra("send_name_one");
+        return playerNameKey;
+
+    }
 
 
     class Player {
