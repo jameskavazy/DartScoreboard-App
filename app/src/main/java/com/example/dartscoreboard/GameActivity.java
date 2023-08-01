@@ -4,7 +4,6 @@ import static java.lang.String.valueOf;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,8 +11,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.ArrayList;
 
 public class GameActivity extends AppCompatActivity {
 
@@ -27,10 +24,9 @@ public class GameActivity extends AppCompatActivity {
     private Player testPlayer = new Player("test 1", 0, true);
     private Player testPlayer2 = new Player("test 2",0,false);
 
-    private String playerNameKey;
 
 
-    private HomeActivity.GameType gameType;
+    private SelectGameActivity.GameType gameType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +35,6 @@ public class GameActivity extends AppCompatActivity {
         setContentView(R.layout.game_activity);
         Log.d("dom test", "gameType\n-------\nname " + getGameType().name + "\nstartingScore " + getGameType().startingScore);
         setupUI();
-
     }
 
     private void setupUI() {
@@ -49,7 +44,6 @@ public class GameActivity extends AppCompatActivity {
         playerNameTwo = findViewById(R.id.gameActivityPlayerTwoName);
         playerCurrentScoreTwo = findViewById(R.id.gameActivityPlayerTwoCurrentScore);
         inputScoreEditText = findViewById(R.id.inputScoreEditText);
-        //testPlayer.name = setPlayerOneName();
 
         playerName.setText(testPlayer.name);
         playerNameTwo.setText(testPlayer2.name);
@@ -70,22 +64,19 @@ public class GameActivity extends AppCompatActivity {
                 testPlayer2.turn();
             }
     }
-    private HomeActivity.GameType getGameType() {
+    private SelectGameActivity.GameType getGameType() {
         if (gameType != null) {
             return gameType;
         }
 
         Bundle arguments = getIntent().getExtras();
-        gameType = (HomeActivity.GameType) arguments.getSerializable(HomeActivity.GAME_TYPE_KEY);
+        gameType = (SelectGameActivity.GameType) arguments.getSerializable(SelectGameActivity.GAME_TYPE_KEY);
         return gameType;
     }
-
-
 
     private void onScoreEntered(String scoreString) {
         try {
             if (testPlayer.playerTurn) {
-
                 int scoreInt = Integer.parseInt(scoreString);
                 Log.d("dom test", Integer.toString(scoreInt));
                 testPlayer.currentScore = subtract(testPlayer.currentScore, scoreInt);
@@ -118,7 +109,6 @@ public class GameActivity extends AppCompatActivity {
                 playerNameTwo.setBackgroundColor(Color.WHITE);
                 testPlayer.playerTurn = true;
                 testPlayer2.playerTurn = false;
-
             }
             else {
                 playerNameTwo.setBackgroundColor(Color.GREEN);
@@ -189,26 +179,19 @@ public class GameActivity extends AppCompatActivity {
                 playerNameTwo.setBackgroundColor(Color.WHITE);
 
             }
-            Toast.makeText(GameActivity.this, "BUST", Toast.LENGTH_SHORT).show(); // toast
+            Toast.makeText(GameActivity.this, "BUST", Toast.LENGTH_SHORT).show();
 
         return playerScore;
         }
 
     }
 
-    private String setPlayerOneName(){
-        Intent intent = getIntent();
-        playerNameKey = intent.getStringExtra("send_name_one");
-        return playerNameKey;
-
-    }
 
 
     class Player {
         String name;
         int currentScore;
         boolean playerTurn;
-
 
         Player(String name, int currentScore, boolean playerTurn) {
             this.name = name;
@@ -225,9 +208,6 @@ public class GameActivity extends AppCompatActivity {
                         if (actionId == EditorInfo.IME_ACTION_DONE) {
                             Log.d("dom test", "IME_ACTION_DONE");
                             onScoreEntered(inputScoreEditText.getText().toString());
-
-//                            testPlayer.playerTurn = false; //todo create UI to indicate player turn, if score is invalid, don't do this line
-//                            testPlayer2.playerTurn = true;
                             ((EditText) findViewById(R.id.inputScoreEditText)).getText().clear();
                             return true;
                         }
@@ -236,8 +216,6 @@ public class GameActivity extends AppCompatActivity {
                         if (actionId == EditorInfo.IME_ACTION_DONE) {
                             Log.d("dom test", "IME_ACTION_DONE");
                             onScoreEntered(inputScoreEditText.getText().toString());
-//                            testPlayer2.playerTurn = false;
-//                            testPlayer.playerTurn = true;
                             ((EditText) findViewById(R.id.inputScoreEditText)).getText().clear();
                             return true;
                         }

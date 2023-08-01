@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="gameTypeDropDown">
+        <item>501</item>
+        <item>301</item>
+        <item>170</item>
+    </array>
+
+
+</resources>
