@@ -1,5 +1,7 @@
 package com.example.dartscoreboard;
 
+import static java.lang.String.valueOf;
+
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,18 +16,20 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 public class SelectGameActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static String GAME_TYPE_KEY = "GAME_TYPE";
 
     private Button startGameBtn;
-
     String[] gameSelectList = {"501","301","170"};
     boolean[] selectedPlayers;
     ArrayList<Integer> playerList = new ArrayList<>();
-    String[] listOfPlayers = {"Dom","James"};
+    String[] listOfPlayers = {"Dom","James","Guy","Nick"};
+
     AutoCompleteTextView autoCompleteTextView;
     AutoCompleteTextView playerListCheckBox;
     ArrayAdapter<String> adapterItems;
@@ -49,6 +53,7 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         selectedPlayers = new boolean[listOfPlayers.length];
         playerListCheckBox.setOnClickListener(this);
     }
+
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.gameStartButton){
@@ -72,31 +77,44 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
             Log.d("dom test","openSevenoGameActivity");
             openSevenoGameActivity();
         }
-        else Toast.makeText(this,"You must select a game to play!",Toast.LENGTH_SHORT).show();
+        //else Toast.makeText(this,"You must select a game type",Toast.LENGTH_SHORT).show();
     }
 
     private void openFiveoGameActivity() {
+        String playersFromTextView = playerListCheckBox.getText().toString();
+        String[] listOfPlayersFromTextView = playersFromTextView.split(",");
         Log.d("dom test", "openFiveoGameActivity");
         Bundle arguments = new Bundle();
         arguments.putSerializable("GAME_TYPE", GameType.FiveO);
+        arguments.putString("PLAYER_NAME",listOfPlayersFromTextView[0]);
+        arguments.putString("PLAYER_NAME_2",listOfPlayersFromTextView[1]);
         Intent intent = new Intent(this, GameActivity.class);
         intent.putExtras(arguments);
         startActivity(intent);
     }
 
     private void openThreeoGameActivity() {
+        String playersFromTextView = playerListCheckBox.getText().toString();
+        String[] listOfPlayersFromTextView = playersFromTextView.split(",");
+        Log.d("dom test", listOfPlayersFromTextView[0]);
         Log.d("dom test", "openThreeoGameActivity");
         Bundle arguments = new Bundle();
         arguments.putSerializable("GAME_TYPE", GameType.ThreeO);
+        arguments.putString("PLAYER_NAME",listOfPlayersFromTextView[0]);
+        arguments.putString("PLAYER_NAME_2",listOfPlayersFromTextView[1]);
         Intent intent = new Intent(this, GameActivity.class);
         intent.putExtras(arguments);
         startActivity(intent);
     }
 
     private void openSevenoGameActivity() {
+        String playersFromTextView = playerListCheckBox.getText().toString();
+        String[] listOfPlayersFromTextView = playersFromTextView.split(",");
         Log.d("dom test", "openSevenoGameActivity");
         Bundle arguments = new Bundle();
         arguments.putSerializable("GAME_TYPE", GameType.SevenO);
+        arguments.putString("PLAYER_NAME",listOfPlayersFromTextView[0]);
+        arguments.putString("PLAYER_NAME_2",listOfPlayersFromTextView[1]);
         Intent intent = new Intent(this, GameActivity.class);
         intent.putExtras(arguments);
         startActivity(intent);
@@ -118,6 +136,7 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
                 if (isChecked){
                     playerList.add(which);
                     Collections.sort(playerList);
+                    //todo add some logic to create an arraylist, then update playername text views. MAYBE use the playerList integer arraylist for this?
 
                 }
                 else playerList.remove(Integer.valueOf(which));
@@ -134,7 +153,6 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
                     if (j != playerList.size() - 1) {
                         stringBuilder.append(", ");
                     }
-
                 }
                 playerListCheckBox.setText(stringBuilder.toString());
             }
@@ -160,6 +178,14 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         });
         builder.show();
     }
+
+    private void getPlayersFromTextView(){
+
+
+    }
+
+
+
 
     enum GameType {
         FiveO("501", 501),

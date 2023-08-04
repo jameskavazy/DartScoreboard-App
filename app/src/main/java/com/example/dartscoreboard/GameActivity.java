@@ -26,6 +26,8 @@ public class GameActivity extends AppCompatActivity {
 
 
 
+
+
     private SelectGameActivity.GameType gameType;
 
     @Override
@@ -44,9 +46,9 @@ public class GameActivity extends AppCompatActivity {
         playerNameTwo = findViewById(R.id.gameActivityPlayerTwoName);
         playerCurrentScoreTwo = findViewById(R.id.gameActivityPlayerTwoCurrentScore);
         inputScoreEditText = findViewById(R.id.inputScoreEditText);
+        addPlayerNames();
 
-        playerName.setText(testPlayer.name);
-        playerNameTwo.setText(testPlayer2.name);
+
 
 
         gameTitle.setText(getGameType().name);
@@ -72,6 +74,15 @@ public class GameActivity extends AppCompatActivity {
         Bundle arguments = getIntent().getExtras();
         gameType = (SelectGameActivity.GameType) arguments.getSerializable(SelectGameActivity.GAME_TYPE_KEY);
         return gameType;
+    }
+
+    private void addPlayerNames(){
+        Bundle arguments = getIntent().getExtras();
+        String nameToAdd = arguments.getString("PLAYER_NAME");
+        String nameToAdd2 = arguments.getString("PLAYER_NAME_2");
+        playerName.setText(testPlayer.name = nameToAdd);
+        playerNameTwo.setText(testPlayer2.name = nameToAdd2);
+
     }
 
     private void onScoreEntered(String scoreString) {
@@ -102,16 +113,17 @@ public class GameActivity extends AppCompatActivity {
 
 
     public int subtract(int playerScore, int currentTypedScore) {
+        int playerIndicator = Color.rgb(42,213,114);
         int newScore = playerScore - currentTypedScore;
         if (( ((playerScore <= 180) && (playerScore >= 171)) || (playerScore == 169) || (playerScore == 168) || (playerScore == 166) || (playerScore == 165) || (playerScore == 163) || (playerScore == 162) || (playerScore == 159)) && (currentTypedScore == playerScore)){
             if (testPlayer.playerTurn) {
-                playerName.setBackgroundColor(Color.GREEN);
+                playerName.setBackgroundColor(playerIndicator);
                 playerNameTwo.setBackgroundColor(Color.WHITE);
                 testPlayer.playerTurn = true;
                 testPlayer2.playerTurn = false;
             }
             else {
-                playerNameTwo.setBackgroundColor(Color.GREEN);
+                playerNameTwo.setBackgroundColor(playerIndicator);
                 playerName.setBackgroundColor(Color.WHITE);
                 testPlayer.playerTurn = false;
                 testPlayer2.playerTurn = true;
@@ -123,13 +135,13 @@ public class GameActivity extends AppCompatActivity {
 
         if (currentTypedScore > 180) {
             if (testPlayer.playerTurn) {
-                playerName.setBackgroundColor(Color.GREEN);
+                playerName.setBackgroundColor(playerIndicator);
                 playerNameTwo.setBackgroundColor(Color.WHITE);
                 testPlayer.playerTurn = true;
                 testPlayer2.playerTurn = false;
             }
             else {
-                playerNameTwo.setBackgroundColor(Color.GREEN);
+                playerNameTwo.setBackgroundColor(playerIndicator);
                 playerName.setBackgroundColor(Color.WHITE);
                 testPlayer.playerTurn = false;
                 testPlayer2.playerTurn = true;
@@ -140,12 +152,12 @@ public class GameActivity extends AppCompatActivity {
 
         if (newScore > 1) {
             if (testPlayer.playerTurn) {
-                playerNameTwo.setBackgroundColor(Color.GREEN);
+                playerNameTwo.setBackgroundColor(playerIndicator);
                 playerName.setBackgroundColor(Color.WHITE);
                 testPlayer.playerTurn = false;
                 testPlayer2.playerTurn = true;
             } else {
-                playerName.setBackgroundColor(Color.GREEN);
+                playerName.setBackgroundColor(playerIndicator);
                 playerNameTwo.setBackgroundColor(Color.WHITE);
                 testPlayer2.playerTurn = false;
                 testPlayer.playerTurn = true;
@@ -154,13 +166,13 @@ public class GameActivity extends AppCompatActivity {
         }
         if (newScore == 0) {
             if (testPlayer.playerTurn) {
-                playerName.setBackgroundColor(Color.GREEN);
+                playerName.setBackgroundColor(playerIndicator);
                 playerNameTwo.setBackgroundColor(Color.WHITE);
-                Toast.makeText(GameActivity.this, testPlayer.name + "wins!", Toast.LENGTH_LONG).show();
+                Toast.makeText(GameActivity.this, testPlayer.name + " wins!", Toast.LENGTH_LONG).show();
             } else {
-                playerNameTwo.setBackgroundColor(Color.GREEN);
+                playerNameTwo.setBackgroundColor(playerIndicator);
                 playerName.setBackgroundColor(Color.WHITE);
-                Toast.makeText(GameActivity.this, testPlayer2.name + "wins!", Toast.LENGTH_LONG).show();
+                Toast.makeText(GameActivity.this, testPlayer2.name + " wins!", Toast.LENGTH_LONG).show();
             }
             return newScore;
         }
@@ -169,13 +181,13 @@ public class GameActivity extends AppCompatActivity {
 
                 testPlayer.playerTurn = false;
                 testPlayer2.playerTurn = true;
-                playerNameTwo.setBackgroundColor(Color.GREEN);
+                playerNameTwo.setBackgroundColor(playerIndicator);
                 playerName.setBackgroundColor(Color.WHITE);
             }
             else {
                 testPlayer.playerTurn = true;
                 testPlayer2.playerTurn = false;
-                playerName.setBackgroundColor(Color.GREEN);
+                playerName.setBackgroundColor(playerIndicator);
                 playerNameTwo.setBackgroundColor(Color.WHITE);
 
             }

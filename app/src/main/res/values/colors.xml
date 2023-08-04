@@ -4,4 +4,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="blue_background">#3503fc</color>
     <color name="grey">#C3C1C1</color>
+    <color name="player_indicator">#2ad572</color>
 </resources>
