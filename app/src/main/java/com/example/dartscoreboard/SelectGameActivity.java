@@ -96,7 +96,6 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
     private void openThreeoGameActivity() {
         String playersFromTextView = playerListCheckBox.getText().toString();
         String[] listOfPlayersFromTextView = playersFromTextView.split(",");
-        Log.d("dom test", listOfPlayersFromTextView[0]);
         Log.d("dom test", "openThreeoGameActivity");
         Bundle arguments = new Bundle();
         arguments.putSerializable("GAME_TYPE", GameType.ThreeO);

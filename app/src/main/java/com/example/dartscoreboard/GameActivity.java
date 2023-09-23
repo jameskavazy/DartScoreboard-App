@@ -205,6 +205,10 @@ public class GameActivity extends AppCompatActivity {
         int currentScore;
         boolean playerTurn;
 
+        int lastScoreEntered;
+
+
+
         Player(String name, int currentScore, boolean playerTurn) {
             this.name = name;
             this.currentScore = currentScore;
@@ -224,7 +228,8 @@ public class GameActivity extends AppCompatActivity {
                             return true;
                         }
 
-                    } else {
+                    }
+                    else {
                         if (actionId == EditorInfo.IME_ACTION_DONE) {
                             Log.d("dom test", "IME_ACTION_DONE");
                             onScoreEntered(inputScoreEditText.getText().toString());
@@ -244,6 +249,8 @@ public class GameActivity extends AppCompatActivity {
         }
 
     }
+
+
 
 }
 
