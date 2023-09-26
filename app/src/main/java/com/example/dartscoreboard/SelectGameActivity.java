@@ -10,15 +10,12 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 public class SelectGameActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -44,7 +41,7 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
 
     private void setupUI() {
         Log.d("dom test", "setupUI");
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.select_game_activity);
         startGameBtn = findViewById(R.id.gameStartButton);
         playerListCheckBox = findViewById(R.id.NameDropDownBox);
         startGameBtn.setOnClickListener(this);

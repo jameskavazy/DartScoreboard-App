@@ -8,9 +8,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-public class NewHomeScreenActivity extends AppCompatActivity implements View.OnClickListener {
+public class HomeScreenActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button newGameButton;
+    private Button usersButton;
+    private Button statsButton;
 
 
 
@@ -22,9 +24,12 @@ public class NewHomeScreenActivity extends AppCompatActivity implements View.OnC
     }
 
     private void setupUI(){
-        setContentView(R.layout.activity_new_home_screen);
+        setContentView(R.layout.home_screen_activity);
         newGameButton = findViewById(R.id.startNewGameButton);
+        usersButton = findViewById(R.id.usersButton);
         newGameButton.setOnClickListener(this);
+        usersButton.setOnClickListener(this);
+
     }
 
     @Override
@@ -33,6 +38,19 @@ public class NewHomeScreenActivity extends AppCompatActivity implements View.OnC
             Log.d("dom test", "fiveoBtn click");
             onStartGameActivityClick();
         }
+        if (v.getId() == R.id.usersButton){
+            Log.d("dom test", "usersButton click");
+            onUsersButtonClick();
+        }
+    }
+
+    private void onUsersButtonClick() {
+        openUsersActivity();
+    }
+
+    private void openUsersActivity() {
+        Intent intent = new Intent(this, UsersActivity.class);
+        startActivity(intent);
     }
 
     private void onStartGameActivityClick(){

@@ -26,8 +26,6 @@ public class GameActivity extends AppCompatActivity {
 
 
 
-
-
     private SelectGameActivity.GameType gameType;
 
     @Override
@@ -45,7 +43,7 @@ public class GameActivity extends AppCompatActivity {
         playerCurrentScore = findViewById(R.id.gameActivityPlayerCurrentScore);
         playerNameTwo = findViewById(R.id.gameActivityPlayerTwoName);
         playerCurrentScoreTwo = findViewById(R.id.gameActivityPlayerTwoCurrentScore);
-        inputScoreEditText = findViewById(R.id.inputScoreEditText);
+        inputScoreEditText = findViewById(R.id.inputUserNameEditText);
         addPlayerNames();
 
 
@@ -224,7 +222,7 @@ public class GameActivity extends AppCompatActivity {
                         if (actionId == EditorInfo.IME_ACTION_DONE) {
                             Log.d("dom test", "IME_ACTION_DONE");
                             onScoreEntered(inputScoreEditText.getText().toString());
-                            ((EditText) findViewById(R.id.inputScoreEditText)).getText().clear();
+                            ((EditText) findViewById(R.id.inputUserNameEditText)).getText().clear();
                             return true;
                         }
 
@@ -233,7 +231,7 @@ public class GameActivity extends AppCompatActivity {
                         if (actionId == EditorInfo.IME_ACTION_DONE) {
                             Log.d("dom test", "IME_ACTION_DONE");
                             onScoreEntered(inputScoreEditText.getText().toString());
-                            ((EditText) findViewById(R.id.inputScoreEditText)).getText().clear();
+                            ((EditText) findViewById(R.id.inputUserNameEditText)).getText().clear();
                             return true;
                         }
 

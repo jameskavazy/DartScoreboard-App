@@ -13,27 +13,23 @@
         android:theme="@style/Theme.DartScoreboard"
         tools:targetApi="31">
         <activity
-            android:name=".NewHomeScreenActivity"
+            android:name=".UsersActivity"
+            android:exported="false" />
+        <activity
+            android:name=".HomeScreenActivity"
             android:exported="true">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
-
-
-
         <activity
             android:name=".GameActivity"
             android:exported="false" />
         <activity
             android:name=".SelectGameActivity"
-            android:exported="true">
-
-        </activity>
+            android:exported="true"></activity>
     </application>
 
 </manifest>
