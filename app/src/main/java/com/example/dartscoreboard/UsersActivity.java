@@ -6,20 +6,25 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
 import java.util.ArrayList;
 
-public class UsersActivity extends AppCompatActivity implements View.OnClickListener{
+public class UsersActivity extends AppCompatActivity implements OnClickListener{
 
     private ArrayList<User> usersList;
     private RecyclerView recyclerView;
 
+
     private Button addNewUserButton;
 
     private EditText editText;
+
+    private recyclerAdapter adapter;
 
 
     @Override
@@ -30,31 +35,34 @@ public class UsersActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void setAdapter() {
-        recyclerAdapter adapter = new recyclerAdapter(usersList);
+        adapter = new recyclerAdapter(usersList);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
     }
 
-//    private void setUserInfo() {
-//        String username = editText.getText().toString();
-//        usersList.add(new User(username));
-//    }
-
-
     @Override
     public void onClick(View v) {
-//        if (v.getId() == R.id.add_new_user_button){
-//            setUserInfo();
-//        }
+        if (v.getId() == R.id.add_new_user_button){
+            Log.d("dom test","onAddPlayerButtonclick");
+            onAddNewUserButtonClick(editText.getText().toString());
+        }
+    }
+
+    private void onAddNewUserButtonClick(String nameToAdd) {
+        if (!nameToAdd.isEmpty()){
+            usersList.add(new User(nameToAdd));
+            adapter.notifyDataSetChanged();
+        }
     }
 
     private void setupUI(){
+        editText = findViewById(R.id.inputUserNameEditText);
         addNewUserButton = findViewById(R.id.add_new_user_button);
+        addNewUserButton.setOnClickListener(this);
         recyclerView = findViewById(R.id.recycler_view_username_list);
         usersList = new ArrayList<>();
-        //setUserInfo();
         setAdapter();
 
     }
