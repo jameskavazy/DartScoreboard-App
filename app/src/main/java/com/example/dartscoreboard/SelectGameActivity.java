@@ -123,10 +123,11 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
 
 
     private void alertDialogueLaunch(){
+        String[] listOfUsers = getUsers();
         AlertDialog.Builder builder = new AlertDialog.Builder(SelectGameActivity.this);
         builder.setTitle("Select Players");
         builder.setCancelable(false);
-        builder.setMultiChoiceItems(listOfPlayers, selectedPlayers, new DialogInterface.OnMultiChoiceClickListener() {
+        builder.setMultiChoiceItems(listOfUsers, selectedPlayers, new DialogInterface.OnMultiChoiceClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which, boolean isChecked) {
                 if (isChecked){
@@ -175,13 +176,6 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         builder.show();
     }
 
-    private void getPlayersFromTextView(){
-
-
-    }
-
-
-
 
     enum GameType {
         FiveO("501", 501),
@@ -196,6 +190,24 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
             this.startingScore = startingScore;
         }
     }
+
+
+    private String[] getUsers(){
+        UsersActivity usersActivity = new UsersActivity();
+        usersActivity.usersList = new ArrayList<>();
+        String [] playersList = new String[usersActivity.usersList.size()];
+
+        for(int i = 0; i < usersActivity.usersList.size(); i++){
+            playersList[i] = String.valueOf(usersActivity.usersList.get(i));
+
+        }
+
+        return playersList;
+
+        // todo pass this using intents to the home activity and then to the select game activity - startActivityForResult() will do with with back button
+
+    }
+
 }
 
 

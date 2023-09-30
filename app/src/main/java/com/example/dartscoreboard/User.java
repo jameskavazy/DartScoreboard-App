@@ -2,7 +2,7 @@ package com.example.dartscoreboard;
 
 public class User {
 
-    private String username;
+    public String username;
 
     public User(String username) {
         this.username = username;
