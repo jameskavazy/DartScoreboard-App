@@ -16,7 +16,6 @@ public class PrefConfig {
 
     SharedPreferences.Editor editor;
     public static final String userPrefs = "my prefs";
-    public static final String userNameKey = "nameKey";
 
     public static void writeListInPref(Context context, ArrayList<User> usersList){
 

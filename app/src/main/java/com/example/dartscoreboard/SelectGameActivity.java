@@ -11,10 +11,12 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 public class SelectGameActivity extends AppCompatActivity implements View.OnClickListener {
@@ -25,7 +27,8 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
     String[] gameSelectList = {"501","301","170"};
     boolean[] selectedPlayers;
     ArrayList<Integer> playerList = new ArrayList<>();
-    String[] listOfPlayers = {"Dom","James","Guy","Nick"};
+
+    //String[] listOfPlayers = {"Dom","James};
 
     AutoCompleteTextView autoCompleteTextView;
     AutoCompleteTextView playerListCheckBox;
@@ -47,8 +50,9 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         startGameBtn.setOnClickListener(this);
         autoCompleteTextView = findViewById(R.id.gameTypeDropDownBox);
         setUpGameTypeDropDownMenu();
-        selectedPlayers = new boolean[listOfPlayers.length];
         playerListCheckBox.setOnClickListener(this);
+
+
     }
 
     @Override
@@ -123,18 +127,21 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
 
 
     private void alertDialogueLaunch(){
-        String[] listOfUsers = getUsers();
+        ArrayList<User> listOfUsers = PrefConfig.readListFromPref(this);
+        String[] listOfPlayers = new String[listOfUsers.size()];
+        for (int i = 0; i < listOfUsers.size(); i++) {
+            listOfPlayers[i] = listOfUsers.get(i).getUsername();
+        }
+        selectedPlayers = new boolean[listOfPlayers.length];
         AlertDialog.Builder builder = new AlertDialog.Builder(SelectGameActivity.this);
         builder.setTitle("Select Players");
         builder.setCancelable(false);
-        builder.setMultiChoiceItems(listOfUsers, selectedPlayers, new DialogInterface.OnMultiChoiceClickListener() {
+        builder.setMultiChoiceItems(listOfPlayers, selectedPlayers, new DialogInterface.OnMultiChoiceClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which, boolean isChecked) {
                 if (isChecked){
                     playerList.add(which);
                     Collections.sort(playerList);
-                    //todo add some logic to create an arraylist, then update playername text views. MAYBE use the playerList integer arraylist for this?
-
                 }
                 else playerList.remove(Integer.valueOf(which));
             }
@@ -192,21 +199,18 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
     }
 
 
-    private String[] getUsers(){
-        UsersActivity usersActivity = new UsersActivity();
-        usersActivity.usersList = new ArrayList<>();
-        String [] playersList = new String[usersActivity.usersList.size()];
+//    @NonNull
+//    private String[] getUsers() {
+//        ArrayList<User> listOfUsers = PrefConfig.readListFromPref(this);
+//        String[] playersList = new String[listOfUsers.size()];
+//        for (int i = 0; i < listOfUsers.size(); i++) {
+//            playersList[i] = listOfUsers.get(i).getUsername();
+//        }
+//        return playersList;
+//
+//   }
 
-        for(int i = 0; i < usersActivity.usersList.size(); i++){
-            playersList[i] = String.valueOf(usersActivity.usersList.get(i));
 
-        }
-
-        return playersList;
-
-        // todo pass this using intents to the home activity and then to the select game activity - startActivityForResult() will do with with back button
-
-    }
 
 }
 
