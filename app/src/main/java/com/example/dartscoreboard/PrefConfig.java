@@ -37,6 +37,5 @@ public class PrefConfig {
         Type type = new TypeToken<ArrayList<User>>(){}.getType();
         ArrayList<User> usersList = gson.fromJson(jsonString,type);
         return usersList;
-      //todo keep following video from here you're so close.
     }
 }
