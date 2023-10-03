@@ -12,6 +12,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class GameActivity extends AppCompatActivity {
 
 
@@ -75,11 +77,18 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void addPlayerNames(){
-        Bundle arguments = getIntent().getExtras();
-        String nameToAdd = arguments.getString("PLAYER_NAME");
-        String nameToAdd2 = arguments.getString("PLAYER_NAME_2");
-        playerName.setText(testPlayer.name = nameToAdd);
-        playerNameTwo.setText(testPlayer2.name = nameToAdd2);
+//        Bundle arguments = getIntent().getExtras();
+//        String nameToAdd = arguments.getString("PLAYER_NAME");
+//        String nameToAdd2 = arguments.getString("PLAYER_NAME_2");
+
+
+//        ArrayList<User> playersForGame = new ArrayList<>();
+//        for (int i = 0; i <playersForGame.size(); i++){
+//
+//        }
+        playerName.setText(testPlayer.name = PrefConfig.readUsersForGameSP(this).get(0).getUsername());
+        Log.d("dom test",PrefConfig.readUsersForGameSP(this).get(0).getUsername());
+        playerNameTwo.setText(testPlayer2.name = PrefConfig.readUsersForGameSP(this).get(1).getUsername());
 
     }
 

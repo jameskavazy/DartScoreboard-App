@@ -39,7 +39,7 @@ public class UsersActivity extends AppCompatActivity implements OnClickListener{
             public void onMyButtonClicked(int position) {
                 usersList.remove(position);
                 adapter.notifyDataSetChanged();
-                PrefConfig.writeListInPref(getApplicationContext(), usersList);
+                PrefConfig.updateSPUserList(getApplicationContext(), usersList);
             }
         });
 
@@ -57,7 +57,7 @@ public class UsersActivity extends AppCompatActivity implements OnClickListener{
             Log.d("dom test","onAddPlayerButtonclick");
             onAddNewUserButtonClick(editText.getText().toString());
             editText.getText().clear();
-            PrefConfig.writeListInPref(getApplicationContext(), usersList);
+            PrefConfig.updateSPUserList(getApplicationContext(), usersList);
 
 
         }
@@ -75,7 +75,7 @@ public class UsersActivity extends AppCompatActivity implements OnClickListener{
         addNewUserButton = findViewById(R.id.add_new_user_button);
         addNewUserButton.setOnClickListener(this);
         recyclerView = findViewById(R.id.recycler_view_username_list);
-        usersList = PrefConfig.readListFromPref(this);
+        usersList = PrefConfig.readSPUserList(this);
         if (usersList == null) {
             usersList = new ArrayList<>();
         }
