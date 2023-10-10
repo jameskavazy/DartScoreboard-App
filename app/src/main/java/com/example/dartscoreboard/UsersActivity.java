@@ -25,6 +25,8 @@ public class UsersActivity extends AppCompatActivity implements OnClickListener{
 
     private recyclerAdapter adapter;
 
+    private recyclerAdapter.ClickHandler clickHandler;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,23 +34,24 @@ public class UsersActivity extends AppCompatActivity implements OnClickListener{
         setContentView(R.layout.activity_users);
         setupUI();
     }
+        private void setAdapter() {
+            setOnClickListener();
+            adapter = new recyclerAdapter(usersList, clickHandler);
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+            recyclerView.setLayoutManager(layoutManager);
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            recyclerView.setAdapter(adapter);
+    }
 
-    private void setAdapter() {
-        adapter = new recyclerAdapter(usersList, new recyclerAdapter.ClickHandler() {
+    private void setOnClickListener() {
+        clickHandler = new recyclerAdapter.ClickHandler() {
             @Override
-            public void onMyButtonClicked(int position) {
+            public void onMyButtonClicked(View view, int position) {
                 usersList.remove(position);
                 adapter.notifyDataSetChanged();
                 PrefConfig.updateSPUserList(getApplicationContext(), usersList);
             }
-        });
-
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(adapter);
-
-
+        };
     }
 
     @Override
@@ -58,8 +61,6 @@ public class UsersActivity extends AppCompatActivity implements OnClickListener{
             onAddNewUserButtonClick(editText.getText().toString());
             editText.getText().clear();
             PrefConfig.updateSPUserList(getApplicationContext(), usersList);
-
-
         }
     }
 
@@ -79,7 +80,6 @@ public class UsersActivity extends AppCompatActivity implements OnClickListener{
         if (usersList == null) {
             usersList = new ArrayList<>();
         }
-
         setAdapter();
     }
 
