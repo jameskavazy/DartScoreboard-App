@@ -15,7 +15,7 @@ public class PrefConfig {
     SharedPreferences sharedPreferences;
 
     SharedPreferences.Editor editor;
-    public static final String userPrefs = "my prefs";
+    public static final String userPrefs = "MY_PREFS";
     public static final String PLAYER_FOR_GAME = "player_for_game_prefs";
 
     public static void updateSPUserList(Context context, ArrayList<User> usersList){

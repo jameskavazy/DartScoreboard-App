@@ -23,9 +23,9 @@ public class UsersActivity extends AppCompatActivity implements OnClickListener{
 
     private EditText editText;
 
-    private recyclerAdapter adapter;
+    private recyclerAdapterUsers adapter;
 
-    private recyclerAdapter.ClickHandler clickHandler;
+    private recyclerAdapterUsers.ClickHandler clickHandler;
 
 
     @Override
@@ -36,7 +36,7 @@ public class UsersActivity extends AppCompatActivity implements OnClickListener{
     }
         private void setAdapter() {
             setOnClickListener();
-            adapter = new recyclerAdapter(usersList, clickHandler);
+            adapter = new recyclerAdapterUsers(usersList, clickHandler);
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -44,7 +44,7 @@ public class UsersActivity extends AppCompatActivity implements OnClickListener{
     }
 
     private void setOnClickListener() {
-        clickHandler = new recyclerAdapter.ClickHandler() {
+       clickHandler = new recyclerAdapterUsers.ClickHandler() {
             @Override
             public void onMyButtonClicked(View view, int position) {
                 usersList.remove(position);
