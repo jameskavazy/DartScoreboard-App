@@ -23,6 +23,8 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
     public static String GAME_TYPE_KEY = "GAME_TYPE";
 
     private Button startGameBtn;
+
+    private Button clearPlayersBtn;
     String[] gameSelectList = {"501","301","170"};
     boolean[] selectedPlayers;
     ArrayList<Integer> playerList = new ArrayList<>();
@@ -43,11 +45,14 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         Log.d("dom test", "setupUI");
         setContentView(R.layout.select_game_activity);
         startGameBtn = findViewById(R.id.gameStartButton);
+        clearPlayersBtn = findViewById(R.id.remove_players_button);
         playerListCheckBox = findViewById(R.id.NameDropDownBox);
         startGameBtn.setOnClickListener(this);
+        clearPlayersBtn.setOnClickListener(this);
         autoCompleteTextView = findViewById(R.id.gameTypeDropDownBox);
         setUpGameTypeDropDownMenu();
         playerListCheckBox.setOnClickListener(this);
+        setPlayersTextBox();
 
 
     }
@@ -60,6 +65,13 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         if (v.getId() == R.id.NameDropDownBox){
            //alertDialogueLaunch();
            openPlayerSelectActivity();
+        }
+        if (v.getId() == R.id.remove_players_button){
+            PrefConfig.readUsersForGameSP(this);
+            ArrayList<User> playersToGame = new ArrayList<>();
+            playersToGame.clear();
+            PrefConfig.saveUsersForGameSP(getApplicationContext(),playersToGame);
+            playerListCheckBox.setText("");
         }
     }
 
@@ -130,73 +142,95 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
     autoCompleteTextView.setAdapter(adapterItems);
     }
 
-
-    private void alertDialogueLaunch(){
-        ArrayList<User> listOfUsers = PrefConfig.readSPUserList(this);
-        String[] listOfPlayers = new String[listOfUsers.size()];
-
-        for (int i = 0; i < listOfUsers.size(); i++) {
-            listOfPlayers[i] = listOfUsers.get(i).getUsername();
+    private void setPlayersTextBox(){
+        playerListCheckBox.setText("");
+//        StringBuilder stringBuilder = new StringBuilder();
+        ArrayList<User> playersToGame = PrefConfig.readUsersForGameSP(this);
+        if (playersToGame != null){
+            String[] namesToGame = new String[playersToGame.size()];
+            for (int i = 0; i < playersToGame.size(); i++) {
+                namesToGame[i] = playersToGame.get(i).getUsername();
+            }
+//            for (int j = 0; j< namesToGame.length; j++){
+//                stringBuilder.append(namesToGame[j]);
+//                if (j != namesToGame.length - 1) {
+//                    stringBuilder.append(", ");
+//                }
+//            }
+//            playerListCheckBox.setText(stringBuilder.toString());
+            String playersToGameString = String.join(",",namesToGame);
+            playerListCheckBox.setText(playersToGameString);
+            Log.d("dom test",playersToGameString);
         }
-        ArrayList<User> playersToGame = new ArrayList<>();
-        selectedPlayers = new boolean[listOfPlayers.length];
-        AlertDialog.Builder builder = new AlertDialog.Builder(SelectGameActivity.this);
-        builder.setTitle("Select Players");
-        builder.setCancelable(false);
-        builder.setMultiChoiceItems(listOfPlayers, selectedPlayers, new DialogInterface.OnMultiChoiceClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                if (isChecked){
-                    playerList.add(which);
-                    Collections.sort(playerList);
-                }
-                else playerList.remove(Integer.valueOf(which));
-            }
-// todo make the alertdialogue box itself display the ArrayList<User> .getUsername();:????
-// todo send User to Next screen and display setText().getUsername() - need some logic to map String[] list in checkbox to their User counterpart.
-
-        });
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                StringBuilder stringBuilder = new StringBuilder();
-                for (int j = 0; j < playerList.size(); j++){
-                    //stringBuilder.append(listOfPlayers[playerList.get(j)]);
-                    stringBuilder.append(listOfUsers.get(playerList.get(j)).username);
-                    Log.d("dom test",listOfUsers.get(playerList.get(j)).username);
-                    if (j != playerList.size() - 1) {
-                        stringBuilder.append(", ");
-                    }
-//                    if (listOfPlayers[playerList.get(j)].equals((listOfUsers.get(j).getUsername()))){
-//                        playersToGame.add(listOfUsers.get(j));
-//                        Log.d("dom test", playersToGame.get(j).getUsername());
-//                    }
-//                    PrefConfig.saveUsersForGameSP(getApplicationContext(), playersToGame);
-                }
-                playerListCheckBox.setText(stringBuilder.toString());
-            }
-        });
-
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
-        builder.setNeutralButton("Clear All", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                for (int j = 0; j > selectedPlayers.length; j++){
-                    selectedPlayers[j] = false;
-                    playerList.clear();
-                    playerListCheckBox.setText(""); //todo change the XML so that it's a normal textview, then clear all will work as intended.
-                }
-            }
-        });
-        builder.show();
     }
+
+
+//    private void alertDialogueLaunch(){
+//        ArrayList<User> listOfUsers = PrefConfig.readSPUserList(this);
+//        String[] listOfPlayers = new String[listOfUsers.size()];
+//
+//        for (int i = 0; i < listOfUsers.size(); i++) {
+//            listOfPlayers[i] = listOfUsers.get(i).getUsername();
+//        }
+//        ArrayList<User> playersToGame = new ArrayList<>();
+//        selectedPlayers = new boolean[listOfPlayers.length];
+//        AlertDialog.Builder builder = new AlertDialog.Builder(SelectGameActivity.this);
+//        builder.setTitle("Select Players");
+//        builder.setCancelable(false);
+//        builder.setMultiChoiceItems(listOfPlayers, selectedPlayers, new DialogInterface.OnMultiChoiceClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+//                if (isChecked){
+//                    playerList.add(which);
+//                    Collections.sort(playerList);
+//                }
+//                else playerList.remove(Integer.valueOf(which));
+//            }
+//// todo make the alertdialogue box itself display the ArrayList<User> .getUsername();:????
+//// todo send User to Next screen and display setText().getUsername() - need some logic to map String[] list in checkbox to their User counterpart.
+//
+//        });
+//        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//
+//                StringBuilder stringBuilder = new StringBuilder();
+//                for (int j = 0; j < playerList.size(); j++){
+//                    //stringBuilder.append(listOfPlayers[playerList.get(j)]);
+//                    stringBuilder.append(listOfUsers.get(playerList.get(j)).username);
+//                    Log.d("dom test",listOfUsers.get(playerList.get(j)).username);
+//                    if (j != playerList.size() - 1) {
+//                        stringBuilder.append(", ");
+//                    }
+////                    if (listOfPlayers[playerList.get(j)].equals((listOfUsers.get(j).getUsername()))){
+////                        playersToGame.add(listOfUsers.get(j));
+////                        Log.d("dom test", playersToGame.get(j).getUsername());
+////                    }
+////                    PrefConfig.saveUsersForGameSP(getApplicationContext(), playersToGame);
+//                }
+//                playerListCheckBox.setText(stringBuilder.toString());
+//            }
+//        });
+//
+//        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                dialog.dismiss();
+//            }
+//        });
+//
+//        builder.setNeutralButton("Clear All", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                for (int j = 0; j > selectedPlayers.length; j++){
+//                    selectedPlayers[j] = false;
+//                    playerList.clear();
+//                    playerListCheckBox.setText(""); //todo change the XML so that it's a normal textview, then clear all will work as intended.
+//                }
+//            }
+//        });
+//        builder.show();
+//    }
 
 
     enum GameType {

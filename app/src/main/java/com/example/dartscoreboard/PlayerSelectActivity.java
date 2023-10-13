@@ -13,7 +13,7 @@ import android.widget.Button;
 
 import java.util.ArrayList;
 
-public class PlayerSelectActivity extends AppCompatActivity {
+public class PlayerSelectActivity extends AppCompatActivity implements View.OnClickListener {
 
     private recyclerAdapterPlayersToGame adapter;
 
@@ -25,7 +25,7 @@ public class PlayerSelectActivity extends AppCompatActivity {
 
     private Button doneButton;
 
-    private final String USER_KEY = "USER_STRING";
+    public final String USER_KEY = "USER_STRING";
 
 
     @Override
@@ -37,6 +37,7 @@ public class PlayerSelectActivity extends AppCompatActivity {
 
     private void setAdapter(){
         setOnClickListener();
+
         adapter = new recyclerAdapterPlayersToGame(usersList, listen);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
@@ -47,13 +48,15 @@ public class PlayerSelectActivity extends AppCompatActivity {
     private void setupUI(){
         doneButton = findViewById(R.id.button_done);
         recyclerView = findViewById(R.id.players_to_add);
-
-
+        doneButton.setOnClickListener(this);
         usersList = PrefConfig.readSPUserList(this);
         if (usersList == null) {
             usersList = new ArrayList<>();
         }
         setAdapter();
+        createUsersForGameList().clear();
+
+
     }
 
     private void setOnClickListener(){
@@ -68,16 +71,50 @@ public class PlayerSelectActivity extends AppCompatActivity {
                 Log.d("dom test", String.valueOf(userToAdd));
 
 
+                User user = usersList.get(position);
+                if (!user.getActive()) {
+                    user.setActive(true);
+                }
+                else if (user.getActive()){
+                    user.setActive(false);
+                }
+
             }
         };
+    }
 
+private ArrayList<User> createUsersForGameList(){
+        ArrayList<User> usersForGame = new ArrayList<>();
+        return usersForGame;
+}
 
-
+private void setUsersForGame(){
+    ArrayList<User> usersForGame = createUsersForGameList();
+    for (int i = 0; i < usersList.size(); i++) {
+        if (usersList.get(i).active){
+            usersForGame.add(usersList.get(i));
+            Log.d("dom test", String.valueOf(usersForGame));
+            PrefConfig.saveUsersForGameSP(getApplicationContext(),usersForGame);
+        }
 
     }
 
+}
 
 
 
 
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.button_done){
+            setUsersForGame();
+            Log.d("dom test","onButtonDoneClick");
+            for (int i = 0;i<usersList.size();i++) {
+                Log.d("dom test", i +" " + " " + Boolean.toString(usersList.get(i).getActive()));
+            }
+            Intent intent = new Intent(this, SelectGameActivity.class);
+            startActivity(intent);
+        }
+
+    }
 }
