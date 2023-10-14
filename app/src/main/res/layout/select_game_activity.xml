@@ -46,10 +46,6 @@
             android:inputType="none"
             />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -76,10 +72,21 @@
         android:id="@+id/remove_players_button"
         android:layout_width="wrap_content"
         android:layout_height="55dp"
-        android:layout_gravity="center_horizontal"
+        android:layout_gravity="right"
         android:layout_marginVertical="525dp"
         android:layout_marginTop="44dp"
+        android:layout_marginRight="16dp"
         android:text="Remove All Players" />
+
+    <Button
+        android:id="@+id/randomise_players_button"
+        android:layout_width="wrap_content"
+        android:layout_height="55dp"
+        android:layout_gravity="left"
+        android:layout_marginVertical="525dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="44dp"
+        android:text="Randomise Players" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
