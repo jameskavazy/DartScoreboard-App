@@ -48,6 +48,7 @@ public class RecyclerAdapterGamePlayers extends RecyclerView.Adapter<RecyclerAda
     @Override
     public void onBindViewHolder(@NonNull GameViewHolder holder, int position) {
         String name = usersList.get(position).getUsername();
+        int gameScore = usersList.get(position).getPlayerScore();
         holder.nameText.setText(name);
         holder.playerScoreTextView.setText(String.valueOf(gameScore));
     }

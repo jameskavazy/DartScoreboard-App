@@ -48,7 +48,7 @@ public class UsersActivity extends AppCompatActivity implements OnClickListener{
             @Override
             public void onMyButtonClicked(View view, int position) {
                 usersList.remove(position);
-                adapter.notifyDataSetChanged();
+                adapter.notifyItemRemoved(position);
                 PrefConfig.updateSPUserList(getApplicationContext(), usersList);
             }
         };

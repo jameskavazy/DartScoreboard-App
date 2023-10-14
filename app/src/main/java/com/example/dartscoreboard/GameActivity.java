@@ -1,16 +1,13 @@
 package com.example.dartscoreboard;
 
-import static java.lang.String.valueOf;
+
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -20,11 +17,11 @@ import java.util.ArrayList;
 
 public class GameActivity extends AppCompatActivity {
 
-
     private TextView gameTitle;
     private ArrayList<User> playersList;
     private RecyclerView recyclerView;
     private EditText inputScoreEditText;
+
     private SelectGameActivity.GameType gameType;
     private int playerStartingScore;
     private RecyclerAdapterGamePlayers adapter;
@@ -36,6 +33,7 @@ public class GameActivity extends AppCompatActivity {
         setContentView(R.layout.game_activity);
         Log.d("dom test", "gameType\n-------\nname " + getGameType().name + "\nstartingScore " + getGameType().startingScore);
         setupUI();
+        onScoreEntered();
     }
 
     private void setupUI() {
@@ -43,37 +41,16 @@ public class GameActivity extends AppCompatActivity {
         gameTitle = findViewById(R.id.gameActivityTitle);
         inputScoreEditText = findViewById(R.id.inputUserNameEditText);
         playersList = PrefConfig.readUsersForGameSP(this);
-        playerStartingScore = getGameType().startingScore;
-        for (int i = 0; i < playersList.size(); i++){
-            playersList.get(i).setPlayerScore(playerStartingScore);
-        }
-        setAdapter();
         gameTitle.setText(getGameType().name);
-
-
-//        testPlayer.currentScore = getGameType().startingScore;// todo this may be called again
-//        testPlayer2.currentScore = getGameType().startingScore;
-//        playerCurrentScore.setText(valueOf(testPlayer.currentScore));
-//        playerCurrentScoreTwo.setText(valueOf(testPlayer2.currentScore));
-//
-//            if (testPlayer.playerTurn) {
-//                testPlayer.turn();
-//            }
-//            else {
-//                testPlayer2.turn();
-//            }
+        setPlayerStartingScores();
+        setPlayerTurns();
+        setAdapter();
     }
-
-//    private void updateScores() {
-//        playerStartingScore = getGameType().startingScore;
-//        adapter.notifyDataSetChanged();
-//    }
 
     private SelectGameActivity.GameType getGameType() {
         if (gameType != null) {
             return gameType;
         }
-
         Bundle arguments = getIntent().getExtras();
         gameType = (SelectGameActivity.GameType) arguments.getSerializable(SelectGameActivity.GAME_TYPE_KEY);
         return gameType;
@@ -87,135 +64,77 @@ public class GameActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
+    private void setPlayerStartingScores(){
+        playerStartingScore = getGameType().startingScore;
+        for (int i = 0; i < playersList.size(); i++){
+            playersList.get(i).setPlayerScore(playerStartingScore);
+        }
+    }
 
-//    private void addPlayerNames(){
-////        Bundle arguments = getIntent().getExtras();
-////        String nameToAdd = arguments.getString("PLAYER_NAME");
-////        String nameToAdd2 = arguments.getString("PLAYER_NAME_2");
-//
-//
-////        ArrayList<User> playersForGame = new ArrayList<>();
-////        for (int i = 0; i <playersForGame.size(); i++){
-////
-//////        }
-////        playerName.setText(testPlayer.name = PrefConfig.readUsersForGameSP(this).get(0).getUsername());
-////        Log.d("dom test",PrefConfig.readUsersForGameSP(this).get(0).getUsername());
-////        playerNameTwo.setText(testPlayer2.name = PrefConfig.readUsersForGameSP(this).get(1).getUsername());
-//
-//    }
+    private void setPlayerTurns(){
+        playersList.get(0).setTurn(true);
+        for (int i = 1; i < playersList.size(); i++){
+            playersList.get(i).setTurn(false);
+        }
+    }
 
-//    private void onScoreEntered(String scoreString) {
-//        try {
-//            if (testPlayer.playerTurn) {
-//                int scoreInt = Integer.parseInt(scoreString);
-//                Log.d("dom test", Integer.toString(scoreInt));
-//                testPlayer.currentScore = subtract(testPlayer.currentScore, scoreInt);
-//                Log.d("dom test","score subtract run");
-//                playerCurrentScore.setText(String.valueOf(testPlayer.currentScore));
-//                Log.d("dom test","Current Score: " + testPlayer.currentScore);
-//            }
-//
-//            else {
-//                int scoreInt = Integer.parseInt(scoreString);
-//                Log.d("dom test", Integer.toString(scoreInt));
-//                testPlayer2.currentScore = subtract(testPlayer2.currentScore, scoreInt);
-//                playerCurrentScoreTwo.setText(String.valueOf(testPlayer2.currentScore));
-//                Log.d("dom test","Current Score: " + testPlayer2.currentScore);
-//            }
-//
-//
-//        } catch (NumberFormatException e) {
-//            Log.d("dom test", e.getMessage());
-//        }
-//    }
+    private void playerVisit(String scoreString){
+        int scoreInt = Integer.parseInt(scoreString);
+        for (int i = 0; i < playersList.size(); i++) {
+            int currentScore = playersList.get(i).getPlayerScore();
+            if (playersList.get(i).isTurn()){
+                playersList.get(i).setPlayerScore(subtract(currentScore,scoreInt));
+                adapter.notifyItemChanged(i);
+                playersList.get(i).setTurn(false);
+                Log.d("dom test",playersList.get(i).getUsername() + " " + scoreString);
+                Log.d("dom test",playersList.get(i).getUsername() + " " + playersList.get(i).getPlayerScore());
+                if (i+1 < playersList.size()) {
+                    playersList.get(i+1).setTurn(true);
+                    break;
+                } else if(i+1 == playersList.size()){
+                    i = 0;
+                    playersList.get(i).setTurn(true);
+                    break;
+                }
+            }
+        }
+    }
+    private void onScoreEntered() {
+            inputScoreEditText.setOnEditorActionListener((v, actionId, event) -> {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    Log.d("dom test", "IME_ACTION_DONE");
+                    playerVisit(inputScoreEditText.getText().toString());
+                    ((EditText) findViewById(R.id.inputUserNameEditText)).getText().clear();
+                    return true;
+                }
+                return false;
+            });
+    }
 
+    public int subtract(int playerScore, int currentTypedScore) {
+        int newScore = playerScore - currentTypedScore;
+        if (( ((playerScore <= 180) && (playerScore >= 171)) || (playerScore == 169) || (playerScore == 168) || (playerScore == 166) || (playerScore == 165) || (playerScore == 163) || (playerScore == 162) || (playerScore == 159)) && (currentTypedScore == playerScore)){
+            Toast.makeText(GameActivity.this, "Invalid Score", Toast.LENGTH_SHORT).show();
+            return playerScore;
+        }
 
+        if (currentTypedScore > 180) {
+            Toast.makeText(GameActivity.this, "Invalid Score", Toast.LENGTH_SHORT).show();
+            return playerScore;
+        }
 
-//    public int subtract(int playerScore, int currentTypedScore) {
-//        int playerIndicator = Color.rgb(42,213,114);
-//        int newScore = playerScore - currentTypedScore;
-//        if (( ((playerScore <= 180) && (playerScore >= 171)) || (playerScore == 169) || (playerScore == 168) || (playerScore == 166) || (playerScore == 165) || (playerScore == 163) || (playerScore == 162) || (playerScore == 159)) && (currentTypedScore == playerScore)){
-//            if (testPlayer.playerTurn) {
-//                playerName.setBackgroundColor(playerIndicator);
-//                playerNameTwo.setBackgroundColor(Color.WHITE);
-//                testPlayer.playerTurn = true;
-//                testPlayer2.playerTurn = false;
-//            }
-//            else {
-//                playerNameTwo.setBackgroundColor(playerIndicator);
-//                playerName.setBackgroundColor(Color.WHITE);
-//                testPlayer.playerTurn = false;
-//                testPlayer2.playerTurn = true;
-//
-//            }
-//            Toast.makeText(GameActivity.this, "Invalid Score", Toast.LENGTH_SHORT).show();
-//            return playerScore;
-//        }
-//
-//        if (currentTypedScore > 180) {
-//            if (testPlayer.playerTurn) {
-//                playerName.setBackgroundColor(playerIndicator);
-//                playerNameTwo.setBackgroundColor(Color.WHITE);
-//                testPlayer.playerTurn = true;
-//                testPlayer2.playerTurn = false;
-//            }
-//            else {
-//                playerNameTwo.setBackgroundColor(playerIndicator);
-//                playerName.setBackgroundColor(Color.WHITE);
-//                testPlayer.playerTurn = false;
-//                testPlayer2.playerTurn = true;
-//            }
-//            Toast.makeText(GameActivity.this, "Invalid Score", Toast.LENGTH_SHORT).show();
-//            return playerScore;
-//        }
-//
-//        if (newScore > 1) {
-//            if (testPlayer.playerTurn) {
-//                playerNameTwo.setBackgroundColor(playerIndicator);
-//                playerName.setBackgroundColor(Color.WHITE);
-//                testPlayer.playerTurn = false;
-//                testPlayer2.playerTurn = true;
-//            } else {
-//                playerName.setBackgroundColor(playerIndicator);
-//                playerNameTwo.setBackgroundColor(Color.WHITE);
-//                testPlayer2.playerTurn = false;
-//                testPlayer.playerTurn = true;
-//            }
-//            return newScore;
-//        }
-//        if (newScore == 0) {
-//            if (testPlayer.playerTurn) {
-//                playerName.setBackgroundColor(playerIndicator);
-//                playerNameTwo.setBackgroundColor(Color.WHITE);
-//                Toast.makeText(GameActivity.this, testPlayer.name + " wins!", Toast.LENGTH_LONG).show();
-//            } else {
-//                playerNameTwo.setBackgroundColor(playerIndicator);
-//                playerName.setBackgroundColor(Color.WHITE);
-//                Toast.makeText(GameActivity.this, testPlayer2.name + " wins!", Toast.LENGTH_LONG).show();
-//            }
-//            return newScore;
-//        }
-//        else {
-//            if (testPlayer.playerTurn) {
-//
-//                testPlayer.playerTurn = false;
-//                testPlayer2.playerTurn = true;
-//                playerNameTwo.setBackgroundColor(playerIndicator);
-//                playerName.setBackgroundColor(Color.WHITE);
-//            }
-//            else {
-//                testPlayer.playerTurn = true;
-//                testPlayer2.playerTurn = false;
-//                playerName.setBackgroundColor(playerIndicator);
-//                playerNameTwo.setBackgroundColor(Color.WHITE);
-//
-//            }
-//            Toast.makeText(GameActivity.this, "BUST", Toast.LENGTH_SHORT).show();
-//
-//        return playerScore;
-//        }
-//
-//    }
-
+        if (newScore > 1) {
+            return newScore;
+        }
+        if (newScore == 0) {
+            for (int i = 0; i < playersList.size(); i++) {
+                if (playersList.get(i).turn) {
+                Toast.makeText(GameActivity.this, playersList.get(i).getUsername() + " wins!", Toast.LENGTH_LONG).show();
+                }
+            }
+            return newScore;
+        }
+        else Toast.makeText(GameActivity.this, "BUST", Toast.LENGTH_SHORT).show();
+        return playerScore;
+        }
 }
-

@@ -88,16 +88,17 @@
         android:orientation="horizontal"/>
 
 
-
     <EditText
-        android:textSize="40sp"
-        android:inputType="number"
         android:id="@+id/inputUserNameEditText"
-        android:imeOptions="actionDone"
-        android:layout_marginTop="200dp"
-        android:layout_gravity="center"
         android:layout_width="300dp"
         android:layout_height="60dp"
-        android:background="#83B1E6FF"/>
+        android:layout_gravity="center"
+        android:layout_marginTop="200dp"
+        android:background="#83B1E6FF"
+        android:imeOptions="actionDone"
+        android:inputType="number"
+        android:textSize="40sp"
+
+        />
 
 </LinearLayout>
