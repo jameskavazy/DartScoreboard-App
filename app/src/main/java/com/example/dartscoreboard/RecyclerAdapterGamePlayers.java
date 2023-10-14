@@ -13,9 +13,14 @@ import java.util.ArrayList;
 public class RecyclerAdapterGamePlayers extends RecyclerView.Adapter<RecyclerAdapterGamePlayers.GameViewHolder> {
 
     private ArrayList<User> usersList = new ArrayList<>();
+  //  private int legs;
+    private int gameScore;
 
-    public RecyclerAdapterGamePlayers(ArrayList<User> usersList){
+    public RecyclerAdapterGamePlayers(ArrayList<User> usersList, int gameScore){
         this.usersList = usersList;
+        //this.legs = legs;
+        this.gameScore = gameScore;
+
     }
 
     public class GameViewHolder extends RecyclerView.ViewHolder {
@@ -33,8 +38,6 @@ public class RecyclerAdapterGamePlayers extends RecyclerView.Adapter<RecyclerAda
 
     }
 
-
-
     @NonNull
     @Override
     public GameViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -46,7 +49,7 @@ public class RecyclerAdapterGamePlayers extends RecyclerView.Adapter<RecyclerAda
     public void onBindViewHolder(@NonNull GameViewHolder holder, int position) {
         String name = usersList.get(position).getUsername();
         holder.nameText.setText(name);
-
+        holder.playerScoreTextView.setText(String.valueOf(gameScore));
     }
 
     @Override

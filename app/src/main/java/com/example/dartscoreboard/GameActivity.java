@@ -22,20 +22,16 @@ public class GameActivity extends AppCompatActivity {
 
 
     private TextView gameTitle;
-    private ArrayList<User> usersList;
-
+    private ArrayList<User> playersList;
     private RecyclerView recyclerView;
     private EditText inputScoreEditText;
-    private Player testPlayer = new Player("test 1", 0, true);
-    private Player testPlayer2 = new Player("test 2",0,false);
-
-
-
     private SelectGameActivity.GameType gameType;
+    private int playerStartingScore;
+    private RecyclerAdapterGamePlayers adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("dom test", "GameActivityonCreate");
+        Log.d("dom test", "GameActivityOnCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_activity);
         Log.d("dom test", "gameType\n-------\nname " + getGameType().name + "\nstartingScore " + getGameType().startingScore);
@@ -46,9 +42,14 @@ public class GameActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.player_info_recycler_view);
         gameTitle = findViewById(R.id.gameActivityTitle);
         inputScoreEditText = findViewById(R.id.inputUserNameEditText);
-        usersList = PrefConfig.readUsersForGameSP(this);
+        playersList = PrefConfig.readUsersForGameSP(this);
+        playerStartingScore = getGameType().startingScore;
+        for (int i = 0; i < playersList.size(); i++){
+            playersList.get(i).setPlayerScore(playerStartingScore);
+        }
         setAdapter();
         gameTitle.setText(getGameType().name);
+
 
 //        testPlayer.currentScore = getGameType().startingScore;// todo this may be called again
 //        testPlayer2.currentScore = getGameType().startingScore;
@@ -62,6 +63,12 @@ public class GameActivity extends AppCompatActivity {
 //                testPlayer2.turn();
 //            }
     }
+
+//    private void updateScores() {
+//        playerStartingScore = getGameType().startingScore;
+//        adapter.notifyDataSetChanged();
+//    }
+
     private SelectGameActivity.GameType getGameType() {
         if (gameType != null) {
             return gameType;
@@ -73,19 +80,12 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void setAdapter(){
-        RecyclerAdapterGamePlayers adapter = new RecyclerAdapterGamePlayers(usersList);
+        adapter = new RecyclerAdapterGamePlayers(playersList,playerStartingScore);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
     }
-
-
-
-
-
-
-
 
 
 //    private void addPlayerNames(){
@@ -216,12 +216,6 @@ public class GameActivity extends AppCompatActivity {
 //        }
 //
 //    }
-
-
-
-
-
-
 
 }
 
