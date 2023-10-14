@@ -3,10 +3,14 @@ package com.example.dartscoreboard;
 import static java.lang.String.valueOf;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -18,6 +22,9 @@ public class GameActivity extends AppCompatActivity {
 
 
     private TextView gameTitle;
+    private ArrayList<User> usersList;
+
+    private RecyclerView recyclerView;
     private EditText inputScoreEditText;
     private Player testPlayer = new Player("test 1", 0, true);
     private Player testPlayer2 = new Player("test 2",0,false);
@@ -36,13 +43,12 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void setupUI() {
+        recyclerView = findViewById(R.id.player_info_recycler_view);
         gameTitle = findViewById(R.id.gameActivityTitle);
         inputScoreEditText = findViewById(R.id.inputUserNameEditText);
-        //addPlayerNames();
-
-
+        usersList = PrefConfig.readUsersForGameSP(this);
+        setAdapter();
         gameTitle.setText(getGameType().name);
-
 
 //        testPlayer.currentScore = getGameType().startingScore;// todo this may be called again
 //        testPlayer2.currentScore = getGameType().startingScore;
@@ -65,6 +71,22 @@ public class GameActivity extends AppCompatActivity {
         gameType = (SelectGameActivity.GameType) arguments.getSerializable(SelectGameActivity.GAME_TYPE_KEY);
         return gameType;
     }
+
+    private void setAdapter(){
+        RecyclerAdapterGamePlayers adapter = new RecyclerAdapterGamePlayers(usersList);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(adapter);
+    }
+
+
+
+
+
+
+
+
 
 //    private void addPlayerNames(){
 ////        Bundle arguments = getIntent().getExtras();

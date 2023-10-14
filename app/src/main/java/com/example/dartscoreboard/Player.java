@@ -9,8 +9,6 @@ class Player {
 
     int lastScoreEntered;
 
-
-
     Player(String name, int currentScore, boolean playerTurn) {
         this.name = name;
         this.currentScore = currentScore;
