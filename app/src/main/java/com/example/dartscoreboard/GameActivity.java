@@ -1,7 +1,5 @@
 package com.example.dartscoreboard;
 
-
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -78,38 +76,44 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    private void onScoreEntered() {
+        inputScoreEditText.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                Log.d("dom test", "IME_ACTION_DONE");
+                playerVisit(inputScoreEditText.getText().toString());
+                ((EditText) findViewById(R.id.inputUserNameEditText)).getText().clear();
+                return true;
+            }
+            return false;
+        });
+    }
+
     private void playerVisit(String scoreString){
         int scoreInt = Integer.parseInt(scoreString);
-        for (int i = 0; i < playersList.size(); i++) {
-            int currentScore = playersList.get(i).getPlayerScore();
-            if (playersList.get(i).isTurn()){
-                playersList.get(i).setPlayerScore(subtract(currentScore,scoreInt));
-                adapter.notifyItemChanged(i);
-                playersList.get(i).setTurn(false);
-                Log.d("dom test",playersList.get(i).getUsername() + " " + scoreString);
-                Log.d("dom test",playersList.get(i).getUsername() + " " + playersList.get(i).getPlayerScore());
-                if (i+1 < playersList.size()) {
-                    playersList.get(i+1).setTurn(true);
-                    break;
-                } else if(i+1 == playersList.size()){
-                    i = 0;
-                    playersList.get(i).setTurn(true);
-                    break;
+        if (scoreInt <= 180) { // checks for valid score input
+            for (int i = 0; i < playersList.size(); i++) {
+                int currentScore = playersList.get(i).getPlayerScore();
+                if (playersList.get(i).isTurn()) {
+                    playersList.get(i).setPlayerScore(subtract(currentScore, scoreInt));
+                    playersList.get(i).setTurn(false);
+                    adapter.notifyItemChanged(i);
+                    Log.d("dom test", playersList.get(i).getUsername() + " " + scoreString);
+                    Log.d("dom test", playersList.get(i).getUsername() + " " + playersList.get(i).getPlayerScore());
+                    if (i + 1 < playersList.size()) {
+                        playersList.get(i + 1).setTurn(true);
+                        adapter.notifyItemChanged(i+1);
+                        break;
+                    } else if (i + 1 == playersList.size()) {
+                        i = 0;
+                        playersList.get(i).setTurn(true);
+                        adapter.notifyItemChanged(i);
+                        break;
+                    }
                 }
             }
         }
     }
-    private void onScoreEntered() {
-            inputScoreEditText.setOnEditorActionListener((v, actionId, event) -> {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    Log.d("dom test", "IME_ACTION_DONE");
-                    playerVisit(inputScoreEditText.getText().toString());
-                    ((EditText) findViewById(R.id.inputUserNameEditText)).getText().clear();
-                    return true;
-                }
-                return false;
-            });
-    }
+
 
     public int subtract(int playerScore, int currentTypedScore) {
         int newScore = playerScore - currentTypedScore;

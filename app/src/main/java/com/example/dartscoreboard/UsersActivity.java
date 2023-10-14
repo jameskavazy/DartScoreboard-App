@@ -18,15 +18,10 @@ public class UsersActivity extends AppCompatActivity implements OnClickListener{
 
     public ArrayList<User> usersList;
     private RecyclerView recyclerView;
-
     private Button addNewUserButton;
-
     private EditText editText;
-
     private recyclerAdapterUsers adapter;
-
     private recyclerAdapterUsers.ClickHandler clickHandler;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +29,7 @@ public class UsersActivity extends AppCompatActivity implements OnClickListener{
         setContentView(R.layout.activity_users);
         setupUI();
     }
+
         private void setAdapter() {
             setOnClickListener();
             adapter = new recyclerAdapterUsers(usersList, clickHandler);
@@ -82,6 +78,4 @@ public class UsersActivity extends AppCompatActivity implements OnClickListener{
         }
         setAdapter();
     }
-
-
 }

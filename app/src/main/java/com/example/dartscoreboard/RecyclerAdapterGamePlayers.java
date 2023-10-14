@@ -3,6 +3,7 @@ package com.example.dartscoreboard;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -29,11 +30,14 @@ public class RecyclerAdapterGamePlayers extends RecyclerView.Adapter<RecyclerAda
         private TextView legsTextView;
         private TextView playerScoreTextView;
 
+        private FrameLayout playerIndicator;
+
         public GameViewHolder (final View view){
             super(view);
             nameText = view.findViewById(R.id.player_name_text_view);
             legsTextView = view.findViewById(R.id.legs_text_view);
             playerScoreTextView = view.findViewById(R.id.player_score_text_view);
+            playerIndicator = view.findViewById(R.id.player_turn_indicator);
         }
 
     }
@@ -49,8 +53,16 @@ public class RecyclerAdapterGamePlayers extends RecyclerView.Adapter<RecyclerAda
     public void onBindViewHolder(@NonNull GameViewHolder holder, int position) {
         String name = usersList.get(position).getUsername();
         int gameScore = usersList.get(position).getPlayerScore();
+        boolean playerTurn = usersList.get(position).isTurn();
         holder.nameText.setText(name);
         holder.playerScoreTextView.setText(String.valueOf(gameScore));
+        if (!playerTurn){
+            holder.playerIndicator.setVisibility(View.INVISIBLE);
+        }
+        if (playerTurn) {
+            holder.playerIndicator.setVisibility(View.VISIBLE);
+        }
+
     }
 
     @Override
