@@ -1,10 +1,14 @@
 package com.example.dartscoreboard;
 
+import java.util.ArrayList;
+
 public class User {
 
     public String username;
 
     public int playerScore;
+
+    public ArrayList<Integer> previousScoreList;
 
     public boolean active;
 
@@ -24,6 +28,20 @@ public class User {
         this.username = username;
     }
 
+    public int getPreviousScore(){
+        if (previousScoreList == null){
+            previousScoreList = new ArrayList<>();
+        }
+        return previousScoreList.get(previousScoreList.size() - 1);
+    }
+
+    public void setPreviousScore(int previousScore){
+        if (previousScoreList == null) {
+            previousScoreList = new ArrayList<>();
+        }
+        previousScoreList.add(previousScore);
+    }
+
     public void setActive(boolean active) {
         this.active = active;
     }
@@ -31,8 +49,6 @@ public class User {
     public boolean getActive() {
         return active;
     }
-
-
 
     public void setPlayerScore(int playerScore){
         this.playerScore = playerScore;

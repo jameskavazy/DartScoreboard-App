@@ -6,5 +6,6 @@
     <string name="seveno">170</string>
     <string name="addPlayer">Add Players</string>
     <string name="select">Select Game Type</string>
+    <string name="undo">Undo</string>
 
 </resources>

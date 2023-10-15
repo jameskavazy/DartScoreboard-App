@@ -24,6 +24,17 @@
             android:textSize="30sp"
             tools:text="501" />
 
+        <Button
+            android:id="@+id/undo_button"
+            android:layout_width="wrap_content"
+            android:layout_height="37dp"
+            android:text="@string/undo"
+            android:textSize="12sp"
+            android:foreground="@color/blue_background"
+            android:textColor="@color/white"
+            android:foregroundGravity="left"
+            />
+
     </FrameLayout>
 
 
