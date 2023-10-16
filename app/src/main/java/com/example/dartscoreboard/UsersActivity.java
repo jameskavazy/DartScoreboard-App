@@ -1,10 +1,17 @@
 package com.example.dartscoreboard;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,7 +21,7 @@ import android.widget.EditText;
 
 import java.util.ArrayList;
 
-public class UsersActivity extends AppCompatActivity implements OnClickListener{
+public class UsersActivity extends AppCompatActivity implements OnClickListener {
 
     public ArrayList<User> usersList;
     private RecyclerView recyclerView;
@@ -22,6 +29,8 @@ public class UsersActivity extends AppCompatActivity implements OnClickListener{
     private EditText editText;
     private recyclerAdapterUsers adapter;
     private recyclerAdapterUsers.ClickHandler clickHandler;
+
+    private int positionInAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,12 +52,23 @@ public class UsersActivity extends AppCompatActivity implements OnClickListener{
        clickHandler = new recyclerAdapterUsers.ClickHandler() {
             @Override
             public void onMyButtonClicked(View view, int position) {
-                usersList.remove(position);
-                adapter.notifyItemRemoved(position);
-                PrefConfig.updateSPUserList(getApplicationContext(), usersList);
+                setPosition(position);
+                onCreateDialogue().show();
             }
         };
     }
+
+    public void setPosition(int position){
+        this.positionInAdapter = position;
+    }
+
+    public int getPositionInAdapter(){
+        return positionInAdapter;
+    }
+
+
+
+
 
     @Override
     public void onClick(View v) {
@@ -78,4 +98,57 @@ public class UsersActivity extends AppCompatActivity implements OnClickListener{
         }
         setAdapter();
     }
+
+    public Dialog onCreateDialogue(){
+        // Use the Builder class for convenient dialog construction.
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Are you sure?")
+                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // Deletes player
+                        usersList.remove(getPositionInAdapter());
+                        adapter.notifyItemRemoved(getPositionInAdapter());
+                        PrefConfig.updateSPUserList(getApplicationContext(), usersList);
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancels the dialog.
+                    }
+                });
+        // Create the AlertDialog object and return it.
+        return builder.create();
+    }
+
+
+
+
+        public static class StartGameDialogFragment extends DialogFragment {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the Builder class for convenient dialog construction.
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage("Are you sure?")
+                    .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // Deletes player
+
+
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User cancels the dialog.
+                        }
+                    });
+            // Create the AlertDialog object and return it.
+            return builder.create();
+        }
+    }
+// ...
+
+    
+
+
+
 }
