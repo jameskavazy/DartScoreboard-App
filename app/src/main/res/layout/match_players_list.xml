@@ -54,7 +54,7 @@
         android:layout_height="15dp"
         android:layout_marginLeft="68dp"
         android:layout_marginTop="24dp"
-        android:foreground="@drawable/shape"
+        android:foreground="@drawable/player_indicator"
         app:layout_constraintLeft_toRightOf="@+id/legs_text_view"
         app:layout_constraintTop_toTopOf="parent" />
 

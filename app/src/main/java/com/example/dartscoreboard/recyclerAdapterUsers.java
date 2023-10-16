@@ -3,6 +3,7 @@ package com.example.dartscoreboard;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -29,9 +30,12 @@ public class recyclerAdapterUsers extends RecyclerView.Adapter<recyclerAdapterUs
         private ClickHandler clickHandler;
         private TextView nameTxt;
 
+        private CheckBox checkBox;
+
         public MyViewHolder(final View view){
             super(view);
             nameTxt = view.findViewById(R.id.name_text1);
+            checkBox = view.findViewById(R.id.checkbox);
             view.setOnClickListener(this);
         }
 
@@ -57,6 +61,7 @@ public class recyclerAdapterUsers extends RecyclerView.Adapter<recyclerAdapterUs
         String name = usersList.get(position).getUsername();
         holder.nameTxt.setText(name);
         holder.clickHandler = this.clickHandler;
+        holder.checkBox.setVisibility(View.INVISIBLE);
 
     }
 

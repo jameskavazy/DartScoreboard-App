@@ -6,4 +6,12 @@
     </style>
 
     <style name="Theme.DartScoreboard" parent="Base.Theme.DartScoreboard" />
+
+
+    <style name="MyCheckBox" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">#FFFFFF</item>   <!-- normal border color change as you wish -->
+        <item name="colorControlActivated">#FFFFFF</item> <!-- activated color change as you wish -->
+        <item name="android:textColor">#0D4A148C</item> <!-- checkbox text color -->
+    </style>
+
 </resources>

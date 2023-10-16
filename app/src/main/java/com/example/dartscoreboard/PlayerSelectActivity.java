@@ -23,8 +23,6 @@ public class PlayerSelectActivity extends AppCompatActivity implements View.OnCl
 
     private RecyclerView recyclerView;
 
-    private Button doneButton;
-
     public final String USER_KEY = "USER_STRING";
 
 
@@ -37,7 +35,6 @@ public class PlayerSelectActivity extends AppCompatActivity implements View.OnCl
 
     private void setAdapter(){
         setOnClickListener();
-
         adapter = new recyclerAdapterPlayersToGame(usersList, listen);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
@@ -46,7 +43,7 @@ public class PlayerSelectActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void setupUI(){
-        doneButton = findViewById(R.id.button_done);
+        Button doneButton = findViewById(R.id.button_done);
         recyclerView = findViewById(R.id.players_to_add);
         doneButton.setOnClickListener(this);
         usersList = PrefConfig.readSPUserList(this);
@@ -54,9 +51,7 @@ public class PlayerSelectActivity extends AppCompatActivity implements View.OnCl
             usersList = new ArrayList<>();
         }
         setAdapter();
-        createUsersForGameList().clear();
-
-
+       // createUsersForGameList().clear();
     }
 
     private void setOnClickListener(){
@@ -66,17 +61,15 @@ public class PlayerSelectActivity extends AppCompatActivity implements View.OnCl
                 int userToAdd = usersList.indexOf(usersList.get(position));
                 String nameToAdd = usersList.get(position).getUsername();
                 Log.d("dom test",nameToAdd);
-               // PrefConfig.saveUsersForGameSP(getApplicationContext(),usersList);
-               //todo send this back to previous activity as an intent? or as a SharedPreference
                 Log.d("dom test", String.valueOf(userToAdd));
-
-
                 User user = usersList.get(position);
                 if (!user.getActive()) {
                     user.setActive(true);
+                    adapter.notifyItemChanged(position);
                 }
                 else if (user.getActive()){
                     user.setActive(false);
+                    adapter.notifyItemChanged(position);
                 }
 
             }
@@ -101,15 +94,12 @@ private void setUsersForGame(){
 
 }
 
-
-
-
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.button_done){
             setUsersForGame();
             Log.d("dom test","onButtonDoneClick");
-            for (int i = 0;i<usersList.size();i++) {
+            for (int i = 0; i<usersList.size(); i++) {
                 Log.d("dom test", i +" " + " " + Boolean.toString(usersList.get(i).getActive()));
             }
             Intent intent = new Intent(this, SelectGameActivity.class);

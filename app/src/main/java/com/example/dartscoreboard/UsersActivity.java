@@ -64,7 +64,7 @@ public class UsersActivity extends AppCompatActivity implements OnClickListener{
         if (!nameToAdd.isEmpty()){
             usersList.add(new User(nameToAdd,false));
             adapter.notifyDataSetChanged();
-        }
+       }
     }
 
     private void setupUI(){

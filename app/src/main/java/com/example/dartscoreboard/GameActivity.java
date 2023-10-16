@@ -4,10 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -21,11 +24,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private ArrayList<User> playersList;
     private RecyclerView recyclerView;
     private EditText inputScoreEditText;
-
-    private User user;
-
     private Button undoButton;
-    ArrayList<Integer> previousScoreList;
+    private boolean gameStateEnd;
     private SelectGameActivity.GameType gameType;
     private int playerStartingScore;
     private RecyclerAdapterGamePlayers adapter;
@@ -51,6 +51,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         setPlayerStartingScores();
         setPlayerTurns();
         setAdapter();
+        gameStateEnd = false;
     }
 
     private SelectGameActivity.GameType getGameType() {
@@ -141,7 +142,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
-    public int subtract(int playerScore, int currentTypedScore) {
+    private int subtract(int playerScore, int currentTypedScore) {
         int newScore = playerScore - currentTypedScore;
         if (( ((playerScore <= 180) && (playerScore >= 171)) || (playerScore == 169) || (playerScore == 168) || (playerScore == 166) || (playerScore == 165) || (playerScore == 163) || (playerScore == 162) || (playerScore == 159)) && (currentTypedScore == playerScore)){
             Toast.makeText(GameActivity.this, "BUST", Toast.LENGTH_SHORT).show();
@@ -161,16 +162,29 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(GameActivity.this, playersList.get(i).getUsername() + " wins!", Toast.LENGTH_LONG).show();
                 }
             }
+            endGame();
             return newScore;
         }
         else Toast.makeText(GameActivity.this, "BUST", Toast.LENGTH_SHORT).show();
         return playerScore;
         }
 
+   private void endGame(){
+       InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+       inputMethodManager.hideSoftInputFromWindow(recyclerView.getApplicationWindowToken(),0);
+       inputScoreEditText.setVisibility(View.INVISIBLE);
+       gameStateEnd = true;
+   }
+
 
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.undo_button){
+
+            if(gameStateEnd){
+                inputScoreEditText.setVisibility(View.VISIBLE);
+            }
+
             int numberOfPlayers = playersList.size();
             for (int i = 0; i < playersList.size(); i++) {
                 if (playersList.get(i).turn && !playersList.get(0).turn) {
