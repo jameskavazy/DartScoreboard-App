@@ -39,11 +39,15 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_new_user_button"
+        android:layout_width="wrap_content"
+
+        android:layout_height="wrap_content"
         android:layout_marginRight="25dp"
         android:layout_marginBottom="35dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:background="@color/white"
         android:clickable="true"
+        android:focusable="true"
+        app:backgroundTint="@color/custom_blue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@android:drawable/ic_input_add" />

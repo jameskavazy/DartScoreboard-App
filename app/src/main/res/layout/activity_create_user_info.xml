@@ -7,8 +7,10 @@
     tools:context=".CreateUserInfo">
 
     <FrameLayout
+        android:background="@color/custom_blue"
         android:id="@+id/frameLayout2"
-        android:layout_width="wrap_content"
+        android:padding="5dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
@@ -16,11 +18,11 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:layout_width="313dp"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:gravity="center"
             android:text="Create New User"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="40sp">
 
         </TextView>
