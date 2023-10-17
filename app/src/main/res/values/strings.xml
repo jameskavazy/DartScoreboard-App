@@ -10,5 +10,6 @@
     <string name="delete_player">Delete</string>
     <string name="cancel">Cancel</string>
     <string name="delete_player_confirm_question">Are you sure you want to delete </string>
+    <string name="enter_score_string">Enter Score: </string>
 
 </resources>

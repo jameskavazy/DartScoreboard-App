@@ -4,5 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="blue_background">#3503fc</color>
     <color name="grey">#C3C1C1</color>
-    <color name="player_indicator">#2ad572</color>
+    <color name="material_blue">#304FFE</color>
+    <color name="custom_blue">#3D53CF</color>
+    <color name="custom_blue_accent">#223D53CF</color>
 </resources>

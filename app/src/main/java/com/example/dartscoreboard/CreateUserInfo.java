@@ -41,8 +41,6 @@ public class CreateUserInfo extends AppCompatActivity implements View.OnClickLis
         if (usersList == null){
             usersList = new ArrayList<>();
         }
-
-
     }
 
     private void onAddNewUserButtonClick(String nameToAdd) {

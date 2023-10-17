@@ -12,7 +12,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/blue_background"
+        android:background="@color/custom_blue"
         android:padding="5dp">
 
         <TextView
@@ -26,14 +26,13 @@
 
         <Button
             android:id="@+id/undo_button"
-            android:layout_width="wrap_content"
-            android:layout_height="37dp"
-            android:text="@string/undo"
-            android:textSize="12sp"
+            android:layout_width="116dp"
+            android:layout_height="wrap_content"
             android:foreground="@color/blue_background"
-            android:textColor="@color/white"
             android:foregroundGravity="left"
-            />
+            android:text="@string/undo"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
 
     </FrameLayout>
 
@@ -52,7 +51,7 @@
             android:text="Player"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="30sp"
+            android:textSize="25sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -65,7 +64,7 @@
             android:text="Legs"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="30sp"
+            android:textSize="25sp"
             app:layout_constraintStart_toEndOf="@id/gameActivityPlayerTitle"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -77,39 +76,49 @@
             android:text="Points"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="30sp"
+            android:textSize="25sp"
             app:layout_constraintStart_toEndOf="@id/gameActivityLegsTitle"
             app:layout_constraintTop_toTopOf="parent" />
 
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/player_info_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"/>
+        android:layout_height="wrap_content">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/player_info_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 
     <LinearLayout
+        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"/>
+        android:layout_height="wrap_content">
 
 
-    <EditText
-        android:id="@+id/inputUserNameEditText"
-        android:layout_width="300dp"
-        android:layout_height="60dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="200dp"
-        android:background="#83B1E6FF"
-        android:imeOptions="actionDone"
-        android:inputType="number"
-        android:textSize="40sp"
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="81dp"
+            android:layout_height="wrap_content"
+            android:text="@string/enter_score_string"
+            android:layout_gravity="center"
+            android:textSize="20sp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"/>
 
-        />
+        <EditText
+            android:id="@+id/inputUserNameEditText"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginEnd="10dp"
+            android:background="@color/custom_blue_accent"
+            android:imeOptions="actionDone"
+            android:inputType="number"
+            android:textSize="40sp"
+            android:theme="@style/Base.Theme.DartScoreboard" />
+    </LinearLayout>
 
 </LinearLayout>
