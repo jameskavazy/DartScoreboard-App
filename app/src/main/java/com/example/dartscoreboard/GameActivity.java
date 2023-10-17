@@ -1,11 +1,14 @@
 package com.example.dartscoreboard;
 
+import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -41,6 +44,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void setupUI() {
+        this.setRequestedOrientation(SCREEN_ORIENTATION_PORTRAIT); //todo delete this eventually
         undoButton = findViewById(R.id.undo_button);
         undoButton.setOnClickListener(this);
         recyclerView = findViewById(R.id.player_info_recycler_view);

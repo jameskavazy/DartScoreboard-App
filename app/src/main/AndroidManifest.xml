@@ -13,6 +13,10 @@
         android:theme="@style/Theme.DartScoreboard"
         tools:targetApi="31">
         <activity
+            android:name=".CreateUserInfo"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan"/>
+        <activity
             android:name=".PlayerSelectActivity"
             android:exported="false" />
         <activity
@@ -30,7 +34,7 @@
         <activity
             android:name=".GameActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".SelectGameActivity"
             android:exported="true" />
