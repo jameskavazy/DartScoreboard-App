@@ -12,6 +12,8 @@ public class User {
 
     public boolean active;
 
+    public int visit;
+
     public boolean turn;
 
     public User(String username, boolean active) {
