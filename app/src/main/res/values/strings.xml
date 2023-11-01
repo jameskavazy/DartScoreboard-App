@@ -14,5 +14,7 @@
     <string name="player_plate">Player</string>
     <string name="legs_plate">Legs</string>
     <string name="score_plate">Score</string>
+    <string name="no_of_sets">Number of Sets</string>
+    <string name="no_of_legs">Number of Legs</string>
 
 </resources>

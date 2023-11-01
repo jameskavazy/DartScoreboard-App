@@ -19,18 +19,38 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="James" />
 
+
     <TextView
         android:id="@+id/legs_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
+        android:textColor="@color/black"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.733"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.6"
+        tools:text="0" />
+
+    <TextView
+        android:id="@+id/sets_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.6"
@@ -52,10 +72,10 @@
         android:id="@+id/player_turn_indicator"
         android:layout_width="15dp"
         android:layout_height="15dp"
-        android:layout_marginLeft="68dp"
+        android:layout_marginLeft="24dp"
         android:layout_marginTop="24dp"
         android:foreground="@drawable/player_indicator"
-        app:layout_constraintLeft_toRightOf="@+id/legs_text_view"
+        app:layout_constraintLeft_toRightOf="@+id/player_name_text_view"
         app:layout_constraintTop_toTopOf="parent" />
 
 

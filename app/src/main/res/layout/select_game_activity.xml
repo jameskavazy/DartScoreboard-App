@@ -65,6 +65,25 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <com.google.android.material.textfield.TextInputLayout
+
+        android:id="@+id/legs_input_layout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:hint="@string/no_of_legs"
+        android:translationY="300dp">
+
+        <AutoCompleteTextView
+            android:id="@+id/legs_drop_down"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none" />
+
+
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/gameStartButton"
@@ -94,6 +113,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginTop="44dp"
         android:text="Randomise Players" />
+
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

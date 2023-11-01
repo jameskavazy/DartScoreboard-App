@@ -2,7 +2,6 @@ package com.example.dartscoreboard;
 
 import static java.lang.String.valueOf;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,31 +10,43 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 public class SelectGameActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static String GAME_TYPE_KEY = "GAME_TYPE";
+    public static String TOTAL_LEGS_KEY = "LEGS";
+    public static String TOTAL_SETS_KEY = "SETS";
+
 
     private Button startGameBtn;
-
     private Button randomisePlayersBtn;
     private Button clearPlayersBtn;
+
+    public int totalLegs;
+
+    public int totalSets;
+
     String[] gameSelectList = {"501","301","170"};
 
+    String[] numberOfLegsList = {"1","2","3","4","5"};
+
+    String[] numberOfSetsList = {"1","2","3","4","5"}; //todo do we need to arrays for sets and legs really?
     ArrayList<User> playersToGame;
+    AutoCompleteTextView gameTypeAutoCompleteTextView;
+    AutoCompleteTextView legsAutoCompleteTextView;
 
-    ArrayList<Integer> playerList = new ArrayList<>();
-
-    AutoCompleteTextView autoCompleteTextView;
+    AutoCompleteTextView setsAutoCompleteTextView;
     AutoCompleteTextView playerListCheckBox;
-    ArrayAdapter<String> adapterItems;
 
+    ArrayAdapter<String> adapterItems; //todo make this local variable for drop down box logics
+
+    ArrayAdapter<String> adapterLegsItems;
+
+    ArrayAdapter<String> adapterSetsItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +65,11 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         startGameBtn.setOnClickListener(this);
         randomisePlayersBtn.setOnClickListener(this);
         clearPlayersBtn.setOnClickListener(this);
-        autoCompleteTextView = findViewById(R.id.gameTypeDropDownBox);
+        gameTypeAutoCompleteTextView = findViewById(R.id.gameTypeDropDownBox);
+        legsAutoCompleteTextView = findViewById(R.id.legs_drop_down);
         setUpGameTypeDropDownMenu();
+        setUpLegsListDropDownMenu();
+        //setUpSetsListDropDownMenu();
         playerListCheckBox.setOnClickListener(this);
         setPlayersTextBox();
     }
@@ -66,7 +80,6 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
             openGameActivity();
         }
         if (v.getId() == R.id.NameDropDownBox){
-           //alertDialogueLaunch();
            openPlayerSelectActivity();
         }
         if (v.getId() == R.id.remove_players_button){
@@ -89,15 +102,15 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
     }
 
     public void openGameActivity(){
-        if (autoCompleteTextView.getText().toString().equals("501")){
+        if (gameTypeAutoCompleteTextView.getText().toString().equals("501")){
             Log.d("dom test","openFiveoGameActivity");
             openFiveoGameActivity();
         }
-        if (autoCompleteTextView.getText().toString().equals("301")){
+        if (gameTypeAutoCompleteTextView.getText().toString().equals("301")){
             Log.d("dom test","openThreeoGameActivity");
             openThreeoGameActivity();
         }
-        if (autoCompleteTextView.getText().toString().equals("170")){
+        if (gameTypeAutoCompleteTextView.getText().toString().equals("170")){
             Log.d("dom test","openSevenoGameActivity");
             openSevenoGameActivity();
         }
@@ -107,47 +120,48 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void openFiveoGameActivity() {
-//        String playersFromTextView = playerListCheckBox.getText().toString();
-//        String[] listOfPlayersFromTextView = playersFromTextView.split(",");
         Log.d("dom test", "openFiveoGameActivity");
         Bundle arguments = new Bundle();
-        arguments.putSerializable("GAME_TYPE", GameType.FiveO);
-//        arguments.putString("PLAYER_NAME",listOfPlayersFromTextView[0]);
-//        arguments.putString("PLAYER_NAME_2",listOfPlayersFromTextView[1]);
+        arguments.putSerializable(GAME_TYPE_KEY, GameType.FiveO);
+        arguments.putInt(TOTAL_LEGS_KEY,getLegs());
         Intent intent = new Intent(this, GameActivity.class);
         intent.putExtras(arguments);
         startActivity(intent);
     }
 
     private void openThreeoGameActivity() {
-//        String playersFromTextView = playerListCheckBox.getText().toString();
-//        String[] listOfPlayersFromTextView = playersFromTextView.split(",");
         Log.d("dom test", "openThreeoGameActivity");
         Bundle arguments = new Bundle();
-        arguments.putSerializable("GAME_TYPE", GameType.ThreeO);
-//        arguments.putString("PLAYER_NAME",listOfPlayersFromTextView[0]);
-//        arguments.putString("PLAYER_NAME_2",listOfPlayersFromTextView[1]);
+        arguments.putSerializable(GAME_TYPE_KEY, GameType.ThreeO);
+        arguments.putInt(TOTAL_LEGS_KEY,getLegs());
         Intent intent = new Intent(this, GameActivity.class);
         intent.putExtras(arguments);
         startActivity(intent);
     }
 
     private void openSevenoGameActivity() {
-        String playersFromTextView = playerListCheckBox.getText().toString();
-        String[] listOfPlayersFromTextView = playersFromTextView.split(",");
         Log.d("dom test", "openSevenoGameActivity");
         Bundle arguments = new Bundle();
-        arguments.putSerializable("GAME_TYPE", GameType.SevenO);
-        arguments.putString("PLAYER_NAME",listOfPlayersFromTextView[0]);
-        arguments.putString("PLAYER_NAME_2",listOfPlayersFromTextView[1]);
+        arguments.putSerializable(GAME_TYPE_KEY, GameType.SevenO);
+        arguments.putInt(TOTAL_LEGS_KEY,getLegs());
         Intent intent = new Intent(this, GameActivity.class);
         intent.putExtras(arguments);
         startActivity(intent);
     }
 
     private void setUpGameTypeDropDownMenu(){
-    adapterItems = new ArrayAdapter<String>(this,R.layout.list_item,gameSelectList);
-    autoCompleteTextView.setAdapter(adapterItems);
+        adapterItems = new ArrayAdapter<String>(this,R.layout.list_item,gameSelectList);
+        gameTypeAutoCompleteTextView.setAdapter(adapterItems);
+    }
+
+    private void setUpLegsListDropDownMenu(){
+        adapterLegsItems = new ArrayAdapter<String>(this,R.layout.list_item,numberOfLegsList);
+        legsAutoCompleteTextView.setAdapter(adapterLegsItems);
+    }
+
+    private void setUpSetsListDropDownMenu(){
+        adapterSetsItems = new ArrayAdapter<String>(this,R.layout.list_item,numberOfSetsList);
+        setsAutoCompleteTextView.setAdapter(adapterSetsItems);
     }
 
     private void setPlayersTextBox(){
@@ -163,6 +177,11 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
             playerListCheckBox.setText(playersToGameString);
             Log.d("dom test",playersToGameString);
         }
+    }
+
+    public int getLegs(){
+        totalLegs = Integer.parseInt(legsAutoCompleteTextView.getText().toString());
+        return totalLegs;
     }
 
 

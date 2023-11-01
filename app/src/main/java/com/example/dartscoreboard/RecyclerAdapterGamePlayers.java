@@ -53,9 +53,11 @@ public class RecyclerAdapterGamePlayers extends RecyclerView.Adapter<RecyclerAda
     public void onBindViewHolder(@NonNull GameViewHolder holder, int position) {
         String name = usersList.get(position).getUsername();
         int gameScore = usersList.get(position).getPlayerScore();
+        int currentLegs = usersList.get(position).getCurrentLegs();
         boolean playerTurn = usersList.get(position).isTurn();
         holder.nameText.setText(name);
         holder.playerScoreTextView.setText(String.valueOf(gameScore));
+        holder.legsTextView.setText(String.valueOf(currentLegs));
         if (!playerTurn){
             holder.playerIndicator.setVisibility(View.INVISIBLE);
         }

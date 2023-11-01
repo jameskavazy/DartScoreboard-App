@@ -18,6 +18,8 @@ public class PrefConfig {
     public static final String userPrefs = "MY_PREFS";
     public static final String PLAYER_FOR_GAME = "player_for_game_prefs";
 
+    public static final String GAME_STATE = "GAME_STATE";
+
     public static void updateSPUserList(Context context, ArrayList<User> usersList){
 
         Gson gson = new Gson();
@@ -57,6 +59,24 @@ public class PrefConfig {
         ArrayList<User> usersList = gson.fromJson(jsonString,type);
         return usersList;
     }
+
+//    public static void saveGameState (Context context, ArrayList<User> usersList){
+//        Gson gson = new Gson();
+//        String jsonString = gson.toJson(usersList);
+//        SharedPreferences sharedpreferences = PreferenceManager.getDefaultSharedPreferences(context);
+//        SharedPreferences.Editor editor = sharedpreferences.edit();
+//        editor.putString(GAME_STATE,jsonString);
+//        editor.apply();
+//    }
+//
+//    public static ArrayList<User> readGameState (Context context){
+//        SharedPreferences sharedPreferences1 = PreferenceManager.getDefaultSharedPreferences(context);
+//        String jsonString = sharedPreferences1.getString(GAME_STATE,"");
+//
+//        Gson gson = new Gson();
+//
+//
+//    }
 
 
 
