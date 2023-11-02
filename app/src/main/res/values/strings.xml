@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">Dart Scoreboard</string>
+    <string name="darts_scoreboard">Darts Scoreboard</string>
+    <string name="fiveo">501</string>
+    <string name="threeo">301</string>
+    <string name="seveno">170</string>
+    <string name="addPlayer">Add Players</string>
+    <string name="select">Select Game Type</string>
+    <string name="undo">Undo</string>
+    <string name="delete_player">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete_player_confirm_question">Are you sure you want to delete </string>
+    <string name="enter_score_string">Enter Score: </string>
+    <string name="player_plate">Player</string>
+    <string name="legs_plate">Legs</string>
+    <string name="score_plate">Score</string>
+    <string name="no_of_sets">Number of Sets</string>
+    <string name="no_of_legs">Number of Legs</string>
+
 </resources>
