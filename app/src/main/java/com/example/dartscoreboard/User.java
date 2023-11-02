@@ -8,6 +8,13 @@ public class User {
 
     public int playerScore;
     public ArrayList<Integer> previousScoreList;
+
+    public ArrayList<Integer> previousLegsList;
+
+    public ArrayList<Integer> previousSetsList;
+
+    //public GameState gameState;
+
     public boolean active;
     public boolean turn;
     public int currentLegs;
@@ -42,6 +49,41 @@ public class User {
         }
         previousScoreList.add(previousScore);
     }
+
+
+    public int getPreviousLegs(){
+        if (previousLegsList == null){
+            previousLegsList = new ArrayList<>();
+        }
+        int previousLegs = previousLegsList.get(previousLegsList.size() - 1);
+        previousLegsList.remove(previousLegsList.size() - 1);
+        return previousLegs;
+    }
+
+    public void setPreviousLegs(int previousScore){
+        if (previousLegsList == null) {
+            previousLegsList = new ArrayList<>();
+        }
+        previousLegsList.add(previousScore);
+    }
+
+    public int getPreviousSets(){
+        if (previousSetsList == null){
+            previousSetsList = new ArrayList<>();
+        }
+        int previousSets = previousSetsList.get(previousSetsList.size() - 1);
+        previousSetsList.remove(previousSetsList.size() - 1);
+        return previousSets;
+    }
+
+    public void setPreviousSets(int previousSets){
+        if (previousSetsList == null) {
+            previousSetsList = new ArrayList<>();
+        }
+        previousSetsList.add(previousSets);
+    }
+
+
 
     public int getVisits(){
         //If previous scores list is empty then return 1 to avoid divide by zero
@@ -97,4 +139,10 @@ public class User {
         return thrown/getVisits();
     }
 
+    public void setPlayerLegs(int currentLegs) {
+        this.currentLegs = currentLegs;
+    }
+    public void setPlayerSets (int currentSets){
+        this.currentSets = currentSets;
+    }
 }

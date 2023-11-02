@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.GameState;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,8 +20,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -29,6 +33,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private RecyclerView recyclerView;
     private EditText inputScoreEditText;
 
+    private ArrayDeque<GameState> gameStateArrayDeque;
     private TextView averageScoreTextView;
     private Button undoButton;
     private boolean gameStateEnd;
@@ -37,8 +42,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private int totalLegs;
 
-    private int totalSets = 2;
+    //private int totalSets = 2;
     private RecyclerAdapterGamePlayers adapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,22 +75,48 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private void newGameStart(){
         setPlayerStartingScores();
         setPlayerTurns();
-        setPlayerLegs();
-        setPlayerSets();
-        setTotalLegs();
+//        setPlayerLegs();
+//        setPlayerSets();
+//        setTotalLegs();
         //setTotalSets();
         gameStateEnd = false;
     }
     
-    private void nextLeg(){
-        for (User user : playersList){
-            if (user.getPlayerScore() == 0) {
-                //user.currentLegs++;
+//    private void nextLeg(){
+//        for (User player : playersList){
+//            if (player.getPlayerScore() == 0) {
+//                player.currentLegs++;
+//                nextSet();
+//                matchWonChecker();
+//                if (!gameStateEnd) {
+//                    setPlayerStartingScores();
+//                }
+//                adapter.notifyDataSetChanged();
+//            }
+//        }
+//    }
+//
+//    private void nextSet(){
+//        for (User player:playersList
+//             ) {
+//            if (player.getPlayerScore() == 0 && player.getCurrentLegs() == totalLegs) {
+//                player.currentSets++;
+//                setPlayerLegs();
+//                adapter.notifyDataSetChanged();
+//            }
+//        }
+//    }
+//    private void matchWonChecker(){
+//        for (User player : playersList
+//             ) {
+//            if (player.getPlayerScore() == 0 && player.currentSets == totalSets){
+//                adapter.notifyDataSetChanged();
+//                Toast.makeText(GameActivity.this, player.getUsername() + " wins the match!", Toast.LENGTH_LONG).show();
+//                endGame();
+//            }
+//        }
+//    }
 
-                //todo make this cycle through legs.
-            }
-        }
-    }
     
 
     private void setPlayerStartingScores() {
@@ -106,46 +138,47 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     public void playerVisit(String scoreString) {
         int scoreInt = Integer.parseInt(scoreString);
         if (scoreInt <= 180) { // checks for valid score input
-            for (int i = 0; i < playersList.size(); i++) {
-                
-                int currentScore = playersList.get(i).getPlayerScore();
 
-                if (playersList.get(i).isTurn()) {
-                    //save current score to list
-                    playersList.get(i).setPreviousScore(currentScore);
-
-                    //Calculate the new score
-                    playersList.get(i).setPlayerScore(subtract(currentScore, scoreInt));
-
-                    Log.d("dom test", playersList.get(i).getUsername() + " Average Score: " + playersList.get(i).getAvg(playerStartingScore));
-
-                    Log.d("dom test", "Previous Visit List: " + Arrays.toString(playersList.get(i).previousScoreList.toArray()));
+            for (User player : playersList){
+                int currentScore = player.getPlayerScore();
+                int currentLegs = player.getCurrentLegs();
+                int currentSets = player.getCurrentSets();
 
 
-                    //change player turn to false
-                    playersList.get(i).setTurn(false);
+                if (player.isTurn()){
+                    //save current score, legs and sets to lists
+                    player.setPreviousScore(currentScore);
+//                    player.setPreviousLegs(currentLegs);
+//                    player.setPreviousSets(currentSets);
 
-                    adapter.notifyItemChanged(i);
+                    //Calculate new score
+                    player.setPlayerScore(subtract(currentScore,scoreInt));
 
-                    Log.d("dom test", playersList.get(i).getUsername() + " " + scoreString);
-                    Log.d("dom test", playersList.get(i).getUsername() + " " + playersList.get(i).getPlayerScore());
+                    Log.d("dom test", player.getUsername() + " Average Score: " + player.getAvg(playerStartingScore));
+
+                    Log.d("dom test", "Previous Visit List: " + Arrays.toString(player.previousScoreList.toArray()));
+
+                    player.setTurn(false);
+                    adapter.notifyItemChanged(playersList.indexOf(player));
+
+                    Log.d("dom test", player.getUsername() + " " + scoreString);
+                    Log.d("dom test", player.getUsername() + " " + player.getPlayerScore());
 
                     //If player is not last in the list, set next player turn to true & exit loop
-                    if (i + 1 < playersList.size()) {
-                        playersList.get(i + 1).setTurn(true);
-                        adapter.notifyItemChanged(i + 1);
+                    if (player != playersList.get(playersList.size() - 1)) {
+                        playersList.get(playersList.indexOf(player) + 1).setTurn(true);
+                        adapter.notifyItemChanged(playersList.indexOf(player) + 1);
                         break;
-
-                    // If player is the last in the list, set player zero turn to true & exit loop
-                    } else if (i + 1 == playersList.size()) {
-                        i = 0;
-                        playersList.get(i).setTurn(true);
-                        adapter.notifyItemChanged(i);
-                        break;
-
                     }
+                    else if (player == playersList.get(playersList.size() - 1)) {
+                        playersList.get(0).setTurn(true);
+                        adapter.notifyItemChanged(0);
+                        break;
+                    }
+
                 }
-            } nextLeg();
+
+            }
         }
     }
 
@@ -164,14 +197,15 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             return newScore;
         }
         if (newScore == 0) {
-            for (int i = 0; i < playersList.size(); i++) {
-                if (playersList.get(i).turn) {
-                    Toast.makeText(GameActivity.this, playersList.get(i).getUsername() + " wins!", Toast.LENGTH_LONG).show();
+            for (User player: playersList
+                 ) {
+                if (player.turn) {
+                    Toast.makeText(GameActivity.this, player.getUsername() + " wins the match!", Toast.LENGTH_LONG).show();
                     endGame();
+                    return newScore;
                 }
             }
 
-            return newScore;
         } else Toast.makeText(GameActivity.this, "BUST", Toast.LENGTH_SHORT).show();
         return playerScore;
     }
@@ -212,13 +246,13 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void setPlayerLegs(){
-        for (int i = 1; i < playersList.size(); i++) {
+        for (int i = 0; i < playersList.size(); i++) {
             playersList.get(i).setCurrentLegs(0);
         }
     }
 
     private void setPlayerSets(){
-        for (int i = 1; i < playersList.size(); i++) {
+        for (int i = 0; i < playersList.size(); i++) {
             playersList.get(i).setCurrentSets(0);
         }
     }
@@ -238,6 +272,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     return true;
                 } catch (Exception e) {
                     playerVisit(String.valueOf(0));
+                    setAverageScoreTextView();
                     return true;
                 }
             }
@@ -267,32 +302,54 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             inputScoreEditText.setVisibility(View.VISIBLE);
         }
 
+        for (User player : playersList){
 
-        for (int i = 0; i < playersList.size(); i++) {
+            User firstPlayer = playersList.get(0);
+            User lastPlayer = playersList.get(playersList.size() - 1);
+
 
             //Logic for all players apart from first player
-            if (playersList.get(i).turn && !playersList.get(0).turn) {
-                playersList.get(i - 1).setPlayerScore(playersList.get(i - 1).getPreviousScore());
-                playersList.get(i).setTurn(false);
+            if (player.turn && player != firstPlayer) {
+                User previousPlayer = playersList.get(playersList.indexOf(player) - 1);
 
-                if (i != playersList.size() - 1) {
-                    playersList.get(i + 1).setTurn(false);
+                //Get previous user and undo by resetting to their previous score, legs and sets
+                previousPlayer.setPlayerScore(previousPlayer.getPreviousScore());
+//                previousPlayer.setPlayerLegs(previousPlayer.getPreviousLegs());
+//                previousPlayer.setPlayerSets(previousPlayer.getPreviousSets());
+//
+//                player.setPlayerLegs(player.getPreviousLegs());
+//                player.setPlayerSets(player.getPreviousSets());
+
+                //Set current player turn to false
+                player.setTurn(false);
+
+                if (player != lastPlayer){
+                    User nextPlayer = playersList.get(playersList.indexOf(player) + 1);
+                    nextPlayer.setTurn(false);
                 }
-                if (i == playersList.size() - 1) {
-                    playersList.get(0).setTurn(false);
+                if (player == lastPlayer){
+                    firstPlayer.setTurn(false);
                 }
-                playersList.get(i - 1).setTurn(true);
-                adapter.notifyDataSetChanged();
+                //set previous player turn to true
+                previousPlayer.setTurn(true);
+                adapter.notifyItemChanged(playersList.indexOf(previousPlayer));
+                adapter.notifyItemChanged(playersList.indexOf(player));
                 break;
             }
-            //Logic for player zero, checks first that it's not player 0's first go by seeing if last player has played yet.
-            if (playersList.get(0).turn && (playersList.get(playersList.size() - 1).previousScoreList != null)) {
-                playersList.get(playersList.size() - 1).setPlayerScore(playersList.get(playersList.size() - 1).getPreviousScore());
-                playersList.get(0).setTurn(false);
-                playersList.get(playersList.size() - 1).setTurn(true);
-                adapter.notifyDataSetChanged();
+
+
+            //Logic for first player
+            if (player == firstPlayer && firstPlayer.turn && !lastPlayer.previousScoreList.isEmpty()){
+                lastPlayer.setPlayerScore(lastPlayer.getPreviousScore());
+//                lastPlayer.setPreviousLegs(lastPlayer.getPreviousLegs());
+//                lastPlayer.setPreviousSets(lastPlayer.getPreviousSets());
+                firstPlayer.setTurn(false);
+                lastPlayer.setTurn(true);
+                adapter.notifyItemChanged(playersList.indexOf(firstPlayer));
+                adapter.notifyItemChanged(playersList.indexOf(lastPlayer));
                 break;
             }
         }
+
     }
 }

@@ -27,7 +27,10 @@ public class RecyclerAdapterGamePlayers extends RecyclerView.Adapter<RecyclerAda
     public class GameViewHolder extends RecyclerView.ViewHolder {
 
         private TextView nameText;
+
+        private TextView setsTextView;
         private TextView legsTextView;
+
         private TextView playerScoreTextView;
 
         private FrameLayout playerIndicator;
@@ -36,6 +39,7 @@ public class RecyclerAdapterGamePlayers extends RecyclerView.Adapter<RecyclerAda
             super(view);
             nameText = view.findViewById(R.id.player_name_text_view);
             legsTextView = view.findViewById(R.id.legs_text_view);
+            setsTextView = view.findViewById(R.id.sets_text_view);
             playerScoreTextView = view.findViewById(R.id.player_score_text_view);
             playerIndicator = view.findViewById(R.id.player_turn_indicator);
         }
@@ -54,10 +58,13 @@ public class RecyclerAdapterGamePlayers extends RecyclerView.Adapter<RecyclerAda
         String name = usersList.get(position).getUsername();
         int gameScore = usersList.get(position).getPlayerScore();
         int currentLegs = usersList.get(position).getCurrentLegs();
+        int currentSets = usersList.get(position).getCurrentSets();
         boolean playerTurn = usersList.get(position).isTurn();
         holder.nameText.setText(name);
         holder.playerScoreTextView.setText(String.valueOf(gameScore));
         holder.legsTextView.setText(String.valueOf(currentLegs));
+        holder.setsTextView.setText(String.valueOf(currentSets));
+
         if (!playerTurn){
             holder.playerIndicator.setVisibility(View.INVISIBLE);
         }
