@@ -1,6 +1,7 @@
 package com.example.dartscoreboard;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class User {
 
@@ -12,6 +13,8 @@ public class User {
     public ArrayList<Integer> previousLegsList;
 
     public ArrayList<Integer> previousSetsList;
+
+    public ArrayList<Integer> scoresList;
 
     //public GameState gameState;
 
@@ -32,6 +35,21 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public ArrayList<Integer> getScoresList(){
+        if (scoresList == null){
+            scoresList = new ArrayList<>();
+        }
+        return scoresList;
+    }
+
+    public void setScoresList(int score){
+        if (scoresList == null){
+            scoresList = new ArrayList<>();
+        }
+        scoresList.add(score);
+
     }
 
     public int getPreviousScore(){
@@ -87,10 +105,10 @@ public class User {
 
     public int getVisits(){
         //If previous scores list is empty then return 1 to avoid divide by zero
-        if (previousScoreList == null){
+        if (scoresList == null){
             return 1;
         }
-        else return previousScoreList.size();
+        else return scoresList.size();
     }
 
     public void setActive(boolean active) {
@@ -134,9 +152,17 @@ public class User {
         return turn;
     }
 
-    public double getAvg(int startingScore){
-        double thrown = startingScore - getPlayerScore();
-        return thrown/getVisits();
+    public double getAvg() {
+        double totalScores = 0;
+        for (int i = 0; i < getScoresList().size(); i++) {
+            if (!scoresList.isEmpty()) {
+                //todo this doesn't calcualte the average
+                totalScores += getScoresList().get(i);
+            } else {
+                return 0;
+            }
+        }
+        return totalScores / getVisits();
     }
 
     public void setPlayerLegs(int currentLegs) {
