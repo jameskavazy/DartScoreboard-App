@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.GameState;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,6 +23,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Stack;
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -32,7 +32,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private RecyclerView recyclerView;
     private EditText inputScoreEditText;
 
-    //private SaveGameState saveGameState;
+    private SaveGameState saveGameState;
+
+    private Stack<SaveGameState> gameStateStack;
 
     private ArrayDeque<SaveGameState> gameStateArrayDeque;
     private TextView averageScoreTextView;
@@ -46,8 +48,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     //private int totalSets = 2;
     private RecyclerAdapterGamePlayers adapter;
 
-    private HashMap<User, Integer> currentScoresMap;
-    private HashMap<User, Boolean> turnsMap;
+    //private HashMap<User, Integer> currentScoresMap;
+    //private HashMap<User, Boolean> turnsMap;
     private HashMap<User, ArrayList<Integer>> previousScoresListMap;
 
     @Override
@@ -77,17 +79,41 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
     
     private void newGameStart(){
+        gameStateStack = new Stack<>();
         gameStateArrayDeque = new ArrayDeque<>();
-        currentScoresMap = new HashMap<>();
-        turnsMap = new HashMap<>();
+        //currentScoresMap = new HashMap<>();
+        //turnsMap = new HashMap<>();
         previousScoresListMap = new HashMap<>();
         setPlayerStartingScores();
         setPlayerTurns();
+        setSaveGameState();
 //        setPlayerLegs();
 //        setPlayerSets();
 //        setTotalLegs();
         //setTotalSets();
         gameStateEnd = false;
+    }
+
+    private void setSaveGameState(){
+        saveGameState = new SaveGameState(null,null);
+        saveGameState.currentScoresMap = new HashMap<>();
+        saveGameState.turnsMap = new HashMap<>();
+
+        for (User player:
+                playersList
+             ) {
+            saveGameState.currentScoresMap.put(player,player.playerScore);
+            saveGameState.turnsMap.put(player,player.turn);
+            Log.d("dom test", player.username + "  :  " + String.valueOf(player.isTurn()));
+//            if (!player.getScoresList().isEmpty()) {
+//                previousScoresListMap.put(player, player.getScoresList());
+//            }
+
+
+        }
+        gameStateArrayDeque.addFirst(new SaveGameState(saveGameState.currentScoresMap,saveGameState.turnsMap)); //,previousScoresListMap
+        Log.d("dom test","GameState Pushed = " + gameStateArrayDeque);
+
     }
     
 //    private void nextLeg(){
@@ -146,27 +172,28 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
 
     public void playerVisit(String scoreString) {
+        //Loop through an save everyone's current position
+        setSaveGameState();
+
         int scoreInt = Integer.parseInt(scoreString);
         if (scoreInt <= 180) { // checks for valid score input
 
             for (User player : playersList){
                 int currentScore = player.getPlayerScore();
+
+
                 //int currentLegs = player.getCurrentLegs();
                 //int currentSets = player.getCurrentSets();
 
 
-                //Adds all
-                currentScoresMap.put(player,player.playerScore);
-                turnsMap.put(player,player.turn);
-                if (!player.getScoresList().isEmpty()) {
-                    previousScoresListMap.put(player, player.getScoresList());
-                }
-                gameStateArrayDeque.addFirst(new SaveGameState(currentScoresMap,turnsMap,previousScoresListMap));
-
                 //For current player - do calculation
                 if (player.isTurn()){
-                    //save scores to list
+                    //save all players scores to list
                     player.setScoresList(scoreInt);
+
+                    Log.d("dom test","Previous Scores List: " + Arrays.toString(player.getScoresList().toArray()));
+
+
 
 
 //                    player.setPreviousLegs(currentLegs);
@@ -177,22 +204,26 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
                     Log.d("dom test", player.getUsername() + " Average Score: " + player.getAvg());
 
-                    Log.d("dom test", "Previous Scores List: " + Arrays.toString(player.getScoresList().toArray()));
+                   //Log.d("dom test", "Previous Scores List: " + Arrays.toString(player.getScoresList().toArray()));
 
                     player.setTurn(false);
+                    Log.d("dom test", player.username + "  isTurn is now :  " + String.valueOf(player.isTurn()));
                     adapter.notifyItemChanged(playersList.indexOf(player));
 
                     Log.d("dom test", player.getUsername() + " " + scoreString);
                     Log.d("dom test", player.getUsername() + " " + player.getPlayerScore());
 
                     //If player is not last in the list, set next player turn to true & exit loop
-                    if (player != playersList.get(playersList.size() - 1)) {
+                    User firstPlayer = playersList.get(0);
+                    User lastPlayer = playersList.get(playersList.size() - 1);
+
+                    if (player != lastPlayer) {
                         playersList.get(playersList.indexOf(player) + 1).setTurn(true);
                         adapter.notifyItemChanged(playersList.indexOf(player) + 1);
                         break;
                     }
-                    else if (player == playersList.get(playersList.size() - 1)) {
-                        playersList.get(0).setTurn(true);
+                    else if (player == lastPlayer) {
+                        firstPlayer.setTurn(true);
                         adapter.notifyItemChanged(0);
                         break;
                     }
@@ -200,7 +231,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 }
 
             }
+
+           // Log.d("dom test", "OnPlayerVisit Stack = " + String.valueOf(gameStateStack));
         }
+
     }
 
     public int subtract(int playerScore, int currentTypedScore) {
@@ -312,15 +346,46 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.undo_button) {
-            undo();
             Log.d("dom test", "Undo Click");
+            undo();
         }
     }
 
+
+
     private void undo() {
 
-        gameStateArrayDeque.pollFirst();
+        SaveGameState previousGameState = gameStateArrayDeque.pollFirst();
+        //Log.d("dom test","onPollFirst  : " + String.valueOf(gameStateArrayDeque.pollFirst()));
+        if (!gameStateArrayDeque.isEmpty()){
+            Log.d("dom test","previousGameState polled = " + String.valueOf(previousGameState));
+            previousGameState.loadPreviousGameState(playersList);
+
+            for (User player :
+                    playersList) {
+                    Log.d("dom test", player.username + " " + String.valueOf(previousGameState.getTurnsMap(player)));
+            }
+
+        }
+        else Log.d("dom test","Deque Is Empty");
+
+
+//        for (User player : playersList) {
+//            assert previousGameState != null;
+//            previousGameState.loadPreviousGameState(previousGameState);
+//            Log.d("dom test","onPollFirst  : " + String.valueOf(gameStateArrayDeque.pollFirst()));
+//        }
+        //todo this don't work
         adapter.notifyDataSetChanged();
+
+
+
+//            SaveGameState previousGameState = gameStateArrayDeque.pollFirst(); //todo if gamestateArrayDeque is empty it's returning null
+//            previousGameState.loadPreviousGameState(player);
+
+
+
+
 
 
 //        //Brings back text input if game was finished.

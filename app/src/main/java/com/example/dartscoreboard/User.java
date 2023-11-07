@@ -52,6 +52,10 @@ public class User {
 
     }
 
+    public void revertScoresList(ArrayList<Integer> pastScoresList){
+        this.scoresList = pastScoresList;
+    }
+
     public int getPreviousScore(){
         if (previousScoreList == null){
             previousScoreList = new ArrayList<>();
