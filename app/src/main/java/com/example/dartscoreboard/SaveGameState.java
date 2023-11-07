@@ -13,10 +13,10 @@ public class SaveGameState {
 
     private ArrayList<User> playersList;
 
-    public SaveGameState(HashMap<User, Integer> currentScoresMap,  HashMap<User, Boolean> turnsMap){ //HashMap<User, ArrayList<Integer>> previousScoresMap
+    public SaveGameState(HashMap<User, Integer> currentScoresMap,  HashMap<User, Boolean> turnsMap, HashMap<User,ArrayList<Integer>> previousScoresMap){
         this.currentScoresMap = currentScoresMap;
         this.turnsMap = turnsMap;
-       //this.previousScoresMap = previousScoresMap;
+        this.previousScoresMap = previousScoresMap;
     }
 
 
@@ -32,7 +32,7 @@ public class SaveGameState {
              ) {
             player.setPlayerScore(getCurrentScoresMap(player));
             player.setTurn(getTurnsMap(player));
-            //player.revertScoresList(saveGameState.getScoresMap(player));
+            player.revertScoresList(getScoresMap(player));
         }
     }
 

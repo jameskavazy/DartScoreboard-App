@@ -33,9 +33,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private EditText inputScoreEditText;
 
     private SaveGameState saveGameState;
-
-    private Stack<SaveGameState> gameStateStack;
-
     private ArrayDeque<SaveGameState> gameStateArrayDeque;
     private TextView averageScoreTextView;
     private Button undoButton;
@@ -47,10 +44,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     //private int totalSets = 2;
     private RecyclerAdapterGamePlayers adapter;
-
-    //private HashMap<User, Integer> currentScoresMap;
-    //private HashMap<User, Boolean> turnsMap;
-    private HashMap<User, ArrayList<Integer>> previousScoresListMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,16 +67,16 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         playersList = PrefConfig.readUsersForGameSP(this);
         gameTitle.setText(getGameType().name);
         averageScoreTextView.setText(String.valueOf(0.0));
+        saveGameState = new SaveGameState(null,null,null);
         newGameStart();
         setAdapter();
     }
     
     private void newGameStart(){
-        gameStateStack = new Stack<>();
         gameStateArrayDeque = new ArrayDeque<>();
-        //currentScoresMap = new HashMap<>();
-        //turnsMap = new HashMap<>();
-        previousScoresListMap = new HashMap<>();
+        saveGameState.currentScoresMap = new HashMap<>();
+        saveGameState.turnsMap = new HashMap<>();
+        saveGameState.previousScoresMap = new HashMap<>();
         setPlayerStartingScores();
         setPlayerTurns();
         setSaveGameState();
@@ -95,23 +88,20 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void setSaveGameState(){
-        saveGameState = new SaveGameState(null,null);
-        saveGameState.currentScoresMap = new HashMap<>();
-        saveGameState.turnsMap = new HashMap<>();
 
         for (User player:
                 playersList
              ) {
             saveGameState.currentScoresMap.put(player,player.playerScore);
             saveGameState.turnsMap.put(player,player.turn);
-            Log.d("dom test", player.username + "  :  " + String.valueOf(player.isTurn()));
-//            if (!player.getScoresList().isEmpty()) {
-//                previousScoresListMap.put(player, player.getScoresList());
-//            }
+            //if (!player.getScoresList().isEmpty()) {
+            saveGameState.previousScoresMap.put(player, player.scoresList);
+            //}
+            //else saveGameState.previousScoresMap.put(player,null);
 
 
         }
-        gameStateArrayDeque.addFirst(new SaveGameState(saveGameState.currentScoresMap,saveGameState.turnsMap)); //,previousScoresListMap
+        gameStateArrayDeque.addFirst(new SaveGameState(saveGameState.currentScoresMap,saveGameState.turnsMap,saveGameState.previousScoresMap));
         Log.d("dom test","GameState Pushed = " + gameStateArrayDeque);
 
     }
@@ -161,9 +151,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void setAverageScoreTextView() {
-        for (User user : playersList){
-            if (user.turn){
-                double avg = user.getAvg();
+        for (User player : playersList){
+            if (player.turn){
+                double avg = player.getAvg();
                 averageScoreTextView.setText(String.valueOf(avg));
             }
         }
@@ -172,10 +162,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
 
     public void playerVisit(String scoreString) {
-        //Loop through an save everyone's current position
+
+        //Loop through and save everyone's current game state
         setSaveGameState();
 
         int scoreInt = Integer.parseInt(scoreString);
+
         if (scoreInt <= 180) { // checks for valid score input
 
             for (User player : playersList){
@@ -192,9 +184,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     player.setScoresList(scoreInt);
 
                     Log.d("dom test","Previous Scores List: " + Arrays.toString(player.getScoresList().toArray()));
-
-
-
 
 //                    player.setPreviousLegs(currentLegs);
 //                    player.setPreviousSets(currentSets);
@@ -231,8 +220,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 }
 
             }
-
-           // Log.d("dom test", "OnPlayerVisit Stack = " + String.valueOf(gameStateStack));
         }
 
     }
@@ -359,24 +346,13 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         //Log.d("dom test","onPollFirst  : " + String.valueOf(gameStateArrayDeque.pollFirst()));
         if (!gameStateArrayDeque.isEmpty()){
             Log.d("dom test","previousGameState polled = " + String.valueOf(previousGameState));
+            //assert previousGameState != null;
             previousGameState.loadPreviousGameState(playersList);
-
-            for (User player :
-                    playersList) {
-                    Log.d("dom test", player.username + " " + String.valueOf(previousGameState.getTurnsMap(player)));
-            }
-
         }
         else Log.d("dom test","Deque Is Empty");
-
-
-//        for (User player : playersList) {
-//            assert previousGameState != null;
-//            previousGameState.loadPreviousGameState(previousGameState);
-//            Log.d("dom test","onPollFirst  : " + String.valueOf(gameStateArrayDeque.pollFirst()));
-//        }
-        //todo this don't work
         adapter.notifyDataSetChanged();
+        setAverageScoreTextView();
+
 
 
 
