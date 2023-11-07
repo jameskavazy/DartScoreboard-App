@@ -16,6 +16,7 @@ public class User {
 
     public ArrayList<Integer> scoresList;
 
+    //public GameState gameState;
 
     public boolean active;
     public boolean turn;
