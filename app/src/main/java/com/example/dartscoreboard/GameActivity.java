@@ -337,12 +337,14 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void undo() {
-
         SaveGameState previousGameState = gameStateArrayDeque.pollFirst();
         if (!gameStateArrayDeque.isEmpty()){
             previousGameState.loadPreviousGameState(playersList);
         }
-        else Log.d("dom test","Deque Is Empty");
+        else {
+            Log.d("dom test","Deque Is Empty");
+            setSaveGameState();
+        }
         adapter.notifyDataSetChanged();
 
 //gotta do something
