@@ -23,7 +23,6 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Stack;
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -31,11 +30,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private ArrayList<User> playersList;
     private RecyclerView recyclerView;
     private EditText inputScoreEditText;
-
     private SaveGameState saveGameState;
-
-    private Stack<SaveGameState> gameStateStack;
-
     private ArrayDeque<SaveGameState> gameStateArrayDeque;
     private TextView averageScoreTextView;
     private Button undoButton;
@@ -47,10 +42,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     //private int totalSets = 2;
     private RecyclerAdapterGamePlayers adapter;
-
-    //private HashMap<User, Integer> currentScoresMap;
-    //private HashMap<User, Boolean> turnsMap;
-    private HashMap<User, ArrayList<Integer>> previousScoresListMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,11 +70,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
     
     private void newGameStart(){
-        gameStateStack = new Stack<>();
+        saveGameState = new SaveGameState(null,null,null);
         gameStateArrayDeque = new ArrayDeque<>();
-        //currentScoresMap = new HashMap<>();
-        //turnsMap = new HashMap<>();
-        previousScoresListMap = new HashMap<>();
         setPlayerStartingScores();
         setPlayerTurns();
         setSaveGameState();
@@ -95,24 +83,19 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void setSaveGameState(){
-        saveGameState = new SaveGameState(null,null);
         saveGameState.currentScoresMap = new HashMap<>();
         saveGameState.turnsMap = new HashMap<>();
-
+        saveGameState.previousScoresListMap = new HashMap<>();
         for (User player:
                 playersList
              ) {
             saveGameState.currentScoresMap.put(player,player.playerScore);
             saveGameState.turnsMap.put(player,player.turn);
             Log.d("dom test", player.username + "  :  " + String.valueOf(player.isTurn()));
-//            if (!player.getScoresList().isEmpty()) {
-//                previousScoresListMap.put(player, player.getScoresList());
-//            }
-
-
+            saveGameState.previousScoresListMap.put(player, player.getPreviousScoresList());
         }
-        gameStateArrayDeque.addFirst(new SaveGameState(saveGameState.currentScoresMap,saveGameState.turnsMap)); //,previousScoresListMap
-        Log.d("dom test","GameState Pushed = " + gameStateArrayDeque);
+        gameStateArrayDeque.addFirst(new SaveGameState(saveGameState.currentScoresMap,saveGameState.turnsMap,saveGameState.previousScoresListMap));
+
 
     }
     
@@ -189,9 +172,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 //For current player - do calculation
                 if (player.isTurn()){
                     //save all players scores to list
-                    player.setScoresList(scoreInt);
+                    player.addToPreviousScoresList(scoreInt);
 
-                    Log.d("dom test","Previous Scores List: " + Arrays.toString(player.getScoresList().toArray()));
+                    Log.d("dom test","Previous Scores List: " + Arrays.toString(player.getPreviousScoresList().toArray()));
 
 
 
@@ -356,36 +339,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private void undo() {
 
         SaveGameState previousGameState = gameStateArrayDeque.pollFirst();
-        //Log.d("dom test","onPollFirst  : " + String.valueOf(gameStateArrayDeque.pollFirst()));
         if (!gameStateArrayDeque.isEmpty()){
-            Log.d("dom test","previousGameState polled = " + String.valueOf(previousGameState));
             previousGameState.loadPreviousGameState(playersList);
-
-            for (User player :
-                    playersList) {
-                    Log.d("dom test", player.username + " " + String.valueOf(previousGameState.getTurnsMap(player)));
-            }
-
         }
         else Log.d("dom test","Deque Is Empty");
-
-
-//        for (User player : playersList) {
-//            assert previousGameState != null;
-//            previousGameState.loadPreviousGameState(previousGameState);
-//            Log.d("dom test","onPollFirst  : " + String.valueOf(gameStateArrayDeque.pollFirst()));
-//        }
-        //todo this don't work
         adapter.notifyDataSetChanged();
-
-
-
-//            SaveGameState previousGameState = gameStateArrayDeque.pollFirst(); //todo if gamestateArrayDeque is empty it's returning null
-//            previousGameState.loadPreviousGameState(player);
-
-
-
-
 
 
 //        //Brings back text input if game was finished.
