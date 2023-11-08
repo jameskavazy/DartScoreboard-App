@@ -1,23 +1,22 @@
 package com.example.dartscoreboard;
 
-import android.util.Log;
-
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 
 public class User {
 
     public String username;
 
     public int playerScore;
-
+    public ArrayList<Integer> previousScoreList;
 
     public ArrayList<Integer> previousLegsList;
 
     public ArrayList<Integer> previousSetsList;
 
-    public ArrayList<Integer> previousScoresList;
+    public ArrayList<Integer> scoresList;
 
+    //public GameState gameState;
 
     public boolean active;
     public boolean turn;
@@ -38,31 +37,40 @@ public class User {
         this.username = username;
     }
 
-    public ArrayList<Integer> getPreviousScoresList(){
-        if (previousScoresList == null){
-            previousScoresList = new ArrayList<>();
+    public ArrayList<Integer> getScoresList(){
+        if (scoresList == null){
+            scoresList = new ArrayList<>();
         }
-        return previousScoresList;
+        return scoresList;
     }
 
-    public void addToPreviousScoresList(int score){
-        if (previousScoresList == null){
-            previousScoresList = new ArrayList<>();
+    public void setScoresList(int score){
+        if (scoresList == null){
+            scoresList = new ArrayList<>();
         }
-        previousScoresList.add(score);
+        scoresList.add(score);
 
     }
 
-    public void setPreviousScoresList(ArrayList<Integer> updatedPreviousScoresList){
-       Log.d("dom test","onSetPreviousScoresList --- " + updatedPreviousScoresList);
-        this.previousScoresList = updatedPreviousScoresList;
-
-
-
-        //Log.d("dom test","User Class reassigned scorelist : " + previousScoresList);
+    public void revertScoresList(ArrayList<Integer> pastScoresList){
+        this.scoresList = pastScoresList;
     }
 
+    public int getPreviousScore(){
+        if (previousScoreList == null){
+            previousScoreList = new ArrayList<>();
+        }
+        int previousScore = previousScoreList.get(previousScoreList.size() - 1);
+        previousScoreList.remove(previousScoreList.size() - 1);
+        return previousScore;
+    }
 
+    public void setPreviousScore(int previousScore){
+        if (previousScoreList == null) {
+            previousScoreList = new ArrayList<>();
+        }
+        previousScoreList.add(previousScore);
+    }
 
 
     public int getPreviousLegs(){
@@ -101,10 +109,10 @@ public class User {
 
     public int getVisits(){
         //If previous scores list is empty then return 1 to avoid divide by zero
-        if (previousScoresList == null){
+        if (scoresList == null){
             return 1;
         }
-        else return previousScoresList.size();
+        else return scoresList.size();
     }
 
     public void setActive(boolean active) {
@@ -150,9 +158,10 @@ public class User {
 
     public double getAvg() {
         double totalScores = 0;
-        for (int i = 0; i < getPreviousScoresList().size(); i++) {
-            if (!previousScoresList.isEmpty()) {
-                totalScores += getPreviousScoresList().get(i);
+        for (int i = 0; i < getScoresList().size(); i++) {
+            if (!scoresList.isEmpty()) {
+                //todo this doesn't calcualte the average
+                totalScores += getScoresList().get(i);
             } else {
                 return 0;
             }

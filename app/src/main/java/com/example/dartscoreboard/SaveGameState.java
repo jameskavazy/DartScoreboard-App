@@ -1,7 +1,5 @@
 package com.example.dartscoreboard;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -9,25 +7,32 @@ public class SaveGameState {
 
     HashMap<User, Integer> currentScoresMap;
     HashMap<User, Boolean> turnsMap;
-    HashMap<User, ArrayList<Integer>> previousScoresListMap;
 
-    public SaveGameState(HashMap<User, Integer> currentScoresMap,  HashMap<User, Boolean> turnsMap,HashMap<User, ArrayList<Integer>> previousScoresListMap){ //
+    HashMap<User, ArrayList<Integer>> previousScoresMap;
+
+
+    private ArrayList<User> playersList;
+
+    public SaveGameState(HashMap<User, Integer> currentScoresMap,  HashMap<User, Boolean> turnsMap){ //HashMap<User, ArrayList<Integer>> previousScoresMap
         this.currentScoresMap = currentScoresMap;
         this.turnsMap = turnsMap;
-        this.previousScoresListMap = previousScoresListMap;
+       //this.previousScoresMap = previousScoresMap;
     }
 
-    // todo change the way averages are calculated
 
+    //todo creates an object of hashmaps. Hashmaps will all store different things, all player scores, all player turns, all player average scores etc...
+    // todo this then can be added to arraydeque of gamestates
+    // todo change the way averages are calculated
+    // on game activity inside playervisit function I think we need to create a for loop that creates objects of gamestates
 
     public void loadPreviousGameState(ArrayList<User> playersList){
+        //todo code here
+
         for (User player:playersList
              ) {
             player.setPlayerScore(getCurrentScoresMap(player));
             player.setTurn(getTurnsMap(player));
-            Log.d("dom test",player.username + "before updating in sgs class" + player.getPreviousScoresList());
-            player.setPreviousScoresList(getPreviousScoresListMap(player));
-            Log.d("dom test", player.username + " retrieved scorelist inside of savegamestate class  " + player.getPreviousScoresList());
+            //player.revertScoresList(saveGameState.getScoresMap(player));
         }
     }
 
@@ -38,9 +43,8 @@ public class SaveGameState {
         return turnsMap.get(user);
     }
 
-    public ArrayList<Integer> getPreviousScoresListMap(User user){
-        Log.d("dom test", user.username + "Score Map Method For Retrieving For Undo ::" + previousScoresListMap.get(user));
-        return previousScoresListMap.get(user);
+    public ArrayList<Integer> getScoresMap(User user){
+        return previousScoresMap.get(user);
     }
 
 
