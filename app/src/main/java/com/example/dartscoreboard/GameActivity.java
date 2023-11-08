@@ -345,6 +345,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         else Log.d("dom test","Deque Is Empty");
         adapter.notifyDataSetChanged();
 
+//gotta do something
 
 //        //Brings back text input if game was finished.
 //        if (gameStateEnd) {
