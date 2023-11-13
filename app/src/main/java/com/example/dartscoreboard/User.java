@@ -1,5 +1,7 @@
 package com.example.dartscoreboard;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 
 public class User {
@@ -140,7 +142,6 @@ public class User {
         double totalScores = 0;
         for (int i = 0; i < getPreviousScoresList().size(); i++) {
             if (!previousScoresList.isEmpty()) {
-                //todo this doesn't calcualte the average
                 totalScores += getPreviousScoresList().get(i);
             } else {
                 return 0;
