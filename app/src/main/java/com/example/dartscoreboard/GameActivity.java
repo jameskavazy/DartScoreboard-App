@@ -40,8 +40,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private int totalLegs;
     private int totalSets = 2;
 
-    private boolean turnLead;
-
+    private int turnLead;
+    private int turnLeadForSets;
 
 
 
@@ -84,12 +84,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         setTotalLegs();
         setTotalSets();
         gameStateEnd = false;
+        turnLead = 0;
+        turnLeadForSets = 0;
     }
 
 
     private void setSaveGameState(){
-
-
         saveGameState.currentScoresMap = new HashMap<>();
         saveGameState.turnsMap = new HashMap<>();
         saveGameState.previousScoresListMap = new HashMap<>();
@@ -113,6 +113,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         for (User player : playersList){
             if (player.getPlayerScore() == 0) {
                 player.currentLegs++;
+                turnLead++;
+                if (turnLead == playersList.size()){
+                    turnLead = 0;
+                }
+                incrementTurnForLegs(turnLead);
                 Log.d("dom test",player.username + " current legs = " + player.currentLegs);
                 nextSet();
                 matchWonChecker();
@@ -130,6 +135,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             if (player.getPlayerScore() == 0 && player.getCurrentLegs() == totalLegs) {
                 player.currentSets++;
                 setPlayerLegs();
+                turnLeadForSets++;
+                if (turnLeadForSets == playersList.size()){
+                    turnLeadForSets = 0;
+                }
+                turnLead = turnLeadForSets;
+                incrementTurnForSets(turnLeadForSets);
                 adapter.notifyDataSetChanged();
             }
         }
@@ -299,10 +310,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         for (int i = 1; i < playersList.size(); i++) {
             playersList.get(i).setTurn(false);
         }
-
-
-
-
     }
 
 
@@ -339,6 +346,18 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             }
             return false;
         });
+    }
+
+    private void incrementTurnForLegs(int turnLead){
+        for (int i = 0; i < playersList.size(); i++) {
+            playersList.get(i).setTurn(i == turnLead);
+        }
+    }
+
+    private void incrementTurnForSets(int turnLeadForSets){
+        for (int i = 0; i < playersList.size(); i++) {
+            playersList.get(i).setTurn(i == turnLeadForSets);
+        }
     }
 
 

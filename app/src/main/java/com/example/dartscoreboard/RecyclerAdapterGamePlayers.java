@@ -64,14 +64,12 @@ public class RecyclerAdapterGamePlayers extends RecyclerView.Adapter<RecyclerAda
         holder.playerScoreTextView.setText(String.valueOf(gameScore));
         holder.legsTextView.setText(String.valueOf(currentLegs));
         holder.setsTextView.setText(String.valueOf(currentSets));
-
         if (!playerTurn){
             holder.playerIndicator.setVisibility(View.INVISIBLE);
         }
         if (playerTurn) {
             holder.playerIndicator.setVisibility(View.VISIBLE);
         }
-
     }
 
     @Override
