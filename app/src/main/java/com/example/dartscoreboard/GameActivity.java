@@ -33,18 +33,15 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private SaveGameState saveGameState;
     private ArrayDeque<SaveGameState> gameStateArrayDeque;
     private TextView averageScoreTextView;
+    private TextView visitsTextView;
     private Button undoButton;
     private boolean gameStateEnd;
     private SelectGameActivity.GameType gameType;
     private int playerStartingScore;
     private int totalLegs;
     private int totalSets = 2;
-
     private int turnLead;
     private int turnLeadForSets;
-
-
-
     private RecyclerAdapterGamePlayers adapter;
 
     @Override
@@ -61,6 +58,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         this.setRequestedOrientation(SCREEN_ORIENTATION_PORTRAIT); //todo delete this eventually
         averageScoreTextView = findViewById(R.id.avg_text_view);
+        visitsTextView = findViewById(R.id.visits_text_view);
         undoButton = findViewById(R.id.undo_button);
         undoButton.setOnClickListener(this);
         recyclerView = findViewById(R.id.player_info_recycler_view);
@@ -174,6 +172,14 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    private void setVisitsTextView(){
+        for (User user : playersList){
+            if (user.turn){
+                int visits = user.getVisits();
+                visitsTextView.setText(String.valueOf(visits));
+            }
+        }
+    }
 
 
     public void playerVisit(String scoreString) {
@@ -337,10 +343,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     }
                     ((EditText) findViewById(R.id.inputUserNameEditText)).getText().clear();
                     setAverageScoreTextView();
+                    setVisitsTextView();
                     return true;
                 } catch (Exception e) {
                     playerVisit(String.valueOf(0));
                     setAverageScoreTextView();
+                    setVisitsTextView();
                     return true;
                 }
             }
@@ -392,6 +400,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             setSaveGameState();
         }
         setAverageScoreTextView();
+        setVisitsTextView();
         adapter.notifyDataSetChanged();
     }
 }

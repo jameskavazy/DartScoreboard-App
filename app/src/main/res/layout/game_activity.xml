@@ -61,7 +61,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:text="Sets"
+            android:text="@string/sets_plate"
             android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="25sp" />
@@ -144,7 +144,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:text="Average: ">
+            android:text="@string/average">
 
         </TextView>
 
@@ -153,8 +153,27 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:layout_marginLeft="65dp"
+            android:layout_marginStart ="65dp"
             tools:text="120">
+
+        </TextView>
+
+        <TextView
+            android:layout_gravity="center"
+            android:id="@+id/visits_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:text="@string/no_visits" />
+
+        <TextView
+            android:id="@+id/visits_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/white"
+            android:layout_marginStart="40dp"
+            tools:text="12">
 
         </TextView>
 

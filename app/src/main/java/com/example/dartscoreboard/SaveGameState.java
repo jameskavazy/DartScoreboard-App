@@ -39,6 +39,7 @@ public class SaveGameState {
             //todo below code block shouldn't be needed but the setpreviousscore method above doesn't do its job
             if (player.turn && !player.previousScoresList.isEmpty()){
                 player.previousScoresList.remove(player.previousScoresList.size() - 1);
+                //player.visits--;
             }
         }
     }

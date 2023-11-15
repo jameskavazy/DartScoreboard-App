@@ -13,6 +13,7 @@ public class User {
     public boolean turn;
     public int currentLegs;
     public int currentSets;
+    public int visits = getPreviousScoresList().size(); //todo make sure visits is set properly by getVisits?//setvisits.
 
     public User(String username, boolean active) {
         this.username = username;
@@ -106,7 +107,8 @@ public class User {
                 return 0;
             }
         }
-        return totalScores / getVisits();
+        double average = totalScores / getVisits();
+        return Math.round(average * 10.0) / 10.0;
     }
 
     public void setPlayerLegs(int currentLegs) {

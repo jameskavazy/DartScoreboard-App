@@ -13,8 +13,11 @@
     <string name="enter_score_string">Enter Score: </string>
     <string name="player_plate">Player</string>
     <string name="legs_plate">Legs</string>
+    <string name="sets_plate">Sets</string>
     <string name="score_plate">Score</string>
     <string name="no_of_sets">Number of Sets</string>
     <string name="no_of_legs">Number of Legs</string>
+    <string name="no_visits">Visits: </string>
+    <string name="average">Average: </string>
 
 </resources>
