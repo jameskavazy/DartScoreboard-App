@@ -85,6 +85,27 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <com.google.android.material.textfield.TextInputLayout
+
+        android:id="@+id/sets_input_layout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:hint="@string/no_of_sets"
+        android:translationY="400dp">
+
+        <AutoCompleteTextView
+            android:id="@+id/sets_drop_down"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none" />
+
+
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
     <Button
         android:id="@+id/gameStartButton"
         android:layout_width="wrap_content"

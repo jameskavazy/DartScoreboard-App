@@ -37,10 +37,14 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private boolean gameStateEnd;
     private SelectGameActivity.GameType gameType;
     private int playerStartingScore;
-
     private int totalLegs;
-
     private int totalSets = 2;
+
+    private boolean turnLead;
+
+
+
+
     private RecyclerAdapterGamePlayers adapter;
 
     @Override
@@ -78,11 +82,14 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         setPlayerLegs();
         setPlayerSets();
         setTotalLegs();
-        //setTotalSets();
+        setTotalSets();
         gameStateEnd = false;
     }
 
+
     private void setSaveGameState(){
+
+
         saveGameState.currentScoresMap = new HashMap<>();
         saveGameState.turnsMap = new HashMap<>();
         saveGameState.previousScoresListMap = new HashMap<>();
@@ -167,24 +174,13 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
             for (User player : playersList){
                 int currentScore = player.getPlayerScore();
-//                int currentLegs = player.getCurrentLegs();
-//                int currentSets = player.getCurrentSets();
-
-
                 //For current player - do calculation
                 if (player.isTurn()){
-                    //Log.d("dom test","Previous Scores List: " + Arrays.toString(player.getPreviousScoresList().toArray()));
-
-//                    player.setPreviousLegs(currentLegs);
-//                    player.setPreviousSets(currentSets);
 
                     //Calculate new score
                     player.setPlayerScore(subtract(currentScore,scoreInt));
                     Log.d("dom test", player.username + " previous scorelist after subtract =  " + player.getPreviousScoresList());
 
-                   // Log.d("dom test", player.getUsername() + " Average Score: " + player.getAvg());
-
-                   //Log.d("dom test", "Previous Scores List: " + Arrays.toString(player.getScoresList().toArray()));
 
                     player.setTurn(false);
                     adapter.notifyItemChanged(playersList.indexOf(player));
@@ -247,9 +243,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                  ) {
                 if (player.turn) {
                     player.addToPreviousScoresList(currentTypedScore);
-                    //Toast.makeText(GameActivity.this, player.getUsername() + " wins the match!", Toast.LENGTH_LONG).show();
                 }
-
             }
             return newScore;
 
@@ -283,6 +277,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         Log.d("dom test","Number of legs: " + totalLegs);
     }
 
+    private void setTotalSets() {
+        Bundle arguments = getIntent().getExtras();
+        totalSets = arguments.getInt(SelectGameActivity.TOTAL_SETS_KEY);
+        Log.d("dom test","number of sets:  " + totalSets);
+    }
+
 
 
     private void setAdapter() {
@@ -299,7 +299,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         for (int i = 1; i < playersList.size(); i++) {
             playersList.get(i).setTurn(false);
         }
+
+
+
+
     }
+
 
     private void setPlayerLegs(){
         for (int i = 0; i < playersList.size(); i++) {

@@ -1,6 +1,5 @@
 package com.example.dartscoreboard;
 
-import static java.lang.String.valueOf;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +8,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -32,14 +32,14 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
 
     String[] gameSelectList = {"501","301","170"};
 
-    String[] numberOfLegsList = {"1","2","3","4","5"};
+    String[] numberOfLegsSetsList = {"1","2","3","4","5"};
 
-    String[] numberOfSetsList = {"1","2","3","4","5"}; //todo do we need to arrays for sets and legs really?
     ArrayList<User> playersToGame;
     AutoCompleteTextView gameTypeAutoCompleteTextView;
     AutoCompleteTextView legsAutoCompleteTextView;
 
     AutoCompleteTextView setsAutoCompleteTextView;
+
     AutoCompleteTextView playerListCheckBox;
 
     ArrayAdapter<String> adapterItems; //todo make this local variable for drop down box logics
@@ -50,7 +50,7 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("dom test", "HomeActivityonCreate");
+        Log.d("dom test", "HomeActivityOnCreate");
         super.onCreate(savedInstanceState);
         setupUI();
     }
@@ -67,9 +67,10 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         clearPlayersBtn.setOnClickListener(this);
         gameTypeAutoCompleteTextView = findViewById(R.id.gameTypeDropDownBox);
         legsAutoCompleteTextView = findViewById(R.id.legs_drop_down);
+        setsAutoCompleteTextView = findViewById(R.id.sets_drop_down);
         setUpGameTypeDropDownMenu();
         setUpLegsListDropDownMenu();
-        //setUpSetsListDropDownMenu();
+        setUpSetsListDropDownMenu();
         playerListCheckBox.setOnClickListener(this);
         setPlayersTextBox();
     }
@@ -114,9 +115,9 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
             Log.d("dom test","openSevenoGameActivity");
             openSevenoGameActivity();
         }
-//        else if (autoCompleteTextView.getText().toString() == "") {
-//            Toast.makeText(this,"You must select a game type",Toast.LENGTH_SHORT).show();
-//        }
+        else if (gameTypeAutoCompleteTextView.getText().toString().isEmpty()) {
+            Toast.makeText(this,"You must select a game type",Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void openFiveoGameActivity() {
@@ -124,6 +125,7 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         Bundle arguments = new Bundle();
         arguments.putSerializable(GAME_TYPE_KEY, GameType.FiveO);
         arguments.putInt(TOTAL_LEGS_KEY,getLegs());
+        arguments.putInt(TOTAL_SETS_KEY,getSets());
         Intent intent = new Intent(this, GameActivity.class);
         intent.putExtras(arguments);
         startActivity(intent);
@@ -134,6 +136,7 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         Bundle arguments = new Bundle();
         arguments.putSerializable(GAME_TYPE_KEY, GameType.ThreeO);
         arguments.putInt(TOTAL_LEGS_KEY,getLegs());
+        arguments.putInt(TOTAL_SETS_KEY,getSets());
         Intent intent = new Intent(this, GameActivity.class);
         intent.putExtras(arguments);
         startActivity(intent);
@@ -144,24 +147,29 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         Bundle arguments = new Bundle();
         arguments.putSerializable(GAME_TYPE_KEY, GameType.SevenO);
         arguments.putInt(TOTAL_LEGS_KEY,getLegs());
+        arguments.putInt(TOTAL_SETS_KEY,getSets());
         Intent intent = new Intent(this, GameActivity.class);
         intent.putExtras(arguments);
         startActivity(intent);
     }
 
     private void setUpGameTypeDropDownMenu(){
-        adapterItems = new ArrayAdapter<String>(this,R.layout.list_item,gameSelectList);
+        adapterItems = new ArrayAdapter<>(this,R.layout.list_item,gameSelectList);
         gameTypeAutoCompleteTextView.setAdapter(adapterItems);
+        //gameTypeAutoCompleteTextView.setText(adapterItems.getItem(0),false);
     }
 
     private void setUpLegsListDropDownMenu(){
-        adapterLegsItems = new ArrayAdapter<String>(this,R.layout.list_item,numberOfLegsList);
+        adapterLegsItems = new ArrayAdapter<>(this,R.layout.list_item, numberOfLegsSetsList);
         legsAutoCompleteTextView.setAdapter(adapterLegsItems);
+        legsAutoCompleteTextView.setText(adapterLegsItems.getItem(0),false);
+
     }
 
     private void setUpSetsListDropDownMenu(){
-        adapterSetsItems = new ArrayAdapter<String>(this,R.layout.list_item,numberOfSetsList);
+        adapterSetsItems = new ArrayAdapter<>(this,R.layout.list_item, numberOfLegsSetsList);
         setsAutoCompleteTextView.setAdapter(adapterSetsItems);
+        setsAutoCompleteTextView.setText(adapterSetsItems.getItem(0),false);
     }
 
     private void setPlayersTextBox(){
@@ -182,6 +190,11 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
     public int getLegs(){
         totalLegs = Integer.parseInt(legsAutoCompleteTextView.getText().toString());
         return totalLegs;
+    }
+
+    public int getSets(){
+        totalSets = Integer.parseInt(setsAutoCompleteTextView.getText().toString());
+        return totalSets;
     }
 
 

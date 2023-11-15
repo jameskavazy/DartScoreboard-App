@@ -7,15 +7,8 @@ import java.util.ArrayList;
 public class User {
 
     public String username;
-
     public int playerScore;
-
-    public ArrayList<Integer> previousLegsList;
-
-    public ArrayList<Integer> previousSetsList;
-
     public ArrayList<Integer> previousScoresList;
-
     public boolean active;
     public boolean turn;
     public int currentLegs;
@@ -53,40 +46,6 @@ public class User {
     public void setPreviousScoresList(ArrayList<Integer> pastScoresList){
         this.previousScoresList = pastScoresList;
     }
-
-
-    public int getPreviousLegs(){
-        if (previousLegsList == null){
-            previousLegsList = new ArrayList<>();
-        }
-        int previousLegs = previousLegsList.get(previousLegsList.size() - 1);
-        previousLegsList.remove(previousLegsList.size() - 1);
-        return previousLegs;
-    }
-
-    public void setPreviousLegs(int previousScore){
-        if (previousLegsList == null) {
-            previousLegsList = new ArrayList<>();
-        }
-        previousLegsList.add(previousScore);
-    }
-
-    public int getPreviousSets(){
-        if (previousSetsList == null){
-            previousSetsList = new ArrayList<>();
-        }
-        int previousSets = previousSetsList.get(previousSetsList.size() - 1);
-        previousSetsList.remove(previousSetsList.size() - 1);
-        return previousSets;
-    }
-
-    public void setPreviousSets(int previousSets){
-        if (previousSetsList == null) {
-            previousSetsList = new ArrayList<>();
-        }
-        previousSetsList.add(previousSets);
-    }
-
 
 
     public int getVisits(){
