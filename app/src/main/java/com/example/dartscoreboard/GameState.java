@@ -6,13 +6,14 @@ import java.util.ArrayList;
 public class GameState implements Serializable {
 
     private SelectGameActivity.GameType gameType;
-
+    private GameSettings gameSettings;
     private ArrayList<User> playerList;
 
 
     // gametype, players
-    public GameState(SelectGameActivity.GameType gameType, ArrayList<User> playerList) {
+    public GameState(SelectGameActivity.GameType gameType, GameSettings gameSettings, ArrayList<User> playerList) {
         this.gameType = gameType;
+        this.gameSettings = gameSettings;
         this.playerList = playerList;
     }
 
@@ -30,6 +31,14 @@ public class GameState implements Serializable {
 
     public void setPlayerList(ArrayList<User> playerList) {
         this.playerList = playerList;
+    }
+
+    public GameSettings getGameSettings() {
+        return gameSettings;
+    }
+
+    public void setGameSettings(GameSettings gameSettings) {
+        this.gameSettings = gameSettings;
     }
 
     //todo creates an object of hashmaps. Hashmaps will all store different things, all player scores, all player turns, all player average scores etc...

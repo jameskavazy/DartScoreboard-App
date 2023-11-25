@@ -27,7 +27,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private ArrayList<User> playersList;
     private RecyclerView recyclerView;
     private EditText inputScoreEditText;
-    private GameState gameState;
+
     private ArrayDeque<GameState> gameStateArrayDeque;
     private TextView averageScoreTextView;
     private TextView visitsTextView;
@@ -37,8 +37,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private boolean gameStateEnd;
     private SelectGameActivity.GameType gameType;
     private int playerStartingScore;
-    private int totalLegs;
-    private int totalSets;
+    private GameSettings gameSettings;
     private int turnLead;
     private int turnLeadForSets;
     private RecyclerAdapterGamePlayers adapter;
@@ -48,10 +47,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         Log.d("dom test", "GameActivityOnCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_activity);
-        Log.d("dom test", "gameType\n-------\nname " + getGameType().name + "\nstartingScore " + getGameType().startingScore);
+//        Log.d("dom test", "gameType\n-------\nname " + getGameType().name + "\nstartingScore " + getGameType().startingScore);
         setupUI();
         newGameStart();
-
     }
 
     private void setupUI() {
@@ -64,28 +62,43 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView = findViewById(R.id.player_info_recycler_view);
         gameTitle = findViewById(R.id.gameActivityTitle);
         inputScoreEditText = findViewById(R.id.inputUserNameEditText);
-        playersList = PreferencesController.readUsersForGameSP(this);
-        gameTitle.setText(getGameType().name);
+//        gameTitle.setText(getGameType().name);
         averageScoreTextView.setText(String.valueOf(0.0));
         undoButton.setOnClickListener(this);
         doneButton.setOnClickListener(this);
         inputScoreEditText.setOnEditorActionListener((v, actionId, event) -> onScoreEntered());
-        setAdapter();
     }
     
-    private void newGameStart(){
-        gameState = new GameState(null,null);
-        gameStateArrayDeque = new ArrayDeque<>();
-        setPlayerStartingScores();
-        setPlayerTurns();
-        setSaveGameState();
-        setPlayerLegs();
-        setPlayerSets();
-        setTotalLegs();
-        setTotalSets();
+    private void newGameStart() { // todo ,move earlier
+        GameState existingGame = PreferencesController.getInstance().readGameState();
+        if (existingGame != null) {
+            playersList = existingGame.getPlayerList();
+            gameSettings = existingGame.getGameSettings();
+        } else {
+            // new game
+            gameStateArrayDeque = new ArrayDeque<>();
+            playersList = (ArrayList<User>) getIntent().getExtras().getSerializable("PLAYERS_LIST_KEY");
+            setGameSettings();
+            setPlayerStartingScores();
+            setPlayerTurns();
+            setSaveGameState();
+            setPlayerLegs();
+            setPlayerSets();
+        }
+
+        setAdapter();
+
+
         gameStateEnd = false;
-        turnLead = 0;
+        turnLead = 0; // todo may need to save these
         turnLeadForSets = 0;
+    }
+
+    private void setGameSettings() {
+        Bundle arguments = getIntent().getExtras();
+        int totalLegs = arguments.getInt(SelectGameActivity.TOTAL_LEGS_KEY);
+        int totalSets = arguments.getInt(SelectGameActivity.TOTAL_SETS_KEY);
+        gameSettings = new GameSettings(totalLegs, totalSets);
     }
 
 
@@ -141,7 +154,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private void nextSet(){
         for (User player:playersList
              ) {
-            if (player.getPlayerScore() == 0 && player.getCurrentLegs() == totalLegs) {
+            if (player.getPlayerScore() == 0 && player.getCurrentLegs() == gameSettings.getTotalLegs()) {
                 player.currentSets++;
                 setPlayerLegs();
                 turnLeadForSets++;
@@ -157,7 +170,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private void matchWonChecker(){
         for (User player : playersList
              ) {
-            if (player.getPlayerScore() == 0 && player.currentSets == totalSets){
+            if (player.getPlayerScore() == 0 && player.currentSets == gameSettings.getTotalSets()){
                 adapter.notifyDataSetChanged();
                 Toast.makeText(GameActivity.this, player.getUsername() + " wins the match!", Toast.LENGTH_LONG).show();
                 endGame();
@@ -231,7 +244,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
         nextLeg();
 
-        PreferencesController.getInstance().saveGameState(new GameState(gameType, playersList));
+        PreferencesController.getInstance().saveGameState(new GameState(gameType, gameSettings, playersList));
     }
 
     public int subtract(int playerScore, int currentTypedScore) {
@@ -299,17 +312,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         return gameType;
     }
 
-    public void setTotalLegs(){
-        Bundle arguments = getIntent().getExtras();
-        totalLegs = arguments.getInt(SelectGameActivity.TOTAL_LEGS_KEY);
-        Log.d("dom test","Number of legs: " + totalLegs);
-    }
 
-    private void setTotalSets() {
-        Bundle arguments = getIntent().getExtras();
-        totalSets = arguments.getInt(SelectGameActivity.TOTAL_SETS_KEY);
-        Log.d("dom test","number of sets:  " + totalSets);
-    }
 
 
 

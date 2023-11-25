@@ -115,7 +115,7 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         Log.d("dom test", "openFiveoGameActivity");
         Bundle arguments = new Bundle();
         arguments.putSerializable(GAME_TYPE_KEY, GameType.FiveO);
-        arguments.putInt(TOTAL_LEGS_KEY,getLegs());
+        arguments.putInt(TOTAL_LEGS_KEY,getLegs()); // todo pass through GameSetting object
         arguments.putInt(TOTAL_SETS_KEY,getSets());
         Intent intent = new Intent(this, GameActivity.class);
         intent.putExtras(arguments);
