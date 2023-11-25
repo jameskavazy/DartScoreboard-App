@@ -2,26 +2,24 @@ package com.example.dartscoreboard;
 
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
@@ -35,11 +33,13 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private TextView averageScoreTextView;
     private TextView visitsTextView;
     private Button undoButton;
+
+    private Button doneButton;
     private boolean gameStateEnd;
     private SelectGameActivity.GameType gameType;
     private int playerStartingScore;
     private int totalLegs;
-    private int totalSets = 2;
+    private int totalSets;
     private int turnLead;
     private int turnLeadForSets;
     private RecyclerAdapterGamePlayers adapter;
@@ -51,7 +51,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.game_activity);
         Log.d("dom test", "gameType\n-------\nname " + getGameType().name + "\nstartingScore " + getGameType().startingScore);
         setupUI();
-        onScoreEntered();
+        newGameStart();
+
     }
 
     private void setupUI() {
@@ -60,14 +61,16 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         averageScoreTextView = findViewById(R.id.avg_text_view);
         visitsTextView = findViewById(R.id.visits_text_view);
         undoButton = findViewById(R.id.undo_button);
-        undoButton.setOnClickListener(this);
+        doneButton = findViewById(R.id.done_button);
         recyclerView = findViewById(R.id.player_info_recycler_view);
         gameTitle = findViewById(R.id.gameActivityTitle);
         inputScoreEditText = findViewById(R.id.inputUserNameEditText);
         playersList = PrefConfig.readUsersForGameSP(this);
         gameTitle.setText(getGameType().name);
         averageScoreTextView.setText(String.valueOf(0.0));
-        newGameStart();
+        undoButton.setOnClickListener(this);
+        doneButton.setOnClickListener(this);
+        inputScoreEditText.setOnEditorActionListener((v, actionId, event) -> onScoreEntered());
         setAdapter();
     }
     
@@ -87,7 +90,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    private void setSaveGameState(){
+    private void setSaveGameState(){ // todo dom
         saveGameState.currentScoresMap = new HashMap<>();
         saveGameState.turnsMap = new HashMap<>();
         saveGameState.previousScoresListMap = new HashMap<>();
@@ -157,9 +160,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     
 
     private void setPlayerStartingScores() {
-        playerStartingScore = getGameType().startingScore;
         for (User user : playersList){
-            user.setPlayerScore(playerStartingScore);
+            user.setPlayerScore(gameType.startingScore);
         }
     }
 
@@ -186,7 +188,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         //Loop through and save everyone's current position
         setSaveGameState();
 
-        int scoreInt = Integer.parseInt(scoreString);
+        int scoreInt = Integer.parseInt(scoreString); //todo try catch parseint
         if (scoreInt <= 180) { // checks for valid score input
 
             for (User player : playersList){
@@ -206,20 +208,18 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     User firstPlayer = playersList.get(0);
                     User lastPlayer = playersList.get(playersList.size() - 1);
 
-                    if (player != lastPlayer) {
+                    if (player != lastPlayer) { // todo have field of current player index instead of set turn field
                         playersList.get(playersList.indexOf(player) + 1).setTurn(true);
                         adapter.notifyItemChanged(playersList.indexOf(player) + 1);
-                        break;
                     }
-                    else if (player == lastPlayer) {
+                    else {
                         firstPlayer.setTurn(true);
                         adapter.notifyItemChanged(0);
-                        break;
                     }
-
                 }
             }
-        } nextLeg();
+        }
+        nextLeg();
 
     }
 
@@ -303,7 +303,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void setAdapter() {
-        adapter = new RecyclerAdapterGamePlayers(playersList, playerStartingScore);
+        adapter = new RecyclerAdapterGamePlayers(playersList);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -312,7 +312,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void setPlayerTurns() {
-        playersList.get(0).setTurn(true);
+        playersList.get(0).setTurn(true); // todo try catch
         for (int i = 1; i < playersList.size(); i++) {
             playersList.get(i).setTurn(false);
         }
@@ -331,29 +331,24 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void onScoreEntered() {
-        inputScoreEditText.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                String input = inputScoreEditText.getText().toString();
-                try {
-                    Log.d("dom test", "IME_ACTION_DONE");
-                    playerVisit(input);
-                    if (Integer.parseInt(input) > 180) {
-                        Toast.makeText(GameActivity.this, "Invalid Score", Toast.LENGTH_SHORT).show();
-                    }
-                    ((EditText) findViewById(R.id.inputUserNameEditText)).getText().clear();
-                    setAverageScoreTextView();
-                    setVisitsTextView();
-                    return true;
-                } catch (Exception e) {
-                    playerVisit(String.valueOf(0));
-                    setAverageScoreTextView();
-                    setVisitsTextView();
-                    return true;
-                }
+    private Boolean onScoreEntered() {
+        String input = inputScoreEditText.getText().toString();
+        try {
+            Log.d("dom test", "IME_ACTION_DONE");
+            playerVisit(input);
+            if (Integer.parseInt(input) > 180) {
+                Toast.makeText(GameActivity.this, "Invalid Score", Toast.LENGTH_SHORT).show();
             }
-            return false;
-        });
+            ((EditText) findViewById(R.id.inputUserNameEditText)).getText().clear();
+            setAverageScoreTextView();
+            setVisitsTextView();
+            return true;
+        } catch (Exception e) {
+            playerVisit(String.valueOf(0)); // todo this should be an empty check. do nothing if exception
+            setAverageScoreTextView();
+            setVisitsTextView();
+            return true;
+        }
     }
 
     private void incrementTurnForLegs(int turnLead){
@@ -378,9 +373,25 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.undo_button) {
+
+//        switch (v.getId()) { // todo this would be nice as a switch
+//            case undoButton:
+//                Log.d("dom test", "Undo Click");
+//                undo();
+//                break;
+//            case doneButton:
+//                onDoneClicked();
+//                break;
+//            default:
+//                break;
+//        }
+        int viewId = v.getId();
+        if (viewId == R.id.undo_button) {
             Log.d("dom test", "Undo Click");
             undo();
+        } else if (viewId == R.id.done_button) {
+            Log.d("dom test", "Done Click");
+            onScoreEntered();
         }
     }
 

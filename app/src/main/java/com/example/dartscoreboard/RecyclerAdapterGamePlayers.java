@@ -17,11 +17,9 @@ public class RecyclerAdapterGamePlayers extends RecyclerView.Adapter<RecyclerAda
   //  private int legs;
     private int gameScore;
 
-    public RecyclerAdapterGamePlayers(ArrayList<User> usersList, int gameScore){
+    public RecyclerAdapterGamePlayers(ArrayList<User> usersList){
         this.usersList = usersList;
         //this.legs = legs;
-        this.gameScore = gameScore;
-
     }
 
     public class GameViewHolder extends RecyclerView.ViewHolder {

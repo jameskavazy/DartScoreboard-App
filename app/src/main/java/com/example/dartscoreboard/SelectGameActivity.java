@@ -21,15 +21,6 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
     public static String TOTAL_LEGS_KEY = "LEGS";
     public static String TOTAL_SETS_KEY = "SETS";
 
-
-    private Button startGameBtn;
-    private Button randomisePlayersBtn;
-    private Button clearPlayersBtn;
-
-    public int totalLegs;
-
-    public int totalSets;
-
     String[] gameSelectList = {"501","301","170"};
 
     String[] numberOfLegsSetsList = {"1","2","3","4","5"};
@@ -42,7 +33,7 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
 
     AutoCompleteTextView playerListCheckBox;
 
-    ArrayAdapter<String> adapterItems; //todo make this local variable for drop down box logics
+    ArrayAdapter<String> adapterItems;
 
     ArrayAdapter<String> adapterLegsItems;
 
@@ -58,9 +49,9 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
     private void setupUI() {
         Log.d("dom test", "setupUI");
         setContentView(R.layout.select_game_activity);
-        startGameBtn = findViewById(R.id.gameStartButton);
-        randomisePlayersBtn = findViewById(R.id.randomise_players_button);
-        clearPlayersBtn = findViewById(R.id.remove_players_button);
+        Button startGameBtn = findViewById(R.id.gameStartButton);
+        Button randomisePlayersBtn = findViewById(R.id.randomise_players_button);
+        Button clearPlayersBtn = findViewById(R.id.remove_players_button);
         playerListCheckBox = findViewById(R.id.NameDropDownBox);
         startGameBtn.setOnClickListener(this);
         randomisePlayersBtn.setOnClickListener(this);
@@ -77,7 +68,7 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.gameStartButton){
+        if (v.getId() == R.id.gameStartButton){ // switch statement
             openGameActivity();
         }
         if (v.getId() == R.id.NameDropDownBox){
@@ -103,7 +94,7 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
     }
 
     public void openGameActivity(){
-        if (gameTypeAutoCompleteTextView.getText().toString().equals("501")){
+        if (gameTypeAutoCompleteTextView.getText().toString().equals("501")){ // todo make switch
             Log.d("dom test","openFiveoGameActivity");
             openFiveoGameActivity();
         }
@@ -188,12 +179,12 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
     }
 
     public int getLegs(){
-        totalLegs = Integer.parseInt(legsAutoCompleteTextView.getText().toString());
+        int totalLegs = Integer.parseInt(legsAutoCompleteTextView.getText().toString());
         return totalLegs;
     }
 
     public int getSets(){
-        totalSets = Integer.parseInt(setsAutoCompleteTextView.getText().toString());
+        int totalSets = Integer.parseInt(setsAutoCompleteTextView.getText().toString());
         return totalSets;
     }
 

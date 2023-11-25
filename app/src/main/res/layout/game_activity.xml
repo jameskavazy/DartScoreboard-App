@@ -180,4 +180,9 @@
 
     </FrameLayout>
 
+    <Button
+        android:id="@+id/done_button"
+        android:layout_width="100dp"
+        android:layout_height="100dp" />
+
 </LinearLayout>
