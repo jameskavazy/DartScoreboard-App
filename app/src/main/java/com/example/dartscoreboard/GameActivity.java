@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -28,8 +27,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private ArrayList<User> playersList;
     private RecyclerView recyclerView;
     private EditText inputScoreEditText;
-    private SaveGameState saveGameState;
-    private ArrayDeque<SaveGameState> gameStateArrayDeque;
+    private GameState gameState;
+    private ArrayDeque<GameState> gameStateArrayDeque;
     private TextView averageScoreTextView;
     private TextView visitsTextView;
     private Button undoButton;
@@ -65,7 +64,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView = findViewById(R.id.player_info_recycler_view);
         gameTitle = findViewById(R.id.gameActivityTitle);
         inputScoreEditText = findViewById(R.id.inputUserNameEditText);
-        playersList = PrefConfig.readUsersForGameSP(this);
+        playersList = PreferencesController.readUsersForGameSP(this);
         gameTitle.setText(getGameType().name);
         averageScoreTextView.setText(String.valueOf(0.0));
         undoButton.setOnClickListener(this);
@@ -75,7 +74,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
     
     private void newGameStart(){
-        saveGameState = new SaveGameState(null,null,null,null,null);
+        gameState = new GameState(null,null);
         gameStateArrayDeque = new ArrayDeque<>();
         setPlayerStartingScores();
         setPlayerTurns();
@@ -91,23 +90,32 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void setSaveGameState(){ // todo dom
-        saveGameState.currentScoresMap = new HashMap<>();
-        saveGameState.turnsMap = new HashMap<>();
-        saveGameState.previousScoresListMap = new HashMap<>();
-        saveGameState.previousLegsMap = new HashMap<>();
-        saveGameState.previousSetsMap = new HashMap<>();
+        /*
+         * Read gamestate from shared pref
+         * If gs != null, use this state as there is an ongoing game
+         * If gs == null, no ongoing game so start fresh
+         * Make sure gs shared pref is cleared at end of game
+         * Maybe add resume btn visibility based on this gs
+         *
+         *
+         * */
 
-        for (User player:
-                playersList
-             ) {
-            saveGameState.currentScoresMap.put(player,player.playerScore);
-            saveGameState.turnsMap.put(player,player.turn);
-            //Log.d("dom test",player.username + " scorelist put to map" + player.getPreviousScoresList());
-            saveGameState.previousScoresListMap.put(player, player.getPreviousScoresList());
-            saveGameState.previousLegsMap.put(player,player.currentLegs);
-            saveGameState.previousSetsMap.put(player,player.currentSets);
-        }
-        gameStateArrayDeque.addFirst(new SaveGameState(saveGameState.currentScoresMap,saveGameState.turnsMap,saveGameState.previousScoresListMap,saveGameState.previousLegsMap,saveGameState.previousSetsMap));
+        // after each turn update shared pref
+
+
+
+
+//        for (User player:
+//                playersList
+//             ) {
+//            saveGameState.currentScoresMap.put(player,player.playerScore);
+//            saveGameState.turnsMap.put(player,player.turn);
+//            //Log.d("dom test",player.username + " scorelist put to map" + player.getPreviousScoresList());
+//            saveGameState.previousScoresListMap.put(player, player.getPreviousScoresList());
+//            saveGameState.previousLegsMap.put(player,player.currentLegs);
+//            saveGameState.previousSetsMap.put(player,player.currentSets);
+//        }
+//        gameStateArrayDeque.addFirst(new SaveGameState(gameType, playersList));
     }
     
     private void nextLeg(){
@@ -216,11 +224,14 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                         firstPlayer.setTurn(true);
                         adapter.notifyItemChanged(0);
                     }
+
+                    break;
                 }
             }
         }
         nextLeg();
 
+        PreferencesController.getInstance().saveGameState(new GameState(gameType, playersList));
     }
 
     public int subtract(int playerScore, int currentTypedScore) {
@@ -368,6 +379,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(recyclerView.getApplicationWindowToken(), 0);
         inputScoreEditText.setVisibility(View.INVISIBLE);
+        PreferencesController.getInstance().clearGameState();
         gameStateEnd = true;
     }
 
@@ -395,23 +407,23 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void undo() {
+    private void undo() { // todo undo
         //Brings back text input if game was finished.
-        if (gameStateEnd) {
-            inputScoreEditText.setVisibility(View.VISIBLE);
-        }
-
-        SaveGameState previousGameState = gameStateArrayDeque.pollFirst();
-        if (!gameStateArrayDeque.isEmpty()){
-            previousGameState.loadPreviousGameState(playersList);
-        }
-
-        else {
-            Log.d("dom test","Deque Is Empty");
-            setSaveGameState();
-        }
-        setAverageScoreTextView();
-        setVisitsTextView();
-        adapter.notifyDataSetChanged();
+//        if (gameStateEnd) {
+//            inputScoreEditText.setVisibility(View.VISIBLE);
+//        }
+//
+//        GameState previousGameState = gameStateArrayDeque.pollFirst();
+//        if (!gameStateArrayDeque.isEmpty()){
+//            previousGameState.loadPreviousGameState(playersList);
+//        }
+//
+//        else {
+//            Log.d("dom test","Deque Is Empty");
+//            setSaveGameState();
+//        }
+//        setAverageScoreTextView();
+//        setVisitsTextView();
+//        adapter.notifyDataSetChanged();
     }
 }

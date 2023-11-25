@@ -1,11 +1,5 @@
 package com.example.dartscoreboard;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,6 +7,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -86,7 +86,7 @@ public class UsersActivity extends AppCompatActivity implements OnClickListener 
         addNewUserButton = findViewById(R.id.add_new_user_button);
         addNewUserButton.setOnClickListener(this);
         recyclerView = findViewById(R.id.recycler_view_username_list);
-        usersList = PrefConfig.readSPUserList(this);
+        usersList = PreferencesController.readSPUserList(this);
         if (usersList == null) {
             usersList = new ArrayList<>();
         }
@@ -102,7 +102,7 @@ public class UsersActivity extends AppCompatActivity implements OnClickListener 
                         // Deletes player
                         usersList.remove(getPositionInAdapter());
                         adapter.notifyItemRemoved(getPositionInAdapter());
-                        PrefConfig.updateSPUserList(getApplicationContext(), usersList);
+                        PreferencesController.updateSPUserList(getApplicationContext(), usersList);
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

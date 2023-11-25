@@ -1,13 +1,13 @@
 package com.example.dartscoreboard;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 
@@ -33,7 +33,7 @@ public class CreateUserInfo extends AppCompatActivity implements View.OnClickLis
         cancelButton.setOnClickListener(this);
         createPlayerButton.setOnClickListener(this);
         enterUsernameEditText = findViewById(R.id.enter_name_edit_text);
-        usersList = PrefConfig.readSPUserList(this);
+        usersList = PreferencesController.readSPUserList(this);
         if (usersList == null){
             usersList = new ArrayList<>();
         }
@@ -57,7 +57,7 @@ public class CreateUserInfo extends AppCompatActivity implements View.OnClickLis
             String usernameToAdd = enterUsernameEditText.getText().toString();
             onAddNewUserButtonClick(usernameToAdd);
             enterUsernameEditText.getText().clear();
-            PrefConfig.updateSPUserList(getApplicationContext(), usersList);
+            PreferencesController.updateSPUserList(getApplicationContext(), usersList);
             openUsersActivity();
         }
     }

@@ -75,15 +75,15 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
            openPlayerSelectActivity();
         }
         if (v.getId() == R.id.remove_players_button){
-            playersToGame = PrefConfig.readUsersForGameSP(this);
+            playersToGame = PreferencesController.readUsersForGameSP(this);
             playersToGame.clear();
-            PrefConfig.saveUsersForGameSP(getApplicationContext(),playersToGame);
+            PreferencesController.saveUsersForGameSP(getApplicationContext(),playersToGame);
             playerListCheckBox.setText("");
         }
         if (v.getId() == R.id.randomise_players_button){
-            playersToGame = PrefConfig.readUsersForGameSP(this);
+            playersToGame = PreferencesController.readUsersForGameSP(this);
             Collections.shuffle(playersToGame);
-            PrefConfig.saveUsersForGameSP(getApplicationContext(),playersToGame);
+            PreferencesController.saveUsersForGameSP(getApplicationContext(),playersToGame);
             setPlayersTextBox();
         }
     }
@@ -165,7 +165,7 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
 
     private void setPlayersTextBox(){
         playerListCheckBox.setText("");
-        ArrayList<User> playersToGame = PrefConfig.readUsersForGameSP(this);
+        ArrayList<User> playersToGame = PreferencesController.readUsersForGameSP(this);
         if (playersToGame != null){
             String[] namesToGame = new String[playersToGame.size()];
             for (int i = 0; i < playersToGame.size(); i++) {

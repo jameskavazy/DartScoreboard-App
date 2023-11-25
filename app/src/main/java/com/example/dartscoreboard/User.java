@@ -1,10 +1,8 @@
 package com.example.dartscoreboard;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 
-public class User {
+public class User { // todo guy easter egg
 
     public String username;
     public int playerScore;

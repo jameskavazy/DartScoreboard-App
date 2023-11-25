@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
 
-
     <application
+        android:name=".DartsScoreboardApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -17,7 +17,7 @@
         <activity
             android:name=".CreateUserInfo"
             android:exported="false"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".PlayerSelectActivity"
             android:exported="false" />
