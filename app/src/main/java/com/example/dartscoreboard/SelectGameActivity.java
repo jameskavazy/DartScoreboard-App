@@ -19,8 +19,9 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
 
     public static final String GAME_TYPE_KEY = "GAME_TYPE";
     public static final String GAME_SETTINGS_KEY = "GAME_SETTINGS_KEY";
-
     public static final String PLAYERS_FOR_GAME_KEY = "PLAYERS_FOR_GAME_KEY";
+
+    public static final String SLOT_KEY = "SLOT_KEY";
 
     String[] gameSelectList = {"501","301","170"};
 
@@ -60,6 +61,9 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         gameTypeAutoCompleteTextView = findViewById(R.id.gameTypeDropDownBox);
         legsAutoCompleteTextView = findViewById(R.id.legs_drop_down);
         setsAutoCompleteTextView = findViewById(R.id.sets_drop_down);
+        if (playersToGame == null){
+            playersToGame = new ArrayList<>();
+        }
         playersToGame = PreferencesController.readUsersForGameSP(this);
         setUpGameTypeDropDownMenu();
         setUpLegsListDropDownMenu();
@@ -117,7 +121,16 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         Log.d("dom test", "openFiveoGameActivity");
         Bundle arguments = new Bundle();
         arguments.putSerializable(GAME_TYPE_KEY, GameType.FiveO);
-        arguments.putSerializable(GAME_SETTINGS_KEY,getGameSettings()); // todo pass through GameSetting object
+        arguments.putSerializable(GAME_SETTINGS_KEY,getGameSettings());
+        if (PreferencesController.getInstance().readGameState(GameActivity.GAME_STATE_SLOT1_KEY) == null){
+            arguments.putString(SLOT_KEY,GameActivity.GAME_STATE_SLOT1_KEY);
+
+        } else if (PreferencesController.getInstance().readGameState(GameActivity.GAME_STATE_SLOT2_KEY) == null) {
+            arguments.putString(SLOT_KEY,GameActivity.GAME_STATE_SLOT2_KEY);
+
+        } else if (PreferencesController.getInstance().readGameState(GameActivity.GAME_STATE_SLOT3_KEY) == null){
+            arguments.putString(SLOT_KEY,GameActivity.GAME_STATE_SLOT3_KEY);
+        }
         arguments.putSerializable(PLAYERS_FOR_GAME_KEY,playersToGame);
         PreferencesController.getInstance().clearUsersForGameSP();
         Intent intent = new Intent(this, GameActivity.class);
@@ -131,6 +144,17 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         arguments.putSerializable(GAME_TYPE_KEY, GameType.ThreeO);
         arguments.putSerializable(GAME_SETTINGS_KEY,getGameSettings());
         arguments.putSerializable(PLAYERS_FOR_GAME_KEY,playersToGame);
+
+        if (PreferencesController.getInstance().readGameState(GameActivity.GAME_STATE_SLOT1_KEY) == null){
+            arguments.putString(SLOT_KEY,GameActivity.GAME_STATE_SLOT1_KEY);
+
+        } else if (PreferencesController.getInstance().readGameState(GameActivity.GAME_STATE_SLOT2_KEY) == null) {
+            arguments.putString(SLOT_KEY,GameActivity.GAME_STATE_SLOT2_KEY);
+
+        } else if (PreferencesController.getInstance().readGameState(GameActivity.GAME_STATE_SLOT3_KEY) == null){
+            arguments.putString(SLOT_KEY,GameActivity.GAME_STATE_SLOT3_KEY);
+        }
+
         PreferencesController.getInstance().clearUsersForGameSP();
         Intent intent = new Intent(this, GameActivity.class);
         intent.putExtras(arguments);
@@ -143,6 +167,17 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         arguments.putSerializable(GAME_TYPE_KEY, GameType.SevenO);
         arguments.putSerializable(GAME_SETTINGS_KEY,getGameSettings());
         arguments.putSerializable(PLAYERS_FOR_GAME_KEY,playersToGame);
+
+        if (PreferencesController.getInstance().readGameState(GameActivity.GAME_STATE_SLOT1_KEY) == null){
+            arguments.putString(SLOT_KEY,GameActivity.GAME_STATE_SLOT1_KEY);
+
+        } else if (PreferencesController.getInstance().readGameState(GameActivity.GAME_STATE_SLOT2_KEY) == null) {
+            arguments.putString(SLOT_KEY,GameActivity.GAME_STATE_SLOT2_KEY);
+
+        } else if (PreferencesController.getInstance().readGameState(GameActivity.GAME_STATE_SLOT3_KEY) == null){
+            arguments.putString(SLOT_KEY,GameActivity.GAME_STATE_SLOT3_KEY);
+        }
+
         PreferencesController.getInstance().clearUsersForGameSP();
         Intent intent = new Intent(this, GameActivity.class);
         intent.putExtras(arguments);

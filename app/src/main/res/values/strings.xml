@@ -19,5 +19,6 @@
     <string name="no_of_legs">Number of Legs</string>
     <string name="no_visits">Visits: </string>
     <string name="average">Average: </string>
+    <string name="empty_slot_string">Empty Slot</string>
 
 </resources>

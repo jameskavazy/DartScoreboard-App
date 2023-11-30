@@ -23,6 +23,11 @@ import java.util.ArrayList;
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
 
+    public static final String GAME_STATE_SLOT1_KEY = "GAME_STATE_SLOT1_KEY";
+    public static final String GAME_STATE_SLOT2_KEY = "GAME_STATE_SLOT2_KEY";
+    public static final String GAME_STATE_SLOT3_KEY = "GAME_STATE_SLOT3_KEY";
+
+    private String slotKey;
     private TextView gameTitle;
     private ArrayList<User> playersList;
     private RecyclerView recyclerView;
@@ -70,7 +75,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
     
     private void newGameStart() { // todo move earlier
-        GameState existingGame = PreferencesController.getInstance().readGameState();
+        GameState existingGame = getGameState();
         if (existingGame == null) {
             // new game
             gameStateArrayDeque = new ArrayDeque<>();
@@ -79,10 +84,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             setGameSettings();
             setPlayerStartingScores();
             setPlayerTurns();
-            setSaveGameState();
             setPlayerLegs();
             setPlayerSets();
-
         } else {
             playersList = existingGame.getPlayerList();
             gameSettings = existingGame.getGameSettings();
@@ -94,41 +97,17 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         turnLeadForSets = 0;
     }
 
+    private GameState getGameState() {
+        Bundle bundle = getIntent().getExtras();
+        this.slotKey = bundle.getString(SelectGameActivity.SLOT_KEY);
+        return PreferencesController.getInstance().readGameState(slotKey);
+    }
+
     private void setGameSettings() {
         Bundle arguments = getIntent().getExtras();
         gameSettings = (GameSettings) arguments.getSerializable(SelectGameActivity.GAME_SETTINGS_KEY);
     }
 
-
-    private void setSaveGameState(){ // todo dom
-        /*
-         * Read gamestate from shared pref
-         * If gs != null, use this state as there is an ongoing game
-         * If gs == null, no ongoing game so start fresh
-         * Make sure gs shared pref is cleared at end of game
-         * Maybe add resume btn visibility based on this gs
-         *
-         *
-         * */
-
-        // after each turn update shared pref
-
-
-
-
-//        for (User player:
-//                playersList
-//             ) {
-//            saveGameState.currentScoresMap.put(player,player.playerScore);
-//            saveGameState.turnsMap.put(player,player.turn);
-//            //Log.d("dom test",player.username + " scorelist put to map" + player.getPreviousScoresList());
-//            saveGameState.previousScoresListMap.put(player, player.getPreviousScoresList());
-//            saveGameState.previousLegsMap.put(player,player.currentLegs);
-//            saveGameState.previousSetsMap.put(player,player.currentSets);
-//        }
-//        gameStateArrayDeque.addFirst(new SaveGameState(gameType, playersList));
-    }
-    
     private void nextLeg(){
         for (User player : playersList){
             if (player.getPlayerScore() == 0) {
@@ -192,7 +171,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     }
-
     private void setVisitsTextView(){
         for (User user : playersList){
             if (user.turn){
@@ -204,8 +182,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
 
     public void playerVisit(String scoreString) {
-        //Loop through and save everyone's current position
-        setSaveGameState();
 
         int scoreInt = Integer.parseInt(scoreString); //todo try catch parseint
         if (scoreInt <= 180) { // checks for valid score input
@@ -240,8 +216,25 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         }
-        PreferencesController.getInstance().saveGameState(new GameState(gameType, gameSettings, playersList));
         nextLeg();
+        //Ensures game state is not saved if the game has finished.
+        if (!gameStateEnd) {
+            saveGameState();
+        }
+    }
+
+    private void saveGameState() {
+        //todo could this be a map?
+
+        //overwrites existing SP
+        PreferencesController.getInstance().saveGameState(new GameState(gameType, gameSettings, playersList), slotKey);
+
+
+//        } else if (PreferencesController.getInstance().readGameState(GAME_STATE_SLOT2_KEY) == null) {
+//            PreferencesController.getInstance().saveGameState(new GameState(gameType, gameSettings, playersList),GAME_STATE_SLOT2_KEY);
+//
+//        } else if (PreferencesController.getInstance().readGameState(GAME_STATE_SLOT3_KEY) == null) {
+//            PreferencesController.getInstance().saveGameState(new GameState(gameType, gameSettings, playersList),GAME_STATE_SLOT3_KEY);
 
 
     }
@@ -380,8 +373,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private void endGame() {
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(recyclerView.getApplicationWindowToken(), 0);
-        inputScoreEditText.setVisibility(View.INVISIBLE);
-        PreferencesController.getInstance().clearGameState();
+        inputScoreEditText.setVisibility(View.GONE);
+        doneButton.setVisibility(View.GONE);
+        PreferencesController.getInstance().clearGameState(slotKey);
         gameStateEnd = true;
     }
 

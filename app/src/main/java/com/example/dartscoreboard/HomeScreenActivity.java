@@ -32,13 +32,23 @@ public class HomeScreenActivity extends AppCompatActivity implements View.OnClic
         newGameButton.setOnClickListener(this);
         usersButton.setOnClickListener(this);
         continueButton.setOnClickListener(this);
-//        PreferencesController.getInstance().clearGameState();
-        if (PreferencesController.getInstance().readGameState() != null) {
-            continueButton.setVisibility(View.VISIBLE);
-        } else {
-            continueButton.setVisibility(View.GONE);
-        }
+//        PreferencesController.getInstance().clearGameState(GameActivity.GAME_STATE_SLOT1_KEY);
+//        PreferencesController.getInstance().clearGameState(GameActivity.GAME_STATE_SLOT2_KEY);
+//        PreferencesController.getInstance().clearGameState(GameActivity.GAME_STATE_SLOT3_KEY);
+        setContinueBtnVisibility();
     }
+
+    private void setContinueBtnVisibility() {
+        continueButton.setVisibility(View.VISIBLE);
+//        String[] slotKeysArray = new String[]{GameActivity.GAME_STATE_SLOT1_KEY, GameActivity.GAME_STATE_SLOT2_KEY, GameActivity.GAME_STATE_SLOT3_KEY};
+//        for (String key : slotKeysArray){
+//            if (PreferencesController.getInstance().readGameState(key) != null){
+//                continueButton.setVisibility(View.VISIBLE);
+//                break;
+//            } else continueButton.setVisibility(View.GONE);
+//        }
+    }
+
 
     @Override
     public void onClick(View v) {
@@ -77,7 +87,7 @@ public class HomeScreenActivity extends AppCompatActivity implements View.OnClic
 
     private void onContinueClicked() {
         Log.d("dom test", "onContinueClicked");
-        Intent intent = new Intent(this, GameActivity.class);
+        Intent intent = new Intent(this, MatchHistoryActivity.class);
         startActivity(intent);
     }
 

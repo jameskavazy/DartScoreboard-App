@@ -32,29 +32,31 @@ public final class PreferencesController { // todo look into singleton design pa
         return preferenceController;
     }
 
-    public void saveGameState(GameState gameState) {
+    public void saveGameState(GameState gameState, String key) {
         // save to shared pref
         String jsonString = new Gson().toJson(gameState);
-        getSharedPreferences().edit().putString(GAME_STATE_KEY, jsonString).apply();
+        getSharedPreferences().edit().putString(key, jsonString).apply();
 
-        for (User user : readGameState().getPlayerList()) {
+        for (User user : readGameState(key).getPlayerList()) {
             Log.d("dom test", "saveGameState " + user.username + " " + user.playerScore);
         }
     }
 
-    public GameState readGameState() { // todo could pay in unique key here for multiple in prog games
-        String gameStateJsonString = getSharedPreferences().getString(GAME_STATE_KEY, null);
+    public GameState readGameState(String key) { // todo could pay in unique key here for multiple in prog games
+        String gameStateJsonString = getSharedPreferences().getString(key, null);
         Gson gson = new Gson();
         return gson.fromJson(gameStateJsonString, GameState.class);
+    }
+
+    public void clearGameState(String key) { // todo any more places this needs to be called.
+        getSharedPreferences().edit().remove(key).apply();
     }
 
     public void clearUsersForGameSP(){
         getSharedPreferences().edit().remove(PLAYER_FOR_GAME).apply();
     }
 
-    public void clearGameState() { // todo any more places this needs to be called.
-        getSharedPreferences().edit().remove(GAME_STATE_KEY).apply();
-    }
+
 
     public static void updateSPUserList(Context context, ArrayList<User> usersList) {
         Gson gson = new Gson();
