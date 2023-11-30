@@ -48,6 +48,10 @@ public final class PreferencesController { // todo look into singleton design pa
         return gson.fromJson(gameStateJsonString, GameState.class);
     }
 
+    public void clearUsersForGameSP(){
+        getSharedPreferences().edit().remove(PLAYER_FOR_GAME).apply();
+    }
+
     public void clearGameState() { // todo any more places this needs to be called.
         getSharedPreferences().edit().remove(GAME_STATE_KEY).apply();
     }

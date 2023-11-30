@@ -1,8 +1,9 @@
 package com.example.dartscoreboard;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class User { // todo guy easter egg
+public class User implements Serializable { // todo guy easter egg
 
     public String username;
     public int playerScore;

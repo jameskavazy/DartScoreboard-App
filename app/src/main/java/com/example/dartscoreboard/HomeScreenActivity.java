@@ -32,7 +32,7 @@ public class HomeScreenActivity extends AppCompatActivity implements View.OnClic
         newGameButton.setOnClickListener(this);
         usersButton.setOnClickListener(this);
         continueButton.setOnClickListener(this);
-
+//        PreferencesController.getInstance().clearGameState();
         if (PreferencesController.getInstance().readGameState() != null) {
             continueButton.setVisibility(View.VISIBLE);
         } else {

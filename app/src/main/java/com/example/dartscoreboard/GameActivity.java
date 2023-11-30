@@ -69,26 +69,26 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         inputScoreEditText.setOnEditorActionListener((v, actionId, event) -> onScoreEntered());
     }
     
-    private void newGameStart() { // todo ,move earlier
+    private void newGameStart() { // todo move earlier
         GameState existingGame = PreferencesController.getInstance().readGameState();
-        if (existingGame != null) {
-            playersList = existingGame.getPlayerList();
-            gameSettings = existingGame.getGameSettings();
-        } else {
+        if (existingGame == null) {
             // new game
             gameStateArrayDeque = new ArrayDeque<>();
-            playersList = (ArrayList<User>) getIntent().getExtras().getSerializable("PLAYERS_LIST_KEY");
+            playersList = (ArrayList<User>) getIntent().getExtras().getSerializable(SelectGameActivity.PLAYERS_FOR_GAME_KEY);
+            getGameType();
             setGameSettings();
             setPlayerStartingScores();
             setPlayerTurns();
             setSaveGameState();
             setPlayerLegs();
             setPlayerSets();
+
+        } else {
+            playersList = existingGame.getPlayerList();
+            gameSettings = existingGame.getGameSettings();
+            gameType = existingGame.getGameType();
         }
-
         setAdapter();
-
-
         gameStateEnd = false;
         turnLead = 0; // todo may need to save these
         turnLeadForSets = 0;
@@ -96,9 +96,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private void setGameSettings() {
         Bundle arguments = getIntent().getExtras();
-        int totalLegs = arguments.getInt(SelectGameActivity.TOTAL_LEGS_KEY);
-        int totalSets = arguments.getInt(SelectGameActivity.TOTAL_SETS_KEY);
-        gameSettings = new GameSettings(totalLegs, totalSets);
+        gameSettings = (GameSettings) arguments.getSerializable(SelectGameActivity.GAME_SETTINGS_KEY);
     }
 
 
@@ -242,9 +240,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         }
+        PreferencesController.getInstance().saveGameState(new GameState(gameType, gameSettings, playersList));
         nextLeg();
 
-        PreferencesController.getInstance().saveGameState(new GameState(gameType, gameSettings, playersList));
+
     }
 
     public int subtract(int playerScore, int currentTypedScore) {

@@ -17,9 +17,10 @@ import java.util.Collections;
 
 public class SelectGameActivity extends AppCompatActivity implements View.OnClickListener {
 
-    public static String GAME_TYPE_KEY = "GAME_TYPE";
-    public static String TOTAL_LEGS_KEY = "LEGS";
-    public static String TOTAL_SETS_KEY = "SETS";
+    public static final String GAME_TYPE_KEY = "GAME_TYPE";
+    public static final String GAME_SETTINGS_KEY = "GAME_SETTINGS_KEY";
+
+    public static final String PLAYERS_FOR_GAME_KEY = "PLAYERS_FOR_GAME_KEY";
 
     String[] gameSelectList = {"501","301","170"};
 
@@ -59,6 +60,7 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         gameTypeAutoCompleteTextView = findViewById(R.id.gameTypeDropDownBox);
         legsAutoCompleteTextView = findViewById(R.id.legs_drop_down);
         setsAutoCompleteTextView = findViewById(R.id.sets_drop_down);
+        playersToGame = PreferencesController.readUsersForGameSP(this);
         setUpGameTypeDropDownMenu();
         setUpLegsListDropDownMenu();
         setUpSetsListDropDownMenu();
@@ -115,8 +117,9 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         Log.d("dom test", "openFiveoGameActivity");
         Bundle arguments = new Bundle();
         arguments.putSerializable(GAME_TYPE_KEY, GameType.FiveO);
-        arguments.putInt(TOTAL_LEGS_KEY,getLegs()); // todo pass through GameSetting object
-        arguments.putInt(TOTAL_SETS_KEY,getSets());
+        arguments.putSerializable(GAME_SETTINGS_KEY,getGameSettings()); // todo pass through GameSetting object
+        arguments.putSerializable(PLAYERS_FOR_GAME_KEY,playersToGame);
+        PreferencesController.getInstance().clearUsersForGameSP();
         Intent intent = new Intent(this, GameActivity.class);
         intent.putExtras(arguments);
         startActivity(intent);
@@ -126,8 +129,9 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         Log.d("dom test", "openThreeoGameActivity");
         Bundle arguments = new Bundle();
         arguments.putSerializable(GAME_TYPE_KEY, GameType.ThreeO);
-        arguments.putInt(TOTAL_LEGS_KEY,getLegs());
-        arguments.putInt(TOTAL_SETS_KEY,getSets());
+        arguments.putSerializable(GAME_SETTINGS_KEY,getGameSettings());
+        arguments.putSerializable(PLAYERS_FOR_GAME_KEY,playersToGame);
+        PreferencesController.getInstance().clearUsersForGameSP();
         Intent intent = new Intent(this, GameActivity.class);
         intent.putExtras(arguments);
         startActivity(intent);
@@ -137,8 +141,9 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         Log.d("dom test", "openSevenoGameActivity");
         Bundle arguments = new Bundle();
         arguments.putSerializable(GAME_TYPE_KEY, GameType.SevenO);
-        arguments.putInt(TOTAL_LEGS_KEY,getLegs());
-        arguments.putInt(TOTAL_SETS_KEY,getSets());
+        arguments.putSerializable(GAME_SETTINGS_KEY,getGameSettings());
+        arguments.putSerializable(PLAYERS_FOR_GAME_KEY,playersToGame);
+        PreferencesController.getInstance().clearUsersForGameSP();
         Intent intent = new Intent(this, GameActivity.class);
         intent.putExtras(arguments);
         startActivity(intent);
@@ -178,15 +183,12 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
-    public int getLegs(){
+    public GameSettings getGameSettings(){
         int totalLegs = Integer.parseInt(legsAutoCompleteTextView.getText().toString());
-        return totalLegs;
+        int totalSets = Integer.parseInt(setsAutoCompleteTextView.getText().toString());
+       return new GameSettings(totalLegs,totalSets);
     }
 
-    public int getSets(){
-        int totalSets = Integer.parseInt(setsAutoCompleteTextView.getText().toString());
-        return totalSets;
-    }
 
 
     enum GameType {

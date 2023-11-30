@@ -122,7 +122,7 @@
 
         <EditText
             android:id="@+id/inputUserNameEditText"
-            android:layout_width="300dp"
+            android:layout_width="196dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginEnd="10dp"
@@ -131,6 +131,16 @@
             android:inputType="number"
             android:textSize="40sp"
             android:theme="@style/Base.Theme.DartScoreboard" />
+
+        <Button
+            android:id="@+id/done_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@color/custom_blue_accent"
+            android:text="ENTER"
+            android:textSize="12sp"
+            android:textColor="@color/black" />
     </LinearLayout>
 
     <FrameLayout
@@ -179,10 +189,5 @@
 
 
     </FrameLayout>
-
-    <Button
-        android:id="@+id/done_button"
-        android:layout_width="100dp"
-        android:layout_height="100dp" />
 
 </LinearLayout>
