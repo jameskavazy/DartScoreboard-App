@@ -26,18 +26,15 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     public static final String GAME_STATE_SLOT1_KEY = "GAME_STATE_SLOT1_KEY";
     public static final String GAME_STATE_SLOT2_KEY = "GAME_STATE_SLOT2_KEY";
     public static final String GAME_STATE_SLOT3_KEY = "GAME_STATE_SLOT3_KEY";
-
     private String slotKey;
     private TextView gameTitle;
     private ArrayList<User> playersList;
     private RecyclerView recyclerView;
     private EditText inputScoreEditText;
-
     private ArrayDeque<GameState> gameStateArrayDeque;
     private TextView averageScoreTextView;
     private TextView visitsTextView;
     private Button undoButton;
-
     private Button doneButton;
     private boolean gameStateEnd;
     private SelectGameActivity.GameType gameType;
@@ -155,8 +152,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    
-
     private void setPlayerStartingScores() {
         for (User user : playersList){
             user.setPlayerScore(gameType.startingScore);
@@ -224,19 +219,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void saveGameState() {
-        //todo could this be a map?
-
-        //overwrites existing SP
         PreferencesController.getInstance().saveGameState(new GameState(gameType, gameSettings, playersList), slotKey);
-
-
-//        } else if (PreferencesController.getInstance().readGameState(GAME_STATE_SLOT2_KEY) == null) {
-//            PreferencesController.getInstance().saveGameState(new GameState(gameType, gameSettings, playersList),GAME_STATE_SLOT2_KEY);
-//
-//        } else if (PreferencesController.getInstance().readGameState(GAME_STATE_SLOT3_KEY) == null) {
-//            PreferencesController.getInstance().saveGameState(new GameState(gameType, gameSettings, playersList),GAME_STATE_SLOT3_KEY);
-
-
     }
 
     public int subtract(int playerScore, int currentTypedScore) {

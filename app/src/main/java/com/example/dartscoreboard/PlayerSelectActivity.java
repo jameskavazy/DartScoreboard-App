@@ -104,6 +104,7 @@ private void setUsersForGame(){
             }
             Intent intent = new Intent(this, SelectGameActivity.class);
             startActivity(intent);
+            finish();
         }
 
     }

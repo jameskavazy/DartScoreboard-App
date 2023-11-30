@@ -41,13 +41,13 @@ public class MatchHistoryActivity extends AppCompatActivity implements View.OnCl
         clearGamesButton.setOnClickListener(this);
         setSlotVisibility();
         if (gameState1 != null) {
-            gameInfo = gameState1.getGameType().name + " " + gameState1.getPlayerList();
+            gameInfo = gameState1.getGameType().name + " :: " + stringBuilder(gameState1); //todo make this also capture date?
         }
         if (gameState2 != null) {
-            gameInfo2 = gameState2.getGameType().name + " " + gameState2.getPlayerList();
+            gameInfo2 = gameState2.getGameType().name + " :: " + stringBuilder(gameState2);
         }
         if (gameState3 != null) {
-            gameInfo3 = gameState3.getGameType().name + " " + gameState3.getPlayerList();
+            gameInfo3 = gameState3.getGameType().name + " :: " + stringBuilder(gameState3);
         }
         emptySlot = getString(R.string.empty_slot_string);
         setSlotText();
@@ -64,6 +64,7 @@ public class MatchHistoryActivity extends AppCompatActivity implements View.OnCl
             Intent intent = new Intent(this,GameActivity.class);
             intent.putExtras(arguments);
             startActivity(intent);
+            finish();
         }
         if (v.getId() == R.id.game_slot_2_button){
             Bundle arguments = new Bundle();
@@ -71,6 +72,7 @@ public class MatchHistoryActivity extends AppCompatActivity implements View.OnCl
             Intent intent = new Intent(this,GameActivity.class);
             intent.putExtras(arguments);
             startActivity(intent);
+            finish();
         }
         if (v.getId() == R.id.game_slot_3_button){
             Bundle arguments = new Bundle();
@@ -78,6 +80,7 @@ public class MatchHistoryActivity extends AppCompatActivity implements View.OnCl
             Intent intent = new Intent(this,GameActivity.class);
             intent.putExtras(arguments);
             startActivity(intent);
+            finish();
         }
         if (v.getId() == R.id.clear_games_button){
             PreferencesController.getInstance().clearGameState(GameActivity.GAME_STATE_SLOT1_KEY);
@@ -110,9 +113,16 @@ public class MatchHistoryActivity extends AppCompatActivity implements View.OnCl
         gameSlot3Button.setEnabled(PreferencesController.getInstance().readGameState(GameActivity.GAME_STATE_SLOT3_KEY) != null);
     }
 
-    private String stringBuilder(GameState gameState){
-        return gameState.getPlayerList() + ", ";
-
+    private String stringBuilder(GameState gameState) {
+        String playerNamesString = null;
+        if (gameState.getPlayerList() != null) {
+            String[] namesOfGame = new String[gameState.getPlayerList().size()];
+            for (int i = 0; i < gameState.getPlayerList().size(); i++) {
+                namesOfGame[i] = gameState.getPlayerList().get(i).getUsername();
+            }
+            playerNamesString = String.join(", ", namesOfGame);
+        }
+        return playerNamesString;
     }
 
 }
