@@ -8,13 +8,15 @@ public class GameState implements Serializable {
     private SelectGameActivity.GameType gameType;
     private GameSettings gameSettings;
     private ArrayList<User> playerList;
+    private int turnLead;
+    private int turnLeadForSets;
 
-
-    // gametype, players
-    public GameState(SelectGameActivity.GameType gameType, GameSettings gameSettings, ArrayList<User> playerList) {
+    public GameState(SelectGameActivity.GameType gameType, GameSettings gameSettings, ArrayList<User> playerList, int turnLead, int turnLeadForSets) {
         this.gameType = gameType;
         this.gameSettings = gameSettings;
         this.playerList = playerList;
+        this.turnLead = turnLead;
+        this.turnLeadForSets = turnLeadForSets;
     }
 
     public SelectGameActivity.GameType getGameType() {
@@ -40,6 +42,23 @@ public class GameState implements Serializable {
     public void setGameSettings(GameSettings gameSettings) {
         this.gameSettings = gameSettings;
     }
+
+    public int getTurnLead() {
+        return turnLead;
+    }
+
+    public void setTurnLead(int turnLead) {
+        this.turnLead = turnLead;
+    }
+
+    public int getTurnLeadForSets() {
+        return turnLeadForSets;
+    }
+
+    public void setTurnLeadForSets(int turnLeadForSets) {
+        this.turnLeadForSets = turnLeadForSets;
+    }
+
 
     //todo creates an object of hashmaps. Hashmaps will all store different things, all player scores, all player turns, all player average scores etc...
     // todo this then can be added to arraydeque of gamestates

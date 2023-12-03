@@ -20,12 +20,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Stack;
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final String GAME_STATE_SLOT1_KEY = "GAME_STATE_SLOT1_KEY";
     public static final String GAME_STATE_SLOT2_KEY = "GAME_STATE_SLOT2_KEY";
     public static final String GAME_STATE_SLOT3_KEY = "GAME_STATE_SLOT3_KEY";
+
+    //public static final String STACK_KEY = "STACK_KEY";
     private String slotKey;
     private TextView gameTitle;
     private ArrayList<User> playersList;
@@ -36,6 +39,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private TextView visitsTextView;
     private Button undoButton;
     private Button doneButton;
+
+    private Stack<GameState> gameStateStack;
     private boolean gameStateEnd;
     private SelectGameActivity.GameType gameType;
     private int playerStartingScore;
@@ -56,7 +61,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private void setupUI() {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        this.setRequestedOrientation(SCREEN_ORIENTATION_PORTRAIT); //todo delete this eventually
+        this.setRequestedOrientation(SCREEN_ORIENTATION_PORTRAIT); // todo delete this eventually
         averageScoreTextView = findViewById(R.id.avg_text_view);
         visitsTextView = findViewById(R.id.visits_text_view);
         undoButton = findViewById(R.id.undo_button);
@@ -72,21 +77,25 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
     
     private void newGameStart() { // todo move earlier
+        gameStateArrayDeque = new ArrayDeque<>();
+        gameStateStack = new Stack<>();
         GameState existingGame = getGameState();
         if (existingGame == null) {
             // new game
-            gameStateArrayDeque = new ArrayDeque<>();
             playersList = (ArrayList<User>) getIntent().getExtras().getSerializable(SelectGameActivity.PLAYERS_FOR_GAME_KEY);
-            getGameType();
+            gameType = getGameType();
+            gameTitle.setText(gameType.name);
             setGameSettings();
             setPlayerStartingScores();
             setPlayerTurns();
             setPlayerLegs();
             setPlayerSets();
+
         } else {
             playersList = existingGame.getPlayerList();
             gameSettings = existingGame.getGameSettings();
             gameType = existingGame.getGameType();
+            gameTitle.setText(gameType.name);
         }
         setAdapter();
         gameStateEnd = false;
@@ -105,58 +114,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         gameSettings = (GameSettings) arguments.getSerializable(SelectGameActivity.GAME_SETTINGS_KEY);
     }
 
-    private void nextLeg(){
-        for (User player : playersList){
-            if (player.getPlayerScore() == 0) {
-                player.currentLegs++;
-                turnLead++;
-                if (turnLead == playersList.size()){
-                    turnLead = 0;
-                }
-                incrementTurnForLegs(turnLead);
-                Log.d("dom test",player.username + " current legs = " + player.currentLegs);
-                nextSet();
-                matchWonChecker();
-                if (!gameStateEnd) {
-                    setPlayerStartingScores();
-                }
-                adapter.notifyDataSetChanged();
-            }
-        }
-    }
 
-    private void nextSet(){
-        for (User player:playersList
-             ) {
-            if (player.getPlayerScore() == 0 && player.getCurrentLegs() == gameSettings.getTotalLegs()) {
-                player.currentSets++;
-                setPlayerLegs();
-                turnLeadForSets++;
-                if (turnLeadForSets == playersList.size()){
-                    turnLeadForSets = 0;
-                }
-                turnLead = turnLeadForSets;
-                incrementTurnForSets(turnLeadForSets);
-                adapter.notifyDataSetChanged();
-            }
-        }
-    }
-    private void matchWonChecker(){
-        for (User player : playersList
-             ) {
-            if (player.getPlayerScore() == 0 && player.currentSets == gameSettings.getTotalSets()){
-                adapter.notifyDataSetChanged();
-                Toast.makeText(GameActivity.this, player.getUsername() + " wins the match!", Toast.LENGTH_LONG).show();
-                endGame();
-            }
-        }
-    }
-
-    private void setPlayerStartingScores() {
-        for (User user : playersList){
-            user.setPlayerScore(gameType.startingScore);
-        }
-    }
 
     private void setAverageScoreTextView() {
         for (User user : playersList){
@@ -176,7 +134,18 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
+
+
     public void playerVisit(String scoreString) {
+        //Save current gameState for undo
+        GameState previousGameState = new GameState(gameType,gameSettings,playersList,turnLead,turnLeadForSets);
+        saveForUndo(previousGameState);
+        Log.d("dom test", "playerVisit saveForUndo=  " + previousGameState);
+        for (User user:previousGameState.getPlayerList()
+        ) {
+            Log.d("dom test", "playerVisit saveForUndo= " + user.username + " score is " + user.playerScore);
+        }
+
 
         int scoreInt = Integer.parseInt(scoreString); //todo try catch parseint
         if (scoreInt <= 180) { // checks for valid score input
@@ -218,15 +187,15 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void saveGameState() {
-        PreferencesController.getInstance().saveGameState(new GameState(gameType, gameSettings, playersList), slotKey);
+    public void saveGameState() {
+        PreferencesController.getInstance().saveGameState(new GameState(gameType, gameSettings, playersList,turnLead, turnLeadForSets), slotKey);
     }
 
     public int subtract(int playerScore, int currentTypedScore) {
         int newScore = playerScore - currentTypedScore;
         if ((((playerScore <= 180) && (playerScore >= 171)) || (playerScore == 169) || (playerScore == 168) || (playerScore == 166) || (playerScore == 165) || (playerScore == 163) || (playerScore == 162) || (playerScore == 159)) && (currentTypedScore == playerScore)) {
             for (User player : playersList
-                 ) {
+            ) {
                 if (player.turn){
                     player.addToPreviousScoresList(0);
                 }
@@ -256,7 +225,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
         if (newScore == 0) {
             for (User player: playersList
-                 ) {
+            ) {
                 if (player.turn) {
                     player.addToPreviousScoresList(currentTypedScore);
                 }
@@ -265,16 +234,113 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
         }
         else {
-                for (User player : playersList
-                ) {
-                 if (player.turn){
-                        player.addToPreviousScoresList(0);
-                    }
+            for (User player : playersList
+            ) {
+                if (player.turn){
+                    player.addToPreviousScoresList(0);
                 }
+            }
             Toast.makeText(GameActivity.this, "BUST", Toast.LENGTH_SHORT).show();
             return playerScore;
         }
     }
+
+    public void setPlayerTurns() {
+        playersList.get(0).setTurn(true); // todo try catch
+        for (int i = 1; i < playersList.size(); i++) {
+            playersList.get(i).setTurn(false);
+        }
+    }
+
+
+    public void setPlayerLegs(){
+        for (int i = 0; i < playersList.size(); i++) {
+            playersList.get(i).setCurrentLegs(0);
+        }
+    }
+
+    public void setPlayerSets(){
+        for (int i = 0; i < playersList.size(); i++) {
+            playersList.get(i).setCurrentSets(0);
+        }
+    }
+
+
+    public void nextLeg(){
+        for (User player : playersList){
+            if (player.getPlayerScore() == 0) {
+                player.currentLegs++;
+                turnLead++;
+                if (turnLead == playersList.size()){
+                    turnLead = 0;
+                }
+                incrementTurnForLegs(turnLead);
+                Log.d("dom test",player.username + " current legs = " + player.currentLegs);
+                nextSet();
+                matchWonChecker();
+                if (!gameStateEnd) {
+                    setPlayerStartingScores();
+                }
+                adapter.notifyDataSetChanged();
+            }
+        }
+    }
+
+    public void nextSet(){
+        for (User player:playersList
+        ) {
+            if (player.getPlayerScore() == 0 && player.getCurrentLegs() == gameSettings.getTotalLegs()) {
+                player.currentSets++;
+                setPlayerLegs();
+                turnLeadForSets++;
+                if (turnLeadForSets == playersList.size()){
+                    turnLeadForSets = 0;
+                }
+                turnLead = turnLeadForSets;
+                incrementTurnForSets(turnLeadForSets);
+                adapter.notifyDataSetChanged();
+            }
+        }
+    }
+    public void matchWonChecker(){
+        for (User player : playersList
+        ) {
+            if (player.getPlayerScore() == 0 && player.currentSets == gameSettings.getTotalSets()){
+                adapter.notifyDataSetChanged();
+                Toast.makeText(GameActivity.this, player.getUsername() + " wins the match!", Toast.LENGTH_LONG).show();
+                endGame();
+            }
+        }
+    }
+
+    public void setPlayerStartingScores() {
+        for (User user : playersList){
+            user.setPlayerScore(gameType.startingScore);
+        }
+    }
+
+    public void incrementTurnForLegs(int turnLead){
+        for (int i = 0; i < playersList.size(); i++) {
+            playersList.get(i).setTurn(i == turnLead);
+        }
+    }
+
+    public void incrementTurnForSets(int turnLeadForSets){
+        for (int i = 0; i < playersList.size(); i++) {
+            playersList.get(i).setTurn(i == turnLeadForSets);
+        }
+    }
+
+    public void endGame() {
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(recyclerView.getApplicationWindowToken(), 0);
+        inputScoreEditText.setVisibility(View.GONE);
+        doneButton.setVisibility(View.GONE);
+        PreferencesController.getInstance().clearGameState(slotKey);
+        gameStateEnd = true;
+    }
+
+
 
 
 
@@ -286,11 +352,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         gameType = (SelectGameActivity.GameType) arguments.getSerializable(SelectGameActivity.GAME_TYPE_KEY);
         return gameType;
     }
-
-
-
-
-
+    
     private void setAdapter() {
         adapter = new RecyclerAdapterGamePlayers(playersList);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
@@ -300,25 +362,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    private void setPlayerTurns() {
-        playersList.get(0).setTurn(true); // todo try catch
-        for (int i = 1; i < playersList.size(); i++) {
-            playersList.get(i).setTurn(false);
-        }
-    }
 
-
-    private void setPlayerLegs(){
-        for (int i = 0; i < playersList.size(); i++) {
-            playersList.get(i).setCurrentLegs(0);
-        }
-    }
-
-    private void setPlayerSets(){
-        for (int i = 0; i < playersList.size(); i++) {
-            playersList.get(i).setCurrentSets(0);
-        }
-    }
 
     private Boolean onScoreEntered() {
         String input = inputScoreEditText.getText().toString();
@@ -340,27 +384,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void incrementTurnForLegs(int turnLead){
-        for (int i = 0; i < playersList.size(); i++) {
-            playersList.get(i).setTurn(i == turnLead);
-        }
-    }
-
-    private void incrementTurnForSets(int turnLeadForSets){
-        for (int i = 0; i < playersList.size(); i++) {
-            playersList.get(i).setTurn(i == turnLeadForSets);
-        }
-    }
 
 
-    private void endGame() {
-        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(recyclerView.getApplicationWindowToken(), 0);
-        inputScoreEditText.setVisibility(View.GONE);
-        doneButton.setVisibility(View.GONE);
-        PreferencesController.getInstance().clearGameState(slotKey);
-        gameStateEnd = true;
-    }
+
+
 
     @Override
     public void onClick(View v) {
@@ -386,23 +413,55 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void undo() { // todo undo
+    private void saveForUndo(GameState previousGameState){
+        //gameStateArrayDeque.add(previousGameState);
+        gameStateStack.push(previousGameState);
+    }
+
+    private void undo() { // todo bring back the HashMap/map this worked well.
         //Brings back text input if game was finished.
-//        if (gameStateEnd) {
-//            inputScoreEditText.setVisibility(View.VISIBLE);
-//        }
+        if (gameStateEnd) {
+            inputScoreEditText.setVisibility(View.VISIBLE);
+            doneButton.setVisibility(View.VISIBLE);
+            gameStateEnd = false;
+        }
+//        //GameState previousGameState = gameStateArrayDeque.pollFirst();
+//        GameState previousGameState = gameStateStack.pop();
+//        Log.d("dom test","onUndo previousGameState = " + previousGameState);
+//        if (previousGameState!= null){
 //
-//        GameState previousGameState = gameStateArrayDeque.pollFirst();
-//        if (!gameStateArrayDeque.isEmpty()){
-//            previousGameState.loadPreviousGameState(playersList);
-//        }
+//            for (User user:previousGameState.getPlayerList()
+//            ) {
+//                user.setPlayerScore(user.playerScore);
+//                user.setTurn(user.turn);
+//                user.setPlayerLegs(user.getCurrentLegs());
+//                user.setPlayerSets(user.getCurrentSets());
+//                if (!user.previousScoresList.isEmpty()) {
+//                    user.previousScoresList.remove(user.previousScoresList.size() - 1);
+//                }
+//            }
 //
-//        else {
-//            Log.d("dom test","Deque Is Empty");
-//            setSaveGameState();
-//        }
-//        setAverageScoreTextView();
+//
+//
+//
+//        } else saveGameState();
+//
 //        setVisitsTextView();
+//        setAverageScoreTextView();
 //        adapter.notifyDataSetChanged();
+//
+////
+////        GameState previousGameState = gameStateArrayDeque.pollFirst();
+////        if (!gameStateArrayDeque.isEmpty()){
+////            previousGameState.loadPreviousGameState(playersList);
+////        }
+////
+////        else {
+////            Log.d("dom test","Deque Is Empty");
+////            setSaveGameState();
+////        }
+////        setAverageScoreTextView();
+////        setVisitsTextView();
+////        adapter.notifyDataSetChanged();
     }
 }

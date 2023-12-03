@@ -48,6 +48,22 @@ public final class PreferencesController { // todo look into singleton design pa
         return gson.fromJson(gameStateJsonString, GameState.class);
     }
 
+//    public void serializeStack(Stack<GameState> gameStateStack){
+//        String jsonString = new Gson().toJson(gameStateStack);
+//        getSharedPreferences().edit().putString(GameActivity.STACK_KEY,jsonString).apply();
+//    }
+//
+//    public Stack<GameState> deSerializeStack(){
+//        String stackJsonString = getSharedPreferences().getString(GameActivity.STACK_KEY,null);
+//        Gson gson = new Gson();
+//        Type type = new TypeToken<Stack<GameState>>() {
+//        }.getType();
+//        return gson.fromJson(stackJsonString, type);
+//    }
+
+
+
+
     public void clearGameState(String key) { // todo any more places this needs to be called.
         getSharedPreferences().edit().remove(key).apply();
     }

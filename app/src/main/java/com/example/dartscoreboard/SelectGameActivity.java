@@ -122,20 +122,13 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         Bundle arguments = new Bundle();
         arguments.putSerializable(GAME_TYPE_KEY, GameType.FiveO);
         arguments.putSerializable(GAME_SETTINGS_KEY,getGameSettings());
-        if (PreferencesController.getInstance().readGameState(GameActivity.GAME_STATE_SLOT1_KEY) == null){
-            arguments.putString(SLOT_KEY,GameActivity.GAME_STATE_SLOT1_KEY);
-
-        } else if (PreferencesController.getInstance().readGameState(GameActivity.GAME_STATE_SLOT2_KEY) == null) {
-            arguments.putString(SLOT_KEY,GameActivity.GAME_STATE_SLOT2_KEY);
-
-        } else if (PreferencesController.getInstance().readGameState(GameActivity.GAME_STATE_SLOT3_KEY) == null){
-            arguments.putString(SLOT_KEY,GameActivity.GAME_STATE_SLOT3_KEY);
-        }
+        saveSlotManagement(arguments);
         arguments.putSerializable(PLAYERS_FOR_GAME_KEY,playersToGame);
         PreferencesController.getInstance().clearUsersForGameSP();
         Intent intent = new Intent(this, GameActivity.class);
         intent.putExtras(arguments);
         startActivity(intent);
+        finish();
     }
 
     private void openThreeoGameActivity() {
@@ -144,21 +137,12 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         arguments.putSerializable(GAME_TYPE_KEY, GameType.ThreeO);
         arguments.putSerializable(GAME_SETTINGS_KEY,getGameSettings());
         arguments.putSerializable(PLAYERS_FOR_GAME_KEY,playersToGame);
-
-        if (PreferencesController.getInstance().readGameState(GameActivity.GAME_STATE_SLOT1_KEY) == null){
-            arguments.putString(SLOT_KEY,GameActivity.GAME_STATE_SLOT1_KEY);
-
-        } else if (PreferencesController.getInstance().readGameState(GameActivity.GAME_STATE_SLOT2_KEY) == null) {
-            arguments.putString(SLOT_KEY,GameActivity.GAME_STATE_SLOT2_KEY);
-
-        } else if (PreferencesController.getInstance().readGameState(GameActivity.GAME_STATE_SLOT3_KEY) == null){
-            arguments.putString(SLOT_KEY,GameActivity.GAME_STATE_SLOT3_KEY);
-        }
-
+        saveSlotManagement(arguments);
         PreferencesController.getInstance().clearUsersForGameSP();
         Intent intent = new Intent(this, GameActivity.class);
         intent.putExtras(arguments);
         startActivity(intent);
+        finish();
     }
 
     private void openSevenoGameActivity() {
@@ -167,6 +151,16 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         arguments.putSerializable(GAME_TYPE_KEY, GameType.SevenO);
         arguments.putSerializable(GAME_SETTINGS_KEY,getGameSettings());
         arguments.putSerializable(PLAYERS_FOR_GAME_KEY,playersToGame);
+        saveSlotManagement(arguments);
+        PreferencesController.getInstance().clearUsersForGameSP();
+        Intent intent = new Intent(this, GameActivity.class);
+        intent.putExtras(arguments);
+        startActivity(intent);
+        finish();
+    }
+
+    private void saveSlotManagement(Bundle arguments) {
+        //todo pop savestates into an array? maybe
 
         if (PreferencesController.getInstance().readGameState(GameActivity.GAME_STATE_SLOT1_KEY) == null){
             arguments.putString(SLOT_KEY,GameActivity.GAME_STATE_SLOT1_KEY);
@@ -176,12 +170,11 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
 
         } else if (PreferencesController.getInstance().readGameState(GameActivity.GAME_STATE_SLOT3_KEY) == null){
             arguments.putString(SLOT_KEY,GameActivity.GAME_STATE_SLOT3_KEY);
+        } else  {
+            Toast.makeText(SelectGameActivity.this,"Save Slot 1 Overwritten", Toast.LENGTH_LONG).show();
+            PreferencesController.getInstance().clearGameState(GameActivity.GAME_STATE_SLOT1_KEY);
+            arguments.putString(SLOT_KEY,GameActivity.GAME_STATE_SLOT1_KEY);
         }
-
-        PreferencesController.getInstance().clearUsersForGameSP();
-        Intent intent = new Intent(this, GameActivity.class);
-        intent.putExtras(arguments);
-        startActivity(intent);
     }
 
     private void setUpGameTypeDropDownMenu(){

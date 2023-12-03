@@ -40,6 +40,7 @@ public class MatchHistoryActivity extends AppCompatActivity implements View.OnCl
         gameSlot3Button.setOnClickListener(this);
         clearGamesButton.setOnClickListener(this);
         setSlotVisibility();
+
         if (gameState1 != null) {
             gameInfo = gameState1.getGameType().name + " :: " + stringBuilder(gameState1); //todo make this also capture date?
         }
@@ -57,7 +58,6 @@ public class MatchHistoryActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public void onClick(View v) {
-
         if (v.getId() == R.id.game_slot_1_button){
             Bundle arguments = new Bundle();
             arguments.putString(SelectGameActivity.SLOT_KEY,GameActivity.GAME_STATE_SLOT1_KEY);
@@ -65,7 +65,7 @@ public class MatchHistoryActivity extends AppCompatActivity implements View.OnCl
             intent.putExtras(arguments);
             startActivity(intent);
             finish();
-        }
+        } else
         if (v.getId() == R.id.game_slot_2_button){
             Bundle arguments = new Bundle();
             arguments.putString(SelectGameActivity.SLOT_KEY,GameActivity.GAME_STATE_SLOT2_KEY);
@@ -73,15 +73,15 @@ public class MatchHistoryActivity extends AppCompatActivity implements View.OnCl
             intent.putExtras(arguments);
             startActivity(intent);
             finish();
-        }
+        } else
         if (v.getId() == R.id.game_slot_3_button){
             Bundle arguments = new Bundle();
-            arguments.putString(SelectGameActivity.SLOT_KEY,GameActivity.GAME_STATE_SLOT2_KEY);
+            arguments.putString(SelectGameActivity.SLOT_KEY,GameActivity.GAME_STATE_SLOT3_KEY);
             Intent intent = new Intent(this,GameActivity.class);
             intent.putExtras(arguments);
             startActivity(intent);
             finish();
-        }
+        } else
         if (v.getId() == R.id.clear_games_button){
             PreferencesController.getInstance().clearGameState(GameActivity.GAME_STATE_SLOT1_KEY);
             PreferencesController.getInstance().clearGameState(GameActivity.GAME_STATE_SLOT2_KEY);
@@ -92,7 +92,6 @@ public class MatchHistoryActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void setSlotText(){
-        GameState gameState1 = PreferencesController.getInstance().readGameState(GameActivity.GAME_STATE_SLOT1_KEY);
         if (gameState1 != null){
         gameSlot1Button.setText(gameInfo);
         } else gameSlot1Button.setText(emptySlot);
