@@ -15,14 +15,13 @@ public final class PreferencesController { // todo look into singleton design pa
     public static final String userPrefs = "MY_PREFS";
     public static final String PLAYER_FOR_GAME = "player_for_game_prefs";
 
-    public static final String GAME_STATE_KEY = "GAME_STATE";
+    public static final String GAME_SELECT = "GAME_SELECT";
+
 
     private static PreferencesController preferenceController;
 
 
-    private PreferencesController() {
-
-    }
+    private PreferencesController() {}
 
     public static PreferencesController getInstance() {
         if (preferenceController == null) {
@@ -46,6 +45,17 @@ public final class PreferencesController { // todo look into singleton design pa
         String gameStateJsonString = getSharedPreferences().getString(key, null);
         Gson gson = new Gson();
         return gson.fromJson(gameStateJsonString, GameState.class);
+    }
+
+    public void saveSelectedGame(String game){
+        getSharedPreferences().edit().putString(GAME_SELECT,game).apply();
+    }
+    public String getGameSelected(){
+        return getSharedPreferences().getString(GAME_SELECT,null);
+    }
+
+    public void clearSelectedGame(){
+        getSharedPreferences().edit().remove(GAME_SELECT).apply();
     }
 
 //    public void serializeStack(Stack<GameState> gameStateStack){

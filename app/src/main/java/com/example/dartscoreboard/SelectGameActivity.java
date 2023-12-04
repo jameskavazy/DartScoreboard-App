@@ -59,6 +59,9 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         randomisePlayersBtn.setOnClickListener(this);
         clearPlayersBtn.setOnClickListener(this);
         gameTypeAutoCompleteTextView = findViewById(R.id.gameTypeDropDownBox);
+        if (PreferencesController.getInstance().getGameSelected() != null){
+            gameTypeAutoCompleteTextView.setText(PreferencesController.getInstance().getGameSelected());
+        }
         legsAutoCompleteTextView = findViewById(R.id.legs_drop_down);
         setsAutoCompleteTextView = findViewById(R.id.sets_drop_down);
         if (playersToGame == null){
@@ -70,15 +73,20 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         setUpSetsListDropDownMenu();
         playerListCheckBox.setOnClickListener(this);
         setPlayersTextBox();
+        gameTypeAutoCompleteTextView.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.gameStartButton){ // switch statement
             openGameActivity();
+            PreferencesController.getInstance().clearSelectedGame();
+            finish();
         }
         if (v.getId() == R.id.NameDropDownBox){
            openPlayerSelectActivity();
+           PreferencesController.getInstance().saveSelectedGame(gameTypeAutoCompleteTextView.getText().toString());
+           finish();
         }
         if (v.getId() == R.id.remove_players_button){
             playersToGame = PreferencesController.readUsersForGameSP(this);
@@ -160,7 +168,9 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void saveSlotManagement(Bundle arguments) {
-        //todo pop savestates into an array? maybe
+        //todo switch here
+        //todo pop savestates into an array?
+        //todo add date of game- database
 
         if (PreferencesController.getInstance().readGameState(GameActivity.GAME_STATE_SLOT1_KEY) == null){
             arguments.putString(SLOT_KEY,GameActivity.GAME_STATE_SLOT1_KEY);
@@ -182,6 +192,7 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         gameTypeAutoCompleteTextView.setAdapter(adapterItems);
         //gameTypeAutoCompleteTextView.setText(adapterItems.getItem(0),false);
     }
+
 
     private void setUpLegsListDropDownMenu(){
         adapterLegsItems = new ArrayAdapter<>(this,R.layout.list_item, numberOfLegsSetsList);
