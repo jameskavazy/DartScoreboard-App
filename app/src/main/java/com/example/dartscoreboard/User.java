@@ -9,10 +9,8 @@ public class User implements Serializable { // todo guy easter egg
     public int playerScore;
     public ArrayList<Integer> previousScoresList;
     public boolean active;
-    public boolean turn;
     public int currentLegs;
     public int currentSets;
-    public int visits = getPreviousScoresList().size(); //todo make sure visits is set properly by getVisits?//setvisits.
 
     public User(String username, boolean active) {
         this.username = username;
@@ -87,14 +85,6 @@ public class User implements Serializable { // todo guy easter egg
 
     public int getCurrentSets(){
         return currentSets;
-    }
-
-    public void setTurn(boolean turn) {
-        this.turn = turn;
-    }
-
-    public boolean isTurn(){
-        return turn;
     }
 
     public double getAvg() {

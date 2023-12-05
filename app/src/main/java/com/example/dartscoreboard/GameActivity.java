@@ -93,20 +93,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void setAverageScoreTextView() {
-        for (User user : playersList){
-            if (user.turn){
-                double avg = user.getAvg();
-                averageScoreTextView.setText(String.valueOf(avg));
-            }
-        }
+        double avg = playersList.get(GameController.getInstance().getTurnIndex()).getAvg();
+        averageScoreTextView.setText(String.valueOf(avg));
     }
     private void setVisitsTextView(){
-        for (User user : playersList){
-            if (user.turn){
-                int visits = user.getVisits();
-                visitsTextView.setText(String.valueOf(visits));
-            }
-        }
+        int visits = playersList.get(GameController.getInstance().getTurnIndex()).getVisits();
+        visitsTextView.setText(String.valueOf(visits));
     }
     private void setAdapter() {
         adapter = new RecyclerAdapterGamePlayers(playersList);
@@ -142,6 +134,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             adapter.notifyDataSetChanged(); //todo once turn is used by game controller as int, change this?
             return true;
         } catch (Exception e) {
+            e.printStackTrace();
             return true;
         }
     }
