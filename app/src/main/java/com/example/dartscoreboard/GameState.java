@@ -10,15 +10,15 @@ public class GameState implements Serializable {
     private ArrayList<User> playerList;
 
     private int turnIndex;
-    private int turnLead;
+    private int turnLeadForLegs;
     private int turnLeadForSets;
 
-    public GameState(SelectGameActivity.GameType gameType, GameSettings gameSettings, ArrayList<User> playerList, int turnIndex, int turnLead, int turnLeadForSets) {
+    public GameState(SelectGameActivity.GameType gameType, GameSettings gameSettings, ArrayList<User> playerList, int turnIndex, int turnLeadForLegs, int turnLeadForSets) {
         this.gameType = gameType;
         this.gameSettings = gameSettings;
         this.playerList = playerList;
         this.turnIndex = turnIndex;
-        this.turnLead = turnLead;
+        this.turnLeadForLegs = turnLeadForLegs;
         this.turnLeadForSets = turnLeadForSets;
     }
 
@@ -54,12 +54,12 @@ public class GameState implements Serializable {
         this.turnIndex = turnIndex;
     }
 
-    public int getTurnLead() {
-        return turnLead;
+    public int getTurnLeadForLegs() {
+        return turnLeadForLegs;
     }
 
-    public void setTurnLead(int turnLead) {
-        this.turnLead = turnLead;
+    public void setTurnLeadForLegs(int turnLeadForLegs) {
+        this.turnLeadForLegs = turnLeadForLegs;
     }
 
     public int getTurnLeadForSets() {

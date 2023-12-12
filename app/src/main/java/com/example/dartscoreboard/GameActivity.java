@@ -13,6 +13,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.activity.OnBackPressedDispatcher;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -45,19 +47,27 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private int turnLead;
     private int turnLeadForSets;
     private RecyclerAdapterGamePlayers adapter;
+    private OnBackPressedDispatcher callback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("dom test", "GameActivityOnCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_activity);
+        callback = new OnBackPressedDispatcher();
+        callback.addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                GameController.getInstance().clearTurnIndices();
+                finish();
+            }
+        });
 //        Log.d("dom test", "gameType\n-------\nname " + getGameType().name + "\nstartingScore " + getGameType().startingScore);
         setupUI();
-        initGameController(); //todo playerList from exisiting game is needed to UI to work properly..
-        GameController.getInstance().newGameStart();
+        initGameController();
+        GameController.getInstance().gameStart();
         setAdapter();
     }
-
     private void setupUI() {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         this.setRequestedOrientation(SCREEN_ORIENTATION_PORTRAIT); // todo delete this eventually
@@ -119,11 +129,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             } catch (Exception ignored){
 
             }
-
         }
         try {
             Log.d("dom test", "IME_ACTION_DONE");
             GameController.getInstance().playerVisit(input);
+            adapter.notifyDataSetChanged(); //todo once turn is used by game controller as int, change this?
             if (input > 180) {
                 Toast.makeText(GameActivity.this, "Invalid Score", Toast.LENGTH_SHORT).show();
             }
@@ -131,7 +141,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             setAverageScoreTextView();
             setVisitsTextView();
             endGameChecker();
-            adapter.notifyDataSetChanged(); //todo once turn is used by game controller as int, change this?
             return true;
         } catch (Exception e) {
             e.printStackTrace();

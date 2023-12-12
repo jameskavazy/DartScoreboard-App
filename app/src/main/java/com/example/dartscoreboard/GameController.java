@@ -17,10 +17,7 @@ public final class GameController {
     private String slotKey;
     private boolean gameStateEnd;
     private Stack<GameState> gameStateStack;
-
-
     private GameSettings gameSettings;
-
 
     private GameController(){
     }
@@ -33,7 +30,7 @@ public final class GameController {
     }
 
 //Game Logic
-    public void newGameStart() { // todo move earlier
+    public void gameStart() { // todo move earlier
         gameStateStack = new Stack<>();
         GameState existingGame = getGameState();
         if (existingGame == null) {
@@ -43,18 +40,19 @@ public final class GameController {
             setPlayerSets();
             turnLeadForLegs = 0;
             turnLeadForSets = 0;
-
         } else {
             //Existing game : assign fields from existing match
+            //todo score no longer updates in exiisting game continued
+            //todo need to somehow clear down the controller onDestroy -- try override method for back press which calls finish()
             playersList = existingGame.getPlayerList();
             gameSettings = existingGame.getGameSettings();
             gameType = existingGame.getGameType();
-            turnLeadForLegs = existingGame.getTurnLead();
+            turnIndex = existingGame.getTurnIndex();
+            turnLeadForLegs = existingGame.getTurnLeadForLegs();
             turnLeadForSets = existingGame.getTurnLeadForSets();
         }
         gameStateEnd = false;
     }
-
     private GameState getGameState() {
         return PreferencesController.getInstance().readGameState(slotKey);
     }
@@ -69,11 +67,12 @@ public final class GameController {
 //        for (User user:previousGameState.getPlayerList()
 //        ) {
 //            Log.d("dom test", "playerVisit saveForUndo= " + user.username + " score is " + user.playerScore);
-//        } //todo reenable once undo fixed
+//        } //todo re-enable once undo fixed
         if (scoreInt <= 180) { // checks for valid score input
-            User player = playersList.get(turnIndex);
-            int currentScore = player.getPlayerScore();
-            player.setPlayerScore(subtract(currentScore,scoreInt));
+            User currentPlayer = playersList.get(turnIndex);
+            int currentScore = currentPlayer.getPlayerScore();
+            currentPlayer.setPlayerScore(subtract(currentScore,scoreInt));
+            Log.d("dom test", "playerVisit - afterSubtract : " + currentPlayer.playerScore);
             incrementTurnIndex();
         }
         nextLeg();
@@ -116,6 +115,8 @@ public final class GameController {
     public void saveForUndo(GameState previousGameState){
         gameStateStack.push(previousGameState);
     }
+
+
 
     public void undo() { // todo bring back the HashMap/map this worked well.
 
@@ -180,7 +181,6 @@ public final class GameController {
 
 
     public void nextLeg(){
-
         for (User player : playersList){
             if (player.getPlayerScore() == 0) {
                 player.currentLegs++;
@@ -205,6 +205,7 @@ public final class GameController {
             }
         }
     }
+
     public void matchWonChecker(){
         for (User player : playersList
         ) {
@@ -214,7 +215,6 @@ public final class GameController {
             }
         }
     }
-
     public void setPlayerStartingScores() {
         for (User user : playersList){
             user.setPlayerScore(gameType.startingScore);
@@ -224,11 +224,11 @@ public final class GameController {
     public void incrementTurnIndex(){
         turnIndex = (turnIndex + 1) % playersList.size();
     }
+
     public void incrementTurnForLegs(){
         turnLeadForLegs = (turnLeadForLegs + 1) % playersList.size();
         turnIndex = turnLeadForLegs;
     }
-
     public void incrementTurnForSets(){
         turnLeadForSets = (turnLeadForSets + 1) % playersList.size();
         turnLeadForLegs = turnLeadForSets;
@@ -238,21 +238,43 @@ public final class GameController {
     public void setPlayersList(ArrayList<User> playersList) {
         this.playersList = playersList;
     }
+
     public void setSlotKey(String slotKey) {
         this.slotKey = slotKey;
     }
-
     public void setGameSettings(GameSettings gameSettings) {
         this.gameSettings = gameSettings;
     }
-
 
     public void setGameType(SelectGameActivity.GameType gameType) {
         this.gameType = gameType;
     }
 
+    public void setTurnIndex(int turnIndex) {
+        this.turnIndex = turnIndex;
+    }
+
     public int getTurnIndex() {
         return turnIndex;
+    }
+    public int getTurnLeadForLegs() {
+        return turnLeadForLegs;
+    }
+
+    public void setTurnLeadForLegs(int turnLeadForLegs) {
+        this.turnLeadForLegs = turnLeadForLegs;
+    }
+    public int getTurnLeadForSets() {
+        return turnLeadForSets;
+    }
+    public void setTurnLeadForSets(int turnLeadForSets) {
+        this.turnLeadForSets = turnLeadForSets;
+    }
+
+    public void clearTurnIndices(){
+        setTurnIndex(0);
+        setTurnLeadForSets(0);
+        setTurnLeadForSets(0);
     }
 
     public void endGame() {

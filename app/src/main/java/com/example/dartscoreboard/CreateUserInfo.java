@@ -66,6 +66,5 @@ public class CreateUserInfo extends AppCompatActivity implements View.OnClickLis
         Intent intent = new Intent(this, UsersActivity.class);
         startActivity(intent);
         finish();
-        //todo let's control the backstack - circular activities.
     }
 }

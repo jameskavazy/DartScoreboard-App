@@ -44,13 +44,10 @@ public class UsersActivity extends AppCompatActivity implements OnClickListener 
     }
 
     private void setOnClickListener() {
-       clickHandler = new recyclerAdapterUsers.ClickHandler() {
-            @Override
-            public void onMyButtonClicked(View view, int position) {
-                setPositionInAdapter(position);
-                onCreateDialogue().show();
-            }
-        };
+       clickHandler = (view, position) -> {
+           setPositionInAdapter(position);
+           onCreateDialogue().show();
+       };
     }
 
     public void setPositionInAdapter(int position){
@@ -66,7 +63,6 @@ public class UsersActivity extends AppCompatActivity implements OnClickListener 
             Log.d("dom test","onAddPlayerButtonclick");
             finish();
             openCreateUserActivity();
-
         }
     }
 

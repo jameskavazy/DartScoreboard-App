@@ -23,9 +23,6 @@ public class PlayerSelectActivity extends AppCompatActivity implements View.OnCl
 
     private RecyclerView recyclerView;
 
-    public final String USER_KEY = "USER_STRING";
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,38 +48,26 @@ public class PlayerSelectActivity extends AppCompatActivity implements View.OnCl
             usersList = new ArrayList<>();
         }
         setAdapter();
-       // createUsersForGameList().clear();
     }
 
     private void setOnClickListener(){
-        listen = new recyclerAdapterPlayersToGame.ClickListen() {
-            @Override
-            public void onClick(View view, int position) {
-                int userToAdd = usersList.indexOf(usersList.get(position));
-                String nameToAdd = usersList.get(position).getUsername();
-                Log.d("dom test",nameToAdd);
-                Log.d("dom test", String.valueOf(userToAdd));
-                User user = usersList.get(position);
-                if (!user.getActive()) {
-                    user.setActive(true);
-                    adapter.notifyItemChanged(position);
-                }
-                else if (user.getActive()){
-                    user.setActive(false);
-                    adapter.notifyItemChanged(position);
-                }
-
+        listen = (view, position) -> {
+            User user = usersList.get(position);
+            if (!user.getActive()) {
+                user.setActive(true);
+                adapter.notifyItemChanged(position);
+            }
+            else {
+                user.setActive(false);
+                adapter.notifyItemChanged(position);
             }
         };
     }
 
-private ArrayList<User> createUsersForGameList(){
-        ArrayList<User> usersForGame = new ArrayList<>();
-        return usersForGame;
-}
+
 
 private void setUsersForGame(){
-    ArrayList<User> usersForGame = createUsersForGameList();
+    ArrayList<User> usersForGame = new ArrayList<>();
     for (int i = 0; i < usersList.size(); i++) {
         if (usersList.get(i).active){
             usersForGame.add(usersList.get(i));
@@ -100,7 +85,7 @@ private void setUsersForGame(){
             setUsersForGame();
             Log.d("dom test","onButtonDoneClick");
             for (int i = 0; i<usersList.size(); i++) {
-                Log.d("dom test", i +" " + " " + Boolean.toString(usersList.get(i).getActive()));
+                Log.d("dom test", i +" " + " " + usersList.get(i).getActive());
             }
             Intent intent = new Intent(this, SelectGameActivity.class);
             startActivity(intent);

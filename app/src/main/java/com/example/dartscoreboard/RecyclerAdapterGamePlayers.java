@@ -13,13 +13,9 @@ import java.util.ArrayList;
 
 public class RecyclerAdapterGamePlayers extends RecyclerView.Adapter<RecyclerAdapterGamePlayers.GameViewHolder> {
 
-    private ArrayList<User> usersList = new ArrayList<>();
-  //  private int legs;
-    private int gameScore;
-
+    private ArrayList<User> usersList;
     public RecyclerAdapterGamePlayers(ArrayList<User> usersList){
         this.usersList = usersList;
-        //this.legs = legs;
     }
 
     public class GameViewHolder extends RecyclerView.ViewHolder {
@@ -70,6 +66,5 @@ public class RecyclerAdapterGamePlayers extends RecyclerView.Adapter<RecyclerAda
     public int getItemCount() {
         return usersList.size();
     }
-
 
 }
