@@ -3,6 +3,7 @@ package com.example.dartscoreboard;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Stack;
 
 public final class GameController {
@@ -271,6 +272,20 @@ public final class GameController {
         this.turnLeadForSets = turnLeadForSets;
     }
 
+
+    public String generateKey(){
+        int leftLimit = 48; // numeral '0'
+        int rightLimit = 122; // letter 'z'
+        int targetStringLength = 10;
+        Random random = new Random();
+        return random.ints(leftLimit, rightLimit + 1)
+                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+                .limit(targetStringLength)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
+        //todo use this in conjunction with slot key to create
+    }
+
     public void clearTurnIndices(){
         setTurnIndex(0);
         setTurnLeadForSets(0);
@@ -282,6 +297,8 @@ public final class GameController {
         gameStateEnd = true;
         GameActivity.gameStateEnd = true;
     }
+
+
 
 
 }
