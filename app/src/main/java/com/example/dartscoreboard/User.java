@@ -1,10 +1,15 @@
 package com.example.dartscoreboard;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
+@Entity
 public class User implements Serializable { // todo guy easter egg
-
+    @PrimaryKey (autoGenerate = true)
+    public int userID;
     public String username;
     public int playerScore;
     public ArrayList<Integer> previousScoresList;

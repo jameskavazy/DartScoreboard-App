@@ -11,12 +11,11 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
-public final class PreferencesController { // todo look into singleton design pattern
+public final class PreferencesController {
     public static final String userPrefs = "MY_PREFS";
     public static final String PLAYER_FOR_GAME = "player_for_game_prefs";
 
     public static final String GAME_SELECT = "GAME_SELECT";
-
 
     private static PreferencesController preferenceController;
 
@@ -35,16 +34,14 @@ public final class PreferencesController { // todo look into singleton design pa
         // save to shared pref
         String jsonString = new Gson().toJson(gameState);
         getSharedPreferences().edit().putString(key, jsonString).apply();
-
-        for (User user : readGameState(key).getPlayerList()) {
-            Log.d("dom test", "saveGameState " + user.username + " " + user.playerScore);
-        }
+//        for (User user : readGameState(key).getPlayerList()) {
+//            Log.d("dom test", "saveGameState " + user.username + " " + user.playerScore);
+//        }
     }
 
-    public GameState readGameState(String key) { // todo could pay in unique key here for multiple in prog games
+    public GameState readGameState(String key) {
         String gameStateJsonString = getSharedPreferences().getString(key, null);
-        Gson gson = new Gson();
-        return gson.fromJson(gameStateJsonString, GameState.class);
+        return new Gson().fromJson(gameStateJsonString, GameState.class);
     }
 
     public void saveSelectedGame(String game){

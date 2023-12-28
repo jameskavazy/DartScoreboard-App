@@ -1,25 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="8dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="8dp">
 
-    <FrameLayout
-        android:layout_width="0dp"
+    <RelativeLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:padding="8dp">
 
         <TextView
-            android:id="@+id/match_history_textview"
+            android:id="@+id/match_history_date_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="01/02/23"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+
+        <TextView
+            android:id="@+id/match_history_title_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Title"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:maxLines="1"
+            android:layout_toStartOf="@id/match_history_date_textview"
+            android:layout_alignParentStart="true"
+            android:ellipsize="end"
+            />
+
+        <TextView
+            android:id="@+id/match_history_players_textview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            tools:text="501   Recent Game             "
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp" />
-    </FrameLayout>
+            android:layout_below="@id/match_history_title_textview"
+            android:layout_toStartOf="@id/match_history_date_textview"
+            android:text="players" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

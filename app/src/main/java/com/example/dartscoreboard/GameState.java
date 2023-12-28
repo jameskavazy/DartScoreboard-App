@@ -1,17 +1,35 @@
 package com.example.dartscoreboard;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
 import java.io.Serializable;
+import java.sql.Date;
 import java.util.ArrayList;
 
+
+@Entity (tableName = "match_history")
 public class GameState implements Serializable {
 
-    private SelectGameActivity.GameType gameType;
-    private GameSettings gameSettings;
-    private ArrayList<User> playerList;
+    @PrimaryKey
+    public int gameID;
 
-    private int turnIndex;
-    private int turnLeadForLegs;
-    private int turnLeadForSets;
+//todo add timestamps
+
+    public SelectGameActivity.GameType gameType;
+
+    public ArrayList<User> playerList;
+
+    private GameSettings gameSettings;
+
+    public int turnIndex;
+
+    public int turnLeadForLegs;
+
+    public int turnLeadForSets;
+
 
     public GameState(SelectGameActivity.GameType gameType, GameSettings gameSettings, ArrayList<User> playerList, int turnIndex, int turnLeadForLegs, int turnLeadForSets) {
         this.gameType = gameType;
@@ -20,6 +38,14 @@ public class GameState implements Serializable {
         this.turnIndex = turnIndex;
         this.turnLeadForLegs = turnLeadForLegs;
         this.turnLeadForSets = turnLeadForSets;
+    }
+
+    public void setGameID(int gameID) {
+        this.gameID = gameID;
+    }
+
+    public int getGameID() {
+        return gameID;
     }
 
     public SelectGameActivity.GameType getGameType() {

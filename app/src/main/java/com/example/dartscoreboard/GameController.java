@@ -2,6 +2,10 @@ package com.example.dartscoreboard;
 
 import android.util.Log;
 
+import androidx.lifecycle.ViewModelProviders;
+
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Stack;
@@ -32,6 +36,8 @@ public final class GameController {
 
 //Game Logic
     public void gameStart() { // todo move earlier
+
+        //todo this logic needs to change.
         gameStateStack = new Stack<>();
         GameState existingGame = getGameState();
         if (existingGame == null) {
@@ -43,7 +49,7 @@ public final class GameController {
             turnLeadForSets = 0;
         } else {
             //Existing game : assign fields from existing match
-            //todo score no longer updates in exiisting game continued
+            //todo score no longer updates in existing game continued
             //todo need to somehow clear down the controller onDestroy -- try override method for back press which calls finish()
             playersList = existingGame.getPlayerList();
             gameSettings = existingGame.getGameSettings();
@@ -77,6 +83,7 @@ public final class GameController {
             incrementTurnIndex();
         }
         nextLeg();
+
         //Ensures game state is not saved if the game has finished.
         if (!gameStateEnd) {
             saveGameState();
@@ -84,14 +91,21 @@ public final class GameController {
     }
 
     public void saveGameState() {
-        PreferencesController.getInstance().saveGameState(new GameState(gameType, gameSettings, playersList, turnIndex, turnLeadForLegs, turnLeadForSets), slotKey);
+        GameState gameState = new GameState(gameType,gameSettings,playersList,turnIndex,turnLeadForLegs,turnLeadForSets);
+
+        Log.d("dom test","onSaveGameState run");
     }
 
     private int subtract(int playerScore, int currentTypedScore) {
         int newScore = playerScore - currentTypedScore;
         User currentPlayer = playersList.get(turnIndex); //todo could be a switch below?
 
-        if ((((playerScore <= 180) && (playerScore >= 171)) || (playerScore == 169) || (playerScore == 168) || (playerScore == 166) || (playerScore == 165) || (playerScore == 163) || (playerScore == 162) || (playerScore == 159)) && (currentTypedScore == playerScore)) {
+        if ((((playerScore <= 180) && (playerScore >= 171)) ||
+                (playerScore == 169) || (playerScore == 168) ||
+                (playerScore == 166) || (playerScore == 165) ||
+                (playerScore == 163) || (playerScore == 162) ||
+                (playerScore == 159))
+                && (currentTypedScore == playerScore)) {
             currentPlayer.addToPreviousScoresList(0);
             //Toast.makeText(GameActivity.this, "BUST", Toast.LENGTH_SHORT).show();
             return playerScore;
@@ -272,20 +286,6 @@ public final class GameController {
         this.turnLeadForSets = turnLeadForSets;
     }
 
-
-    public String generateKey(){
-        int leftLimit = 48; // numeral '0'
-        int rightLimit = 122; // letter 'z'
-        int targetStringLength = 10;
-        Random random = new Random();
-        return random.ints(leftLimit, rightLimit + 1)
-                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
-                .limit(targetStringLength)
-                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-                .toString();
-        //todo use this in conjunction with slot key to create
-    }
-
     public void clearTurnIndices(){
         setTurnIndex(0);
         setTurnLeadForSets(0);
@@ -297,6 +297,8 @@ public final class GameController {
         gameStateEnd = true;
         GameActivity.gameStateEnd = true;
     }
+
+
 
 
 

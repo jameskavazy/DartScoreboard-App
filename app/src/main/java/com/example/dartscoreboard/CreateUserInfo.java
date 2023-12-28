@@ -62,6 +62,7 @@ public class CreateUserInfo extends AppCompatActivity implements View.OnClickLis
         }
     }
 
+
     private void openUsersActivity(){
         Intent intent = new Intent(this, UsersActivity.class);
         startActivity(intent);

@@ -3,6 +3,7 @@ package com.example.dartscoreboard;
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,7 +14,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.activity.OnBackPressedDispatcher;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -24,6 +24,13 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private MatchHistoryViewModel matchHistoryViewModel;
+
+    public static final String GAME_STATE_ID = "GAME_STATE_KEY";
+    public static final String OPEN_GAME_ACTIVITY_KEY = "OPEN_GAME_ACTIVITY_KEY";
+
+
 
     public static final String GAME_STATE_SLOT1_KEY = "GAME_STATE_SLOT1_KEY";
     public static final String GAME_STATE_SLOT2_KEY = "GAME_STATE_SLOT2_KEY";
@@ -51,17 +58,17 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("dom test", "GameActivityOnCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_activity);
-        callback = new OnBackPressedDispatcher();
-        callback.addCallback(this, new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                GameController.getInstance().clearTurnIndices();
-                finish();
-            }
-        });
+//        matchHistoryViewModel = ViewModelProviders.of(this).get(MatchHistoryViewModel.class);
+//        callback = new OnBackPressedDispatcher();
+//        callback.addCallback(this, new OnBackPressedCallback(true) {
+//            @Override
+//            public void handleOnBackPressed() {
+//                GameController.getInstance().clearTurnIndices();
+//                finish();
+//            }
+//        }); //todo this isn't being called/run^^
 //        Log.d("dom test", "gameType\n-------\nname " + getGameType().name + "\nstartingScore " + getGameType().startingScore);
         setupUI();
         initGameController();
@@ -78,12 +85,23 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView = findViewById(R.id.player_info_recycler_view);
         gameTitle = findViewById(R.id.gameActivityTitle);
         inputScoreEditText = findViewById(R.id.inputUserNameEditText);
-//        gameTitle.setText(getGameType().name);
         averageScoreTextView.setText(String.valueOf(0.0));
         undoButton.setOnClickListener(this);
         doneButton.setOnClickListener(this);
         inputScoreEditText.setOnEditorActionListener((v, actionId, event) -> onScoreEntered());
 
+        //Set Title based on Extras
+        Intent intent = getIntent();
+        Bundle arguments = getIntent().getExtras();
+        if (intent.hasExtra(GAME_STATE_ID)){
+            GameState gameState = (GameState) intent.getSerializableExtra(OPEN_GAME_ACTIVITY_KEY);
+            gameTitle.setText(gameState.getGameType().name);
+        } else {
+            assert arguments != null;
+            SelectGameActivity.GameType gameType = (SelectGameActivity.GameType) arguments.getSerializable(SelectGameActivity.GAME_TYPE_KEY);
+            assert gameType != null;
+            gameTitle.setText(gameType.name);
+        }
     }
     private void initGameController() {
         Bundle arguments = getIntent().getExtras();
@@ -112,8 +130,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
     private void setAdapter() {
         adapter = new RecyclerAdapterGamePlayers(playersList);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
     }
