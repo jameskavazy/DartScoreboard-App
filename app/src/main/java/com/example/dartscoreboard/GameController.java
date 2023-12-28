@@ -1,5 +1,6 @@
 package com.example.dartscoreboard;
 
+import android.os.AsyncTask;
 import android.util.Log;
 
 import androidx.lifecycle.ViewModelProviders;
@@ -12,58 +13,30 @@ import java.util.Stack;
 
 public final class GameController {
 
+    private int gameID;
 
+    private MatchHistoryRepository repository;
     public static GameController gameController;
     public int turnIndex = 0;
-    private int turnLeadForLegs;
-    private int turnLeadForSets;
+    private int turnLeadForLegs = 0;
+    private int turnLeadForSets = 0;
+
     private ArrayList<User> playersList;
+
     private SelectGameActivity.GameType gameType;
-    private String slotKey;
+
+    //    private String slotKey;
     private boolean gameStateEnd;
     private Stack<GameState> gameStateStack;
     private GameSettings gameSettings;
-
     private GameController(){
     }
-
     public static GameController getInstance() {
         if (gameController == null){
             gameController = new GameController();
         }
         return gameController;
     }
-
-//Game Logic
-    public void gameStart() { // todo move earlier
-
-        //todo this logic needs to change.
-        gameStateStack = new Stack<>();
-        GameState existingGame = getGameState();
-        if (existingGame == null) {
-            // new game
-            setPlayerStartingScores();
-            setPlayerLegs();
-            setPlayerSets();
-            turnLeadForLegs = 0;
-            turnLeadForSets = 0;
-        } else {
-            //Existing game : assign fields from existing match
-            //todo score no longer updates in existing game continued
-            //todo need to somehow clear down the controller onDestroy -- try override method for back press which calls finish()
-            playersList = existingGame.getPlayerList();
-            gameSettings = existingGame.getGameSettings();
-            gameType = existingGame.getGameType();
-            turnIndex = existingGame.getTurnIndex();
-            turnLeadForLegs = existingGame.getTurnLeadForLegs();
-            turnLeadForSets = existingGame.getTurnLeadForSets();
-        }
-        gameStateEnd = false;
-    }
-    private GameState getGameState() {
-        return PreferencesController.getInstance().readGameState(slotKey);
-    }
-
 
     public void playerVisit(int scoreInt) {
 //        //Save current gameState for undo
@@ -91,10 +64,15 @@ public final class GameController {
     }
 
     public void saveGameState() {
-        GameState gameState = new GameState(gameType,gameSettings,playersList,turnIndex,turnLeadForLegs,turnLeadForSets);
+//        if (gameID != -1){
+//            GameState gameState = new GameState(gameType,gameSettings,playersList,turnIndex,turnLeadForLegs,turnLeadForSets);
+//            repository.upsert(gameState);
+//        }
 
-        Log.d("dom test","onSaveGameState run");
     }
+
+
+
 
     private int subtract(int playerScore, int currentTypedScore) {
         int newScore = playerScore - currentTypedScore;
@@ -230,6 +208,7 @@ public final class GameController {
             }
         }
     }
+
     public void setPlayerStartingScores() {
         for (User user : playersList){
             user.setPlayerScore(gameType.startingScore);
@@ -239,11 +218,11 @@ public final class GameController {
     public void incrementTurnIndex(){
         turnIndex = (turnIndex + 1) % playersList.size();
     }
-
     public void incrementTurnForLegs(){
         turnLeadForLegs = (turnLeadForLegs + 1) % playersList.size();
         turnIndex = turnLeadForLegs;
     }
+
     public void incrementTurnForSets(){
         turnLeadForSets = (turnLeadForSets + 1) % playersList.size();
         turnLeadForLegs = turnLeadForSets;
@@ -254,15 +233,19 @@ public final class GameController {
         this.playersList = playersList;
     }
 
-    public void setSlotKey(String slotKey) {
-        this.slotKey = slotKey;
-    }
     public void setGameSettings(GameSettings gameSettings) {
         this.gameSettings = gameSettings;
     }
 
+    public GameSettings getGameSettings() {
+        return gameSettings;
+    }
     public void setGameType(SelectGameActivity.GameType gameType) {
         this.gameType = gameType;
+    }
+
+    public SelectGameActivity.GameType getGameType() {
+        return gameType;
     }
 
     public void setTurnIndex(int turnIndex) {
@@ -272,18 +255,22 @@ public final class GameController {
     public int getTurnIndex() {
         return turnIndex;
     }
+
     public int getTurnLeadForLegs() {
         return turnLeadForLegs;
     }
-
     public void setTurnLeadForLegs(int turnLeadForLegs) {
         this.turnLeadForLegs = turnLeadForLegs;
     }
+
     public int getTurnLeadForSets() {
         return turnLeadForSets;
     }
     public void setTurnLeadForSets(int turnLeadForSets) {
         this.turnLeadForSets = turnLeadForSets;
+    }
+    public ArrayList<User> getPlayersList() {
+        return playersList;
     }
 
     public void clearTurnIndices(){
@@ -292,15 +279,30 @@ public final class GameController {
         setTurnLeadForSets(0);
     }
 
+    public int getGameID() {
+        return gameID;
+    }
+
+    public void setGameID(int gameID) {
+        this.gameID = gameID;
+    }
+
     public void endGame() {
-        PreferencesController.getInstance().clearGameState(slotKey);
+        //Clear down controller at end of game.
+
+//        PreferencesController.getInstance().clearGameState(slotKey);
         gameStateEnd = true;
         GameActivity.gameStateEnd = true;
+        clearTurnIndices();
+        PreferencesController.getInstance().clearUsersForGameSP();
+        playersList = PreferencesController.readUsersForGameSP(DartsScoreboardApplication.getContext());
     }
 
 
-
-
-
+    public void initialiseGameController(SelectGameActivity.GameType gameType, GameSettings gameSettings, ArrayList<User> playersList){
+        setPlayersList(playersList);
+        setGameType(gameType);
+        setGameSettings(gameSettings);
+    }
 
 }

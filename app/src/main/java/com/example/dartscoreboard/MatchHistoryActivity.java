@@ -64,7 +64,7 @@ public class MatchHistoryActivity extends AppCompatActivity implements View.OnCl
             public void onItemClick(GameState gameState) {
                Intent intent = new Intent(MatchHistoryActivity.this, GameActivity.class);
                Bundle arguments = new Bundle();
-               arguments.putSerializable(GameActivity.OPEN_GAME_ACTIVITY_KEY, gameState);
+               arguments.putSerializable(GameActivity.MATCH_HISTORY_EXTRA_KEY, gameState);
                intent.putExtra(GameActivity.GAME_STATE_ID, gameState.gameID);
                intent.putExtras(arguments);
                startActivity(intent); //todo codinginFlow tut - do we need edit note request ID(int value for callback)

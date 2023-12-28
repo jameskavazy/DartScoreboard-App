@@ -1,22 +1,26 @@
 package com.example.dartscoreboard;
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
 @Entity
-public class User implements Serializable { // todo guy easter egg
+public class User implements Serializable { //todo guy easter egg
     @PrimaryKey (autoGenerate = true)
     public int userID;
     public String username;
+    @Ignore
     public int playerScore;
+    @Ignore
     public ArrayList<Integer> previousScoresList;
     public boolean active;
+    @Ignore
     public int currentLegs;
+    @Ignore
     public int currentSets;
-
     public User(String username, boolean active) {
         this.username = username;
         this.active = active;
@@ -108,7 +112,17 @@ public class User implements Serializable { // todo guy easter egg
     public void setPlayerLegs(int currentLegs) {
         this.currentLegs = currentLegs;
     }
+
     public void setPlayerSets (int currentSets){
         this.currentSets = currentSets;
+    }
+
+
+    public int getUserID() {
+        return userID;
+    }
+
+    public void setUserID(int userID) {
+        this.userID = userID;
     }
 }

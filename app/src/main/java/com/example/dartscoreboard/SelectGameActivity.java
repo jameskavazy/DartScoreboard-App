@@ -21,8 +21,6 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
     public static final String GAME_SETTINGS_KEY = "GAME_SETTINGS_KEY";
     public static final String PLAYERS_FOR_GAME_KEY = "PLAYERS_FOR_GAME_KEY";
 
-    public static final String SLOT_KEY = "SLOT_KEY";
-
     String[] gameSelectList = {"501","301","170"};
 
     String[] numberOfLegsSetsList = {"1","2","3","4","5"};
@@ -127,64 +125,31 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
 
     private void openFiveoGameActivity() {
         Log.d("dom test", "openFiveoGameActivity");
-        Bundle arguments = new Bundle();
-        arguments.putSerializable(GAME_TYPE_KEY, GameType.FiveO);
-        arguments.putSerializable(GAME_SETTINGS_KEY,getGameSettings());
-        saveSlotManagement(arguments);
-        arguments.putSerializable(PLAYERS_FOR_GAME_KEY,playersToGame);
+        launchGameActivity();
         PreferencesController.getInstance().clearUsersForGameSP();
-        Intent intent = new Intent(this, GameActivity.class);
-        intent.putExtras(arguments);
-        startActivity(intent);
+        GameController.getInstance().initialiseGameController(GameType.FiveO,getGameSettings(),playersToGame);
         finish();
     }
 
     private void openThreeoGameActivity() {
         Log.d("dom test", "openThreeoGameActivity");
-        Bundle arguments = new Bundle();
-        arguments.putSerializable(GAME_TYPE_KEY, GameType.ThreeO);
-        arguments.putSerializable(GAME_SETTINGS_KEY,getGameSettings());
-        arguments.putSerializable(PLAYERS_FOR_GAME_KEY,playersToGame);
-        saveSlotManagement(arguments);
+        launchGameActivity();
         PreferencesController.getInstance().clearUsersForGameSP();
-        Intent intent = new Intent(this, GameActivity.class);
-        intent.putExtras(arguments);
-        startActivity(intent);
+        GameController.getInstance().initialiseGameController(GameType.ThreeO,getGameSettings(),playersToGame);
         finish();
     }
 
     private void openSevenoGameActivity() {
         Log.d("dom test", "openSevenoGameActivity");
-        Bundle arguments = new Bundle();
-        arguments.putSerializable(GAME_TYPE_KEY, GameType.SevenO);
-        arguments.putSerializable(GAME_SETTINGS_KEY,getGameSettings());
-        arguments.putSerializable(PLAYERS_FOR_GAME_KEY,playersToGame);
-        saveSlotManagement(arguments);
+        launchGameActivity();
         PreferencesController.getInstance().clearUsersForGameSP();
-        Intent intent = new Intent(this, GameActivity.class);
-        intent.putExtras(arguments);
-        startActivity(intent);
+        GameController.getInstance().initialiseGameController(GameType.SevenO,getGameSettings(),playersToGame);
         finish();
     }
 
-    private void saveSlotManagement(Bundle arguments) {
-        //todo switch here
-        //todo pop savestates into an array?
-        //todo add date of game- database
-
-        if (PreferencesController.getInstance().readGameState(GameActivity.GAME_STATE_SLOT1_KEY) == null){
-            arguments.putString(SLOT_KEY,GameActivity.GAME_STATE_SLOT1_KEY);
-
-        } else if (PreferencesController.getInstance().readGameState(GameActivity.GAME_STATE_SLOT2_KEY) == null) {
-            arguments.putString(SLOT_KEY,GameActivity.GAME_STATE_SLOT2_KEY);
-
-        } else if (PreferencesController.getInstance().readGameState(GameActivity.GAME_STATE_SLOT3_KEY) == null){
-            arguments.putString(SLOT_KEY,GameActivity.GAME_STATE_SLOT3_KEY);
-        } else  {
-            Toast.makeText(SelectGameActivity.this,"Save Slot 1 Overwritten", Toast.LENGTH_LONG).show();
-            PreferencesController.getInstance().clearGameState(GameActivity.GAME_STATE_SLOT1_KEY);
-            arguments.putString(SLOT_KEY,GameActivity.GAME_STATE_SLOT1_KEY);
-        }
+    private void launchGameActivity() {
+        Intent intent = new Intent(this, GameActivity.class);
+        startActivity(intent);
     }
 
     private void setUpGameTypeDropDownMenu(){
@@ -228,8 +193,6 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
        return new GameSettings(totalLegs,totalSets);
     }
 
-
-
     enum GameType {
         FiveO("501", 501),
         ThreeO("301", 301),
@@ -243,9 +206,6 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
             this.startingScore = startingScore;
         }
     }
-
-
-
 }
 
 

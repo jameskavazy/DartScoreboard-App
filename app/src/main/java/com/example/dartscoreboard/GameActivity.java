@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Stack;
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
@@ -28,7 +29,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private MatchHistoryViewModel matchHistoryViewModel;
 
     public static final String GAME_STATE_ID = "GAME_STATE_KEY";
-    public static final String OPEN_GAME_ACTIVITY_KEY = "OPEN_GAME_ACTIVITY_KEY";
+    public static final String MATCH_HISTORY_EXTRA_KEY = "OPEN_GAME_ACTIVITY_KEY";
 
 
 
@@ -71,8 +72,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 //        }); //todo this isn't being called/run^^
 //        Log.d("dom test", "gameType\n-------\nname " + getGameType().name + "\nstartingScore " + getGameType().startingScore);
         setupUI();
-        initGameController();
-        GameController.getInstance().gameStart();
+//        initGameController();
+//        GameController.getInstance().gameStart();
         setAdapter();
     }
     private void setupUI() {
@@ -90,34 +91,32 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         doneButton.setOnClickListener(this);
         inputScoreEditText.setOnEditorActionListener((v, actionId, event) -> onScoreEntered());
 
-        //Set Title based on Extras
+
+        //Set Title and GameSettings based on Extras
         Intent intent = getIntent();
         Bundle arguments = getIntent().getExtras();
-        if (intent.hasExtra(GAME_STATE_ID)){
-            GameState gameState = (GameState) intent.getSerializableExtra(OPEN_GAME_ACTIVITY_KEY);
-            gameTitle.setText(gameState.getGameType().name);
-        } else {
-            assert arguments != null;
-            SelectGameActivity.GameType gameType = (SelectGameActivity.GameType) arguments.getSerializable(SelectGameActivity.GAME_TYPE_KEY);
-            assert gameType != null;
-            gameTitle.setText(gameType.name);
-        }
-    }
-    private void initGameController() {
-        Bundle arguments = getIntent().getExtras();
-        slotKey = arguments.getString(SelectGameActivity.SLOT_KEY);
 
         if (playersList == null){
             playersList = new ArrayList<>();
         }
-        if (PreferencesController.getInstance().readGameState(slotKey) == null){
-            playersList = (ArrayList<User>) arguments.getSerializable(SelectGameActivity.PLAYERS_FOR_GAME_KEY);
-        } else playersList = PreferencesController.getInstance().readGameState(slotKey).getPlayerList();
 
-        GameController.getInstance().setPlayersList(playersList);
-        GameController.getInstance().setSlotKey(arguments.getString(SelectGameActivity.SLOT_KEY));
-        GameController.getInstance().setGameSettings((GameSettings) arguments.getSerializable(SelectGameActivity.GAME_SETTINGS_KEY));
-        GameController.getInstance().setGameType((SelectGameActivity.GameType) arguments.getSerializable(SelectGameActivity.GAME_TYPE_KEY));
+        if (intent.hasExtra(GAME_STATE_ID)){
+            int id = intent.getIntExtra(GAME_STATE_ID, -1);
+            GameState gameState = (GameState) arguments.getSerializable(MATCH_HISTORY_EXTRA_KEY);
+            gameTitle.setText(gameState.getGameType().name);
+            playersList = gameState.getPlayerList();
+            GameController.getInstance().initialiseGameController(gameState.getGameType(),gameState.getGameSettings(),
+                    gameState.getPlayerList());
+            GameController.getInstance().setGameID(id);
+
+        } else {
+            gameType = GameController.getInstance().getGameType();
+            gameSettings = GameController.getInstance().getGameSettings();
+            playersList = GameController.getInstance().getPlayersList();
+            GameController.getInstance().setPlayerStartingScores();
+            Log.d("dom test", playersList.get(0).username);
+            gameTitle.setText(gameType.name);
+        }
     }
 
     private void setAverageScoreTextView() {
@@ -173,6 +172,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             doneButton.setVisibility(View.GONE);
         }
     }
+
 
 
     @Override
