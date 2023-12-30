@@ -23,7 +23,7 @@ public final class GameController {
     private ArrayList<User> playersList;
 
     private SelectGameActivity.GameType gameType;
-    private boolean gameStateEnd;
+    public static boolean gameStateEnd;
     private Stack<GameState> gameStateStack;
     private GameSettings gameSettings;
     private GameController(){
@@ -289,7 +289,6 @@ public final class GameController {
     public void endGame() {
         //Clear down controller at end of game.
         gameStateEnd = true;
-        GameActivity.gameStateEnd = true;
         clearTurnIndices();
        //todo run playersList.clear() inside overridden onDestroy;
         gameSettings.clear();
@@ -299,7 +298,7 @@ public final class GameController {
     public void initialiseGameController(
             SelectGameActivity.GameType gameType, GameSettings gameSettings, ArrayList<User> playersList, int turnIndex,
             int turnLeadForLegs, int turnLeadForSets) {
-
+        gameStateEnd = false;
         setPlayersList(playersList);
         setGameType(gameType);
         setGameSettings(gameSettings);

@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.OnBackPressedDispatcher;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -30,7 +31,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     public static final String GAME_STATE_ID = "GAME_STATE_ID_KEY";
     public static final String MATCH_HISTORY_EXTRA_KEY = "OPEN_GAME_ACTIVITY_KEY";
     private int id;
-
     private boolean existingGame;
 
     //public static final String STACK_KEY = "STACK_KEY";
@@ -43,7 +43,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private Button undoButton;
     private Button doneButton;
     private Stack<GameState> gameStateStack;
-    public static boolean gameStateEnd;
     private SelectGameActivity.GameType gameType;
     private GameSettings gameSettings;
     private RecyclerAdapterGamePlayers adapter;
@@ -53,6 +52,17 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_activity);
+//        final OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+//            @Override
+//            public void handleOnBackPressed() {
+//                GameController.getInstance().clearTurnIndices();
+//
+//            }
+//        }
+
+
+
+
 //        callback = new OnBackPressedDispatcher();
 //        callback.addCallback(this, new OnBackPressedCallback(true) {
 //            @Override
@@ -65,6 +75,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         setupUI();
         setAdapter();
     }
+
     private void setupUI() {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         this.setRequestedOrientation(SCREEN_ORIENTATION_PORTRAIT); // todo delete this eventually
@@ -85,23 +96,22 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         Intent intent = getIntent();
         Bundle arguments = getIntent().getExtras();
 
-        if (playersList == null){
+        if (playersList == null) {
             playersList = new ArrayList<>();
         }
         //todo game controller turn index needs clearing -- is this working now?
 
 
-        //todo When the new game is created, savetoDB. Then you can get the id off that entry and use that to update going forward
 
-        if (intent.hasExtra(GAME_STATE_ID)){
+        if (intent.hasExtra(GAME_STATE_ID)) {
             //Get information for game from the MatchHistoryScreen - Existing Game
             existingGame = true;
             id = intent.getIntExtra(GAME_STATE_ID, -1);
             GameState gameState = (GameState) arguments.getSerializable(MATCH_HISTORY_EXTRA_KEY);
             gameTitle.setText(gameState.getGameType().name);
             playersList = gameState.getPlayerList();
-            GameController.getInstance().initialiseGameController(gameState.getGameType(),gameState.getGameSettings()
-                    ,gameState.getPlayerList(), gameState.getTurnIndex(),gameState.getTurnLeadForLegs(),gameState.getTurnLeadForSets());
+            GameController.getInstance().initialiseGameController(gameState.getGameType(), gameState.getGameSettings()
+                    , gameState.getPlayerList(), gameState.getTurnIndex(), gameState.getTurnLeadForLegs(), gameState.getTurnLeadForSets());
             GameController.getInstance().setGameID(id);
 
         } else {
@@ -122,10 +132,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         double avg = playersList.get(GameController.getInstance().getTurnIndex()).getAvg();
         averageScoreTextView.setText(String.valueOf(avg));
     }
-    private void setVisitsTextView(){
+
+    private void setVisitsTextView() {
         int visits = playersList.get(GameController.getInstance().getTurnIndex()).getVisits();
         visitsTextView.setText(String.valueOf(visits));
     }
+
     private void setAdapter() {
         adapter = new RecyclerAdapterGamePlayers(playersList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -135,10 +147,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private Boolean onScoreEntered() {
         int input = 0;
-        if (!inputScoreEditText.getText().toString().isEmpty()){
+        if (!inputScoreEditText.getText().toString().isEmpty()) {
             try {
                 input = Integer.parseInt(inputScoreEditText.getText().toString());
-            } catch (Exception ignored){
+            } catch (Exception ignored) {
 
             }
         }
@@ -157,7 +169,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
             return true;
         } catch (Exception e) {
-//            e.printStackTrace();
+            e.printStackTrace();
             return true;
         }
     }
@@ -173,10 +185,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 GameController.getInstance().getTurnLeadForSets());
 
         Intent intent = getIntent();
+//      If either existing game by boolean or because a game state id already exists, attach the id & update
         if (intent.hasExtra(GAME_STATE_ID) || existingGame) {
             gameState.setGameID(id);
             matchHistoryViewModel.update(gameState);
-            //todo even if existing game is true, we need to find the id of the first game entered and get it
         } else {
             matchHistoryViewModel.insert(gameState);
             id = (int) matchHistoryViewModel.getInsertedId();
@@ -185,29 +197,19 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
 
     public void endGameChecker() {
-        if (gameStateEnd) {
+        if (GameController.gameStateEnd) {
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(recyclerView.getApplicationWindowToken(), 0);
             inputScoreEditText.setVisibility(View.GONE);
             doneButton.setVisibility(View.GONE);
-
-//            GameState gameState = new GameState(
-//                    GameController.getInstance().getGameType(),
-//                    GameController.getInstance().getGameSettings(),
-//                    GameController.getInstance().getPlayersList(),
-//                    GameController.getInstance().getTurnIndex(),
-//                    GameController.getInstance().getTurnLeadForLegs(),
-//                    GameController.getInstance().getTurnLeadForSets());
-//
-//            matchHistoryViewModel.delete(gameState);
+            matchHistoryViewModel.deleteGameStateByID(id);
         }
     }
 
 
-
     @Override
     public void onClick(View v) {
- // todo this would be nice as a switch
+        // todo this would be nice as a switch
         int viewId = v.getId();
         if (viewId == R.id.undo_button) {
             Log.d("dom test", "Undo Click");

@@ -67,7 +67,8 @@ public class MatchHistoryActivity extends AppCompatActivity implements View.OnCl
                arguments.putSerializable(GameActivity.MATCH_HISTORY_EXTRA_KEY, gameState);
                intent.putExtra(GameActivity.GAME_STATE_ID, gameState.getGameID());
                intent.putExtras(arguments);
-               startActivity(intent); //todo codinginFlow tut - do we need edit note request ID(int value for callback)
+               startActivity(intent);
+               finish();
             }
         });
     }

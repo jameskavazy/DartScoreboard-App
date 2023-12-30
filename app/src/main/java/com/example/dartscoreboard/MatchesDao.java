@@ -28,7 +28,10 @@ public interface MatchesDao {
     LiveData<List<GameState>> getAllMatchHistory();
 
     @Query("SELECT * FROM match_history WHERE gameID LIKE :id")
-    GameState findGameByID(int id);
+    LiveData<GameState> findGameByID(int id);
+
+    @Query("DELETE FROM match_history WHERE gameID = :id")
+    void deleteGameStateByID(long id);
 
 //    @Query("SELECT * FROM matches WHERE gameID LIKE :id")
 //    Maybe<GameState> findByGameID(int id);

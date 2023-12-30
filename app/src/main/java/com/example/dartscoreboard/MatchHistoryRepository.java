@@ -42,6 +42,10 @@ public class MatchHistoryRepository {
         new GetGameStateByIdAsyncTask(matchesDao).execute();
     }
 
+    public void deleteGameStateByID(int id){
+        new DeleteGameStateByIDAsyncTask(matchesDao).execute(id);
+    }
+
     public LiveData<List<GameState>> getAllMatchHistory(){
         return allMatchHistory;
     }
@@ -97,15 +101,29 @@ public class MatchHistoryRepository {
         }
     }
 
-    private static class GetGameStateByIdAsyncTask extends AsyncTask<Integer, Void, Void>{
+    private static class GetGameStateByIdAsyncTask extends AsyncTask<Integer, Void, LiveData<GameState>>{
         private MatchesDao matchesDao;
 
         private GetGameStateByIdAsyncTask(MatchesDao matchesDao){
             this.matchesDao = matchesDao;
         }
         @Override
-        protected Void doInBackground(Integer... id) {
-            matchesDao.findGameByID(id[0]);
+        protected LiveData<GameState> doInBackground(Integer... id) {
+           return matchesDao.findGameByID(id[0]);
+        }
+    }
+
+    private static class DeleteGameStateByIDAsyncTask extends AsyncTask<Integer,Void,Void>{
+
+        private MatchesDao matchesDao;
+
+        private DeleteGameStateByIDAsyncTask(MatchesDao matchesDao){
+            this.matchesDao = matchesDao;
+        }
+
+        @Override
+        protected Void doInBackground(Integer... integers) {
+            matchesDao.deleteGameStateByID(integers[0]);
             return null;
         }
     }
