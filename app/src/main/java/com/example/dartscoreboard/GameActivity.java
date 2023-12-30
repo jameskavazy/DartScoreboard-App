@@ -16,29 +16,24 @@ import android.widget.Toast;
 
 import androidx.activity.OnBackPressedDispatcher;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Stack;
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
 
     private MatchHistoryViewModel matchHistoryViewModel;
-
-    public static final String GAME_STATE_ID = "GAME_STATE_KEY";
+    public static final String GAME_STATE_ID = "GAME_STATE_ID_KEY";
     public static final String MATCH_HISTORY_EXTRA_KEY = "OPEN_GAME_ACTIVITY_KEY";
+    private int id;
 
-
-
-    public static final String GAME_STATE_SLOT1_KEY = "GAME_STATE_SLOT1_KEY";
-    public static final String GAME_STATE_SLOT2_KEY = "GAME_STATE_SLOT2_KEY";
-    public static final String GAME_STATE_SLOT3_KEY = "GAME_STATE_SLOT3_KEY";
+    private boolean existingGame;
 
     //public static final String STACK_KEY = "STACK_KEY";
-    private String slotKey;
     private TextView gameTitle;
     private ArrayList<User> playersList;
     private RecyclerView recyclerView;
@@ -50,10 +45,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private Stack<GameState> gameStateStack;
     public static boolean gameStateEnd;
     private SelectGameActivity.GameType gameType;
-    private int playerStartingScore;
     private GameSettings gameSettings;
-    private int turnLead;
-    private int turnLeadForSets;
     private RecyclerAdapterGamePlayers adapter;
     private OnBackPressedDispatcher callback;
 
@@ -61,7 +53,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_activity);
-//        matchHistoryViewModel = ViewModelProviders.of(this).get(MatchHistoryViewModel.class);
 //        callback = new OnBackPressedDispatcher();
 //        callback.addCallback(this, new OnBackPressedCallback(true) {
 //            @Override
@@ -72,8 +63,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 //        }); //todo this isn't being called/run^^
 //        Log.d("dom test", "gameType\n-------\nname " + getGameType().name + "\nstartingScore " + getGameType().startingScore);
         setupUI();
-//        initGameController();
-//        GameController.getInstance().gameStart();
         setAdapter();
     }
     private void setupUI() {
@@ -90,31 +79,41 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         undoButton.setOnClickListener(this);
         doneButton.setOnClickListener(this);
         inputScoreEditText.setOnEditorActionListener((v, actionId, event) -> onScoreEntered());
+        matchHistoryViewModel = new ViewModelProvider(this).get(MatchHistoryViewModel.class);
 
-
-        //Set Title and GameSettings based on Extras
+        //-------------Set Title and GameSettings based on Extras------------------
         Intent intent = getIntent();
         Bundle arguments = getIntent().getExtras();
 
         if (playersList == null){
             playersList = new ArrayList<>();
         }
+        //todo game controller turn index needs clearing -- is this working now?
+
+
+        //todo When the new game is created, savetoDB. Then you can get the id off that entry and use that to update going forward
 
         if (intent.hasExtra(GAME_STATE_ID)){
-            int id = intent.getIntExtra(GAME_STATE_ID, -1);
+            //Get information for game from the MatchHistoryScreen - Existing Game
+            existingGame = true;
+            id = intent.getIntExtra(GAME_STATE_ID, -1);
             GameState gameState = (GameState) arguments.getSerializable(MATCH_HISTORY_EXTRA_KEY);
             gameTitle.setText(gameState.getGameType().name);
             playersList = gameState.getPlayerList();
-            GameController.getInstance().initialiseGameController(gameState.getGameType(),gameState.getGameSettings(),
-                    gameState.getPlayerList());
+            GameController.getInstance().initialiseGameController(gameState.getGameType(),gameState.getGameSettings()
+                    ,gameState.getPlayerList(), gameState.getTurnIndex(),gameState.getTurnLeadForLegs(),gameState.getTurnLeadForSets());
             GameController.getInstance().setGameID(id);
 
         } else {
+            //GameSettings are passed directly to controller -- new game
+            existingGame = false;
             gameType = GameController.getInstance().getGameType();
             gameSettings = GameController.getInstance().getGameSettings();
             playersList = GameController.getInstance().getPlayersList();
+            GameController.getInstance().setTurnIndex(0);
+            saveGameStateToDb();
+            existingGame = true;
             GameController.getInstance().setPlayerStartingScores();
-            Log.d("dom test", playersList.get(0).username);
             gameTitle.setText(gameType.name);
         }
     }
@@ -133,9 +132,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
     }
-
-
-
 
     private Boolean onScoreEntered() {
         int input = 0;
@@ -157,12 +153,36 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             setAverageScoreTextView();
             setVisitsTextView();
             endGameChecker();
+            saveGameStateToDb();
+
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             return true;
         }
     }
+
+    private void saveGameStateToDb() {
+
+        GameState gameState = new GameState(
+                GameController.getInstance().getGameType(),
+                GameController.getInstance().getGameSettings(),
+                GameController.getInstance().getPlayersList(),
+                GameController.getInstance().getTurnIndex(),
+                GameController.getInstance().getTurnLeadForLegs(),
+                GameController.getInstance().getTurnLeadForSets());
+
+        Intent intent = getIntent();
+        if (intent.hasExtra(GAME_STATE_ID) || existingGame) {
+            gameState.setGameID(id);
+            matchHistoryViewModel.update(gameState);
+            //todo even if existing game is true, we need to find the id of the first game entered and get it
+        } else {
+            matchHistoryViewModel.insert(gameState);
+            id = (int) matchHistoryViewModel.getInsertedId();
+        }
+    }
+
 
     public void endGameChecker() {
         if (gameStateEnd) {
@@ -170,6 +190,16 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             inputMethodManager.hideSoftInputFromWindow(recyclerView.getApplicationWindowToken(), 0);
             inputScoreEditText.setVisibility(View.GONE);
             doneButton.setVisibility(View.GONE);
+
+//            GameState gameState = new GameState(
+//                    GameController.getInstance().getGameType(),
+//                    GameController.getInstance().getGameSettings(),
+//                    GameController.getInstance().getPlayersList(),
+//                    GameController.getInstance().getTurnIndex(),
+//                    GameController.getInstance().getTurnLeadForLegs(),
+//                    GameController.getInstance().getTurnLeadForSets());
+//
+//            matchHistoryViewModel.delete(gameState);
         }
     }
 

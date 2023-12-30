@@ -82,7 +82,6 @@ public class RecyclerAdapterMatchHistory extends RecyclerView.Adapter<RecyclerAd
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
-
     }
 
 

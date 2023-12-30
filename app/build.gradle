@@ -41,9 +41,11 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
 
-    def lifecycle_version = "2.2.0"
-    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
-    annotationProcessor "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
+    def lifecycle_version = "2.6.2"
+    // ViewModel
+    implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"
+    // LiveData
+    implementation "androidx.lifecycle:lifecycle-livedata:$lifecycle_version"
 
     //implementation "androidx.room:room-rxjava3:$room_version"
     //testImplementation "androidx.room:room-testing:$room_version"

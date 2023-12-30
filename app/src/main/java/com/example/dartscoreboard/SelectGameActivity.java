@@ -127,7 +127,8 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         Log.d("dom test", "openFiveoGameActivity");
         launchGameActivity();
         PreferencesController.getInstance().clearUsersForGameSP();
-        GameController.getInstance().initialiseGameController(GameType.FiveO,getGameSettings(),playersToGame);
+        GameController.getInstance().initialiseGameController(GameType.FiveO,getGameSettings(),playersToGame,
+                0,0,0);
         finish();
     }
 
@@ -135,7 +136,8 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         Log.d("dom test", "openThreeoGameActivity");
         launchGameActivity();
         PreferencesController.getInstance().clearUsersForGameSP();
-        GameController.getInstance().initialiseGameController(GameType.ThreeO,getGameSettings(),playersToGame);
+        GameController.getInstance().initialiseGameController(GameType.ThreeO,getGameSettings(),playersToGame,
+                0,0,0);
         finish();
     }
 
@@ -143,7 +145,8 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         Log.d("dom test", "openSevenoGameActivity");
         launchGameActivity();
         PreferencesController.getInstance().clearUsersForGameSP();
-        GameController.getInstance().initialiseGameController(GameType.SevenO,getGameSettings(),playersToGame);
+        GameController.getInstance().initialiseGameController(GameType.SevenO,getGameSettings(),playersToGame,
+                0,0,0);
         finish();
     }
 

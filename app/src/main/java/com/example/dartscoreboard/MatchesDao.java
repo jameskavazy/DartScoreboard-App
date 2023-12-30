@@ -3,17 +3,20 @@ package com.example.dartscoreboard;
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
+import androidx.room.Insert;
 import androidx.room.Query;
-import androidx.room.Upsert;
+import androidx.room.Update;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Dao
 public interface MatchesDao {
 
-    @Upsert
-    void upsertGameState(GameState gameState);
+    @Update
+    void updateGameState(GameState gameState);
+
+    @Insert
+    long insertGameState(GameState gameState); //todo fix long
 
     @Delete
     void delete(GameState gameState);
@@ -24,6 +27,8 @@ public interface MatchesDao {
     @Query("SELECT * FROM match_history")
     LiveData<List<GameState>> getAllMatchHistory();
 
+    @Query("SELECT * FROM match_history WHERE gameID LIKE :id")
+    GameState findGameByID(int id);
 
 //    @Query("SELECT * FROM matches WHERE gameID LIKE :id")
 //    Maybe<GameState> findByGameID(int id);

@@ -8,15 +8,18 @@ import androidx.room.PrimaryKey;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Stack;
 
 
 @Entity (tableName = "match_history")
 public class GameState implements Serializable {
 
-    @PrimaryKey
+    @PrimaryKey (autoGenerate = true)
     public int gameID;
 
-//todo add timestamps
+    //todo add timestamps
+
+    //todo add Stack of gameStates?
 
     public SelectGameActivity.GameType gameType;
 
@@ -29,7 +32,6 @@ public class GameState implements Serializable {
     public int turnLeadForLegs;
 
     public int turnLeadForSets;
-
 
     public GameState(SelectGameActivity.GameType gameType, GameSettings gameSettings, ArrayList<User> playerList, int turnIndex, int turnLeadForLegs, int turnLeadForSets) {
         this.gameType = gameType;

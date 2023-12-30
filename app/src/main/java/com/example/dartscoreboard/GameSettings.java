@@ -27,4 +27,10 @@ public class GameSettings implements Serializable {
     public void setTotalSets(int totalSets) {
         this.totalSets = totalSets;
     }
+
+    public void clear(){
+        setTotalLegs(0);
+        setTotalSets(0);
+    }
+
 }

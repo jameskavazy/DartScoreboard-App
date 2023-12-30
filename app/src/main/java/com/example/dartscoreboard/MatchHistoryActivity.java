@@ -10,7 +10,7 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -43,7 +43,7 @@ public class MatchHistoryActivity extends AppCompatActivity implements View.OnCl
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
-        matchHistoryViewModel = ViewModelProviders.of(this).get(MatchHistoryViewModel.class);
+        matchHistoryViewModel = new ViewModelProvider(this).get(MatchHistoryViewModel.class);
         matchHistoryViewModel.getAllGames().observe(this, adapter::setGameStatesList);
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
@@ -65,7 +65,7 @@ public class MatchHistoryActivity extends AppCompatActivity implements View.OnCl
                Intent intent = new Intent(MatchHistoryActivity.this, GameActivity.class);
                Bundle arguments = new Bundle();
                arguments.putSerializable(GameActivity.MATCH_HISTORY_EXTRA_KEY, gameState);
-               intent.putExtra(GameActivity.GAME_STATE_ID, gameState.gameID);
+               intent.putExtra(GameActivity.GAME_STATE_ID, gameState.getGameID());
                intent.putExtras(arguments);
                startActivity(intent); //todo codinginFlow tut - do we need edit note request ID(int value for callback)
             }
@@ -80,7 +80,7 @@ public class MatchHistoryActivity extends AppCompatActivity implements View.OnCl
             //delete games from database
             matchHistoryViewModel.deleteAllMatches();
             /*
-            /todo make a drop down menu from top banner (in manifest, xml etc...
+             todo make a drop down menu from top banner (in manifest, xml etc...
               code below already does java functionality)
              */
 

@@ -1,9 +1,10 @@
 package com.example.dartscoreboard;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.gson.Gson;
 
@@ -14,8 +15,6 @@ import java.util.Stack;
 public final class GameController {
 
     private int gameID;
-
-    private MatchHistoryRepository repository;
     public static GameController gameController;
     public int turnIndex = 0;
     private int turnLeadForLegs = 0;
@@ -24,8 +23,6 @@ public final class GameController {
     private ArrayList<User> playersList;
 
     private SelectGameActivity.GameType gameType;
-
-    //    private String slotKey;
     private boolean gameStateEnd;
     private Stack<GameState> gameStateStack;
     private GameSettings gameSettings;
@@ -64,10 +61,12 @@ public final class GameController {
     }
 
     public void saveGameState() {
-//        if (gameID != -1){
+////        if (gameID != -1){
 //            GameState gameState = new GameState(gameType,gameSettings,playersList,turnIndex,turnLeadForLegs,turnLeadForSets);
-//            repository.upsert(gameState);
-//        }
+
+//            matchHistoryViewModel = new ViewModelProvider.NewInstanceFactory().getClass()
+
+////        }
 
     }
 
@@ -289,20 +288,24 @@ public final class GameController {
 
     public void endGame() {
         //Clear down controller at end of game.
-
-//        PreferencesController.getInstance().clearGameState(slotKey);
         gameStateEnd = true;
         GameActivity.gameStateEnd = true;
         clearTurnIndices();
-        PreferencesController.getInstance().clearUsersForGameSP();
-        playersList = PreferencesController.readUsersForGameSP(DartsScoreboardApplication.getContext());
+       //todo run playersList.clear() inside overridden onDestroy;
+        gameSettings.clear();
     }
 
 
-    public void initialiseGameController(SelectGameActivity.GameType gameType, GameSettings gameSettings, ArrayList<User> playersList){
+    public void initialiseGameController(
+            SelectGameActivity.GameType gameType, GameSettings gameSettings, ArrayList<User> playersList, int turnIndex,
+            int turnLeadForLegs, int turnLeadForSets) {
+
         setPlayersList(playersList);
         setGameType(gameType);
         setGameSettings(gameSettings);
+        setTurnIndex(turnIndex);
+        setTurnLeadForLegs(turnLeadForLegs);
+        setTurnLeadForSets(turnLeadForSets);
     }
 
 }

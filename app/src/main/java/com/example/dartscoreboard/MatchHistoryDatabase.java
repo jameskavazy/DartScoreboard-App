@@ -2,21 +2,14 @@ package com.example.dartscoreboard;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.service.autofill.FieldClassification;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.room.Database;
-import androidx.room.DatabaseConfiguration;
-import androidx.room.InvalidationTracker;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
-import androidx.sqlite.db.SupportSQLiteOpenHelper;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 @Database(entities = {GameState.class}, version = 1)
 @TypeConverters({Converters.class})
@@ -57,7 +50,7 @@ public abstract class MatchHistoryDatabase extends RoomDatabase {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            matchesDao.upsertGameState(new GameState(SelectGameActivity.GameType.FiveO,
+            matchesDao.updateGameState(new GameState(SelectGameActivity.GameType.FiveO,
                     new GameSettings(5, 5),
                     PreferencesController.readSPUserList(DartsScoreboardApplication.getContext()),
                     0, 0, 0));

@@ -5,8 +5,8 @@ import android.os.AsyncTask;
 
 import androidx.lifecycle.LiveData;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class MatchHistoryRepository {
     private MatchesDao matchesDao;
@@ -18,8 +18,16 @@ public class MatchHistoryRepository {
         allMatchHistory = matchesDao.getAllMatchHistory();
     }
 
-    public void upsert(GameState gameState){
-        new UpsertGameStateAsyncTask(matchesDao).execute(gameState);
+    public long insert(GameState gameState){
+        try {
+            return new InsertGameStateAsyncTask(matchesDao).execute(gameState).get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void update(GameState gameState){
+        new UpdateGameStateAsyncTask(matchesDao).execute(gameState);
     }
 
     public void delete(GameState gameState){
@@ -29,22 +37,41 @@ public class MatchHistoryRepository {
         new DeleteAllGameStatesAsyncTask(matchesDao).execute();
 
     }
+
+    public void getGameStateById(){
+        new GetGameStateByIdAsyncTask(matchesDao).execute();
+    }
+
     public LiveData<List<GameState>> getAllMatchHistory(){
         return allMatchHistory;
     }
 
-    private static class UpsertGameStateAsyncTask extends AsyncTask<GameState, Void, Void>{
+    private static class UpdateGameStateAsyncTask extends AsyncTask<GameState, Void, Void>{
         private MatchesDao matchesDao;
 
-        private UpsertGameStateAsyncTask(MatchesDao matchesDao){
+        private UpdateGameStateAsyncTask(MatchesDao matchesDao){
             this.matchesDao = matchesDao;
         }
         @Override
         protected Void doInBackground(GameState... gameStates) {
-            matchesDao.upsertGameState(gameStates[0]);
+            matchesDao.updateGameState(gameStates[0]);
             return null;
         }
     }
+
+    private static class InsertGameStateAsyncTask extends AsyncTask<GameState, Void, Long>{
+        private MatchesDao matchesDao;
+
+        private InsertGameStateAsyncTask(MatchesDao matchesDao){
+            this.matchesDao = matchesDao;
+        }
+        @Override
+        protected Long doInBackground(GameState... gameStates) {
+            return matchesDao.insertGameState(gameStates[0]);
+        }
+    }
+
+
     private static class DeleteGameStateAsyncTask extends AsyncTask<GameState, Void, Void>{
         private MatchesDao matchesDao;
 
@@ -66,6 +93,19 @@ public class MatchHistoryRepository {
         @Override
         protected Void doInBackground(Void... voids) {
             matchesDao.deleteAllMatchHistory();
+            return null;
+        }
+    }
+
+    private static class GetGameStateByIdAsyncTask extends AsyncTask<Integer, Void, Void>{
+        private MatchesDao matchesDao;
+
+        private GetGameStateByIdAsyncTask(MatchesDao matchesDao){
+            this.matchesDao = matchesDao;
+        }
+        @Override
+        protected Void doInBackground(Integer... id) {
+            matchesDao.findGameByID(id[0]);
             return null;
         }
     }
