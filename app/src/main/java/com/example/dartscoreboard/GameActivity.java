@@ -99,8 +99,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         if (playersList == null) {
             playersList = new ArrayList<>();
         }
-        //todo game controller turn index needs clearing -- is this working now?
-
 
 
         if (intent.hasExtra(GAME_STATE_ID)) {
@@ -112,7 +110,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             playersList = gameState.getPlayerList();
             GameController.getInstance().initialiseGameController(gameState.getGameType(), gameState.getGameSettings()
                     , gameState.getPlayerList(), gameState.getTurnIndex(), gameState.getTurnLeadForLegs(), gameState.getTurnLeadForSets());
-            GameController.getInstance().setGameID(id);
 
         } else {
             //GameSettings are passed directly to controller -- new game
@@ -202,10 +199,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             inputMethodManager.hideSoftInputFromWindow(recyclerView.getApplicationWindowToken(), 0);
             inputScoreEditText.setVisibility(View.GONE);
             doneButton.setVisibility(View.GONE);
-            matchHistoryViewModel.deleteGameStateByID(id);
+            matchHistoryViewModel.deleteGameStateByID(GameController.getInstance().getGameID());
         }
     }
-
 
     @Override
     public void onClick(View v) {
@@ -219,6 +215,4 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             onScoreEntered();
         }
     }
-
-
 }

@@ -18,8 +18,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:text="01/02/23"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+            tools:text="01/02/23"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
 
         <TextView
             android:id="@+id/match_history_title_textview"

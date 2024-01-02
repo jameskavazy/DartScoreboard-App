@@ -2,13 +2,12 @@ package com.example.dartscoreboard;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.Stack;
 
 
 @Entity (tableName = "match_history")
@@ -17,10 +16,11 @@ public class GameState implements Serializable {
     @PrimaryKey (autoGenerate = true)
     public int gameID;
 
-    //todo add timestamps
+   @ColumnInfo
+   public OffsetDateTime offsetDateTime = OffsetDateTime.now();
+
 
     //todo add Stack of gameStates?
-
     public SelectGameActivity.GameType gameType;
 
     public ArrayList<User> playerList;
@@ -33,7 +33,8 @@ public class GameState implements Serializable {
 
     public int turnLeadForSets;
 
-    public GameState(SelectGameActivity.GameType gameType, GameSettings gameSettings, ArrayList<User> playerList, int turnIndex, int turnLeadForLegs, int turnLeadForSets) {
+    public GameState(SelectGameActivity.GameType gameType, GameSettings gameSettings, ArrayList<User> playerList,
+                     int turnIndex, int turnLeadForLegs, int turnLeadForSets) {
         this.gameType = gameType;
         this.gameSettings = gameSettings;
         this.playerList = playerList;
@@ -41,6 +42,17 @@ public class GameState implements Serializable {
         this.turnLeadForLegs = turnLeadForLegs;
         this.turnLeadForSets = turnLeadForSets;
     }
+
+    public OffsetDateTime getCreatedDate() {
+        return offsetDateTime;
+    }
+
+    public void setCreatedDate(OffsetDateTime offsetDateTime) {
+
+        this.offsetDateTime = offsetDateTime;
+    }
+
+
 
     public void setGameID(int gameID) {
         this.gameID = gameID;

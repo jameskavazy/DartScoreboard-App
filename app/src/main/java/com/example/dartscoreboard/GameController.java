@@ -290,7 +290,6 @@ public final class GameController {
         //Clear down controller at end of game.
         gameStateEnd = true;
         clearTurnIndices();
-       //todo run playersList.clear() inside overridden onDestroy;
         gameSettings.clear();
     }
 

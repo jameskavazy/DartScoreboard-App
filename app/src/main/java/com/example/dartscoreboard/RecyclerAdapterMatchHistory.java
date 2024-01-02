@@ -8,6 +8,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,6 +61,11 @@ public class RecyclerAdapterMatchHistory extends RecyclerView.Adapter<RecyclerAd
         GameState currentGameState = gameStatesList.get(position);
         holder.gameTitleTextView.setText(currentGameState.getGameType().name);
         holder.gamePlayersTextView.setText(usersListAsString(currentGameState));
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ISO_LOCAL_TIME;
+        String dateStamp = currentGameState.getCreatedDate().format(dateFormatter);
+        String timeStamp = currentGameState.getCreatedDate().truncatedTo(ChronoUnit.MINUTES).format(timeFormatter);
+        holder.gameDateCreatedTextView.setText(dateStamp+ "\n" + timeStamp);
     }
 
     @Override

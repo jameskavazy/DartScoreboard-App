@@ -5,6 +5,7 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import androidx.room.Update;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public interface MatchesDao {
     void updateGameState(GameState gameState);
 
     @Insert
-    long insertGameState(GameState gameState); //todo fix long
+    long insertGameState(GameState gameState);
 
     @Delete
     void delete(GameState gameState);
@@ -24,7 +25,7 @@ public interface MatchesDao {
     @Query("DELETE FROM match_history")
     void deleteAllMatchHistory();
 
-    @Query("SELECT * FROM match_history")
+    @Query("SELECT * FROM match_history ORDER BY offsetDateTime DESC")
     LiveData<List<GameState>> getAllMatchHistory();
 
     @Query("SELECT * FROM match_history WHERE gameID LIKE :id")
@@ -33,11 +34,5 @@ public interface MatchesDao {
     @Query("DELETE FROM match_history WHERE gameID = :id")
     void deleteGameStateByID(long id);
 
-//    @Query("SELECT * FROM matches WHERE gameID LIKE :id")
-//    Maybe<GameState> findByGameID(int id);
-
-
-//    @Query("SELECT * FROM matches")
-//    Maybe<ArrayList<GameState>> getAllMatches(); //todo Flowable instead of maybe
 
 }

@@ -7,18 +7,26 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+
+import kotlin.jvm.JvmStatic;
 
 public class Converters {
 
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+
     @TypeConverter
-    public GameState gameStateFromString (String gameStateString){
-        return new Gson().fromJson(gameStateString,GameState.class);
+    public static OffsetDateTime timestampFromString(String localDateTimeString){
+        return formatter.parse(localDateTimeString, OffsetDateTime::from);
     }
 
     @TypeConverter
-    public String gameStateToString (GameState gameState){
-        return new Gson().toJson(gameState);
+    public static String timestampToString (OffsetDateTime timestamp){
+        return timestamp.format(formatter);
     }
 
     @TypeConverter
