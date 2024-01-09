@@ -33,6 +33,10 @@ public class MatchHistoryViewModel extends AndroidViewModel {
         repository.delete(gameState);
     }
 
+    public LiveData<GameState> findGameById(int id){
+        return repository.getGameStateById(id);
+    }
+
     public void deleteAllMatches() {
         repository.deleteAll();
     }

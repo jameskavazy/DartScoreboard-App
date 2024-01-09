@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Stack;
 
 public class SelectGameActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -38,6 +39,8 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
     ArrayAdapter<String> adapterLegsItems;
 
     ArrayAdapter<String> adapterSetsItems;
+
+    private Stack<MatchState> matchStateStack = new Stack<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,7 +131,7 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         launchGameActivity();
         PreferencesController.getInstance().clearUsersForGameSP();
         GameController.getInstance().initialiseGameController(GameType.FiveO,getGameSettings(),playersToGame,
-                0,0,0);
+                0,0,0,matchStateStack);
         finish();
     }
 
@@ -137,7 +140,7 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         launchGameActivity();
         PreferencesController.getInstance().clearUsersForGameSP();
         GameController.getInstance().initialiseGameController(GameType.ThreeO,getGameSettings(),playersToGame,
-                0,0,0);
+                0,0,0,matchStateStack);
         finish();
     }
 
@@ -146,7 +149,7 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         launchGameActivity();
         PreferencesController.getInstance().clearUsersForGameSP();
         GameController.getInstance().initialiseGameController(GameType.SevenO,getGameSettings(),playersToGame,
-                0,0,0);
+                0,0,0,matchStateStack);
         finish();
     }
 

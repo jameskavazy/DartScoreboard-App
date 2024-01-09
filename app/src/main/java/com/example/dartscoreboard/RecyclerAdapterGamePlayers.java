@@ -67,4 +67,9 @@ public class RecyclerAdapterGamePlayers extends RecyclerView.Adapter<RecyclerAda
         return usersList.size();
     }
 
+    public void setUsersList(ArrayList<User> usersList){
+        this.usersList = usersList;
+
+    }
+
 }

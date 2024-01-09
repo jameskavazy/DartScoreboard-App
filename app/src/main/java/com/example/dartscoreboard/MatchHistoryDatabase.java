@@ -50,11 +50,11 @@ public abstract class MatchHistoryDatabase extends RoomDatabase {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            matchesDao.updateGameState(new GameState(SelectGameActivity.GameType.FiveO,
-                    new GameSettings(5, 5),
-                    PreferencesController.readSPUserList(DartsScoreboardApplication.getContext()),
-                    0, 0, 0));
-            Log.d("dom test", String.valueOf(PreferencesController.readSPUserList(DartsScoreboardApplication.getContext()).get(0)));
+//            matchesDao.updateGameState(new GameState(SelectGameActivity.GameType.FiveO,
+//                    new GameSettings(5, 5),
+//                    PreferencesController.readSPUserList(DartsScoreboardApplication.getContext()),
+//                    0, 0, 0));
+//            Log.d("dom test", String.valueOf(PreferencesController.readSPUserList(DartsScoreboardApplication.getContext()).get(0)));
             return null;
         }
     }

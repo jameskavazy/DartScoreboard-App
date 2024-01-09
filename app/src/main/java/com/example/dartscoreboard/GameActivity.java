@@ -17,6 +17,7 @@ import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.OnBackPressedDispatcher;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -32,8 +33,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     public static final String MATCH_HISTORY_EXTRA_KEY = "OPEN_GAME_ACTIVITY_KEY";
     private int id;
     private boolean existingGame;
-
-    //public static final String STACK_KEY = "STACK_KEY";
     private TextView gameTitle;
     private ArrayList<User> playersList;
     private RecyclerView recyclerView;
@@ -42,11 +41,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private TextView visitsTextView;
     private Button undoButton;
     private Button doneButton;
-    private Stack<GameState> gameStateStack;
     private SelectGameActivity.GameType gameType;
     private GameSettings gameSettings;
     private RecyclerAdapterGamePlayers adapter;
     private OnBackPressedDispatcher callback;
+
+    private Stack<MatchState> matchStateStack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,9 +109,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             gameTitle.setText(gameState.getGameType().name);
             playersList = gameState.getPlayerList();
             GameController.getInstance().initialiseGameController(gameState.getGameType(), gameState.getGameSettings()
-                    , gameState.getPlayerList(), gameState.getTurnIndex(), gameState.getTurnLeadForLegs(), gameState.getTurnLeadForSets());
+                    , gameState.getPlayerList(), gameState.getTurnIndex(), gameState.getTurnLeadForLegs(), gameState.getTurnLeadForSets(), gameState.getMatchStateStack());
 
         } else {
+            //todo pass info with intents rather than set into GC if from new game...?
+
             //GameSettings are passed directly to controller -- new game
             existingGame = false;
             gameType = GameController.getInstance().getGameType();
@@ -171,16 +173,18 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+//    private void undo() {
+//        matchHistoryViewModel.findGameById(id).observe(this, gameState -> {
+//            MatchState matchState = gameState.getMatchStateStack().pop();
+//            GameController.getInstance().initialiseGameController(gameState.getGameType(), gameState.getGameSettings(), matchState.getPlayerList()
+//                    , matchState.getTurnIndex(), matchState.getTurnIndexForLegs(), matchState.getTurnIndexForSets(), gameState.getMatchStateStack());
+//            adapter.setUsersList(matchState.getPlayerList());
+//            adapter.notifyDataSetChanged();
+//        });
+//    }
+
     private void saveGameStateToDb() {
-
-        GameState gameState = new GameState(
-                GameController.getInstance().getGameType(),
-                GameController.getInstance().getGameSettings(),
-                GameController.getInstance().getPlayersList(),
-                GameController.getInstance().getTurnIndex(),
-                GameController.getInstance().getTurnLeadForLegs(),
-                GameController.getInstance().getTurnLeadForSets());
-
+        GameState gameState = getGameInfo();
         Intent intent = getIntent();
 //      If either existing game by boolean or because a game state id already exists, attach the id & update
         if (intent.hasExtra(GAME_STATE_ID) || existingGame) {
@@ -209,10 +213,33 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         int viewId = v.getId();
         if (viewId == R.id.undo_button) {
             Log.d("dom test", "Undo Click");
-            GameController.getInstance().undo();
+
+            //Brings back text input if game was finished.
+            if (GameController.gameStateEnd) {
+                inputScoreEditText.setVisibility(View.VISIBLE);
+                doneButton.setVisibility(View.VISIBLE);
+                GameController.gameStateEnd = false;
+            }
+            GameController.getInstance().undo(adapter);
+            //todo update the inserted gameState
+            GameState gameState = getGameInfo();
+            gameState.setGameID(id);
+            matchHistoryViewModel.update(gameState);
         } else if (viewId == R.id.done_button) {
             Log.d("dom test", "Done Click");
             onScoreEntered();
         }
     }
+
+    private GameState getGameInfo(){
+        return new GameState(
+                GameController.getInstance().getGameType(),
+                GameController.getInstance().getGameSettings(),
+                GameController.getInstance().getPlayersList(),
+                GameController.getInstance().getTurnIndex(),
+                GameController.getInstance().getTurnLeadForLegs(),
+                GameController.getInstance().getTurnLeadForSets(),
+                GameController.getInstance().getMatchStateStack());
+    }
+
 }

@@ -38,8 +38,9 @@ public class MatchHistoryRepository {
 
     }
 
-    public void getGameStateById(){
-        new GetGameStateByIdAsyncTask(matchesDao).execute();
+    public LiveData<GameState> getGameStateById(int id){
+//        new GetGameStateByIdAsyncTask(matchesDao).execute(id);
+        return matchesDao.findGameByID(id);
     }
 
     public void deleteGameStateByID(int id){
@@ -109,7 +110,7 @@ public class MatchHistoryRepository {
         }
         @Override
         protected LiveData<GameState> doInBackground(Integer... id) {
-           return matchesDao.findGameByID(id[0]);
+            return matchesDao.findGameByID(id[0]);
         }
     }
 

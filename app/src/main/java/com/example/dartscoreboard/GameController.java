@@ -7,8 +7,11 @@ import android.util.Log;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.Stack;
 
@@ -24,8 +27,11 @@ public final class GameController {
 
     private SelectGameActivity.GameType gameType;
     public static boolean gameStateEnd;
-    private Stack<GameState> gameStateStack;
+
+    private Stack<MatchState> matchStateStack = new Stack<>();
+
     private GameSettings gameSettings;
+
     private GameController(){
     }
     public static GameController getInstance() {
@@ -34,17 +40,19 @@ public final class GameController {
         }
         return gameController;
     }
-
     public void playerVisit(int scoreInt) {
 //        //Save current gameState for undo
-//        GameState previousGameState = new GameState(gameType,gameSettings,playersList,turnLead,turnLeadForSets);
-//        saveForUndo(previousGameState);
+            saveForUndo();
+
+
 //        Log.d("dom test", "playerVisit saveForUndo=  " + previousGameState);
 //
 //        for (User user:previousGameState.getPlayerList()
 //        ) {
 //            Log.d("dom test", "playerVisit saveForUndo= " + user.username + " score is " + user.playerScore);
 //        } //todo re-enable once undo fixed
+
+
         if (scoreInt <= 180) { // checks for valid score input
             User currentPlayer = playersList.get(turnIndex);
             int currentScore = currentPlayer.getPlayerScore();
@@ -104,58 +112,25 @@ public final class GameController {
         }
     }
 
-    public void saveForUndo(GameState previousGameState){
-        gameStateStack.push(previousGameState);
+    public void saveForUndo(){
+        //Make a "deep copy"
+        String playerListCopyJsonString = new Gson().toJson(playersList);
+        ArrayList<User> playerListCopy = new Gson().fromJson(playerListCopyJsonString,new TypeToken<ArrayList<User>>() {}.getType());
+        MatchState matchState = new MatchState(playerListCopy,getTurnIndex(),getTurnLeadForLegs(),getTurnLeadForSets());
+        //pushes a matchstate to the matchStateStack for retrieval in GameActivity
+        getMatchStateStack().push(matchState);
     }
 
 
 
-    public void undo() { // todo bring back the HashMap/map this worked well.
-
-        //Brings back text input if game was finished.
-//        if (gameStateEnd) {
-//            inputScoreEditText.setVisibility(View.VISIBLE);
-//            doneButton.setVisibility(View.VISIBLE);
-//            gameStateEnd = false;
-//        }
-//        //GameState previousGameState = gameStateArrayDeque.pollFirst();
-//        GameState previousGameState = gameStateStack.pop();
-//        Log.d("dom test","onUndo previousGameState = " + previousGameState);
-//        if (previousGameState!= null){
-//
-//            for (User user:previousGameState.getPlayerList()
-//            ) {
-//                user.setPlayerScore(user.playerScore);
-//                user.setTurn(user.turn);
-//                user.setPlayerLegs(user.getCurrentLegs());
-//                user.setPlayerSets(user.getCurrentSets());
-//                if (!user.previousScoresList.isEmpty()) {
-//                    user.previousScoresList.remove(user.previousScoresList.size() - 1);
-//                }
-//            }
-//
-//
-//
-//
-//        } else saveGameState();
-//
-//        setVisitsTextView();
-//        setAverageScoreTextView();
-//        adapter.notifyDataSetChanged();
-//
-////
-////        GameState previousGameState = gameStateArrayDeque.pollFirst();
-////        if (!gameStateArrayDeque.isEmpty()){
-////            previousGameState.loadPreviousGameState(playersList);
-////        }
-////
-////        else {
-////            Log.d("dom test","Deque Is Empty");
-////            setSaveGameState();
-////        }
-////        setAverageScoreTextView();
-////        setVisitsTextView();
-////        adapter.notifyDataSetChanged();
+    public void undo(RecyclerAdapterGamePlayers adapter) {
+        MatchState matchState = getMatchStateStack().pop();
+        setPlayersList(matchState.getPlayerList());
+        setTurnIndex(matchState.getTurnIndex());
+        setTurnLeadForLegs(matchState.getTurnIndexForLegs());
+        setTurnLeadForSets(matchState.getTurnIndexForSets());
+        adapter.setUsersList(matchState.getPlayerList());
+        adapter.notifyDataSetChanged();
     }
 
 
@@ -217,11 +192,11 @@ public final class GameController {
     public void incrementTurnIndex(){
         turnIndex = (turnIndex + 1) % playersList.size();
     }
+
     public void incrementTurnForLegs(){
         turnLeadForLegs = (turnLeadForLegs + 1) % playersList.size();
         turnIndex = turnLeadForLegs;
     }
-
     public void incrementTurnForSets(){
         turnLeadForSets = (turnLeadForSets + 1) % playersList.size();
         turnLeadForLegs = turnLeadForSets;
@@ -239,10 +214,10 @@ public final class GameController {
     public GameSettings getGameSettings() {
         return gameSettings;
     }
+
     public void setGameType(SelectGameActivity.GameType gameType) {
         this.gameType = gameType;
     }
-
     public SelectGameActivity.GameType getGameType() {
         return gameType;
     }
@@ -258,20 +233,20 @@ public final class GameController {
     public int getTurnLeadForLegs() {
         return turnLeadForLegs;
     }
+
     public void setTurnLeadForLegs(int turnLeadForLegs) {
         this.turnLeadForLegs = turnLeadForLegs;
     }
-
     public int getTurnLeadForSets() {
         return turnLeadForSets;
     }
+
     public void setTurnLeadForSets(int turnLeadForSets) {
         this.turnLeadForSets = turnLeadForSets;
     }
     public ArrayList<User> getPlayersList() {
         return playersList;
     }
-
     public void clearTurnIndices(){
         setTurnIndex(0);
         setTurnLeadForSets(0);
@@ -294,9 +269,11 @@ public final class GameController {
     }
 
 
+
     public void initialiseGameController(
             SelectGameActivity.GameType gameType, GameSettings gameSettings, ArrayList<User> playersList, int turnIndex,
-            int turnLeadForLegs, int turnLeadForSets) {
+            int turnLeadForLegs, int turnLeadForSets, Stack<MatchState> matchStateStack) {
+        Log.d("dom test", "GameController initialiseGameController() :  " + playersList.get(0).getPlayerScore());
         gameStateEnd = false;
         setPlayersList(playersList);
         setGameType(gameType);
@@ -304,6 +281,19 @@ public final class GameController {
         setTurnIndex(turnIndex);
         setTurnLeadForLegs(turnLeadForLegs);
         setTurnLeadForSets(turnLeadForSets);
+        setMatchStateStack(matchStateStack);
+    }
+
+
+    public Stack<MatchState> getMatchStateStack() {
+        if (matchStateStack == null){
+            matchStateStack = new Stack<>();
+        }
+        return matchStateStack;
+    }
+
+    public void setMatchStateStack(Stack<MatchState> matchStateStack) {
+        this.matchStateStack = matchStateStack;
     }
 
 }

@@ -8,6 +8,8 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.Stack;
 
 
 @Entity (tableName = "match_history")
@@ -33,14 +35,25 @@ public class GameState implements Serializable {
 
     public int turnLeadForSets;
 
+    public Stack<MatchState> matchStateStack;
+
+    public Stack<MatchState> getMatchStateStack() {
+        return matchStateStack;
+    }
+
+    public void setMatchStateStack(Stack<MatchState> matchStateStack) {
+        this.matchStateStack = matchStateStack;
+    }
+
     public GameState(SelectGameActivity.GameType gameType, GameSettings gameSettings, ArrayList<User> playerList,
-                     int turnIndex, int turnLeadForLegs, int turnLeadForSets) {
+                     int turnIndex, int turnLeadForLegs, int turnLeadForSets, Stack<MatchState> matchStateStack) {
         this.gameType = gameType;
         this.gameSettings = gameSettings;
         this.playerList = playerList;
         this.turnIndex = turnIndex;
         this.turnLeadForLegs = turnLeadForLegs;
         this.turnLeadForSets = turnLeadForSets;
+        this.matchStateStack = matchStateStack;
     }
 
     public OffsetDateTime getCreatedDate() {
@@ -109,7 +122,6 @@ public class GameState implements Serializable {
     public void setTurnLeadForSets(int turnLeadForSets) {
         this.turnLeadForSets = turnLeadForSets;
     }
-
 
     //todo creates an object of hashmaps. Hashmaps will all store different things, all player scores, all player turns, all player average scores etc...
     // todo this then can be added to arraydeque of gamestates

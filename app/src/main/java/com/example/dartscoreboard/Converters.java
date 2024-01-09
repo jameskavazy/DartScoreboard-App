@@ -1,5 +1,7 @@
 package com.example.dartscoreboard;
 
+import android.service.autofill.FieldClassification;
+
 import androidx.room.TypeConverter;
 import androidx.room.TypeConverters;
 
@@ -12,6 +14,7 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Stack;
 
 import kotlin.jvm.JvmStatic;
 
@@ -58,7 +61,14 @@ public class Converters {
         return new Gson().toJson(gameType);
     }
 
+    @TypeConverter
+    public Stack<MatchState> matchStateFromString(String matchStateJsonString){
+        return new Gson().fromJson(matchStateJsonString, new TypeToken<Stack<MatchState>>() {}.getType());
+    }
 
-
+    @TypeConverter
+    public String matchStateToJsonString(Stack<MatchState> matchStateStack){
+        return new Gson().toJson(matchStateStack);
+    }
 
 }
