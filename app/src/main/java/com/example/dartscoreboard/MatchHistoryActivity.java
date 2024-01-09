@@ -20,7 +20,6 @@ public class MatchHistoryActivity extends AppCompatActivity implements View.OnCl
 
     private MatchHistoryViewModel matchHistoryViewModel;
     private Button clearGamesButton;
-
     private RecyclerView recyclerView;
 
     @Override

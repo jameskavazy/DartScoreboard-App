@@ -117,7 +117,8 @@ public final class GameController {
         String playerListCopyJsonString = new Gson().toJson(playersList);
         ArrayList<User> playerListCopy = new Gson().fromJson(playerListCopyJsonString,new TypeToken<ArrayList<User>>() {}.getType());
         MatchState matchState = new MatchState(playerListCopy,getTurnIndex(),getTurnLeadForLegs(),getTurnLeadForSets());
-        //pushes a matchstate to the matchStateStack for retrieval in GameActivity
+
+        //saves matchStateStack within the controller to pass it to the db.
         getMatchStateStack().push(matchState);
     }
 
@@ -132,7 +133,6 @@ public final class GameController {
         adapter.setUsersList(matchState.getPlayerList());
         adapter.notifyDataSetChanged();
     }
-
 
     public void setPlayerLegs(){
         for (int i = 0; i < playersList.size(); i++) {

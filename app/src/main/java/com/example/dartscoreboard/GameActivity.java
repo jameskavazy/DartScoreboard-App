@@ -52,26 +52,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_activity);
-//        final OnBackPressedCallback callback = new OnBackPressedCallback(true) {
-//            @Override
-//            public void handleOnBackPressed() {
-//                GameController.getInstance().clearTurnIndices();
-//
-//            }
-//        }
-
-
-
-
-//        callback = new OnBackPressedDispatcher();
-//        callback.addCallback(this, new OnBackPressedCallback(true) {
-//            @Override
-//            public void handleOnBackPressed() {
-//                GameController.getInstance().clearTurnIndices();
-//                finish();
-//            }
-//        }); //todo this isn't being called/run^^
-//        Log.d("dom test", "gameType\n-------\nname " + getGameType().name + "\nstartingScore " + getGameType().startingScore);
         setupUI();
         setAdapter();
     }
@@ -203,7 +183,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             inputMethodManager.hideSoftInputFromWindow(recyclerView.getApplicationWindowToken(), 0);
             inputScoreEditText.setVisibility(View.GONE);
             doneButton.setVisibility(View.GONE);
-            matchHistoryViewModel.deleteGameStateByID(GameController.getInstance().getGameID());
+            matchHistoryViewModel.deleteGameStateByID(id);
         }
     }
 
@@ -219,6 +199,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 inputScoreEditText.setVisibility(View.VISIBLE);
                 doneButton.setVisibility(View.VISIBLE);
                 GameController.gameStateEnd = false;
+                GameState gameState = getGameInfo();
+                gameState.setGameID(id);
+                matchHistoryViewModel.insert(gameState);
             }
             GameController.getInstance().undo(adapter);
             //todo update the inserted gameState

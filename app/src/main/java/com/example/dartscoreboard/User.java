@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-@Entity
+@Entity (tableName = "user_table")
 public class User implements Serializable { //todo guy easter egg
     @PrimaryKey (autoGenerate = true)
     public int userID;
