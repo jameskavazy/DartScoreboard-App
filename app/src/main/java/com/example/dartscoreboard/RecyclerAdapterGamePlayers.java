@@ -69,7 +69,7 @@ public class RecyclerAdapterGamePlayers extends RecyclerView.Adapter<RecyclerAda
 
     public void setUsersList(ArrayList<User> usersList){
         this.usersList = usersList;
-
+        notifyDataSetChanged();
     }
 
 }
