@@ -8,7 +8,7 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class HomeScreenActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button newGameButton;
     private Button usersButton;
@@ -25,28 +25,18 @@ public class HomeScreenActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void setupUI(){ // todo look lifecycle methods of when to set up ui, oncreateview?
-        setContentView(R.layout.home_screen_activity);
+        setContentView(R.layout.activity_main);
         newGameButton = findViewById(R.id.startNewGameButton);
         usersButton = findViewById(R.id.usersButton);
         continueButton = findViewById(R.id.continueButton);
         newGameButton.setOnClickListener(this);
         usersButton.setOnClickListener(this);
         continueButton.setOnClickListener(this);
-//        PreferencesController.getInstance().clearGameState(GameActivity.GAME_STATE_SLOT1_KEY);
-//        PreferencesController.getInstance().clearGameState(GameActivity.GAME_STATE_SLOT2_KEY);
-//        PreferencesController.getInstance().clearGameState(GameActivity.GAME_STATE_SLOT3_KEY);
         setContinueBtnVisibility();
     }
 
     private void setContinueBtnVisibility() {
         continueButton.setVisibility(View.VISIBLE);
-//        String[] slotKeysArray = new String[]{GameActivity.GAME_STATE_SLOT1_KEY, GameActivity.GAME_STATE_SLOT2_KEY, GameActivity.GAME_STATE_SLOT3_KEY};
-//        for (String key : slotKeysArray){
-//            if (PreferencesController.getInstance().readGameState(key) != null){
-//                continueButton.setVisibility(View.VISIBLE);
-//                break;
-//            } else continueButton.setVisibility(View.GONE);
-//        }
     }
 
 

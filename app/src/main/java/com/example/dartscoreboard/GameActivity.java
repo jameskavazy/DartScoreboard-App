@@ -1,7 +1,5 @@
 package com.example.dartscoreboard;
 
-import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,17 +12,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.OnBackPressedCallback;
-import androidx.activity.OnBackPressedDispatcher;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.Stack;
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -49,12 +43,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.game_activity);
         setupUI();
         setAdapter();
     }
 
     private void setupUI() {
+        setContentView(R.layout.game_activity);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         averageScoreTextView = findViewById(R.id.avg_text_view);
         visitsTextView = findViewById(R.id.visits_text_view);
@@ -143,8 +137,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             ((EditText) findViewById(R.id.inputUserNameEditText)).getText().clear();
             setAverageScoreTextView();
             setVisitsTextView();
-            endGameChecker();
             saveGameStateToDb();
+            endGameChecker();
 
             return true;
         } catch (Exception e) {
@@ -184,6 +178,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             inputScoreEditText.setVisibility(View.GONE);
             doneButton.setVisibility(View.GONE);
             matchHistoryViewModel.deleteGameStateByID(id);
+//            Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -223,8 +218,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 GameController.getInstance().getGameSettings(),
                 GameController.getInstance().getPlayersList(),
                 GameController.getInstance().getTurnIndex(),
-                GameController.getInstance().getTurnLeadForLegs(),
-                GameController.getInstance().getTurnLeadForSets(),
+                GameController.getInstance().getTurnIndexLegs(),
+                GameController.getInstance().getTurnIndexSets(),
                 GameController.getInstance().getMatchStateStack());
     }
 
