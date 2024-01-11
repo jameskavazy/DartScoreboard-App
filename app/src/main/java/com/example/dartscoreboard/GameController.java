@@ -44,20 +44,10 @@ public final class GameController {
 //        //Save current gameState for undo
             saveForUndo();
 
-
-//        Log.d("dom test", "playerVisit saveForUndo=  " + previousGameState);
-//
-//        for (User user:previousGameState.getPlayerList()
-//        ) {
-//            Log.d("dom test", "playerVisit saveForUndo= " + user.username + " score is " + user.playerScore);
-//        } //todo re-enable once undo fixed
-
-
         if (scoreInt <= 180) { // checks for valid score input
             User currentPlayer = playersList.get(turnIndex);
             int currentScore = currentPlayer.getPlayerScore();
             currentPlayer.setPlayerScore(subtract(currentScore,scoreInt));
-            Log.d("dom test", "playerVisit - afterSubtract : " + currentPlayer.playerScore);
             incrementTurnIndex();
         }
         nextLeg();
@@ -117,7 +107,6 @@ public final class GameController {
         String playerListCopyJsonString = new Gson().toJson(playersList);
         ArrayList<User> playerListCopy = new Gson().fromJson(playerListCopyJsonString,new TypeToken<ArrayList<User>>() {}.getType());
         MatchState matchState = new MatchState(playerListCopy,getTurnIndex(),getTurnLeadForLegs(),getTurnLeadForSets());
-
         //saves matchStateStack within the controller to pass it to the db.
         getMatchStateStack().push(matchState);
     }

@@ -34,6 +34,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private int id;
     private boolean existingGame;
     private TextView gameTitle;
+
     private ArrayList<User> playersList;
     private RecyclerView recyclerView;
     private EditText inputScoreEditText;
@@ -44,9 +45,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private SelectGameActivity.GameType gameType;
     private GameSettings gameSettings;
     private RecyclerAdapterGamePlayers adapter;
-    private OnBackPressedDispatcher callback;
-
-    private Stack<MatchState> matchStateStack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +56,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private void setupUI() {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        this.setRequestedOrientation(SCREEN_ORIENTATION_PORTRAIT); // todo delete this eventually
         averageScoreTextView = findViewById(R.id.avg_text_view);
         visitsTextView = findViewById(R.id.visits_text_view);
         undoButton = findViewById(R.id.undo_button);
@@ -66,7 +63,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView = findViewById(R.id.player_info_recycler_view);
         gameTitle = findViewById(R.id.gameActivityTitle);
         inputScoreEditText = findViewById(R.id.inputUserNameEditText);
-        averageScoreTextView.setText(String.valueOf(0.0));
         undoButton.setOnClickListener(this);
         doneButton.setOnClickListener(this);
         inputScoreEditText.setOnEditorActionListener((v, actionId, event) -> onScoreEntered());
@@ -84,13 +80,15 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         if (intent.hasExtra(GAME_STATE_ID)) {
             //Get information for game from the MatchHistoryScreen - Existing Game
             existingGame = true;
+            // TODO: 11/01/2024 Refactor so that id is managed by controller
             id = intent.getIntExtra(GAME_STATE_ID, -1);
             GameState gameState = (GameState) arguments.getSerializable(MATCH_HISTORY_EXTRA_KEY);
             gameTitle.setText(gameState.getGameType().name);
-            playersList = gameState.getPlayerList();
+            setPlayersList(gameState.getPlayerList());
             GameController.getInstance().initialiseGameController(gameState.getGameType(), gameState.getGameSettings()
                     , gameState.getPlayerList(), gameState.getTurnIndex(), gameState.getTurnLeadForLegs(), gameState.getTurnLeadForSets(), gameState.getMatchStateStack());
-
+            setVisitsTextView();
+            setAverageScoreTextView();
         } else {
             //todo pass info with intents rather than set into GC if from new game...?
 
@@ -98,12 +96,14 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             existingGame = false;
             gameType = GameController.getInstance().getGameType();
             gameSettings = GameController.getInstance().getGameSettings();
-            playersList = GameController.getInstance().getPlayersList();
+            setPlayersList(GameController.getInstance().getPlayersList());
             GameController.getInstance().setTurnIndex(0);
             saveGameStateToDb();
             existingGame = true;
             GameController.getInstance().setPlayerStartingScores();
             gameTitle.setText(gameType.name);
+            averageScoreTextView.setText("-");
+            visitsTextView.setText("-");
         }
     }
 
@@ -204,6 +204,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 matchHistoryViewModel.insert(gameState);
             }
             GameController.getInstance().undo(adapter);
+            setPlayersList(GameController.getInstance().getPlayersList());
+            setAverageScoreTextView();
+            setVisitsTextView();
             //todo update the inserted gameState
             GameState gameState = getGameInfo();
             gameState.setGameID(id);
@@ -223,6 +226,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 GameController.getInstance().getTurnLeadForLegs(),
                 GameController.getInstance().getTurnLeadForSets(),
                 GameController.getInstance().getMatchStateStack());
+    }
+
+    public void setPlayersList(ArrayList<User> playersList) {
+        this.playersList = playersList;
     }
 
 }
