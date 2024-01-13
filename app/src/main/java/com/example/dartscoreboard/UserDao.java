@@ -7,6 +7,8 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import com.example.dartscoreboard.models.User;
+
 import java.util.ArrayList;
 
 @Dao

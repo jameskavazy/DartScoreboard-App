@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.dartscoreboard.models.User;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Stack;

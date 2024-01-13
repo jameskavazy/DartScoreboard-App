@@ -18,6 +18,8 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.dartscoreboard.models.User;
+
 import java.util.ArrayList;
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {

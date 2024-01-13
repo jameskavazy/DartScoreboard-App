@@ -1,5 +1,7 @@
 package com.example.dartscoreboard;
 
+import com.example.dartscoreboard.models.User;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 

@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.example.dartscoreboard.models.User;
+
 import java.util.ArrayList;
 
 public class UserViewModel extends AndroidViewModel {

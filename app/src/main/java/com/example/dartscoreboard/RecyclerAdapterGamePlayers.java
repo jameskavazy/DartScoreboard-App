@@ -9,6 +9,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.dartscoreboard.models.User;
+
 import java.util.ArrayList;
 
 public class RecyclerAdapterGamePlayers extends RecyclerView.Adapter<RecyclerAdapterGamePlayers.GameViewHolder> {

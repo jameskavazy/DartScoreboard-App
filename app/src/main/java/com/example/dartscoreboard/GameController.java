@@ -3,6 +3,8 @@ package com.example.dartscoreboard;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.dartscoreboard.models.GuyUser;
+import com.example.dartscoreboard.models.User;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -26,30 +28,37 @@ public final class GameController {
 
     private GameSettings gameSettings;
 
-    private GameController(){
+    private GameController() {
     }
+
     public static GameController getInstance() {
-        if (gameController == null){
+        if (gameController == null) {
             gameController = new GameController();
         }
         return gameController;
     }
+
     public void playerVisit(int scoreInt) {
 //        //Save current gameState for undo
-            saveForUndo();
+        saveForUndo();
 
         if (scoreInt <= 180) { // checks for valid score input
+
             User currentPlayer = playersList.get(turnIndex);
             int currentScore = currentPlayer.getPlayerScore();
-            currentPlayer.setPlayerScore(subtract(currentScore,scoreInt));
+
+            if (currentPlayer instanceof GuyUser) {
+                GuyUser guy = (GuyUser) currentPlayer;
+                guy.setPlayerScore(subtract(currentScore, scoreInt));
+                currentPlayer.setPlayerScore(guy.getPlayerScore());
+            } else {
+                currentPlayer.setPlayerScore(subtract(currentScore, scoreInt));
+            }
+
             incrementTurnIndex();
         }
         nextLeg();
     }
-
-
-
-
 
 
     private int subtract(int playerScore, int currentTypedScore) {
@@ -77,21 +86,21 @@ public final class GameController {
             currentPlayer.addToPreviousScoresList(currentTypedScore);
             return newScore;
         } else {
-          currentPlayer.addToPreviousScoresList(0);
-          Toast.makeText(DartsScoreboardApplication.getContext(), "BUST", Toast.LENGTH_SHORT).show();
+            currentPlayer.addToPreviousScoresList(0);
+            Toast.makeText(DartsScoreboardApplication.getContext(), "BUST", Toast.LENGTH_SHORT).show();
             return playerScore;
         }
     }
 
-    public void saveForUndo(){
+    public void saveForUndo() {
         //Make a "deep copy"
         String playerListCopyJsonString = new Gson().toJson(playersList);
-        ArrayList<User> playerListCopy = new Gson().fromJson(playerListCopyJsonString,new TypeToken<ArrayList<User>>() {}.getType());
-        MatchState matchState = new MatchState(playerListCopy,getTurnIndex(), getTurnIndexLegs(), getTurnIndexSets());
+        ArrayList<User> playerListCopy = new Gson().fromJson(playerListCopyJsonString, new TypeToken<ArrayList<User>>() {
+        }.getType());
+        MatchState matchState = new MatchState(playerListCopy, getTurnIndex(), getTurnIndexLegs(), getTurnIndexSets());
         //saves matchStateStack within the controller to pass it to the db.
         getMatchStateStack().push(matchState);
     }
-
 
 
     public void undo(RecyclerAdapterGamePlayers adapter) {
@@ -104,25 +113,25 @@ public final class GameController {
         adapter.notifyDataSetChanged();
     }
 
-    public void setPlayerLegs(){
+    public void setPlayerLegs() {
         for (int i = 0; i < playersList.size(); i++) {
             playersList.get(i).setCurrentLegs(0);
         }
     }
 
-    public void setPlayerSets(){
+    public void setPlayerSets() {
         for (int i = 0; i < playersList.size(); i++) {
             playersList.get(i).setCurrentSets(0);
         }
     }
 
 
-    public void nextLeg(){
-        for (User player : playersList){
+    public void nextLeg() {
+        for (User player : playersList) {
             if (player.getPlayerScore() == 0) {
-                player.currentLegs++;
+                player.setCurrentLegs(player.getCurrentLegs() + 1);
                 incrementTurnIndexLegs();
-                Log.d("dom test",player.username + " current legs = " + player.currentLegs);
+                Log.d("dom test", player.getUsername() + " current legs = " + player.getCurrentLegs());
                 nextSet();
                 matchWonChecker();
                 if (!gameStateEnd) {
@@ -132,21 +141,21 @@ public final class GameController {
         }
     }
 
-    public void nextSet(){
-        for (User player:playersList
+    public void nextSet() {
+        for (User player : playersList
         ) {
             if (player.getPlayerScore() == 0 && player.getCurrentLegs() == gameSettings.getTotalLegs()) {
-                player.currentSets++;
+                player.setCurrentSets(player.getCurrentSets() + 1);
                 setPlayerLegs();
                 incrementTurnIndexSets();
             }
         }
     }
 
-    public void matchWonChecker(){
+    public void matchWonChecker() {
         for (User player : playersList
         ) {
-            if (player.getPlayerScore() == 0 && player.currentSets == gameSettings.getTotalSets()){
+            if (player.getPlayerScore() == 0 && player.getCurrentSets() == gameSettings.getTotalSets()) {
                 setTurnIndex(playersList.indexOf(player));
                 Toast.makeText(DartsScoreboardApplication.getContext(), player.getUsername() + " wins the match!", Toast.LENGTH_LONG).show();
                 endGame();
@@ -155,20 +164,21 @@ public final class GameController {
     }
 
     public void setPlayerStartingScores() {
-        for (User user : playersList){
+        for (User user : playersList) {
             user.setPlayerScore(gameType.startingScore);
         }
     }
 
-    public void incrementTurnIndex(){
+    public void incrementTurnIndex() {
         turnIndex = (turnIndex + 1) % playersList.size();
     }
 
-    public void incrementTurnIndexLegs(){
+    public void incrementTurnIndexLegs() {
         turnIndexLegs = (turnIndexLegs + 1) % playersList.size();
         turnIndex = turnIndexLegs;
     }
-    public void incrementTurnIndexSets(){
+
+    public void incrementTurnIndexSets() {
         turnIndexSets = (turnIndexSets + 1) % playersList.size();
         turnIndexLegs = turnIndexSets;
         turnIndex = turnIndexSets;
@@ -189,6 +199,7 @@ public final class GameController {
     public void setGameType(SelectGameActivity.GameType gameType) {
         this.gameType = gameType;
     }
+
     public SelectGameActivity.GameType getGameType() {
         return gameType;
     }
@@ -208,6 +219,7 @@ public final class GameController {
     public void setTurnIndexLegs(int turnIndexLegs) {
         this.turnIndexLegs = turnIndexLegs;
     }
+
     public int getTurnIndexSets() {
         return turnIndexSets;
     }
@@ -215,10 +227,12 @@ public final class GameController {
     public void setTurnIndexSets(int turnIndexSets) {
         this.turnIndexSets = turnIndexSets;
     }
+
     public ArrayList<User> getPlayersList() {
         return playersList;
     }
-    public void clearTurnIndices(){
+
+    public void clearTurnIndices() {
         setTurnIndex(0);
         setTurnIndexSets(0);
         setTurnIndexSets(0);
@@ -240,7 +254,6 @@ public final class GameController {
     }
 
 
-
     public void initialiseGameController(
             SelectGameActivity.GameType gameType, GameSettings gameSettings, ArrayList<User> playersList, int turnIndex,
             int turnLeadForLegs, int turnLeadForSets, Stack<MatchState> matchStateStack) {
@@ -256,7 +269,7 @@ public final class GameController {
 
 
     public Stack<MatchState> getMatchStateStack() {
-        if (matchStateStack == null){
+        if (matchStateStack == null) {
             matchStateStack = new Stack<>();
         }
         return matchStateStack;

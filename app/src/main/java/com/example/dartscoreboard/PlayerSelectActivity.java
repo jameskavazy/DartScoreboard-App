@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.dartscoreboard.models.User;
+
 import java.util.ArrayList;
 
 public class PlayerSelectActivity extends AppCompatActivity implements View.OnClickListener {
@@ -69,7 +71,7 @@ public class PlayerSelectActivity extends AppCompatActivity implements View.OnCl
 private void setUsersForGame(){
     ArrayList<User> usersForGame = new ArrayList<>();
     for (int i = 0; i < usersList.size(); i++) {
-        if (usersList.get(i).active){
+        if (usersList.get(i).getActive()){
             usersForGame.add(usersList.get(i));
             Log.d("dom test", String.valueOf(usersForGame));
             PreferencesController.saveUsersForGameSP(getApplicationContext(),usersForGame);

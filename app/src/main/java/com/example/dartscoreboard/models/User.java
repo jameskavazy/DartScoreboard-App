@@ -1,4 +1,4 @@
-package com.example.dartscoreboard;
+package com.example.dartscoreboard.models;
 
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -7,23 +7,27 @@ import androidx.room.PrimaryKey;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-@Entity (tableName = "user_table")
+@Entity(tableName = "user_table")
 public class User implements Serializable { //todo guy easter egg
-    @PrimaryKey (autoGenerate = true)
-    public int userID;
-    public String username;
+    @PrimaryKey(autoGenerate = true)
+    protected int userID;
+    protected String username;
     @Ignore
-    public int playerScore;
+    protected int playerScore;
     @Ignore
-    public ArrayList<Integer> previousScoresList;
-    public boolean active;
+    protected ArrayList<Integer> previousScoresList;
+    protected boolean active;
     @Ignore
-    public int currentLegs;
+    protected int currentLegs;
     @Ignore
-    public int currentSets;
+    protected int currentSets;
+
     public User(String username, boolean active) {
         this.username = username;
         this.active = active;
+    }
+
+    public User() {
     }
 
     public String getUsername() {
@@ -35,32 +39,31 @@ public class User implements Serializable { //todo guy easter egg
         this.username = username;
     }
 
-    public ArrayList<Integer> getPreviousScoresList(){
-        if (previousScoresList == null){
+    public ArrayList<Integer> getPreviousScoresList() {
+        if (previousScoresList == null) {
             previousScoresList = new ArrayList<>();
         }
         return previousScoresList;
     }
 
-    public void addToPreviousScoresList(int score){
-        if (previousScoresList == null){
+    public void addToPreviousScoresList(int score) {
+        if (previousScoresList == null) {
             previousScoresList = new ArrayList<>();
         }
         previousScoresList.add(score);
 
     }
 
-    public void setPreviousScoresList(ArrayList<Integer> pastScoresList){
+    public void setPreviousScoresList(ArrayList<Integer> pastScoresList) {
         this.previousScoresList = pastScoresList;
     }
 
 
-    public int getVisits(){
+    public int getVisits() {
         //If previous scores list is empty then return 1 to avoid divide by zero
-        if (previousScoresList == null){
+        if (previousScoresList == null) {
             return 1;
-        }
-        else return previousScoresList.size();
+        } else return previousScoresList.size();
     }
 
     public void setActive(boolean active) {
@@ -71,28 +74,28 @@ public class User implements Serializable { //todo guy easter egg
         return active;
     }
 
-    public void setPlayerScore(int playerScore){
+    public void setPlayerScore(int playerScore) {
         this.playerScore = playerScore;
     }
 
-    public int getPlayerScore(){
+    public int getPlayerScore() {
         return playerScore;
     }
 
 
-    public void setCurrentLegs(int currentLegs){
+    public void setCurrentLegs(int currentLegs) {
         this.currentLegs = currentLegs;
     }
 
-    public int getCurrentLegs(){
+    public int getCurrentLegs() {
         return currentLegs;
     }
 
-    public void setCurrentSets(int currentSets){
+    public void setCurrentSets(int currentSets) {
         this.currentSets = currentSets;
     }
 
-    public int getCurrentSets(){
+    public int getCurrentSets() {
         return currentSets;
     }
 
@@ -113,7 +116,7 @@ public class User implements Serializable { //todo guy easter egg
         this.currentLegs = currentLegs;
     }
 
-    public void setPlayerSets (int currentSets){
+    public void setPlayerSets(int currentSets) {
         this.currentSets = currentSets;
     }
 

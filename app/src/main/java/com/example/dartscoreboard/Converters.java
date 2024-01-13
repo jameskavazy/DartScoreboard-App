@@ -1,22 +1,16 @@
 package com.example.dartscoreboard;
 
-import android.service.autofill.FieldClassification;
-
 import androidx.room.TypeConverter;
-import androidx.room.TypeConverters;
 
+import com.example.dartscoreboard.models.User;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Stack;
-
-import kotlin.jvm.JvmStatic;
 
 public class Converters {
 

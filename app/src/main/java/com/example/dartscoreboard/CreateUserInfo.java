@@ -9,6 +9,9 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.dartscoreboard.models.GuyUser;
+import com.example.dartscoreboard.models.User;
+
 import java.util.ArrayList;
 
 public class CreateUserInfo extends AppCompatActivity implements View.OnClickListener {
@@ -19,6 +22,8 @@ public class CreateUserInfo extends AppCompatActivity implements View.OnClickLis
 
     private ArrayList<User> usersList;
 
+    private ArrayList<User> testLit;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,7 +32,7 @@ public class CreateUserInfo extends AppCompatActivity implements View.OnClickLis
     }
 
 
-    private void setupUI(){
+    private void setupUI() {
         cancelButton = findViewById(R.id.cancel_create_player);
         createPlayerButton = findViewById(R.id.create_player_button);
         cancelButton.setOnClickListener(this);
@@ -39,21 +44,26 @@ public class CreateUserInfo extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    private void onAddNewUserButtonClick(String nameToAdd) {
-        if (!nameToAdd.isEmpty()){
-            usersList.add(new User(nameToAdd,false));
+    private void onAddNewUserButtonClick(String nameToAdd) { // todo protect against duplicate players
+        if (nameToAdd.isEmpty()) return;
+
+        if (nameToAdd.equalsIgnoreCase("guy")) {
+            Log.d("dom test", "onAddNewUserButtonClick GuyUser");
+            usersList.add(new GuyUser(nameToAdd, false));
+        } else {
+            Log.d("dom test", "onAddNewUserButtonClick user");
+            usersList.add(new User(nameToAdd, false));
         }
     }
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.cancel_create_player){
-            Log.d("dom test","cancel button click");
+        if (v.getId() == R.id.cancel_create_player) {
+            Log.d("dom test", "cancel button click");
             finish();
             openUsersActivity();
-        }
-        if (v.getId() == R.id.create_player_button){
-            Log.d("dom test","OK button click");
+        } else if (v.getId() == R.id.create_player_button) {
+            Log.d("dom test", "OK button click");
             String usernameToAdd = enterUsernameEditText.getText().toString();
             onAddNewUserButtonClick(usernameToAdd);
             enterUsernameEditText.getText().clear();
@@ -62,8 +72,7 @@ public class CreateUserInfo extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-
-    private void openUsersActivity(){
+    private void openUsersActivity() {
         Intent intent = new Intent(this, UsersActivity.class);
         startActivity(intent);
         finish();
