@@ -10,6 +10,9 @@ import androidx.room.Update;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.functions.Action;
+
 @Dao
 public interface MatchesDao {
 
@@ -18,6 +21,9 @@ public interface MatchesDao {
 
     @Insert
     long insertGameState(GameState gameState);
+
+//    @Delete
+//    void delete(GameState gameState);
 
     @Delete
     void delete(GameState gameState);

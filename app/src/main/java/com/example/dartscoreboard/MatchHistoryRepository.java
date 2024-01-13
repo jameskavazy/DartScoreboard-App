@@ -2,18 +2,28 @@ package com.example.dartscoreboard;
 
 import android.app.Application;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.CompletableObserver;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.functions.Action;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
 public class MatchHistoryRepository {
     private MatchesDao matchesDao;
     private LiveData<List<GameState>> allMatchHistory;
 
+    MatchHistoryDatabase matchHistoryDatabase;
+
     public MatchHistoryRepository(Application application){
-        MatchHistoryDatabase matchHistoryDatabase = MatchHistoryDatabase.getInstance(application);
+        matchHistoryDatabase = MatchHistoryDatabase.getInstance(application);
         matchesDao = matchHistoryDatabase.matchesDao();
         allMatchHistory = matchesDao.getAllMatchHistory();
     }
@@ -30,12 +40,14 @@ public class MatchHistoryRepository {
         new UpdateGameStateAsyncTask(matchesDao).execute(gameState);
     }
 
-    public void delete(GameState gameState){
-        new DeleteGameStateAsyncTask(matchesDao).execute(gameState);
+    public Completable delete(GameState gameState) {
+        Completable completable = Completable.fromAction(() -> matchesDao.delete(gameState));
+        completable.subscribeOn(Schedulers.io()).subscribe();
+        return completable;
     }
+
     public void deleteAll(){
         new DeleteAllGameStatesAsyncTask(matchesDao).execute();
-
     }
 
     public LiveData<GameState> getGameStateById(int id){
@@ -77,18 +89,18 @@ public class MatchHistoryRepository {
     }
 
 
-    private static class DeleteGameStateAsyncTask extends AsyncTask<GameState, Void, Void>{
-        private MatchesDao matchesDao;
-
-        private DeleteGameStateAsyncTask(MatchesDao matchesDao){
-            this.matchesDao = matchesDao;
-        }
-        @Override
-        protected Void doInBackground(GameState... gameStates) {
-            matchesDao.delete(gameStates[0]);
-            return null;
-        }
-    }
+//    private static class DeleteGameStateAsyncTask extends AsyncTask<GameState, Void, Void>{
+//        private MatchesDao matchesDao;
+//
+//        private DeleteGameStateAsyncTask(MatchesDao matchesDao){
+//            this.matchesDao = matchesDao;
+//        }
+//        @Override
+//        protected Void doInBackground(GameState... gameStates) {
+//            matchesDao.delete(gameStates[0]);
+//            return null;
+//        }
+//    }
     private static class DeleteAllGameStatesAsyncTask extends AsyncTask<Void, Void, Void>{
         private MatchesDao matchesDao;
 

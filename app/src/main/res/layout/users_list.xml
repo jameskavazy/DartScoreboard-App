@@ -4,15 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="5dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
     android:clickable="true"
     android:focusable="true">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#3CAEB0B2"
-        android:padding="8dp">
+        android:padding="8dp"
+        >
 
     <TextView
         android:id="@+id/name_text1"
@@ -28,22 +30,17 @@
         android:padding="8dp"
          />
 
-    <CheckBox
-        android:id="@+id/checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_centerInParent="true"
-        android:textColor="@color/custom_blue_accent"
-        android:theme="@style/MyCheckBox"
+        <CheckBox
+            android:id="@+id/checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerInParent="true"
+            android:textColor="@color/custom_blue_accent"
 
-         />
+            android:theme="@style/MyCheckBox" />
 
 </RelativeLayout>
-
-
-
-
 
 
 </androidx.cardview.widget.CardView>

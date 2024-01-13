@@ -1,7 +1,9 @@
 package com.example.dartscoreboard;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -9,30 +11,40 @@ import android.view.View;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class MatchHistoryActivity extends AppCompatActivity implements View.OnClickListener {
+public class MatchHistoryActivity extends AppCompatActivity  {
 
     private MatchHistoryViewModel matchHistoryViewModel;
     private Button clearGamesButton;
     private RecyclerView recyclerView;
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_match_history);
         setupUI();
     }
 
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        toolbar.setTitle("Recent Matches");
+        toolbar.setTitleTextColor(Color.WHITE);
+    }
+
     public void setupUI(){
+        setContentView(R.layout.activity_match_history);
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         recyclerView = findViewById(R.id.recyclerView_GamesList);
-        clearGamesButton = findViewById(R.id.clear_games_button);
-        clearGamesButton.setOnClickListener(this);
         setAdapter();
     }
 
@@ -74,18 +86,7 @@ public class MatchHistoryActivity extends AppCompatActivity implements View.OnCl
 
 
 
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.clear_games_button){
-            //delete games from database
-            matchHistoryViewModel.deleteAllMatches();
-            /*
-             todo make a drop down menu from top banner (in manifest, xml etc...
-              code below already does java functionality)
-             */
 
-        }
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

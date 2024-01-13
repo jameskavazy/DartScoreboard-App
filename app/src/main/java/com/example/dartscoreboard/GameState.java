@@ -123,24 +123,5 @@ public class GameState implements Serializable {
         this.turnLeadForSets = turnLeadForSets;
     }
 
-    //todo creates an object of hashmaps. Hashmaps will all store different things, all player scores, all player turns, all player average scores etc...
-    // todo this then can be added to arraydeque of gamestates
 
-//    public void loadPreviousGameState(ArrayList<User> playersList){
-//        for (User player:playersList
-//             ) {
-
-//            player.setPlayerScore(getCurrentScoresMap(player));
-//            player.setTurn(getTurnsMap(player));
-//            player.setPreviousScoresList(getPreviousScoresListMap(player));
-//            player.setPlayerLegs(getLegsMap(player));
-//            player.setPlayerSets(getSetsMap(player));
-//
-//            //todo below code block shouldn't be needed but the setpreviousscore method above doesn't do its job
-//            if (player.turn && !player.previousScoresList.isEmpty()){
-//                player.previousScoresList.remove(player.previousScoresList.size() - 1);
-//                //player.visits--;
-//            }
-//        }
-//    }
 }
