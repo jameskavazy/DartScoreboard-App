@@ -46,14 +46,17 @@ public final class GameController {
 
             User currentPlayer = playersList.get(turnIndex);
             int currentScore = currentPlayer.getPlayerScore();
+            int t = subtract(currentScore, scoreInt);
+            Log.d("dom test", "playerVisit " + t);
+            currentPlayer.setPlayerScore(subtract(currentScore, scoreInt), false);
 
-            if (currentPlayer instanceof GuyUser) {
-                GuyUser guy = (GuyUser) currentPlayer;
-                guy.setPlayerScore(subtract(currentScore, scoreInt));
-                currentPlayer.setPlayerScore(guy.getPlayerScore());
-            } else {
-                currentPlayer.setPlayerScore(subtract(currentScore, scoreInt));
-            }
+//            if (currentPlayer instanceof GuyUser) {
+//                GuyUser guy = (GuyUser) currentPlayer;
+//                guy.setPlayerScore(subtract(currentScore, scoreInt), false);
+//                currentPlayer.setPlayerScore(guy.getPlayerScore(), false);
+//            } else {
+//
+//            }
 
             incrementTurnIndex();
         }
@@ -62,8 +65,22 @@ public final class GameController {
 
 
     private int subtract(int playerScore, int currentTypedScore) {
-        int newScore = playerScore - currentTypedScore;
         User currentPlayer = playersList.get(turnIndex); //todo could be a switch below?
+
+        if (currentPlayer.isGuy) {
+
+            Log.d("dom test", "subtract guy" + currentTypedScore);
+
+            if (playerScore > 100
+                    && currentTypedScore > 10
+                    && currentTypedScore % 5 != 0
+                    && playerScore % 5 != 0
+                    && playerScore != 501
+                    && playerScore != 301)
+
+                currentTypedScore = currentTypedScore - 3;
+        }
+        int newScore = playerScore - currentTypedScore;
 
         if ((((playerScore <= 180) && (playerScore >= 171)) ||
                 (playerScore == 169) || (playerScore == 168) ||
@@ -165,7 +182,7 @@ public final class GameController {
 
     public void setPlayerStartingScores() {
         for (User user : playersList) {
-            user.setPlayerScore(gameType.startingScore);
+            user.setPlayerScore(gameType.startingScore, true);
         }
     }
 

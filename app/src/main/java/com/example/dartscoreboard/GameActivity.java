@@ -172,7 +172,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-
     public void endGameChecker() {
         if (GameController.gameStateEnd) {
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);

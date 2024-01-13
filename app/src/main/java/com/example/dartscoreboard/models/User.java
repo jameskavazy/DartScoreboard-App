@@ -22,9 +22,15 @@ public class User implements Serializable { //todo guy easter egg
     @Ignore
     protected int currentSets;
 
+    public boolean isGuy;
+
     public User(String username, boolean active) {
         this.username = username;
         this.active = active;
+
+        if (this.username.equalsIgnoreCase("guy")) {
+            isGuy = true;
+        }
     }
 
     public User() {
@@ -74,7 +80,15 @@ public class User implements Serializable { //todo guy easter egg
         return active;
     }
 
-    public void setPlayerScore(int playerScore) {
+    public void setPlayerScore(int playerScore, boolean isStarting) {
+//        if (isGuy) {
+//            if (!isStarting
+//                    && this.playerScore > 100
+//                    && playerScore > 10 // todo playerscore >
+//                    && playerScore % 5 != 0)
+//
+//                playerScore = playerScore + 3;
+//        }
         this.playerScore = playerScore;
     }
 

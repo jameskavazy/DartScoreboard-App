@@ -47,13 +47,15 @@ public class CreateUserInfo extends AppCompatActivity implements View.OnClickLis
     private void onAddNewUserButtonClick(String nameToAdd) { // todo protect against duplicate players
         if (nameToAdd.isEmpty()) return;
 
-        if (nameToAdd.equalsIgnoreCase("guy")) {
-            Log.d("dom test", "onAddNewUserButtonClick GuyUser");
-            usersList.add(new GuyUser(nameToAdd, false));
-        } else {
-            Log.d("dom test", "onAddNewUserButtonClick user");
-            usersList.add(new User(nameToAdd, false));
-        }
+        usersList.add(new User(nameToAdd, false));
+
+//        if (nameToAdd.equalsIgnoreCase("guy")) {
+//            Log.d("dom test", "onAddNewUserButtonClick GuyUser");
+//            usersList.add(new GuyUser(nameToAdd, false));
+//        } else {
+//            Log.d("dom test", "onAddNewUserButtonClick user");
+//            usersList.add(new User(nameToAdd, false));
+//        }
     }
 
     @Override
