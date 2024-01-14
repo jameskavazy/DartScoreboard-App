@@ -22,9 +22,6 @@ public interface MatchesDao {
     @Insert
     long insertGameState(GameState gameState);
 
-//    @Delete
-//    void delete(GameState gameState);
-
     @Delete
     void delete(GameState gameState);
 

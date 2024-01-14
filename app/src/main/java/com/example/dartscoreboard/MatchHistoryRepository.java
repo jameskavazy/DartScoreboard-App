@@ -36,8 +36,10 @@ public class MatchHistoryRepository {
         }
     }
 
-    public void update(GameState gameState){
-        new UpdateGameStateAsyncTask(matchesDao).execute(gameState);
+    public Completable update(GameState gameState){
+        Completable completable = Completable.fromAction(() -> matchesDao.updateGameState(gameState));
+        completable.subscribeOn(Schedulers.io()).subscribe();
+        return completable;
     }
 
     public Completable delete(GameState gameState) {
