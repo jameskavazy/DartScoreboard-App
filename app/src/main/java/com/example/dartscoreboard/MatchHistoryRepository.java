@@ -57,7 +57,7 @@ public class MatchHistoryRepository {
         return matchesDao.findGameByID(id);
     }
 
-    public void deleteGameStateByID(int id){
+    public void deleteGameStateByID(long id){
         new DeleteGameStateByIDAsyncTask(matchesDao).execute(id);
     }
 
@@ -128,7 +128,7 @@ public class MatchHistoryRepository {
         }
     }
 
-    private static class DeleteGameStateByIDAsyncTask extends AsyncTask<Integer,Void,Void>{
+    private static class DeleteGameStateByIDAsyncTask extends AsyncTask<Long,Void,Void>{
 
         private MatchesDao matchesDao;
 
@@ -137,8 +137,8 @@ public class MatchHistoryRepository {
         }
 
         @Override
-        protected Void doInBackground(Integer... integers) {
-            matchesDao.deleteGameStateByID(integers[0]);
+        protected Void doInBackground(Long... longs) {
+            matchesDao.deleteGameStateByID(longs[0]);
             return null;
         }
     }

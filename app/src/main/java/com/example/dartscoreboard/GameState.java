@@ -16,7 +16,7 @@ import java.util.Stack;
 public class GameState implements Serializable {
 
     @PrimaryKey (autoGenerate = true)
-    public int gameID;
+    public long gameID;
 
    @ColumnInfo
    public OffsetDateTime offsetDateTime = OffsetDateTime.now();
@@ -67,11 +67,11 @@ public class GameState implements Serializable {
 
 
 
-    public void setGameID(int gameID) {
+    public void setGameID(long gameID) {
         this.gameID = gameID;
     }
 
-    public int getGameID() {
+    public long getGameID() {
         return gameID;
     }
 

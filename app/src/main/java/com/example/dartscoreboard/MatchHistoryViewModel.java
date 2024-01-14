@@ -49,7 +49,7 @@ public class MatchHistoryViewModel extends AndroidViewModel {
         return id;
     }
 
-    public void deleteGameStateByID(int id){
+    public void deleteGameStateByID(long id){
        //todo make this work. Does it need to return an id?
         repository.deleteGameStateByID(id);
     }

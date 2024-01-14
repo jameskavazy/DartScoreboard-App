@@ -13,7 +13,7 @@ import java.util.Stack;
 
 public final class GameController {
 
-    private int gameID;
+    private long gameID;
     public static GameController gameController;
     public int turnIndex = 0;
     private int turnIndexLegs = 0;
@@ -255,11 +255,11 @@ public final class GameController {
         setTurnIndexSets(0);
     }
 
-    public int getGameID() {
+    public long getGameID() {
         return gameID;
     }
 
-    public void setGameID(int gameID) {
+    public void setGameID(long gameID) {
         this.gameID = gameID;
     }
 

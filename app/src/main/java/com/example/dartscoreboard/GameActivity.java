@@ -27,7 +27,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private MatchHistoryViewModel matchHistoryViewModel;
     public static final String GAME_STATE_ID = "GAME_STATE_ID_KEY";
     public static final String MATCH_HISTORY_EXTRA_KEY = "OPEN_GAME_ACTIVITY_KEY";
-    private int id;
+    private long id;
     private boolean existingGame;
     private TextView gameTitle;
 
