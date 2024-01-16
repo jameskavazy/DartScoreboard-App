@@ -33,14 +33,6 @@ public class MatchHistoryRepository {
         return Single.fromCallable(()-> matchesDao.insertGameState(gameState)).subscribeOn(Schedulers.io());
     }
 
-//    public long insert(GameState gameState){
-//        try {
-//            return new InsertGameStateAsyncTask(matchesDao).execute(gameState).get();
-//        } catch (ExecutionException | InterruptedException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-
     public Completable update(GameState gameState){
         Completable completable = Completable.fromAction(() -> matchesDao.updateGameState(gameState));
         completable.subscribeOn(Schedulers.io()).subscribe();
@@ -60,61 +52,19 @@ public class MatchHistoryRepository {
     }
 
     public LiveData<GameState> getGameStateById(int id){
-//        new GetGameStateByIdAsyncTask(matchesDao).execute(id);
         return matchesDao.findGameByID(id);
     }
 
-//    public void deleteGameStateByID(long id){
-//        new DeleteGameStateByIDAsyncTask(matchesDao).execute(id);
-//    }
 
     public void deleteGameStateByID(long id){
-        new DeleteGameStateByIDAsyncTask(matchesDao).execute(id);
+        Completable completable = Completable.fromAction(()-> matchesDao.deleteGameStateByID(id));
+        completable.subscribeOn(Schedulers.io()).subscribe();
     }
     public LiveData<List<GameState>> getAllMatchHistory(){
         return allMatchHistory;
     }
 
 
-    private static class InsertGameStateAsyncTask extends AsyncTask<GameState, Void, Long>{
-        private MatchesDao matchesDao;
-
-        private InsertGameStateAsyncTask(MatchesDao matchesDao){
-            this.matchesDao = matchesDao;
-        }
-        @Override
-        protected Long doInBackground(GameState... gameStates) {
-            return matchesDao.insertGameState(gameStates[0]);
-        }
-    }
-
-
-    private static class GetGameStateByIdAsyncTask extends AsyncTask<Integer, Void, LiveData<GameState>>{
-        private MatchesDao matchesDao;
-
-        private GetGameStateByIdAsyncTask(MatchesDao matchesDao){
-            this.matchesDao = matchesDao;
-        }
-        @Override
-        protected LiveData<GameState> doInBackground(Integer... id) {
-            return matchesDao.findGameByID(id[0]);
-        }
-    }
-
-    private static class DeleteGameStateByIDAsyncTask extends AsyncTask<Long,Void,Void>{
-
-        private MatchesDao matchesDao;
-
-        private DeleteGameStateByIDAsyncTask(MatchesDao matchesDao){
-            this.matchesDao = matchesDao;
-        }
-
-        @Override
-        protected Void doInBackground(Long... longs) {
-            matchesDao.deleteGameStateByID(longs[0]);
-            return null;
-        }
-    }
 
 
 }
