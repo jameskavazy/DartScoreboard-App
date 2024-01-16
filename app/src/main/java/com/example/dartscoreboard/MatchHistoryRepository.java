@@ -12,6 +12,8 @@ import java.util.concurrent.ExecutionException;
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.CompletableObserver;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.core.SingleObserver;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.functions.Action;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -19,7 +21,6 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class MatchHistoryRepository {
     private MatchesDao matchesDao;
     private LiveData<List<GameState>> allMatchHistory;
-
     MatchHistoryDatabase matchHistoryDatabase;
 
     public MatchHistoryRepository(Application application){
@@ -28,19 +29,22 @@ public class MatchHistoryRepository {
         allMatchHistory = matchesDao.getAllMatchHistory();
     }
 
-    public long insert(GameState gameState){
-        try {
-            return new InsertGameStateAsyncTask(matchesDao).execute(gameState).get();
-        } catch (ExecutionException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+    public Single<Long> insert(GameState gameState){
+        return Single.fromCallable(()-> matchesDao.insertGameState(gameState)).subscribeOn(Schedulers.io());
     }
+
+//    public long insert(GameState gameState){
+//        try {
+//            return new InsertGameStateAsyncTask(matchesDao).execute(gameState).get();
+//        } catch (ExecutionException | InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     public Completable update(GameState gameState){
         Completable completable = Completable.fromAction(() -> matchesDao.updateGameState(gameState));
         completable.subscribeOn(Schedulers.io()).subscribe();
         return completable;
-//        new UpdateGameStateAsyncTask(matchesDao).execute(gameState);
     }
 
     public Completable delete(GameState gameState) {
@@ -49,8 +53,10 @@ public class MatchHistoryRepository {
         return completable;
     }
 
-    public void deleteAll(){
-        new DeleteAllGameStatesAsyncTask(matchesDao).execute();
+    public Completable deleteAll(){
+        Completable completable = Completable.fromAction(()-> matchesDao.deleteAllMatchHistory());
+        completable.subscribeOn(Schedulers.io()).subscribe();
+        return completable;
     }
 
     public LiveData<GameState> getGameStateById(int id){
@@ -69,18 +75,6 @@ public class MatchHistoryRepository {
         return allMatchHistory;
     }
 
-    private static class UpdateGameStateAsyncTask extends AsyncTask<GameState, Void, Void>{
-        private MatchesDao matchesDao;
-
-        private UpdateGameStateAsyncTask(MatchesDao matchesDao){
-            this.matchesDao = matchesDao;
-        }
-        @Override
-        protected Void doInBackground(GameState... gameStates) {
-            matchesDao.updateGameState(gameStates[0]);
-            return null;
-        }
-    }
 
     private static class InsertGameStateAsyncTask extends AsyncTask<GameState, Void, Long>{
         private MatchesDao matchesDao;
@@ -94,19 +88,6 @@ public class MatchHistoryRepository {
         }
     }
 
-
-    private static class DeleteAllGameStatesAsyncTask extends AsyncTask<Void, Void, Void>{
-        private MatchesDao matchesDao;
-
-        private DeleteAllGameStatesAsyncTask(MatchesDao matchesDao){
-            this.matchesDao = matchesDao;
-        }
-        @Override
-        protected Void doInBackground(Void... voids) {
-            matchesDao.deleteAllMatchHistory();
-            return null;
-        }
-    }
 
     private static class GetGameStateByIdAsyncTask extends AsyncTask<Integer, Void, LiveData<GameState>>{
         private MatchesDao matchesDao;

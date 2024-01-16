@@ -22,6 +22,11 @@ import com.example.dartscoreboard.models.User;
 
 import java.util.ArrayList;
 
+import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.rxjava3.core.SingleObserver;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
 
     private MatchHistoryViewModel matchHistoryViewModel;
@@ -161,6 +166,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 //    }
 
     private void saveGameStateToDb() {
+        Log.d("dom test","saveGameStateToDb " + id );
         GameState gameState = getGameInfo();
         Intent intent = getIntent();
 //      If either existing game by boolean or because a game state id already exists, attach the id & update
@@ -168,8 +174,24 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             gameState.setGameID(id);
             matchHistoryViewModel.update(gameState);
         } else {
-            matchHistoryViewModel.insert(gameState);
-            id = (int) matchHistoryViewModel.getInsertedId();
+            matchHistoryViewModel.insert(gameState).subscribe(new SingleObserver<Long>() {
+                @Override
+                public void onSubscribe(@NonNull Disposable d) {
+
+                }
+
+                @Override
+                public void onSuccess(@NonNull Long aLong) {
+                    Log.d("dom test", "onSuccess " + aLong);
+                    id = aLong;
+                }
+
+                @Override
+                public void onError(@NonNull Throwable e) {
+
+                }
+            });
+
         }
     }
 

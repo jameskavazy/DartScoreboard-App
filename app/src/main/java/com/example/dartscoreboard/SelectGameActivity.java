@@ -85,19 +85,16 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
             openGameActivity();
             PreferencesController.getInstance().clearSelectedGame();
             finish();
-        }
-        if (v.getId() == R.id.NameDropDownBox){
+        } else if (v.getId() == R.id.NameDropDownBox){
            openPlayerSelectActivity();
            PreferencesController.getInstance().saveSelectedGame(gameTypeAutoCompleteTextView.getText().toString());
            finish();
-        }
-        if (v.getId() == R.id.remove_players_button){
+        } else if (v.getId() == R.id.remove_players_button){
             playersToGame = PreferencesController.readUsersForGameSP(this);
             playersToGame.clear();
             PreferencesController.saveUsersForGameSP(getApplicationContext(),playersToGame);
             playerListCheckBox.setText("");
-        }
-        if (v.getId() == R.id.randomise_players_button){
+        } else if (v.getId() == R.id.randomise_players_button){
             playersToGame = PreferencesController.readUsersForGameSP(this);
             Collections.shuffle(playersToGame);
             PreferencesController.saveUsersForGameSP(getApplicationContext(),playersToGame);
@@ -114,16 +111,13 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         if (gameTypeAutoCompleteTextView.getText().toString().equals("501")){ // todo make switch
             Log.d("dom test","openFiveoGameActivity");
             openFiveoGameActivity();
-        }
-        if (gameTypeAutoCompleteTextView.getText().toString().equals("301")){
+        } else if (gameTypeAutoCompleteTextView.getText().toString().equals("301")){
             Log.d("dom test","openThreeoGameActivity");
             openThreeoGameActivity();
-        }
-        if (gameTypeAutoCompleteTextView.getText().toString().equals("170")){
+        } else if (gameTypeAutoCompleteTextView.getText().toString().equals("170")){
             Log.d("dom test","openSevenoGameActivity");
             openSevenoGameActivity();
-        }
-        else if (gameTypeAutoCompleteTextView.getText().toString().isEmpty()) {
+        } else if (gameTypeAutoCompleteTextView.getText().toString().isEmpty()) {
             Toast.makeText(this,"You must select a game type",Toast.LENGTH_SHORT).show();
         }
     }
