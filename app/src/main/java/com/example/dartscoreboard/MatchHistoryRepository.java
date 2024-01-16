@@ -40,6 +40,7 @@ public class MatchHistoryRepository {
         Completable completable = Completable.fromAction(() -> matchesDao.updateGameState(gameState));
         completable.subscribeOn(Schedulers.io()).subscribe();
         return completable;
+//        new UpdateGameStateAsyncTask(matchesDao).execute(gameState);
     }
 
     public Completable delete(GameState gameState) {
@@ -57,10 +58,13 @@ public class MatchHistoryRepository {
         return matchesDao.findGameByID(id);
     }
 
+//    public void deleteGameStateByID(long id){
+//        new DeleteGameStateByIDAsyncTask(matchesDao).execute(id);
+//    }
+
     public void deleteGameStateByID(long id){
         new DeleteGameStateByIDAsyncTask(matchesDao).execute(id);
     }
-
     public LiveData<List<GameState>> getAllMatchHistory(){
         return allMatchHistory;
     }
@@ -91,18 +95,6 @@ public class MatchHistoryRepository {
     }
 
 
-//    private static class DeleteGameStateAsyncTask extends AsyncTask<GameState, Void, Void>{
-//        private MatchesDao matchesDao;
-//
-//        private DeleteGameStateAsyncTask(MatchesDao matchesDao){
-//            this.matchesDao = matchesDao;
-//        }
-//        @Override
-//        protected Void doInBackground(GameState... gameStates) {
-//            matchesDao.delete(gameStates[0]);
-//            return null;
-//        }
-//    }
     private static class DeleteAllGameStatesAsyncTask extends AsyncTask<Void, Void, Void>{
         private MatchesDao matchesDao;
 

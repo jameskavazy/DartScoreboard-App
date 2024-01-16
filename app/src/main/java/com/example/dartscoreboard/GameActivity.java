@@ -77,7 +77,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             //Get information for game from the MatchHistoryScreen - Existing Game
             existingGame = true;
             // TODO: 11/01/2024 Refactor so that id is managed by controller
-            id = intent.getIntExtra(GAME_STATE_ID, -1);
+//            id = intent.getIntExtra(GAME_STATE_ID, -1);
+            id = intent.getLongExtra(GAME_STATE_ID,-1);
             GameState gameState = (GameState) arguments.getSerializable(MATCH_HISTORY_EXTRA_KEY);
             gameTitle.setText(gameState.getGameType().name);
             setPlayersList(gameState.getPlayerList());
