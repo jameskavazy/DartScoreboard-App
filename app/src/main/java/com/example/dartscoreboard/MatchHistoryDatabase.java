@@ -26,7 +26,6 @@ public abstract class MatchHistoryDatabase extends RoomDatabase {
                     .fallbackToDestructiveMigration()
                     .addCallback(roomCallback)
                     .build();
-            Log.d("dom test", "database is null");
         }
         return instance;
     }

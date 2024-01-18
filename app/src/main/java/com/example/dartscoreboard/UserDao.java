@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public interface UserDao {
 
     @Insert
-    void insertUser(User user);
+    long insertUser(User user);
 
     @Delete
     void deleteUser(User user);
@@ -26,8 +26,8 @@ public interface UserDao {
     @Query("SELECT * FROM user_table")
     LiveData<ArrayList<User>> getAllUsers();
 
-
-
+    @Query("DELETE FROM user_table")
+    void deleteAllUsers();
 
 
 }

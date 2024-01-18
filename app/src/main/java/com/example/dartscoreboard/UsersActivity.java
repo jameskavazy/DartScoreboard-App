@@ -10,6 +10,7 @@ import android.view.View.OnClickListener;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,6 +22,8 @@ import java.util.ArrayList;
 
 public class UsersActivity extends AppCompatActivity implements OnClickListener {
 
+    // TODO: 17/01/2024 Refactor to reflect UserDb
+
     public ArrayList<User> usersList;
     private RecyclerView recyclerView;
     private FloatingActionButton addNewUserButton;
@@ -28,6 +31,7 @@ public class UsersActivity extends AppCompatActivity implements OnClickListener 
     private recyclerAdapterUsers.ClickHandler clickHandler;
     private int positionInAdapter;
 
+    private UserViewModel userViewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +46,8 @@ public class UsersActivity extends AppCompatActivity implements OnClickListener 
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.setItemAnimator(new DefaultItemAnimator());
             recyclerView.setAdapter(adapter);
+            userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+            userViewModel.getAllUsers().observe(this,adapter::setUsersList);
     }
 
     private void setOnClickListener() {

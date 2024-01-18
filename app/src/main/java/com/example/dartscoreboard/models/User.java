@@ -1,5 +1,6 @@
 package com.example.dartscoreboard.models;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
@@ -8,7 +9,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 @Entity(tableName = "user_table")
-public class User implements Serializable { //todo guy easter egg
+public class User implements Serializable, Cloneable { //todo guy easter egg
     @PrimaryKey(autoGenerate = true)
     protected int userID;
     protected String username;
@@ -141,5 +142,11 @@ public class User implements Serializable { //todo guy easter egg
 
     public void setUserID(int userID) {
         this.userID = userID;
+    }
+
+    @NonNull
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

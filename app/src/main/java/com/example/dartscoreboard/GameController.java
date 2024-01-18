@@ -3,13 +3,18 @@ package com.example.dartscoreboard;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.example.dartscoreboard.models.GuyUser;
 import com.example.dartscoreboard.models.User;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
 public final class GameController {
 
@@ -38,7 +43,7 @@ public final class GameController {
         return gameController;
     }
 
-    public void playerVisit(int scoreInt) {
+    public void playerVisit(int scoreInt) throws CloneNotSupportedException {
 //        //Save current gameState for undo
         saveForUndo();
 
@@ -109,11 +114,14 @@ public final class GameController {
         }
     }
 
-    public void saveForUndo() {
-        //Make a "deep copy"
-        String playerListCopyJsonString = new Gson().toJson(playersList);
-        ArrayList<User> playerListCopy = new Gson().fromJson(playerListCopyJsonString, new TypeToken<ArrayList<User>>() {
-        }.getType());
+    public void saveForUndo() throws CloneNotSupportedException {
+        //Make a "deep copy" todo does casting them to a User lose that level of detail?
+        ArrayList<User> playerListCopy =  new ArrayList<>();
+        for (User user : getPlayersList()){
+            if (!user.getUsername().equalsIgnoreCase("guy")){
+                playerListCopy.add((User) user.clone());
+            } else playerListCopy.add((GuyUser) user.clone());
+        }
         MatchState matchState = new MatchState(playerListCopy, getTurnIndex(), getTurnIndexLegs(), getTurnIndexSets());
         //saves matchStateStack within the controller to pass it to the db.
         getMatchStateStack().push(matchState);

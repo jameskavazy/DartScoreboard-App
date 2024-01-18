@@ -48,6 +48,11 @@ public class recyclerAdapterUsers extends RecyclerView.Adapter<recyclerAdapterUs
         }
     }
 
+    public void setUsersList(ArrayList<User> usersList){
+        this.usersList = usersList;
+        notifyDataSetChanged();
+    }
+
 
 
     @NonNull
