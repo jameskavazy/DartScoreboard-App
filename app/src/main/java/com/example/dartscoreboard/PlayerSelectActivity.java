@@ -6,7 +6,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,6 +20,7 @@ import java.util.ArrayList;
 
 public class PlayerSelectActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private Toolbar toolbar;
     private recyclerAdapterPlayersToGame adapter;
 
     private UserViewModel userViewModel;
@@ -29,6 +32,14 @@ public class PlayerSelectActivity extends AppCompatActivity implements View.OnCl
         setContentView(R.layout.activity_player_select);
         setupUI();
     }
+
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        toolbar = findViewById(R.id.player_select_toolbar);
+        toolbar.setTitle("Add Players");
+    }
+
     private void setAdapter(){
         adapter = new recyclerAdapterPlayersToGame();
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));

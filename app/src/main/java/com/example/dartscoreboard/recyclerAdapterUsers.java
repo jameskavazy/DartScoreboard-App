@@ -23,13 +23,8 @@ public class recyclerAdapterUsers extends RecyclerView.Adapter<recyclerAdapterUs
 
     private OnItemClickListener listener;
 
-    public interface ClickHandler {
-        void onMyButtonClicked (View view, final int position);
-    }
+    public class MyViewHolder extends RecyclerView.ViewHolder {
 
-    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-        private ClickHandler clickHandler;
         private TextView nameTxt;
 
         private CheckBox checkBox;
@@ -47,10 +42,10 @@ public class recyclerAdapterUsers extends RecyclerView.Adapter<recyclerAdapterUs
         }
 
 
-        @Override
-        public void onClick(View v) {
-            clickHandler.onMyButtonClicked(v, getAdapterPosition());
-        }
+//        @Override
+//        public void onClick(View v) {
+//            clickHandler.onMyButtonClicked(v, getAdapterPosition());
+//        }
     }
 
     public void setUsersList(List<User> usersList){

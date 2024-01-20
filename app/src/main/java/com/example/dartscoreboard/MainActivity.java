@@ -29,6 +29,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         newGameButton = findViewById(R.id.startNewGameButton);
         usersButton = findViewById(R.id.usersButton);
         continueButton = findViewById(R.id.continueButton);
+        statsButton = findViewById(R.id.statsButton);
+        statsButton.setOnClickListener(this);
         newGameButton.setOnClickListener(this);
         usersButton.setOnClickListener(this);
         continueButton.setOnClickListener(this);
@@ -42,17 +44,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.startNewGameButton) {
+        int viewId = v.getId();
+        if (viewId == R.id.startNewGameButton) {
             Log.d("dom test", "fiveoBtn click");
             onStartGameActivityClick();
-        }
-        if (v.getId() == R.id.usersButton){
+        } else if (viewId == R.id.usersButton){
             Log.d("dom test", "usersButton click");
             onUsersButtonClick();
-        }
-        if (v.getId() ==R.id.continueButton) {
+        } else if (viewId == R.id.continueButton) {
             onContinueClicked();
+        } else if (viewId == R.id.statsButton){
+            onStatsButtonClicked();
         }
+    }
+
+    private void onStatsButtonClicked() {
+        openStatsActivity();
+    }
+
+    private void openStatsActivity() {
+        Intent intent = new Intent(this, StatisticsActivity.class);
+        startActivity(intent);
     }
 
     private void onUsersButtonClick() {
