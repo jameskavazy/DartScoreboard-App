@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.dartscoreboard.models.User;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.SingleObserver;
@@ -36,7 +37,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private boolean existingGame;
     private TextView gameTitle;
 
-    private ArrayList<User> playersList;
+    private List<User> playersList;
     private RecyclerView recyclerView;
     private EditText inputScoreEditText;
     private TextView averageScoreTextView;
@@ -247,7 +248,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 GameController.getInstance().getMatchStateStack());
     }
 
-    public void setPlayersList(ArrayList<User> playersList) {
+    public void setPlayersList(List<User> playersList) {
         this.playersList = playersList;
     }
 

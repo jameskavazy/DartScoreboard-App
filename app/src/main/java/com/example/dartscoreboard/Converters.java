@@ -10,6 +10,7 @@ import java.lang.reflect.Type;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 public class Converters {
@@ -27,12 +28,12 @@ public class Converters {
     }
 
     @TypeConverter
-    public ArrayList<User> userListFromString (String userListJsonString){
-        Type type = new TypeToken<ArrayList<User>>() {}.getType();
+    public List<User> userListFromString (String userListJsonString){
+        Type type = new TypeToken<List<User>>() {}.getType();
         return new Gson().fromJson(userListJsonString, type);
     }
     @TypeConverter
-    public String userListToString (ArrayList<User> usersList){
+    public String userListToString (List<User> usersList){
         return new Gson().toJson(usersList);
     }
 
@@ -64,5 +65,6 @@ public class Converters {
     public String matchStateToJsonString(Stack<MatchState> matchStateStack){
         return new Gson().toJson(matchStateStack);
     }
+
 
 }

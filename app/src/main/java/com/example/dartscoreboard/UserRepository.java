@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 import com.example.dartscoreboard.models.User;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -16,7 +17,9 @@ public class UserRepository {
     private UserDao userDao;
     private UserDatabase userDatabase;
 
-    private LiveData<ArrayList<User>> allUsers;
+    private LiveData<List<User>> allUsers;
+
+    private LiveData<List<User>> activeUsers;
 
     public UserRepository(Application application){
         userDatabase = UserDatabase.getInstance(application);
@@ -40,8 +43,12 @@ public class UserRepository {
         Completable.fromAction(()-> userDao.deleteAllUsers()).subscribeOn(Schedulers.io()).subscribe();
     }
 
-    public LiveData<ArrayList<User>> getAllUsers(){
+    public LiveData<List<User>> getAllUsers(){
         return allUsers;
+    }
+
+    public LiveData<List<User>> getActiveUsers(boolean active){
+        return userDao.getActiveUsers(active);
     }
 
 

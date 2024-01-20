@@ -9,6 +9,7 @@ import com.example.dartscoreboard.models.User;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 
@@ -25,7 +26,7 @@ public class GameState implements Serializable {
     //todo add Stack of gameStates?
     public SelectGameActivity.GameType gameType;
 
-    public ArrayList<User> playerList;
+    public List<User> playerList;
 
     private GameSettings gameSettings;
 
@@ -45,7 +46,7 @@ public class GameState implements Serializable {
         this.matchStateStack = matchStateStack;
     }
 
-    public GameState(SelectGameActivity.GameType gameType, GameSettings gameSettings, ArrayList<User> playerList,
+    public GameState(SelectGameActivity.GameType gameType, GameSettings gameSettings, List<User> playerList,
                      int turnIndex, int turnLeadForLegs, int turnLeadForSets, Stack<MatchState> matchStateStack) {
         this.gameType = gameType;
         this.gameSettings = gameSettings;
@@ -83,11 +84,11 @@ public class GameState implements Serializable {
         this.gameType = gameType;
     }
 
-    public ArrayList<User> getPlayerList() {
+    public List<User> getPlayerList() {
         return playerList;
     }
 
-    public void setPlayerList(ArrayList<User> playerList) {
+    public void setPlayerList(List<User> playerList) {
         this.playerList = playerList;
     }
 

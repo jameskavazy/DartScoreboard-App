@@ -10,6 +10,7 @@ import android.view.View.OnClickListener;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,19 +20,17 @@ import com.example.dartscoreboard.models.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class UsersActivity extends AppCompatActivity implements OnClickListener {
 
     // TODO: 17/01/2024 Refactor to reflect UserDb
 
-    public ArrayList<User> usersList;
     private RecyclerView recyclerView;
-    private FloatingActionButton addNewUserButton;
     private recyclerAdapterUsers adapter;
-    private recyclerAdapterUsers.ClickHandler clickHandler;
-    private int positionInAdapter;
-
     private UserViewModel userViewModel;
+
+    FloatingActionButton addNewUserButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,72 +39,50 @@ public class UsersActivity extends AppCompatActivity implements OnClickListener 
     }
 
         private void setAdapter() {
-            setOnClickListener();
-            adapter = new recyclerAdapterUsers(usersList, clickHandler);
-            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-            recyclerView.setLayoutManager(layoutManager);
+            adapter = new recyclerAdapterUsers();
+            recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
             recyclerView.setItemAnimator(new DefaultItemAnimator());
             recyclerView.setAdapter(adapter);
             userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
             userViewModel.getAllUsers().observe(this,adapter::setUsersList);
-    }
 
-    private void setOnClickListener() {
-       clickHandler = (view, position) -> {
-           setPositionInAdapter(position);
-           onCreateDialogue().show();
-       };
-    }
 
-    public void setPositionInAdapter(int position){
-        this.positionInAdapter = position;
-    }
-    public int getPositionInAdapter(){
-        return positionInAdapter;
+            adapter.setOnItemClickListener(new recyclerAdapterUsers.OnItemClickListener() {
+                @Override
+                public void onItemClicked(User user) {
+                    onCreateDialogue(user).show();
+                }
+            });
     }
 
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.add_new_user_button){
             Log.d("dom test","onAddPlayerButtonclick");
-            finish();
             openCreateUserActivity();
         }
     }
 
     private void openCreateUserActivity() {
-        Intent intent = new Intent(this, CreateUserInfo.class);
+        Intent intent = new Intent(this, CreateUserActivity.class);
         startActivity(intent);
-    }
-
-    private void onAddNewUserButtonClick(String nameToAdd) {
-        if (!nameToAdd.isEmpty()){
-            usersList.add(new User(nameToAdd,false));
-            adapter.notifyDataSetChanged();
-       }
     }
 
     private void setupUI(){
         addNewUserButton = findViewById(R.id.add_new_user_button);
         addNewUserButton.setOnClickListener(this);
         recyclerView = findViewById(R.id.recycler_view_username_list);
-        usersList = PreferencesController.readSPUserList(this);
-        if (usersList == null) {
-            usersList = new ArrayList<>();
-        }
         setAdapter();
-        adapter.notifyDataSetChanged();
     }
 
-    public Dialog onCreateDialogue(){
+    public Dialog onCreateDialogue(User user){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Are you sure you want to delete" + " " + usersList.get(getPositionInAdapter()).getUsername() + "? Any statistics will also be deleted.")
+        builder.setMessage("Are you sure you want to delete" + " " + user.getUsername() + "? Any statistics will also be deleted.")
                 .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // Deletes player
-                        usersList.remove(getPositionInAdapter());
-                        adapter.notifyItemRemoved(getPositionInAdapter());
-                        PreferencesController.updateSPUserList(getApplicationContext(), usersList);
+                        userViewModel.deleteUser(user);
+                        adapter.notifyDataSetChanged();
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

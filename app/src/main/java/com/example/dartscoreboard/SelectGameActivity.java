@@ -8,39 +8,43 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.dartscoreboard.models.User;
+import com.google.android.material.textview.MaterialTextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Stack;
 
 public class SelectGameActivity extends AppCompatActivity implements View.OnClickListener {
 
-    public static final String GAME_TYPE_KEY = "GAME_TYPE";
-    public static final String GAME_SETTINGS_KEY = "GAME_SETTINGS_KEY";
-    public static final String PLAYERS_FOR_GAME_KEY = "PLAYERS_FOR_GAME_KEY";
+    private final String[] gameSelectList = {"501","301","170"};
 
-    String[] gameSelectList = {"501","301","170"};
+    private final String[] numberOfLegsSetsList = {"1","2","3","4","5"};
 
-    String[] numberOfLegsSetsList = {"1","2","3","4","5"};
+    private List<User> playersToGame;
+    private AutoCompleteTextView gameTypeAutoCompleteTextView;
+    private AutoCompleteTextView legsAutoCompleteTextView;
 
-    ArrayList<User> playersToGame;
-    AutoCompleteTextView gameTypeAutoCompleteTextView;
-    AutoCompleteTextView legsAutoCompleteTextView;
+    private AutoCompleteTextView setsAutoCompleteTextView;
 
-    AutoCompleteTextView setsAutoCompleteTextView;
+    private TextView playerListTextViewButton;
 
-    AutoCompleteTextView playerListCheckBox;
+    private ArrayAdapter<String> adapterItems;
 
-    ArrayAdapter<String> adapterItems;
+    private ArrayAdapter<String> adapterLegsItems;
 
-    ArrayAdapter<String> adapterLegsItems;
+    private ArrayAdapter<String> adapterSetsItems;
 
-    ArrayAdapter<String> adapterSetsItems;
+    private UserViewModel userViewModel;
 
     private Stack<MatchState> matchStateStack = new Stack<>();
 
@@ -57,48 +61,56 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         Button startGameBtn = findViewById(R.id.gameStartButton);
         Button randomisePlayersBtn = findViewById(R.id.randomise_players_button);
         Button clearPlayersBtn = findViewById(R.id.remove_players_button);
-        playerListCheckBox = findViewById(R.id.NameDropDownBox);
+        Button addPlayersBtn = findViewById(R.id.NameDropDownBox);
+        playerListTextViewButton = findViewById(R.id.list_of_match_players);
+        legsAutoCompleteTextView = findViewById(R.id.legs_drop_down);
+        setsAutoCompleteTextView = findViewById(R.id.sets_drop_down);
+        gameTypeAutoCompleteTextView = findViewById(R.id.gameTypeDropDownBox);
+
         startGameBtn.setOnClickListener(this);
+        addPlayersBtn.setOnClickListener(this);
         randomisePlayersBtn.setOnClickListener(this);
         clearPlayersBtn.setOnClickListener(this);
-        gameTypeAutoCompleteTextView = findViewById(R.id.gameTypeDropDownBox);
+        playerListTextViewButton.setOnClickListener(this);
+        gameTypeAutoCompleteTextView.setOnClickListener(this);
+
         if (PreferencesController.getInstance().getGameSelected() != null){
             gameTypeAutoCompleteTextView.setText(PreferencesController.getInstance().getGameSelected());
         }
-        legsAutoCompleteTextView = findViewById(R.id.legs_drop_down);
-        setsAutoCompleteTextView = findViewById(R.id.sets_drop_down);
-        if (playersToGame == null){
-            playersToGame = new ArrayList<>();
-        }
-        playersToGame = PreferencesController.readUsersForGameSP(this);
+
         setUpGameTypeDropDownMenu();
         setUpLegsListDropDownMenu();
         setUpSetsListDropDownMenu();
-        playerListCheckBox.setOnClickListener(this);
-        setPlayersTextBox();
-        gameTypeAutoCompleteTextView.setOnClickListener(this);
+
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        userViewModel.getActiveUsers(true).observe(this, this::setPlayersToGame);
+        setPlayersTextBox(getPlayersToGame());
     }
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.gameStartButton){ // switch statement
-            openGameActivity();
-            PreferencesController.getInstance().clearSelectedGame();
-            finish();
-        } else if (v.getId() == R.id.NameDropDownBox){
+        int viewId = v.getId();
+        if (viewId == R.id.gameStartButton){ // switch statement
+            if (getPlayersToGame().isEmpty()){
+                Toast.makeText(this, "You must select at least one player to start the match", Toast.LENGTH_SHORT).show();
+            } else {
+                openGameActivity();
+                PreferencesController.getInstance().clearSelectedGame();
+                finish();
+            }
+        } else if (viewId == R.id.NameDropDownBox){
            openPlayerSelectActivity();
            PreferencesController.getInstance().saveSelectedGame(gameTypeAutoCompleteTextView.getText().toString());
            finish();
-        } else if (v.getId() == R.id.remove_players_button){
-            playersToGame = PreferencesController.readUsersForGameSP(this);
-            playersToGame.clear();
-            PreferencesController.saveUsersForGameSP(getApplicationContext(),playersToGame);
-            playerListCheckBox.setText("");
-        } else if (v.getId() == R.id.randomise_players_button){
-            playersToGame = PreferencesController.readUsersForGameSP(this);
-            Collections.shuffle(playersToGame);
-            PreferencesController.saveUsersForGameSP(getApplicationContext(),playersToGame);
-            setPlayersTextBox();
+        } else if (viewId == R.id.remove_players_button){
+            for (User user : playersToGame) {
+                user.setActive(false);
+                userViewModel.updateUser(user);
+            }
+            playerListTextViewButton.setText(null);
+        } else if (viewId == R.id.randomise_players_button){
+            Collections.shuffle(getPlayersToGame());
+            setPlayersTextBox(getPlayersToGame());
         }
     }
 
@@ -125,8 +137,7 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
     private void openFiveoGameActivity() {
         Log.d("dom test", "openFiveoGameActivity");
         launchGameActivity();
-        PreferencesController.getInstance().clearUsersForGameSP();
-        GameController.getInstance().initialiseGameController(GameType.FiveO,getGameSettings(),playersToGame,
+        GameController.getInstance().initialiseGameController(GameType.FiveO,getGameSettings(),getPlayersToGame(),
                 0,0,0,matchStateStack);
         finish();
     }
@@ -134,8 +145,7 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
     private void openThreeoGameActivity() {
         Log.d("dom test", "openThreeoGameActivity");
         launchGameActivity();
-        PreferencesController.getInstance().clearUsersForGameSP();
-        GameController.getInstance().initialiseGameController(GameType.ThreeO,getGameSettings(),playersToGame,
+        GameController.getInstance().initialiseGameController(GameType.ThreeO,getGameSettings(),getPlayersToGame(),
                 0,0,0,matchStateStack);
         finish();
     }
@@ -143,8 +153,7 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
     private void openSevenoGameActivity() {
         Log.d("dom test", "openSevenoGameActivity");
         launchGameActivity();
-        PreferencesController.getInstance().clearUsersForGameSP();
-        GameController.getInstance().initialiseGameController(GameType.SevenO,getGameSettings(),playersToGame,
+        GameController.getInstance().initialiseGameController(GameType.SevenO,getGameSettings(),getPlayersToGame(),
                 0,0,0,matchStateStack);
         finish();
     }
@@ -157,7 +166,6 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
     private void setUpGameTypeDropDownMenu(){
         adapterItems = new ArrayAdapter<>(this,R.layout.list_item,gameSelectList);
         gameTypeAutoCompleteTextView.setAdapter(adapterItems);
-        //gameTypeAutoCompleteTextView.setText(adapterItems.getItem(0),false);
     }
 
 
@@ -165,7 +173,6 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         adapterLegsItems = new ArrayAdapter<>(this,R.layout.list_item, numberOfLegsSetsList);
         legsAutoCompleteTextView.setAdapter(adapterLegsItems);
         legsAutoCompleteTextView.setText(adapterLegsItems.getItem(0),false);
-
     }
 
     private void setUpSetsListDropDownMenu(){
@@ -174,19 +181,26 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         setsAutoCompleteTextView.setText(adapterSetsItems.getItem(0),false);
     }
 
-    private void setPlayersTextBox(){
-        playerListCheckBox.setText("");
-        ArrayList<User> playersToGame = PreferencesController.readUsersForGameSP(this);
-        if (playersToGame != null){
+    private void setPlayersTextBox(List<User> playersToGame){
+        if (!playersToGame.isEmpty()){
             String[] namesToGame = new String[playersToGame.size()];
             for (int i = 0; i < playersToGame.size(); i++) {
                 namesToGame[i] = playersToGame.get(i).getUsername();
             }
-
-            String playersToGameString = String.join(", ",namesToGame);
-            playerListCheckBox.setText(playersToGameString);
-            Log.d("dom test",playersToGameString);
+            playerListTextViewButton.setText(String.join(", ", namesToGame));
         }
+    }
+
+    public void setPlayersToGame(List<User> playersToGame) {
+        this.playersToGame = playersToGame;
+        setPlayersTextBox(playersToGame);
+    }
+
+    public List<User> getPlayersToGame(){
+        if (playersToGame == null){
+            playersToGame = new ArrayList<>();
+        }
+        return playersToGame;
     }
 
     public GameSettings getGameSettings(){

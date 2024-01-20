@@ -24,7 +24,7 @@ public final class GameController {
     private int turnIndexLegs = 0;
     private int turnIndexSets = 0;
 
-    private ArrayList<User> playersList;
+    private List<User> playersList;
 
     private SelectGameActivity.GameType gameType;
     public static boolean gameStateEnd;
@@ -209,7 +209,7 @@ public final class GameController {
         turnIndex = turnIndexSets;
     }
 
-    public void setPlayersList(ArrayList<User> playersList) {
+    public void setPlayersList(List<User> playersList) {
         this.playersList = playersList;
     }
 
@@ -253,7 +253,7 @@ public final class GameController {
         this.turnIndexSets = turnIndexSets;
     }
 
-    public ArrayList<User> getPlayersList() {
+    public List<User> getPlayersList() {
         return playersList;
     }
 
@@ -280,7 +280,7 @@ public final class GameController {
 
 
     public void initialiseGameController(
-            SelectGameActivity.GameType gameType, GameSettings gameSettings, ArrayList<User> playersList, int turnIndex,
+            SelectGameActivity.GameType gameType, GameSettings gameSettings, List<User> playersList, int turnIndex,
             int turnLeadForLegs, int turnLeadForSets, Stack<MatchState> matchStateStack) {
         gameStateEnd = false;
         setPlayersList(playersList);

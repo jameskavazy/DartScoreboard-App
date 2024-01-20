@@ -9,10 +9,11 @@ import androidx.lifecycle.LiveData;
 import com.example.dartscoreboard.models.User;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class UserViewModel extends AndroidViewModel {
 
-    private LiveData<ArrayList<User>> usersList;
+    private LiveData<List<User>> usersList;
 
     private UserRepository repository;
 
@@ -38,9 +39,14 @@ public class UserViewModel extends AndroidViewModel {
         repository.deleteAllUsers();
     }
 
-    public LiveData<ArrayList<User>> getAllUsers(){
+    public LiveData<List<User>> getAllUsers(){
        return repository.getAllUsers();
     }
+
+    public LiveData<List<User>> getActiveUsers(boolean active){
+        return repository.getActiveUsers(active);
+    }
+
 
 }
 

@@ -12,11 +12,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.dartscoreboard.models.User;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class RecyclerAdapterGamePlayers extends RecyclerView.Adapter<RecyclerAdapterGamePlayers.GameViewHolder> {
 
-    private ArrayList<User> usersList;
-    public RecyclerAdapterGamePlayers(ArrayList<User> usersList){
+    private List<User> usersList = new ArrayList<>();
+    public RecyclerAdapterGamePlayers(List<User> usersList){
         this.usersList = usersList;
     }
 
@@ -69,7 +70,7 @@ public class RecyclerAdapterGamePlayers extends RecyclerView.Adapter<RecyclerAda
         return usersList.size();
     }
 
-    public void setUsersList(ArrayList<User> usersList){
+    public void setUsersList(List<User> usersList){
         this.usersList = usersList;
         notifyDataSetChanged();
     }

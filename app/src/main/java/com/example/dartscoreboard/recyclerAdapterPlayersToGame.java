@@ -12,23 +12,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.dartscoreboard.models.User;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class recyclerAdapterPlayersToGame extends RecyclerView.Adapter<recyclerAdapterPlayersToGame.ViewHolderPTG> {
 
-    private ArrayList<User> usersList;
-    private ClickListen listen;
+    private List<User> usersList = new ArrayList<>();
 
-    private User user;
+    private OnItemClickListener listener;
 
-    public interface ClickListen {
-        void onClick(View view, final int position);
+
+    public interface OnItemClickListener {
+        void onClick(User user);
     }
 
-    public recyclerAdapterPlayersToGame(ArrayList<User> usersList, ClickListen listen){
-        this.usersList = usersList;
-        this.listen = listen;
+    public recyclerAdapterPlayersToGame(){
     }
-    public class ViewHolderPTG extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolderPTG extends RecyclerView.ViewHolder {
         private TextView nameText;
         private CheckBox checkBox;
 
@@ -36,13 +35,26 @@ public class recyclerAdapterPlayersToGame extends RecyclerView.Adapter<recyclerA
             super(view);
             nameText = view.findViewById(R.id.name_text1);
             checkBox = view.findViewById(R.id.checkbox);
-            view.setOnClickListener(this);
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if (listener != null && position != RecyclerView.NO_POSITION){
+                        listener.onClick(usersList.get(position));
+                    }
+                }
+            });
         }
 
-        @Override
-        public void onClick(View v) {
-            listen.onClick(v, getAdapterPosition());
-        }
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener){
+        this.listener = listener;
+    }
+
+    public void setUsersList(List<User> usersList){
+        this.usersList = usersList;
+        notifyDataSetChanged();
     }
 
     @NonNull

@@ -10,6 +10,7 @@ import androidx.room.Update;
 import com.example.dartscoreboard.models.User;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Dao
 public interface UserDao {
@@ -24,10 +25,12 @@ public interface UserDao {
     void updateUser(User user);
 
     @Query("SELECT * FROM user_table")
-    LiveData<ArrayList<User>> getAllUsers();
+    LiveData<List<User>> getAllUsers();
 
     @Query("DELETE FROM user_table")
     void deleteAllUsers();
 
+    @Query("SELECT * FROM user_table WHERE active = :active")
+    LiveData<List<User>> getActiveUsers(boolean active);
 
 }

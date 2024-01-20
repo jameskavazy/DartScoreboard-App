@@ -9,6 +9,16 @@
     android:orientation="vertical"
     tools:context=".SelectGameActivity">
 
+    <Button
+        android:id="@+id/gameStartButton"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_gravity="right"
+        android:layout_marginVertical="600dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="40dp"
+        android:text="Start Game" />
+
     <FrameLayout
         android:id="@+id/frameLayout4"
         android:layout_width="match_parent"
@@ -44,26 +54,6 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-
-        android:id="@+id/textInputLayout2"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:hint="Add Players"
-        android:translationY="200dp"
-        app:endIconMode="none" >
-
-        <AutoCompleteTextView
-            android:id="@+id/NameDropDownBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="none"
-            />
-
-
-    </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
 
@@ -73,7 +63,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:hint="@string/no_of_legs"
-        android:translationY="300dp">
+        android:translationY="200dp">
 
         <AutoCompleteTextView
             android:id="@+id/legs_drop_down"
@@ -93,7 +83,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:hint="@string/no_of_sets"
-        android:translationY="400dp">
+        android:translationY="300dp">
 
         <AutoCompleteTextView
             android:id="@+id/sets_drop_down"
@@ -106,14 +96,17 @@
     </com.google.android.material.textfield.TextInputLayout>
 
 
+
     <Button
-        android:id="@+id/gameStartButton"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_gravity="center_horizontal"
+        android:id="@+id/NameDropDownBox"
+        android:layout_width="147dp"
+        android:layout_height="50dp"
+        android:layout_gravity="left"
         android:layout_marginVertical="600dp"
+        android:layout_marginStart="30dp"
         android:layout_marginTop="40dp"
-        android:text="Start Game" />
+        android:text="Add Players"
+        app:layout_anchorGravity="top|center" />
 
     <Button
         android:id="@+id/remove_players_button"
@@ -135,6 +128,14 @@
         android:layout_marginTop="44dp"
         android:text="Randomise Players" />
 
+    <TextView
+        android:id="@+id/list_of_match_players"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:textSize="20sp"
+        android:hint="No Players"
+        android:translationY="400dp" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

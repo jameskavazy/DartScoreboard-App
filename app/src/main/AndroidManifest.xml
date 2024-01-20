@@ -17,7 +17,7 @@
             android:name=".MatchHistoryActivity"
             android:exported="false" />
         <activity
-            android:name=".CreateUserInfo"
+            android:name=".CreateUserActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
         <activity
