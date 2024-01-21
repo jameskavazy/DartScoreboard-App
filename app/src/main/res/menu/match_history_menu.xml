@@ -6,5 +6,9 @@
         android:id="@+id/delete_all_recent_games"
         android:title="Delete All Recent Games"
         app:showAsAction="never"/>
+    <item
+        android:id="@+id/more_info_menu_item"
+        android:title="More information"
+        app:showAsAction="never"/>
 
 </menu>

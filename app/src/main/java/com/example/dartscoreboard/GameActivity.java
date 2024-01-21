@@ -203,7 +203,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             inputScoreEditText.setVisibility(View.GONE);
             doneButton.setVisibility(View.GONE);
             matchHistoryViewModel.deleteGameStateByID(id);
-//            Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -227,7 +226,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             setPlayersList(GameController.getInstance().getPlayersList());
             setAverageScoreTextView();
             setVisitsTextView();
-            //todo update the inserted gameState
             GameState gameState = getGameInfo();
             gameState.setGameID(id);
             matchHistoryViewModel.update(gameState);

@@ -1,5 +1,8 @@
 package com.example.dartscoreboard;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -9,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,12 +24,11 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class MatchHistoryActivity extends AppCompatActivity  {
+public class MatchHistoryActivity extends AppCompatActivity {
 
     private MatchHistoryViewModel matchHistoryViewModel;
-    private Button clearGamesButton;
     private RecyclerView recyclerView;
-    Toolbar toolbar;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +43,7 @@ public class MatchHistoryActivity extends AppCompatActivity  {
         toolbar.setTitleTextColor(Color.WHITE);
     }
 
-    public void setupUI(){
+    public void setupUI() {
         setContentView(R.layout.activity_match_history);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -56,6 +59,7 @@ public class MatchHistoryActivity extends AppCompatActivity  {
         recyclerView.setAdapter(adapter);
         matchHistoryViewModel = new ViewModelProvider(this).get(MatchHistoryViewModel.class);
         matchHistoryViewModel.getAllGames().observe(this, adapter::setGameStatesList);
+
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -73,33 +77,40 @@ public class MatchHistoryActivity extends AppCompatActivity  {
         adapter.setOnItemClickListener(new RecyclerAdapterMatchHistory.OnItemClickListener() {
             @Override
             public void onItemClick(GameState gameState) {
-               Intent intent = new Intent(MatchHistoryActivity.this, GameActivity.class);
-               Bundle arguments = new Bundle();
-               arguments.putSerializable(GameActivity.MATCH_HISTORY_EXTRA_KEY, gameState);
-               intent.putExtra(GameActivity.GAME_STATE_ID, gameState.getGameID());
-               intent.putExtras(arguments);
-               startActivity(intent);
-               finish();
+                Intent intent = new Intent(MatchHistoryActivity.this, GameActivity.class);
+                Bundle arguments = new Bundle();
+                arguments.putSerializable(GameActivity.MATCH_HISTORY_EXTRA_KEY, gameState);
+                intent.putExtra(GameActivity.GAME_STATE_ID, gameState.getGameID());
+                intent.putExtras(arguments);
+                startActivity(intent);
+                finish();
             }
         });
     }
 
 
-
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.match_history_menu,menu);
+        menuInflater.inflate(R.menu.match_history_menu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.delete_all_recent_games){
+        int menuItem = item.getItemId();
+        if (menuItem == R.id.delete_all_recent_games) {
             matchHistoryViewModel.deleteAllMatches();
+        } else if (menuItem == R.id.more_info_menu_item){
+            onMoreInfoMenuItem().show();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public Dialog onMoreInfoMenuItem(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Click on previous matches to continue a recent game. Swipe on a recent game to delete it from your history.")
+                .setPositiveButton("OK", (dialog, which) -> {});
+        return builder.create();
     }
 }
