@@ -40,7 +40,8 @@
             android:layout_toStartOf="@id/match_history_date_textview"
             tools:text="players" />
 
-
     </RelativeLayout>
+    
+    
 
 </androidx.cardview.widget.CardView>

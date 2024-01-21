@@ -63,7 +63,7 @@ public class StatisticsActivity extends AppCompatActivity {
     }
 
     private void setToolbar(){
-        toolbar = findViewById(R.id.stats_toolbar);
+        toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Statistics");
     }
 

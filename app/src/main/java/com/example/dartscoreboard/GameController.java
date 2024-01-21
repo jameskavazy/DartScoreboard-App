@@ -73,7 +73,6 @@ public final class GameController {
         User currentPlayer = playersList.get(turnIndex); //todo could be a switch below?
 
         if (currentPlayer.isGuy) {
-
             Log.d("dom test", "subtract guy" + currentTypedScore);
 
             if (playerScore > 100
@@ -118,9 +117,8 @@ public final class GameController {
         //Make a "deep copy" todo does casting them to a User lose that level of detail?
         ArrayList<User> playerListCopy =  new ArrayList<>();
         for (User user : getPlayersList()){
-            if (!user.getUsername().equalsIgnoreCase("guy")){
                 playerListCopy.add((User) user.clone());
-            } else playerListCopy.add((GuyUser) user.clone());
+
         }
         MatchState matchState = new MatchState(playerListCopy, getTurnIndex(), getTurnIndexLegs(), getTurnIndexSets());
         //saves matchStateStack within the controller to pass it to the db.

@@ -8,8 +8,10 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -24,11 +26,11 @@ import java.util.List;
 
 public class UsersActivity extends AppCompatActivity implements OnClickListener {
 
-    // TODO: 17/01/2024 Refactor to reflect UserDb
-
     private RecyclerView recyclerView;
     private recyclerAdapterUsers adapter;
     private UserViewModel userViewModel;
+
+    private Toolbar toolbar;
 
     FloatingActionButton addNewUserButton;
     @Override
@@ -38,7 +40,13 @@ public class UsersActivity extends AppCompatActivity implements OnClickListener 
         setupUI();
     }
 
-        private void setAdapter() {
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        toolbar.setTitle("Users");
+    }
+
+    private void setAdapter() {
             adapter = new recyclerAdapterUsers();
             recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
             recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -72,6 +80,7 @@ public class UsersActivity extends AppCompatActivity implements OnClickListener 
         addNewUserButton = findViewById(R.id.add_new_user_button);
         addNewUserButton.setOnClickListener(this);
         recyclerView = findViewById(R.id.recycler_view_username_list);
+        toolbar = findViewById(R.id.toolbar);
         setAdapter();
     }
 

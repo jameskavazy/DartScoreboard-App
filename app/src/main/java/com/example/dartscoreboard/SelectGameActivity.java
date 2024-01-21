@@ -11,7 +11,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -29,6 +31,8 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
     private final String[] gameSelectList = {"501","301","170"};
 
     private final String[] numberOfLegsSetsList = {"1","2","3","4","5"};
+
+    private Toolbar toolbar;
 
     private List<User> playersToGame;
     private AutoCompleteTextView gameTypeAutoCompleteTextView;
@@ -55,6 +59,12 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         setupUI();
     }
 
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        toolbar.setTitle("Match Settings");
+    }
+
     private void setupUI() {
         Log.d("dom test", "setupUI");
         setContentView(R.layout.select_game_activity);
@@ -66,6 +76,7 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         legsAutoCompleteTextView = findViewById(R.id.legs_drop_down);
         setsAutoCompleteTextView = findViewById(R.id.sets_drop_down);
         gameTypeAutoCompleteTextView = findViewById(R.id.gameTypeDropDownBox);
+        toolbar = findViewById(R.id.toolbar);
 
         startGameBtn.setOnClickListener(this);
         addPlayersBtn.setOnClickListener(this);
@@ -209,7 +220,7 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
        return new GameSettings(totalLegs,totalSets);
     }
 
-    enum GameType {
+    public enum GameType {
         FiveO("501", 501),
         ThreeO("301", 301),
         SevenO("170", 170);

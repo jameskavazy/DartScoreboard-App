@@ -6,7 +6,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -14,6 +16,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button usersButton;
     private Button statsButton;
     private Button continueButton;
+
+    private Toolbar toolbar;
 
 
 
@@ -24,8 +28,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setupUI();
     }
 
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        toolbar.setTitle("Dart Scoreboard");
+    }
+
     private void setupUI(){ // todo look lifecycle methods of when to set up ui, oncreateview?
         setContentView(R.layout.activity_main);
+        toolbar = findViewById(R.id.toolbar);
         newGameButton = findViewById(R.id.startNewGameButton);
         usersButton = findViewById(R.id.usersButton);
         continueButton = findViewById(R.id.continueButton);

@@ -6,15 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".StatisticsActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/stats_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="75dp"
-        android:background="@color/custom_blue"
-        android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:titleTextColor="@color/white" />
+   <include layout="@layout/toolbar"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/stats_users_recycler_view"

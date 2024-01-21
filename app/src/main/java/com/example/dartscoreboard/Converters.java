@@ -2,6 +2,7 @@ package com.example.dartscoreboard;
 
 import androidx.room.TypeConverter;
 
+import com.example.dartscoreboard.models.GuyUser;
 import com.example.dartscoreboard.models.User;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -36,6 +37,12 @@ public class Converters {
     public String userListToString (List<User> usersList){
         return new Gson().toJson(usersList);
     }
+
+    //type converter using clone to help keep Guy User intact.
+
+
+
+
 
     @TypeConverter
     public GameSettings gameSettingsFromJsonString(String gameSettingsJsonString){

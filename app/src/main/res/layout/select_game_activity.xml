@@ -9,31 +9,17 @@
     android:orientation="vertical"
     tools:context=".SelectGameActivity">
 
+    <include layout="@layout/toolbar"/>
+
     <Button
         android:id="@+id/gameStartButton"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
-        android:layout_gravity="right"
+        android:layout_gravity="end"
         android:layout_marginVertical="600dp"
         android:layout_marginTop="40dp"
         android:layout_marginEnd="40dp"
         android:text="Start Game" />
-
-    <FrameLayout
-        android:id="@+id/frameLayout4"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/custom_blue"
-        android:padding="5dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="Select Game"
-            android:textColor="@color/white"
-            android:textSize="40sp" />
-    </FrameLayout>
 
     <com.google.android.material.textfield.TextInputLayout
 
