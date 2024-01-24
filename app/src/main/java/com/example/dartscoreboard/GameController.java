@@ -51,8 +51,6 @@ public final class GameController {
 
             User currentPlayer = playersList.get(turnIndex);
             int currentScore = currentPlayer.getPlayerScore();
-            int t = subtract(currentScore, scoreInt);
-            Log.d("dom test", "playerVisit " + t);
             currentPlayer.setPlayerScore(subtract(currentScore, scoreInt), false);
 
 //            if (currentPlayer instanceof GuyUser) {

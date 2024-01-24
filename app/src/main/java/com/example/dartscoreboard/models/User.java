@@ -144,6 +144,109 @@ public class User implements Serializable, Cloneable { //todo guy easter egg
         this.userID = userID;
     }
 
+    private int wins;
+
+    private int losses;
+
+
+    public void setTotalMatches(int totalMatches) {
+        this.totalMatches = totalMatches;
+    }
+
+    public void setNumberOf180s(int numberOf180s) {
+        this.numberOf180s = numberOf180s;
+    }
+
+    public void setNumberOfDartsThrown(int numberOfDartsThrown) {
+        this.numberOfDartsThrown = numberOfDartsThrown;
+    }
+
+    private int totalMatches;
+
+    public int getNumberOf180s() {
+        return numberOf180s;
+    }
+
+    private int numberOf180s;
+
+    private int numberOfDartsThrown;
+
+    public int getNumberOfDartsThrown(){
+        return numberOfDartsThrown;
+    }
+
+    public int getWins() {
+        return wins;
+    }
+
+    public void setWins(int wins) {
+        this.wins = wins;
+    }
+
+    public void setLosses(int losses) {
+        this.losses = losses;
+    }
+
+    public int getLosses() {
+        return losses;
+    }
+
+    public int getWinRate(){
+        return (getWins() / getTotalMatches()) * 100;
+    }
+
+    public void incrementWins(){
+        wins++;
+    }
+
+    public void incrementLosses(){
+       losses++;
+    }
+
+    public void incrementMatches(){
+        totalMatches++;
+    }
+
+    public void increment180(){
+        numberOf180s++;
+    }
+
+
+    public void incrementDartThrown(){
+            numberOfDartsThrown += 3;
+        /*
+        / TODO: 22/01/2024 in GameController/Activity, if playerScore is 0 (and they've won the game) then
+                we need to produce an Alert Dialogue that asks how many darts they threw. 1 dart, we minus 2 off their dartsThrown
+                (as we've added 3 for each visit), 2 darts - minus 1 dart, 3 darts, we don't edit
+         */
+    }
+
+    public int getTotalMatches() {
+        return totalMatches;
+    }
+
+
+
+    /*
+    todo
+    Overall averages -
+    flag for is checkout (or if score is 170 or less, we've already got that functionality within out subtract function; calcualte checkout rate
+
+    leg win rate
+
+    [x]wins, losses
+    Match win rate?
+    [x]no of 180s
+
+
+    dartsThrown variable - getVisits *3.
+
+    On game end - as how many darts to finish
+
+        All of the metrics will be updated at the end of the match only. This will save number of updates
+        + improve data quality.
+     */
+
     @NonNull
     @Override
     public Object clone() throws CloneNotSupportedException {

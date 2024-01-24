@@ -21,6 +21,7 @@ public class UserStatisticsActivity extends AppCompatActivity {
         User user = (User) arguments.getSerializable(StatisticsActivity.userStatKey);
         TextView textView = findViewById(R.id.testView);
         textView.setText(user.getUsername());
-
     }
+
+
 }
