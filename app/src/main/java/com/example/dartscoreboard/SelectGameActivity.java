@@ -198,7 +198,7 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
             for (int i = 0; i < playersToGame.size(); i++) {
                 namesToGame[i] = playersToGame.get(i).getUsername();
             }
-            playerListTextViewButton.setText(String.join(", ", namesToGame));
+            playerListTextViewButton.setText(String.join("\n", namesToGame));
         }
     }
 

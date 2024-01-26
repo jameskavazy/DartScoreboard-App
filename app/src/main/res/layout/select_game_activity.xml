@@ -78,6 +78,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:textSize="20sp"
+        android:lineSpacingMultiplier="1.3"
         android:hint="No Players"
         android:translationY="400dp" />
 
@@ -91,28 +92,28 @@
 
         <Button
             android:id="@+id/NameDropDownBox"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/add_players_button" />
 
         <Button
             android:id="@+id/randomise_players_button"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/randomise_players_button" />
 
         <Button
             android:id="@+id/remove_players_button"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/remove_all_players_button" />
 
         <Button
             android:id="@+id/gameStartButton"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:ellipsize="end"

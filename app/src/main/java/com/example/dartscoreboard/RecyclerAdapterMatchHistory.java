@@ -45,8 +45,6 @@ public class RecyclerAdapterMatchHistory extends RecyclerView.Adapter<RecyclerAd
                 }
             });
         }
-
-
     }
 
     @NonNull
