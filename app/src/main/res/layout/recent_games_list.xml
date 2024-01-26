@@ -11,7 +11,25 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center|start">
+
+        <View
+            android:id="@+id/drag_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/baseline_drag_indicator_24"/>
+
+    </RelativeLayout>
+
+
+
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
         android:padding="8dp">
+
 
         <TextView
             android:id="@+id/match_history_date_textview"
@@ -29,7 +47,7 @@
             android:layout_toStartOf="@id/match_history_date_textview"
             android:ellipsize="end"
             android:maxLines="1"
-            tools:text="Title"
+            tools:text="501"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
         <TextView

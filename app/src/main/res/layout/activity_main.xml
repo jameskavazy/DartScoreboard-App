@@ -18,12 +18,11 @@
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="389dp"
-        android:layout_height="473dp"
-        android:layout_marginTop="100dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:orientation="vertical">
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:padding="40dp">
 
         <Button
             android:id="@+id/startNewGameButton"
@@ -56,8 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
-            android:text="Continue"
-            android:visibility="gone" />
+            android:text="Continue"/>
     </LinearLayout>
 
 

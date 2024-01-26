@@ -11,15 +11,6 @@
 
     <include layout="@layout/toolbar"/>
 
-    <Button
-        android:id="@+id/gameStartButton"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_gravity="end"
-        android:layout_marginVertical="600dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="40dp"
-        android:text="Start Game" />
 
     <com.google.android.material.textfield.TextInputLayout
 
@@ -81,39 +72,6 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-
-
-    <Button
-        android:id="@+id/NameDropDownBox"
-        android:layout_width="147dp"
-        android:layout_height="50dp"
-        android:layout_gravity="left"
-        android:layout_marginVertical="600dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="40dp"
-        android:text="Add Players"
-        app:layout_anchorGravity="top|center" />
-
-    <Button
-        android:id="@+id/remove_players_button"
-        android:layout_width="wrap_content"
-        android:layout_height="55dp"
-        android:layout_gravity="right"
-        android:layout_marginVertical="525dp"
-        android:layout_marginTop="44dp"
-        android:layout_marginRight="16dp"
-        android:text="Remove All Players" />
-
-    <Button
-        android:id="@+id/randomise_players_button"
-        android:layout_width="wrap_content"
-        android:layout_height="55dp"
-        android:layout_gravity="left"
-        android:layout_marginVertical="525dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="44dp"
-        android:text="Randomise Players" />
-
     <TextView
         android:id="@+id/list_of_match_players"
         android:layout_width="wrap_content"
@@ -122,6 +80,44 @@
         android:textSize="20sp"
         android:hint="No Players"
         android:translationY="400dp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|bottom"
+        android:padding="16dp"
+        android:layout_marginBottom="45dp"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/NameDropDownBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/add_players_button" />
+
+        <Button
+            android:id="@+id/randomise_players_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/randomise_players_button" />
+
+        <Button
+            android:id="@+id/remove_players_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/remove_all_players_button" />
+
+        <Button
+            android:id="@+id/gameStartButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:ellipsize="end"
+            android:text="@string/start_game_button" />
+    </LinearLayout>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,5 +1,8 @@
 package com.example.dartscoreboard;
 
+import static androidx.recyclerview.widget.ItemTouchHelper.ACTION_STATE_IDLE;
+import static androidx.recyclerview.widget.ItemTouchHelper.ACTION_STATE_SWIPE;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -71,6 +74,28 @@ public class MatchHistoryActivity extends AppCompatActivity {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 matchHistoryViewModel.delete(adapter.getGameStateAtPosition(viewHolder.getAdapterPosition()));
+            }
+
+            @Override
+            public void onSelectedChanged(@Nullable RecyclerView.ViewHolder viewHolder, int actionState) {
+
+                super.onSelectedChanged(viewHolder, actionState);
+                if (actionState == ACTION_STATE_SWIPE){
+                    if (viewHolder != null) {
+                        viewHolder.itemView.setAlpha(0.25F);
+                    }
+                }
+            }
+
+            @Override
+            public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+                super.clearView(recyclerView, viewHolder);
+                viewHolder.itemView.setAlpha(1F);
+            }
+
+            @Override
+            public float getSwipeThreshold(@NonNull RecyclerView.ViewHolder viewHolder) {
+                return 0.9F;
             }
         }).attachToRecyclerView(recyclerView);
 

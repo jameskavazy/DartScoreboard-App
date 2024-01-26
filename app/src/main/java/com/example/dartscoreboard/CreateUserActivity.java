@@ -8,7 +8,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -21,11 +23,9 @@ import java.util.List;
 public class CreateUserActivity extends AppCompatActivity implements View.OnClickListener {
 
     private List<User> usersList = new ArrayList<>();
-
-    private Button cancelButton;
-    private Button createPlayerButton;
     private EditText enterUsernameEditText;
     private UserViewModel userViewModel;
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,21 +33,23 @@ public class CreateUserActivity extends AppCompatActivity implements View.OnClic
         setupUI();
     }
 
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        toolbar.setTitle("Create New User");
+
+    }
 
     private void setupUI() {
         setContentView(R.layout.activity_create_user);
-        cancelButton = findViewById(R.id.cancel_create_player);
-        createPlayerButton = findViewById(R.id.create_player_button);
+        toolbar = findViewById(R.id.toolbar);
+        Button cancelButton = findViewById(R.id.cancel_create_player);
+        Button createPlayerButton = findViewById(R.id.create_player_button);
         cancelButton.setOnClickListener(this);
         createPlayerButton.setOnClickListener(this);
         enterUsernameEditText = findViewById(R.id.enter_name_edit_text);
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
-        userViewModel.getAllUsers().observe(this, new Observer<List<User>>() {
-            @Override
-            public void onChanged(List<User> users) {
-                setUsersList(users);
-            }
-        });
+        userViewModel.getAllUsers().observe(this, this::setUsersList);
     }
 
     private void onAddNewUserButtonClick(String nameToAdd) {
@@ -75,10 +77,11 @@ public class CreateUserActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.cancel_create_player) {
+        int viewId = v.getId();
+        if (viewId == R.id.cancel_create_player) {
             Log.d("dom test", "cancel button click");
             finish();
-        } else if (v.getId() == R.id.create_player_button) {
+        } else if (viewId == R.id.create_player_button) {
             Log.d("dom test", "OK button click");
             String usernameToAdd = enterUsernameEditText.getText().toString();
             onAddNewUserButtonClick(usernameToAdd);
