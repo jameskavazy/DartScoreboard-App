@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +36,6 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
 
     Toolbar toolbar;
-
     private MatchHistoryViewModel matchHistoryViewModel;
     public static final String GAME_STATE_ID = "GAME_STATE_ID_KEY";
     public static final String MATCH_HISTORY_EXTRA_KEY = "OPEN_GAME_ACTIVITY_KEY";
@@ -65,23 +65,16 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.game_activity);
         toolbar = findViewById(R.id.toolbar);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
         averageScoreTextView = findViewById(R.id.avg_text_view);
         visitsTextView = findViewById(R.id.visits_text_view);
         doneButton = findViewById(R.id.done_button);
         recyclerView = findViewById(R.id.player_info_recycler_view);
         inputScoreEditText = findViewById(R.id.inputUserNameEditText);
-        undoButton = new Button(this);
-        undoButton.setOnClickListener(this);
+        setUndoButton();
         doneButton.setOnClickListener(this);
         inputScoreEditText.setOnEditorActionListener((v, actionId, event) -> onScoreEntered());
         matchHistoryViewModel = new ViewModelProvider(this).get(MatchHistoryViewModel.class);
-
-
-        Toolbar.LayoutParams undoV2Params  = new Toolbar.LayoutParams(Toolbar.LayoutParams.WRAP_CONTENT, Toolbar.LayoutParams.WRAP_CONTENT);
-        undoV2Params.gravity = Gravity.END;
-        undoV2Params.setMarginEnd(24);
-        undoButton.setText(R.string.undo);
-        toolbar.addView(undoButton, undoV2Params);
 
         //-------------Set Title and GameSettings based on Extras------------------
         Intent intent = getIntent();
@@ -104,13 +97,24 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    private void setUndoButton() {
+        undoButton = new Button(new ContextThemeWrapper(getBaseContext(),R.style.Base_Theme_DartScoreboard));
+        undoButton.setOnClickListener(this);
+        Toolbar.LayoutParams undoV2Params  = new Toolbar.LayoutParams(Toolbar.LayoutParams.WRAP_CONTENT, Toolbar.LayoutParams.WRAP_CONTENT);
+        undoV2Params.gravity = Gravity.END;
+        undoV2Params.setMarginEnd(24);
+        undoButton.setText(R.string.undo);
+        toolbar.addView(undoButton, undoV2Params);
+    }
+
     private void setAverageScoreTextView() {
         double avg = GameController.getInstance().getPlayersList().get(GameController.getInstance().getTurnIndex()).getAvg();
         averageScoreTextView.setText(String.valueOf(avg));
     }
 
     private void setVisitsTextView() {
-        int visits = GameController.getInstance().getPlayersList().get(GameController.getInstance().getTurnIndex()).getVisits();
+        User activeUser = GameController.getInstance().getPlayersList().get(GameController.getInstance().getTurnIndex());
+        int visits = activeUser.getVisits();
         visitsTextView.setText(String.valueOf(visits));
     }
 

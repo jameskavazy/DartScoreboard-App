@@ -86,7 +86,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center|bottom"
-        android:padding="16dp"
+        android:padding="1dp"
         android:layout_marginBottom="45dp"
         android:orientation="vertical">
 
@@ -95,7 +95,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/add_players_button" />
+            android:text="@string/select_players" />
 
         <Button
             android:id="@+id/randomise_players_button"

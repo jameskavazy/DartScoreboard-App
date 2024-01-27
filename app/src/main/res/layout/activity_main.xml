@@ -30,7 +30,15 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:text="New Game" />
+            android:text="@string/new_game" />
+
+        <Button
+            android:id="@+id/continueButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:text="@string/continue_game"/>
 
         <Button
             android:id="@+id/statsButton"
@@ -39,7 +47,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
             android:padding="10dp"
-            android:text="Stats" />
+            android:text="@string/stats" />
 
         <Button
             android:id="@+id/usersButton"
@@ -47,15 +55,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
-            android:text="Manage Users" />
+            android:text="@string/manage_users" />
 
-        <Button
-            android:id="@+id/continueButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:text="Continue"/>
+
     </LinearLayout>
 
 

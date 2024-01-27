@@ -69,5 +69,10 @@
     <string name="randomise_players_button">Randomise Players</string>
     <string name="add_players_button">Add Players</string>
     <string name="remove_all_players_button">Remove All Players</string>
+    <string name="select_players">Select Players</string>
+    <string name="new_game">New Game</string>
+    <string name="continue_game">Continue Game</string>
+    <string name="stats">Stats</string>
+    <string name="manage_users">Manage Users</string>
 
 </resources>

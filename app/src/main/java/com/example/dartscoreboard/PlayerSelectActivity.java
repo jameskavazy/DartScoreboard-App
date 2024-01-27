@@ -36,8 +36,8 @@ public class PlayerSelectActivity extends AppCompatActivity implements View.OnCl
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        toolbar = findViewById(R.id.player_select_toolbar);
-        toolbar.setTitle("Add Players");
+        toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("Select Players");
     }
 
     private void setAdapter(){

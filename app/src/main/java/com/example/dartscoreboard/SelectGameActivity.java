@@ -42,15 +42,9 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
 
     private TextView playerListTextViewButton;
 
-    private ArrayAdapter<String> adapterItems;
-
-    private ArrayAdapter<String> adapterLegsItems;
-
-    private ArrayAdapter<String> adapterSetsItems;
-
     private UserViewModel userViewModel;
 
-    private Stack<MatchState> matchStateStack = new Stack<>();
+    private final Stack<MatchState> matchStateStack = new Stack<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -178,19 +172,19 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void setUpGameTypeDropDownMenu(){
-        adapterItems = new ArrayAdapter<>(this,R.layout.list_item,gameSelectList);
+        ArrayAdapter<String> adapterItems = new ArrayAdapter<>(this, R.layout.list_item, gameSelectList);
         gameTypeAutoCompleteTextView.setAdapter(adapterItems);
     }
 
 
     private void setUpLegsListDropDownMenu(){
-        adapterLegsItems = new ArrayAdapter<>(this,R.layout.list_item, numberOfLegsSetsList);
+        ArrayAdapter<String> adapterLegsItems = new ArrayAdapter<>(this, R.layout.list_item, numberOfLegsSetsList);
         legsAutoCompleteTextView.setAdapter(adapterLegsItems);
         legsAutoCompleteTextView.setText(adapterLegsItems.getItem(0),false);
     }
 
     private void setUpSetsListDropDownMenu(){
-        adapterSetsItems = new ArrayAdapter<>(this,R.layout.list_item, numberOfLegsSetsList);
+        ArrayAdapter<String> adapterSetsItems = new ArrayAdapter<>(this, R.layout.list_item, numberOfLegsSetsList);
         setsAutoCompleteTextView.setAdapter(adapterSetsItems);
         setsAutoCompleteTextView.setText(adapterSetsItems.getItem(0),false);
     }
@@ -228,8 +222,8 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         ThreeO("301", 301),
         SevenO("170", 170);
 
-        String name;
-        int startingScore;
+        final String name;
+        final int startingScore;
 
         GameType(String name, int startingScore) {
             this.name = name;
