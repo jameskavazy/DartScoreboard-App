@@ -19,7 +19,7 @@ public class GameState implements Serializable {
     @PrimaryKey (autoGenerate = true)
     public long gameID;
 
-   @ColumnInfo
+    @ColumnInfo
    public OffsetDateTime offsetDateTime = OffsetDateTime.now();
 
 
@@ -124,5 +124,8 @@ public class GameState implements Serializable {
         this.turnLeadForSets = turnLeadForSets;
     }
 
+    public OffsetDateTime getOffsetDateTime() {
+        return offsetDateTime;
+    }
 
 }

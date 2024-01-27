@@ -61,7 +61,7 @@ public class MatchHistoryActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
         matchHistoryViewModel = new ViewModelProvider(this).get(MatchHistoryViewModel.class);
-        matchHistoryViewModel.getAllGames().observe(this, adapter::setGameStatesList);
+        matchHistoryViewModel.getAllGames().observe(this, adapter::submitList);
 
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,

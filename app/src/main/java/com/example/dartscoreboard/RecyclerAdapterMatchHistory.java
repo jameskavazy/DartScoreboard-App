@@ -6,6 +6,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.time.format.DateTimeFormatter;
@@ -13,13 +15,23 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecyclerAdapterMatchHistory extends RecyclerView.Adapter<RecyclerAdapterMatchHistory.MyViewHolder> {
+public class RecyclerAdapterMatchHistory extends ListAdapter<GameState, RecyclerAdapterMatchHistory.MyViewHolder> {
 
-    private List<GameState> gameStatesList = new ArrayList<>();
     private OnItemClickListener listener;
-
-    public RecyclerAdapterMatchHistory() {
+    protected RecyclerAdapterMatchHistory() {
+        super(DIFF_CALLBACK);
     }
+    private static final DiffUtil.ItemCallback<GameState> DIFF_CALLBACK = new DiffUtil.ItemCallback<GameState>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull GameState oldItem, @NonNull GameState newItem) {
+            return oldItem.getGameID() == newItem.getGameID();
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull GameState oldItem, @NonNull GameState newItem) {
+            return oldItem.getOffsetDateTime().equals(newItem.getOffsetDateTime());
+        }
+    };
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
@@ -39,7 +51,7 @@ public class RecyclerAdapterMatchHistory extends RecyclerView.Adapter<RecyclerAd
                 public void onClick(View v) {
                     int position = getAdapterPosition();
                     if (listener != null && position != RecyclerView.NO_POSITION) {
-                        listener.onItemClick(gameStatesList.get(position));
+                        listener.onItemClick(getItem(position));
                     }
 
                 }
@@ -56,7 +68,7 @@ public class RecyclerAdapterMatchHistory extends RecyclerView.Adapter<RecyclerAd
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerAdapterMatchHistory.MyViewHolder holder, int position) {
-        GameState currentGameState = gameStatesList.get(position);
+        GameState currentGameState = getItem(position);
         holder.gameTitleTextView.setText(currentGameState.getGameType().name);
         holder.gamePlayersTextView.setText(usersListAsString(currentGameState));
         DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
@@ -67,20 +79,10 @@ public class RecyclerAdapterMatchHistory extends RecyclerView.Adapter<RecyclerAd
         holder.gameDateCreatedTextView.setText(dateStamp+ "\n" + timeStampTruncated);
     }
 
-    @Override
-    public int getItemCount() {
-        return gameStatesList.size();
-    }
-
     public GameState getGameStateAtPosition(int position) {
-        return gameStatesList.get(position);
+        return getItem(position);
     }
 
-
-    public void setGameStatesList(List<GameState> gameStatesList) {
-        this.gameStatesList = gameStatesList;
-        notifyDataSetChanged();
-    }
 
     public interface OnItemClickListener {
         void onItemClick(GameState gameState);
