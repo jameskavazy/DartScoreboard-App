@@ -8,7 +8,6 @@
     android:orientation="vertical">
 
 
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,14 +24,12 @@
             tools:text="501" />
 
         <Button
+
             android:id="@+id/undo_button"
             android:layout_width="116dp"
             android:layout_height="wrap_content"
-            android:foreground="@color/black"
             android:foregroundGravity="left"
-            android:background="@color/black"
             android:text="@string/undo"
-            android:textColor="@color/white"
             android:textSize="16sp" />
 
     </FrameLayout>
@@ -51,7 +48,6 @@
             android:layout_weight="1"
             android:text="@string/player_plate"
             android:textAlignment="center"
-            android:textColor="@color/black"
             android:textSize="25sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -64,7 +60,6 @@
             android:layout_weight="1"
             android:text="@string/sets_plate"
             android:textAlignment="center"
-            android:textColor="@color/black"
             android:textSize="25sp" />
 
         <TextView
@@ -75,7 +70,6 @@
             android:layout_weight="1"
             android:text="@string/legs_plate"
             android:textAlignment="center"
-            android:textColor="@color/black"
             android:textSize="25sp"
             app:layout_constraintStart_toEndOf="@id/gameActivityPlayerTitle"
             app:layout_constraintTop_toTopOf="parent" />
@@ -87,7 +81,6 @@
             android:layout_weight="1"
             android:text="@string/score_plate"
             android:textAlignment="center"
-            android:textColor="@color/black"
             android:textSize="25sp"
             app:layout_constraintStart_toEndOf="@id/gameActivityLegsTitle"
             app:layout_constraintTop_toTopOf="parent" />
@@ -141,7 +134,7 @@
             android:background="@color/custom_blue_accent"
             android:text="ENTER"
             android:textSize="12sp"
-            android:textColor="@color/black" />
+            />
     </LinearLayout>
 
     <FrameLayout

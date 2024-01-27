@@ -4,12 +4,9 @@
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="75dp"
-    android:background="@color/custom_blue"
     android:elevation="4dp"
     app:titleTextColor="@color/white"
-    android:textColorSecondary="@color/white"
-    android:tint="@color/white"
-    android:theme="@style/MyThemeOverlay_Toolbar"
+    style="@style/MyThemeOverlay_Toolbar"
     app:popupTheme="@style/ThemeOverlay.AppCompat.ActionBar">
 
 </androidx.appcompat.widget.Toolbar>
