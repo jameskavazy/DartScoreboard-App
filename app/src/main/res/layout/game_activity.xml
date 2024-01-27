@@ -7,32 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/custom_blue"
-        android:padding="5dp">
-
-        <TextView
-            android:id="@+id/gameActivityTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textColor="@color/white"
-            android:textSize="30sp"
-            tools:text="501" />
-
-        <Button
-
-            android:id="@+id/undo_button"
-            android:layout_width="116dp"
-            android:layout_height="wrap_content"
-            android:foregroundGravity="left"
-            android:text="@string/undo"
-            android:textSize="16sp" />
-
-    </FrameLayout>
+    <include layout="@layout/toolbar"/>
 
 
     <LinearLayout
@@ -142,7 +117,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:padding="5sp"
-        android:background="@color/custom_blue">
+        style="@style/MyThemeOverlay_Toolbar">
 
         <TextView
             android:layout_width="wrap_content"

@@ -52,15 +52,6 @@ public final class GameController {
             User currentPlayer = playersList.get(turnIndex);
             int currentScore = currentPlayer.getPlayerScore();
             currentPlayer.setPlayerScore(subtract(currentScore, scoreInt), false);
-
-//            if (currentPlayer instanceof GuyUser) {
-//                GuyUser guy = (GuyUser) currentPlayer;
-//                guy.setPlayerScore(subtract(currentScore, scoreInt), false);
-//                currentPlayer.setPlayerScore(guy.getPlayerScore(), false);
-//            } else {
-//
-//            }
-
             incrementTurnIndex();
         }
         nextLeg();
@@ -116,7 +107,6 @@ public final class GameController {
         ArrayList<User> playerListCopy =  new ArrayList<>();
         for (User user : getPlayersList()){
                 playerListCopy.add((User) user.clone());
-
         }
         MatchState matchState = new MatchState(playerListCopy, getTurnIndex(), getTurnIndexLegs(), getTurnIndexSets());
         //saves matchStateStack within the controller to pass it to the db.
@@ -125,13 +115,15 @@ public final class GameController {
 
 
     public void undo(RecyclerAdapterGamePlayers adapter) {
-        MatchState matchState = getMatchStateStack().pop();
-        setPlayersList(matchState.getPlayerList());
-        setTurnIndex(matchState.getTurnIndex());
-        setTurnIndexLegs(matchState.getTurnIndexForLegs());
-        setTurnIndexSets(matchState.getTurnIndexForSets());
-        adapter.setUsersList(matchState.getPlayerList());
-        adapter.notifyDataSetChanged();
+        if (!getMatchStateStack().isEmpty()){
+            MatchState matchState = getMatchStateStack().pop();
+            setPlayersList(matchState.getPlayerList());
+            setTurnIndex(matchState.getTurnIndex());
+            setTurnIndexLegs(matchState.getTurnIndexForLegs());
+            setTurnIndexSets(matchState.getTurnIndexForSets());
+            adapter.setUsersList(matchState.getPlayerList());
+            adapter.notifyDataSetChanged();
+        }
     }
 
     public void setPlayerLegs() {
@@ -277,7 +269,10 @@ public final class GameController {
 
     public void initialiseGameController(
             SelectGameActivity.GameType gameType, GameSettings gameSettings, List<User> playersList, int turnIndex,
-            int turnLeadForLegs, int turnLeadForSets, Stack<MatchState> matchStateStack) {
+            int turnLeadForLegs, int turnLeadForSets, Stack<MatchState> matchStateStack, long gameID) {
+
+        //boolean flag to tell controller whether we need to set starting scores or not.
+
         gameStateEnd = false;
         setPlayersList(playersList);
         setGameType(gameType);
@@ -286,6 +281,10 @@ public final class GameController {
         setTurnIndexLegs(turnLeadForLegs);
         setTurnIndexSets(turnLeadForSets);
         setMatchStateStack(matchStateStack);
+        if (gameID == 0) {
+            setPlayerStartingScores();
+        }
+        setGameID(gameID);
     }
 
 

@@ -147,25 +147,28 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
 
     private void openFiveoGameActivity() {
         Log.d("dom test", "openFiveoGameActivity");
+        GameController.getInstance().setGameID(0);
         launchGameActivity();
         GameController.getInstance().initialiseGameController(GameType.FiveO,getGameSettings(),getPlayersToGame(),
-                0,0,0,matchStateStack);
+                0,0,0,matchStateStack,0);
         finish();
     }
 
     private void openThreeoGameActivity() {
         Log.d("dom test", "openThreeoGameActivity");
+        GameController.getInstance().setGameID(0);
         launchGameActivity();
         GameController.getInstance().initialiseGameController(GameType.ThreeO,getGameSettings(),getPlayersToGame(),
-                0,0,0,matchStateStack);
+                0,0,0,matchStateStack, 0);
         finish();
     }
 
     private void openSevenoGameActivity() {
         Log.d("dom test", "openSevenoGameActivity");
+        GameController.getInstance().setGameID(0);
         launchGameActivity();
         GameController.getInstance().initialiseGameController(GameType.SevenO,getGameSettings(),getPlayersToGame(),
-                0,0,0,matchStateStack);
+                0,0,0,matchStateStack,0);
         finish();
     }
 
