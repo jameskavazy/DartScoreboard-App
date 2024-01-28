@@ -34,6 +34,4 @@ public interface MatchesDao {
 
     @Query("DELETE FROM match_history WHERE gameID = :id")
     void deleteGameStateByID(long id);
-
-
 }

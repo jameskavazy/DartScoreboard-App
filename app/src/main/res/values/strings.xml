@@ -74,5 +74,6 @@
     <string name="continue_game">Continue Game</string>
     <string name="stats">Stats</string>
     <string name="manage_users">Manage Users</string>
+    <string name="no_recent_games_alert">Looks like there\'s no recent games. Your recent ongoing matches will show here.</string>
 
 </resources>

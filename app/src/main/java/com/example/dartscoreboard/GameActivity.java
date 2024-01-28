@@ -2,15 +2,19 @@ package com.example.dartscoreboard;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,7 +34,7 @@ import io.reactivex.rxjava3.disposables.Disposable;
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
 
-    Toolbar toolbar;
+    private Toolbar toolbar;
     private MatchHistoryViewModel matchHistoryViewModel;
     public static final String GAME_STATE_ID = "GAME_STATE_ID_KEY";
     public static final String MATCH_HISTORY_EXTRA_KEY = "OPEN_GAME_ACTIVITY_KEY";
@@ -93,12 +97,18 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void setUndoButton() {
-        undoButton = new Button(new ContextThemeWrapper(getBaseContext(),R.style.Base_Theme_DartScoreboard));
+        undoButton = new Button(new ContextThemeWrapper(getBaseContext(), R.style.Base_Theme_DartScoreboard));
         undoButton.setOnClickListener(this);
-        Toolbar.LayoutParams undoV2Params  = new Toolbar.LayoutParams(Toolbar.LayoutParams.WRAP_CONTENT, Toolbar.LayoutParams.WRAP_CONTENT);
+        Toolbar.LayoutParams undoV2Params  = new Toolbar.LayoutParams(200, 100, LinearLayout.TEXT_ALIGNMENT_GRAVITY);
+
         undoV2Params.gravity = Gravity.END;
-        undoV2Params.setMarginEnd(24);
-        undoButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.undo_icon,0,0,0);
+        undoV2Params.setMarginEnd(50);
+//        undoButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.undo_icon,0,0,0);
+        if (isNightMode(getApplicationContext())){
+            undoButton.setBackgroundColor(getColor(R.color.grey));
+        } else undoButton.setBackgroundColor(getColor(R.color.white));
+        undoButton.setTextColor(getColor(R.color.black));
+        undoButton.setText(R.string.undo);
         toolbar.addView(undoButton, undoV2Params);
     }
 
@@ -233,5 +243,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 GameController.getInstance().getTurnIndexLegs(),
                 GameController.getInstance().getTurnIndexSets(),
                 GameController.getInstance().getMatchStateStack());
+    }
+
+    public boolean isNightMode(Context context) {
+        int nightModeFlags = context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        return nightModeFlags == Configuration.UI_MODE_NIGHT_YES;
     }
 }

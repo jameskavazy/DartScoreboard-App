@@ -1,20 +1,16 @@
 package com.example.dartscoreboard;
 
-import static androidx.recyclerview.widget.ItemTouchHelper.ACTION_STATE_IDLE;
 import static androidx.recyclerview.widget.ItemTouchHelper.ACTION_STATE_SWIPE;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -27,16 +23,19 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+
 public class MatchHistoryActivity extends AppCompatActivity {
 
     private MatchHistoryViewModel matchHistoryViewModel;
     private RecyclerView recyclerView;
     private Toolbar toolbar;
+    private TextView noRecentGamesTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupUI();
+
     }
 
     @Override
@@ -49,10 +48,13 @@ public class MatchHistoryActivity extends AppCompatActivity {
     public void setupUI() {
         setContentView(R.layout.activity_match_history);
         toolbar = findViewById(R.id.toolbar);
+        noRecentGamesTextView = findViewById(R.id.no_games_alert);
         setSupportActionBar(toolbar);
         recyclerView = findViewById(R.id.recyclerView_GamesList);
         setAdapter();
+
     }
+
 
     private void setAdapter() {
         final RecyclerAdapterMatchHistory adapter = new RecyclerAdapterMatchHistory();
@@ -63,6 +65,12 @@ public class MatchHistoryActivity extends AppCompatActivity {
         matchHistoryViewModel = new ViewModelProvider(this).get(MatchHistoryViewModel.class);
         matchHistoryViewModel.getAllGames().observe(this, adapter::submitList);
 
+
+        matchHistoryViewModel.getAllGames().observe(this, gameStates -> {
+            if (gameStates.isEmpty()){
+                noRecentGamesTextView.setVisibility(View.VISIBLE);
+            } else noRecentGamesTextView.setVisibility(View.GONE);
+        });
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -104,17 +112,14 @@ public class MatchHistoryActivity extends AppCompatActivity {
             }
         }).attachToRecyclerView(recyclerView);
 
-        adapter.setOnItemClickListener(new RecyclerAdapterMatchHistory.OnItemClickListener() {
-            @Override
-            public void onItemClick(GameState gameState) {
-                Intent intent = new Intent(MatchHistoryActivity.this, GameActivity.class);
-                Bundle arguments = new Bundle();
-                arguments.putSerializable(GameActivity.MATCH_HISTORY_EXTRA_KEY, gameState);
-                intent.putExtra(GameActivity.GAME_STATE_ID, gameState.getGameID());
-                intent.putExtras(arguments);
-                startActivity(intent);
-                finish();
-            }
+        adapter.setOnItemClickListener(gameState -> {
+            Intent intent = new Intent(MatchHistoryActivity.this, GameActivity.class);
+            Bundle arguments = new Bundle();
+            arguments.putSerializable(GameActivity.MATCH_HISTORY_EXTRA_KEY, gameState);
+            intent.putExtra(GameActivity.GAME_STATE_ID, gameState.getGameID());
+            intent.putExtras(arguments);
+            startActivity(intent);
+            finish();
         });
     }
 
@@ -130,17 +135,26 @@ public class MatchHistoryActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int menuItem = item.getItemId();
         if (menuItem == R.id.delete_all_recent_games) {
-            matchHistoryViewModel.deleteAllMatches();
+            onDeleteAllRecentGamesMenuItem().show();
         } else if (menuItem == R.id.more_info_menu_item){
             onMoreInfoMenuItem().show();
         }
         return super.onOptionsItemSelected(item);
     }
 
-    public Dialog onMoreInfoMenuItem(){
+    public Dialog onMoreInfoMenuItem() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Click on previous matches to continue a recent game. Swipe on a recent game to delete it from your history.")
-                .setPositiveButton("OK", (dialog, which) -> {});
+                .setPositiveButton("OK", (dialog, which) -> {
+                });
         return builder.create();
     }
+    public Dialog onDeleteAllRecentGamesMenuItem(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Are you sure you want to delete all match history?")
+                .setPositiveButton("Yes",((dialog, which) ->matchHistoryViewModel.deleteAllMatches()))
+                .setNegativeButton("Cancel",((dialog, which) -> {}));
+        return builder.create();
+    }
+
 }

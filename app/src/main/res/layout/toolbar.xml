@@ -7,6 +7,6 @@
     android:elevation="4dp"
     app:titleTextColor="@color/white"
     style="@style/MyThemeOverlay_Toolbar"
-    app:popupTheme="@style/ThemeOverlay.AppCompat.ActionBar">
+    app:popupTheme="@style/Theme.AppCompat.DayNight.NoActionBar">
 
 </androidx.appcompat.widget.Toolbar>

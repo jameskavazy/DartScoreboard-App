@@ -21,6 +21,7 @@ public class RecyclerAdapterMatchHistory extends ListAdapter<GameState, Recycler
     protected RecyclerAdapterMatchHistory() {
         super(DIFF_CALLBACK);
     }
+
     private static final DiffUtil.ItemCallback<GameState> DIFF_CALLBACK = new DiffUtil.ItemCallback<GameState>() {
         @Override
         public boolean areItemsTheSame(@NonNull GameState oldItem, @NonNull GameState newItem) {
@@ -31,14 +32,16 @@ public class RecyclerAdapterMatchHistory extends ListAdapter<GameState, Recycler
         public boolean areContentsTheSame(@NonNull GameState oldItem, @NonNull GameState newItem) {
             return oldItem.getOffsetDateTime().equals(newItem.getOffsetDateTime());
         }
+
+
     };
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView gameTitleTextView;
-        private TextView gamePlayersTextView;
+        private final TextView gameTitleTextView;
+        private final TextView gamePlayersTextView;
 
-        private TextView gameDateCreatedTextView;
+        private final TextView gameDateCreatedTextView;
 
         public MyViewHolder(final View view) {
             super(view);
@@ -51,7 +54,6 @@ public class RecyclerAdapterMatchHistory extends ListAdapter<GameState, Recycler
                 if (listener != null && position != RecyclerView.NO_POSITION) {
                     listener.onItemClick(getItem(position));
                 }
-
             });
         }
     }
@@ -88,6 +90,7 @@ public class RecyclerAdapterMatchHistory extends ListAdapter<GameState, Recycler
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
     }
+
 
 
     private String usersListAsString(GameState gameState) {
