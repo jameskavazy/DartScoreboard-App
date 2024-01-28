@@ -95,12 +95,12 @@ public class MatchHistoryActivity extends AppCompatActivity {
 
             @Override
             public float getSwipeThreshold(@NonNull RecyclerView.ViewHolder viewHolder) {
-                return 0.75F;
+                return 0.65F;
             }
 
             @Override
             public float getSwipeVelocityThreshold(float defaultValue) {
-                return 0.3F;
+                return 0.6F;
             }
         }).attachToRecyclerView(recyclerView);
 

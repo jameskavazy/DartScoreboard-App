@@ -47,14 +47,14 @@ public class PlayerSelectActivity extends AppCompatActivity implements View.OnCl
         recyclerView.setAdapter(adapter);
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         userViewModel.getAllUsers().observe(this,adapter::setUsersList);
+
+
         adapter.setOnItemClickListener(new recyclerAdapterPlayersToGame.OnItemClickListener() {
             @Override
-            public void onClick(User user) {
-                Log.d("dom test", "setAdapter onClick user " + user.getUsername() + user.getActive());
+            public void onClick(User user, int position) {
                 user.setActive(!user.getActive());
                 userViewModel.updateUser(user);
-                Log.d("dom test", "setAdapter onClick user. Post update" + user.getUsername() + user.getActive());
-                adapter.notifyDataSetChanged();
+                adapter.notifyItemChanged(position);
             }
         });
     }

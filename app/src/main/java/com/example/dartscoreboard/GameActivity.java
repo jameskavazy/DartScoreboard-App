@@ -12,6 +12,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -103,7 +104,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         Toolbar.LayoutParams undoV2Params  = new Toolbar.LayoutParams(Toolbar.LayoutParams.WRAP_CONTENT, Toolbar.LayoutParams.WRAP_CONTENT);
         undoV2Params.gravity = Gravity.END;
         undoV2Params.setMarginEnd(24);
-        undoButton.setText(R.string.undo);
+        undoButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.undo_icon,0,0,0);
+//        undoButton.setText(R.string.undo);
         toolbar.addView(undoButton, undoV2Params);
     }
 
@@ -120,7 +122,13 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private void setAdapter() {
         adapter = new RecyclerAdapterGamePlayers(GameController.getInstance().getPlayersList());
-        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext()){
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        };
+        recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
     }

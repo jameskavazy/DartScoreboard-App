@@ -20,9 +20,8 @@ public class recyclerAdapterPlayersToGame extends RecyclerView.Adapter<recyclerA
 
     private OnItemClickListener listener;
 
-
     public interface OnItemClickListener {
-        void onClick(User user);
+        void onClick(User user, int position);
     }
 
     public recyclerAdapterPlayersToGame(){
@@ -40,7 +39,7 @@ public class recyclerAdapterPlayersToGame extends RecyclerView.Adapter<recyclerA
                 public void onClick(View v) {
                     int position = getAdapterPosition();
                     if (listener != null && position != RecyclerView.NO_POSITION){
-                        listener.onClick(usersList.get(position));
+                        listener.onClick(usersList.get(position),position);
                     }
                 }
             });
