@@ -61,10 +61,6 @@ public class User implements Serializable, Cloneable { //todo guy easter egg
 
     }
 
-    public void setPreviousScoresList(ArrayList<Integer> pastScoresList) {
-        this.previousScoresList = pastScoresList;
-    }
-
 
     public int getVisits() {
         //If previous scores list is empty then return 1 to avoid divide by zero
@@ -81,15 +77,7 @@ public class User implements Serializable, Cloneable { //todo guy easter egg
         return active;
     }
 
-    public void setPlayerScore(int playerScore, boolean isStarting) {
-//        if (isGuy) {
-//            if (!isStarting
-//                    && this.playerScore > 100
-//                    && playerScore > 10 // todo playerscore >
-//                    && playerScore % 5 != 0)
-//
-//                playerScore = playerScore + 3;
-//        }
+    public void setPlayerScore(int playerScore) {
         this.playerScore = playerScore;
     }
 
@@ -112,19 +100,6 @@ public class User implements Serializable, Cloneable { //todo guy easter egg
 
     public int getCurrentSets() {
         return currentSets;
-    }
-
-    public double getAvg() {
-        double totalScores = 0;
-        for (int i = 0; i < getPreviousScoresList().size(); i++) {
-            if (!previousScoresList.isEmpty()) {
-                totalScores += getPreviousScoresList().get(i);
-            } else {
-                return 0;
-            }
-        }
-        double average = totalScores / getVisits();
-        return Math.round(average * 10.0) / 10.0;
     }
 
     public void setPlayerLegs(int currentLegs) {
@@ -223,6 +198,16 @@ public class User implements Serializable, Cloneable { //todo guy easter egg
 
     public int getTotalMatches() {
         return totalMatches;
+    }
+
+    public int getTotalScores(){
+        int totalScores = 0;
+        for (int i = 0; i < getPreviousScoresList().size(); i++) {
+            if (!getPreviousScoresList().isEmpty()) {
+               totalScores += getPreviousScoresList().get(i);
+            } else return 0;
+        }
+        return totalScores;
     }
 
 

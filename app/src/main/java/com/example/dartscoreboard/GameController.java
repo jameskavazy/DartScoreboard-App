@@ -1,20 +1,14 @@
 package com.example.dartscoreboard;
 
 import android.util.Log;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-
-import com.example.dartscoreboard.models.GuyUser;
 import com.example.dartscoreboard.models.User;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
-import java.util.stream.Collectors;
 
 public final class GameController {
 
@@ -46,12 +40,11 @@ public final class GameController {
     public void playerVisit(int scoreInt) throws CloneNotSupportedException {
 //        //Save current gameState for undo
         saveForUndo();
-
-        if (scoreInt <= 180) { // checks for valid score input
-
+        if (scoreInt <= 180) {
+            // checks for valid score input
             User currentPlayer = playersList.get(turnIndex);
             int currentScore = currentPlayer.getPlayerScore();
-            currentPlayer.setPlayerScore(subtract(currentScore, scoreInt), false);
+            currentPlayer.setPlayerScore(subtract(currentScore, scoreInt));
             incrementTurnIndex();
         }
         nextLeg();
@@ -60,7 +53,6 @@ public final class GameController {
 
     private int subtract(int playerScore, int currentTypedScore) {
         User currentPlayer = playersList.get(turnIndex); //todo could be a switch below?
-
         if (currentPlayer.isGuy) {
             Log.d("dom test", "subtract guy" + currentTypedScore);
 
@@ -114,14 +106,22 @@ public final class GameController {
     }
 
 
-    public void undo(RecyclerAdapterGamePlayers adapter) {
+    public void undo(RecyclerAdapterGamePlayers adapter) throws CloneNotSupportedException {
         if (!getMatchStateStack().isEmpty()){
             MatchState matchState = getMatchStateStack().pop();
-            setPlayersList(matchState.getPlayerList());
+            List<User> previousUserList = matchState.getPlayerList();
+            ArrayList<Integer> previousUserPreviousScoresList;
+            previousUserPreviousScoresList = previousUserList.get(matchState.getTurnIndex()).getPreviousScoresList();
+            if (!previousUserPreviousScoresList.isEmpty()) {
+                //// TODO: 28/01/2024 Why does this need to happen. Having to manually remove last visit. Deep copy doesn't work
+                previousUserPreviousScoresList.remove(previousUserPreviousScoresList.size() - 1);
+            }
+
+            setPlayersList(previousUserList);
             setTurnIndex(matchState.getTurnIndex());
             setTurnIndexLegs(matchState.getTurnIndexForLegs());
             setTurnIndexSets(matchState.getTurnIndexForSets());
-            adapter.setUsersList(matchState.getPlayerList());
+            adapter.setUsersList(previousUserList);
             adapter.notifyDataSetChanged();
         }
     }
@@ -178,7 +178,7 @@ public final class GameController {
 
     public void setPlayerStartingScores() {
         for (User user : playersList) {
-            user.setPlayerScore(gameType.startingScore, true);
+            user.setPlayerScore(gameType.startingScore);
         }
     }
 
@@ -270,9 +270,7 @@ public final class GameController {
     public void initialiseGameController(
             SelectGameActivity.GameType gameType, GameSettings gameSettings, List<User> playersList, int turnIndex,
             int turnLeadForLegs, int turnLeadForSets, Stack<MatchState> matchStateStack, long gameID) {
-
         //boolean flag to tell controller whether we need to set starting scores or not.
-
         gameStateEnd = false;
         setPlayersList(playersList);
         setGameType(gameType);
@@ -297,6 +295,13 @@ public final class GameController {
 
     public void setMatchStateStack(Stack<MatchState> matchStateStack) {
         this.matchStateStack = matchStateStack;
+    }
+
+    public double getPlayerAverage() {
+        User activePlayer = getPlayersList().get(getTurnIndex());
+        int totalScores = activePlayer.getTotalScores();
+        double average = (double) totalScores / activePlayer.getVisits();
+        return Math.round(average * 10.0) / 10.0;
     }
 
 }

@@ -10,7 +10,6 @@ public final class PreferencesController {
     private static PreferencesController preferenceController;
 
     private PreferencesController() {
-
     }
 
     public static PreferencesController getInstance() {

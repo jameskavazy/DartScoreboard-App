@@ -14,14 +14,11 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.dartscoreboard.models.User;
-import com.google.android.material.textview.MaterialTextView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
@@ -126,21 +123,21 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
 
     public void openGameActivity(){
         if (gameTypeAutoCompleteTextView.getText().toString().equals("501")){ // todo make switch
-            Log.d("dom test","openFiveoGameActivity");
-            openFiveoGameActivity();
+            Log.d("dom test","openFiveOGameActivity");
+            openFiveOGameActivity();
         } else if (gameTypeAutoCompleteTextView.getText().toString().equals("301")){
-            Log.d("dom test","openThreeoGameActivity");
-            openThreeoGameActivity();
+            Log.d("dom test","openThreeOGameActivity");
+            openThreeOGameActivity();
         } else if (gameTypeAutoCompleteTextView.getText().toString().equals("170")){
-            Log.d("dom test","openSevenoGameActivity");
-            openSevenoGameActivity();
+            Log.d("dom test","openSevenOGameActivity");
+            openSevenOGameActivity();
         } else if (gameTypeAutoCompleteTextView.getText().toString().isEmpty()) {
             Toast.makeText(this,"You must select a game type",Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void openFiveoGameActivity() {
-        Log.d("dom test", "openFiveoGameActivity");
+    private void openFiveOGameActivity() {
+        Log.d("dom test", "openFiveOGameActivity");
         GameController.getInstance().setGameID(0);
         launchGameActivity();
         GameController.getInstance().initialiseGameController(GameType.FiveO,getGameSettings(),getPlayersToGame(),
@@ -148,8 +145,8 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         finish();
     }
 
-    private void openThreeoGameActivity() {
-        Log.d("dom test", "openThreeoGameActivity");
+    private void openThreeOGameActivity() {
+        Log.d("dom test", "openThreeOGameActivity");
         GameController.getInstance().setGameID(0);
         launchGameActivity();
         GameController.getInstance().initialiseGameController(GameType.ThreeO,getGameSettings(),getPlayersToGame(),
@@ -157,8 +154,8 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         finish();
     }
 
-    private void openSevenoGameActivity() {
-        Log.d("dom test", "openSevenoGameActivity");
+    private void openSevenOGameActivity() {
+        Log.d("dom test", "openSevenOGameActivity");
         GameController.getInstance().setGameID(0);
         launchGameActivity();
         GameController.getInstance().initialiseGameController(GameType.SevenO,getGameSettings(),getPlayersToGame(),

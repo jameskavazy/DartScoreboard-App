@@ -7,12 +7,10 @@ import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,13 +24,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dartscoreboard.models.User;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.SingleObserver;
 import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -105,12 +99,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         undoV2Params.gravity = Gravity.END;
         undoV2Params.setMarginEnd(24);
         undoButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.undo_icon,0,0,0);
-//        undoButton.setText(R.string.undo);
         toolbar.addView(undoButton, undoV2Params);
     }
 
     private void setAverageScoreTextView() {
-        double avg = GameController.getInstance().getPlayersList().get(GameController.getInstance().getTurnIndex()).getAvg();
+        double avg = GameController.getInstance().getPlayerAverage();
         averageScoreTextView.setText(String.valueOf(avg));
     }
 
@@ -215,7 +208,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 gameState.setGameID(GameController.getInstance().getGameID());
                 matchHistoryViewModel.insert(gameState);
             }
-            GameController.getInstance().undo(adapter);
+            try {
+                GameController.getInstance().undo(adapter);
+            } catch (CloneNotSupportedException e) {
+                throw new RuntimeException(e);
+            }
             setAverageScoreTextView();
             setVisitsTextView();
             GameState gameState = getGameInfo();
