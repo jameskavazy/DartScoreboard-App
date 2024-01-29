@@ -72,9 +72,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private void setupUI() {
         setContentView(R.layout.game_activity);
+        bananaView = findViewById(R.id.banana_image);
+        bananaView.setVisibility(View.GONE);
         toolbar = findViewById(R.id.toolbar);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
         averageScoreTextView = findViewById(R.id.avg_text_view);
         visitsTextView = findViewById(R.id.visits_text_view);
         doneButton = findViewById(R.id.done_button);
@@ -104,6 +105,17 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             saveGameStateToDb();
         }
 
+
+
+    }
+
+    private void setBanana() {
+        if (GameController.getInstance().bananaSplit()) {
+            bananaView.setVisibility(View.VISIBLE);
+            bananaView.postDelayed(() -> {
+                bananaView.setVisibility(View.GONE);
+            },100);
+        } else bananaView.setVisibility(View.GONE);
     }
 
     private void setUndoButton() {
@@ -157,6 +169,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
         try {
             Log.d("dom test", "IME_ACTION_DONE");
+            setBanana();
             GameController.getInstance().playerVisit(input);
             adapter.notifyDataSetChanged(); //todo once turn is used by game controller as int, change this?
             if (input > 180) {
@@ -260,5 +273,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         int nightModeFlags = context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
         return nightModeFlags == Configuration.UI_MODE_NIGHT_YES;
     }
+
+
 
 }

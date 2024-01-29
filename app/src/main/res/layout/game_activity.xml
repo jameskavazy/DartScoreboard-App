@@ -159,4 +159,11 @@
 
     </FrameLayout>
 
+    <ImageView
+        android:id="@+id/banana_image"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        app:srcCompat="@drawable/banana" />
+
 </LinearLayout>

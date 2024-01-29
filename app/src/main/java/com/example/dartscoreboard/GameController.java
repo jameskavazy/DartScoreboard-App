@@ -1,7 +1,6 @@
 package com.example.dartscoreboard;
 
 import android.util.Log;
-import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.example.dartscoreboard.models.User;
@@ -304,7 +303,8 @@ public final class GameController {
         return Math.round(average * 10.0) / 10.0;
     }
 
-    public boolean isGuyPlaying(){
-        return getPlayersList().get(getTurnIndex()).isGuy;
+    public boolean bananaSplit(){
+        return getPlayersList().get(getTurnIndex()).isGuy
+                && getPlayersList().get(getTurnIndex()).getVisits() % 7 == 0;
     }
 }
