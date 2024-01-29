@@ -11,6 +11,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -50,7 +53,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private EditText inputScoreEditText;
     private TextView averageScoreTextView;
     private TextView visitsTextView;
-    private Button undoButton;
     private Button doneButton;
     private RecyclerAdapterGamePlayers adapter;
 
@@ -75,17 +77,20 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         bananaView = findViewById(R.id.banana_image);
         bananaView.setVisibility(View.GONE);
         toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         averageScoreTextView = findViewById(R.id.avg_text_view);
         visitsTextView = findViewById(R.id.visits_text_view);
         doneButton = findViewById(R.id.done_button);
         recyclerView = findViewById(R.id.player_info_recycler_view);
         inputScoreEditText = findViewById(R.id.inputUserNameEditText);
-        setUndoButton();
         doneButton.setOnClickListener(this);
         inputScoreEditText.setOnEditorActionListener((v, actionId, event) -> onScoreEntered());
         matchHistoryViewModel = new ViewModelProvider(this).get(MatchHistoryViewModel.class);
+        launchGameSetUp();
+    }
 
+    private void launchGameSetUp() {
         //-------------Set Title and GameSettings based on Extras------------------
         Intent intent = getIntent();
         Bundle arguments = getIntent().getExtras();
@@ -104,34 +109,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             // NEW GAME - (GameSettings are passed directly to controller) OR onCreate called again by .eg. orientation change (Controller already has relevant information)
             saveGameStateToDb();
         }
-
-
-
-    }
-
-    private void setBanana() {
-        if (GameController.getInstance().bananaSplit()) {
-            bananaView.setVisibility(View.VISIBLE);
-            bananaView.postDelayed(() -> {
-                bananaView.setVisibility(View.GONE);
-            },100);
-        } else bananaView.setVisibility(View.GONE);
-    }
-
-    private void setUndoButton() {
-        undoButton = new Button(new ContextThemeWrapper(getBaseContext(), R.style.Base_Theme_DartScoreboard));
-        undoButton.setOnClickListener(this);
-        Toolbar.LayoutParams undoV2Params  = new Toolbar.LayoutParams(200, 100, LinearLayout.TEXT_ALIGNMENT_GRAVITY);
-        undoV2Params.gravity = Gravity.END;
-        undoV2Params.setMarginEnd(50);
-
-
-        if (isNightMode(getApplicationContext())){
-            undoButton.setBackgroundColor(getColor(R.color.grey));
-        } else undoButton.setBackgroundColor(getColor(R.color.white));
-        undoButton.setTextColor(getColor(R.color.black));
-        undoButton.setText(R.string.undo);
-        toolbar.addView(undoButton, undoV2Params);
     }
 
     private void setAverageScoreTextView() {
@@ -147,7 +124,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private void setAdapter() {
         adapter = new RecyclerAdapterGamePlayers(GameController.getInstance().getPlayersList());
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext()){
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext()) {
             @Override
             public boolean canScrollVertically() {
                 return false;
@@ -187,6 +164,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             return true;
         }
     }
+
     private void saveGameStateToDb() {
         GameState gameState = getGameInfo();
 //      Create GameState object + attach the id for DB update
@@ -229,7 +207,36 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         // todo this would be nice as a switch
         int viewId = v.getId();
-        if (v == undoButton) {
+        if (viewId == R.id.done_button) {
+            Log.d("dom test", "Done Click");
+            onScoreEntered();
+        }
+    }
+
+
+    private GameState getGameInfo() {
+        return new GameState(
+                GameController.getInstance().getGameType(),
+                GameController.getInstance().getGameSettings(),
+                GameController.getInstance().getPlayersList(),
+                GameController.getInstance().getTurnIndex(),
+                GameController.getInstance().getTurnIndexLegs(),
+                GameController.getInstance().getTurnIndexSets(),
+                GameController.getInstance().getMatchStateStack());
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.match_menu, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(@androidx.annotation.NonNull MenuItem item) {
+        int menuItem = item.getItemId();
+        if (menuItem == R.id.undo_menu_button) {
             Log.d("dom test", "Undo Click");
 
             //Brings back text input if game was finished.
@@ -251,29 +258,16 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             GameState gameState = getGameInfo();
             gameState.setGameID(GameController.getInstance().getGameID());
             matchHistoryViewModel.update(gameState);
-        } else if (viewId == R.id.done_button) {
-            Log.d("dom test", "Done Click");
-            onScoreEntered();
         }
+        return super.onOptionsItemSelected(item);
     }
 
-
-    private GameState getGameInfo(){
-        return new GameState(
-                GameController.getInstance().getGameType(),
-                GameController.getInstance().getGameSettings(),
-                GameController.getInstance().getPlayersList(),
-                GameController.getInstance().getTurnIndex(),
-                GameController.getInstance().getTurnIndexLegs(),
-                GameController.getInstance().getTurnIndexSets(),
-                GameController.getInstance().getMatchStateStack());
+    private void setBanana() {
+        if (GameController.getInstance().bananaSplit()) {
+            bananaView.setVisibility(View.VISIBLE);
+            bananaView.postDelayed(() -> {
+                bananaView.setVisibility(View.GONE);
+            }, 200);
+        } else bananaView.setVisibility(View.GONE);
     }
-
-    public boolean isNightMode(Context context) {
-        int nightModeFlags = context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-        return nightModeFlags == Configuration.UI_MODE_NIGHT_YES;
-    }
-
-
-
 }

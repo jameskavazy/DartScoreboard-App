@@ -6,7 +6,8 @@
     android:layout_height="75dp"
     android:elevation="4dp"
     app:titleTextColor="@color/white"
+    android:paddingTop="8dp"
+    android:paddingEnd="8dp"
     style="@style/MyThemeOverlay_Toolbar"
     app:popupTheme="@style/Theme.AppCompat.DayNight.NoActionBar">
-
 </androidx.appcompat.widget.Toolbar>
