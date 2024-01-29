@@ -3,6 +3,10 @@ package com.example.dartscoreboard;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Canvas;
+import android.graphics.ColorFilter;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.DrawableWrapper;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -13,14 +17,18 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.IdRes;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -45,6 +53,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private Button undoButton;
     private Button doneButton;
     private RecyclerAdapterGamePlayers adapter;
+
+    private View bananaView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,10 +110,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         undoButton = new Button(new ContextThemeWrapper(getBaseContext(), R.style.Base_Theme_DartScoreboard));
         undoButton.setOnClickListener(this);
         Toolbar.LayoutParams undoV2Params  = new Toolbar.LayoutParams(200, 100, LinearLayout.TEXT_ALIGNMENT_GRAVITY);
-
         undoV2Params.gravity = Gravity.END;
         undoV2Params.setMarginEnd(50);
-//        undoButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.undo_icon,0,0,0);
+
+
         if (isNightMode(getApplicationContext())){
             undoButton.setBackgroundColor(getColor(R.color.grey));
         } else undoButton.setBackgroundColor(getColor(R.color.white));
@@ -234,6 +244,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+
     private GameState getGameInfo(){
         return new GameState(
                 GameController.getInstance().getGameType(),
@@ -249,4 +260,5 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         int nightModeFlags = context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
         return nightModeFlags == Configuration.UI_MODE_NIGHT_YES;
     }
+
 }

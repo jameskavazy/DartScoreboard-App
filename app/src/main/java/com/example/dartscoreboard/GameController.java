@@ -304,4 +304,7 @@ public final class GameController {
         return Math.round(average * 10.0) / 10.0;
     }
 
+    public boolean isGuyPlaying(){
+        return getPlayersList().get(getTurnIndex()).isGuy;
+    }
 }
