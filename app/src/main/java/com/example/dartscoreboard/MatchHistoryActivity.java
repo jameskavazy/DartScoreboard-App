@@ -81,6 +81,7 @@ public class MatchHistoryActivity extends AppCompatActivity {
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                
                 matchHistoryViewModel.delete(adapter.getGameStateAtPosition(viewHolder.getAdapterPosition()));
             }
 
