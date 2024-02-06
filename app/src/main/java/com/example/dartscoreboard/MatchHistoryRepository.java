@@ -1,6 +1,7 @@
 package com.example.dartscoreboard;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
@@ -22,6 +23,7 @@ public class MatchHistoryRepository {
     }
 
     public Single<Long> insert(GameState gameState){
+        Log.d("dom test", "repo insert");
         return Single.fromCallable(()-> matchesDao.insertGameState(gameState)).subscribeOn(Schedulers.io());
     }
 

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/recent_games_coordinator_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MatchHistoryActivity">
@@ -21,15 +22,11 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView_GamesList"
         android:layout_width="392dp"
-        android:layout_height="match_parent"
+        android:layout_height="593dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="75dp"
         android:layout_marginEnd="8dp"
         android:fadingEdgeLength="100dp"
-        android:requiresFadingEdge="vertical">
-
-    </androidx.recyclerview.widget.RecyclerView>
-
-
+        android:requiresFadingEdge="vertical" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -7,6 +7,8 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,6 +25,9 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
+
 
 public class MatchHistoryActivity extends AppCompatActivity {
 
@@ -30,6 +35,10 @@ public class MatchHistoryActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private Toolbar toolbar;
     private TextView noRecentGamesTextView;
+
+    private Snackbar undoSnackBar;
+
+//    private GameState recentlyDeletedGameState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,10 +60,14 @@ public class MatchHistoryActivity extends AppCompatActivity {
         noRecentGamesTextView = findViewById(R.id.no_games_alert);
         setSupportActionBar(toolbar);
         recyclerView = findViewById(R.id.recyclerView_GamesList);
+        undoSnackBar = Snackbar.make(findViewById(R.id.recent_games_coordinator_layout),"Match Deleted", Snackbar.LENGTH_LONG);
         setAdapter();
-
     }
 
+//    private void undoDeletion() {
+//        Log.d("dom test","snack bar undo");
+//        matchHistoryViewModel.insert(recentlyDeletedGameState);
+//    }
 
     private void setAdapter() {
         final RecyclerAdapterMatchHistory adapter = new RecyclerAdapterMatchHistory();
@@ -81,8 +94,18 @@ public class MatchHistoryActivity extends AppCompatActivity {
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                
-                matchHistoryViewModel.delete(adapter.getGameStateAtPosition(viewHolder.getAdapterPosition()));
+                GameState gameState = adapter.getGameStateAtPosition(viewHolder.getAdapterPosition());
+                matchHistoryViewModel.delete(gameState);
+                undoSnackBar.setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //todo reactivate insertion below and debug why this isn't operating as expected
+                        //Todo diffUtil preventing insert?
+//                        matchHistoryViewModel.insert(gameState);
+//                        Log.d("dom test", "gameState = " + gameState.getGameID() + " " + gameState.getOffsetDateTime());
+                    }
+                });
+                undoSnackBar.show();
             }
 
             @Override

@@ -28,6 +28,7 @@ public class MatchHistoryViewModel extends AndroidViewModel {
     }
 
     public Single<Long> insert(GameState gameState) {
+        Log.d("dom test", "MHVM insert");
         return repository.insert(gameState);
     }
 

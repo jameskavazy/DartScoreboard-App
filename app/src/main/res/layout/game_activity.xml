@@ -90,7 +90,7 @@
             android:hint="@string/enter_score"
             android:imeOptions="actionDone"
             android:inputType="number"
-            android:textSize="26sp"
+            android:textSize="20sp"
             android:theme="@style/Base.Theme.DartScoreboard" />
 
         <Button

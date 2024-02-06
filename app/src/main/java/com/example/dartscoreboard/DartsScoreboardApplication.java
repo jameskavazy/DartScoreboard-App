@@ -12,10 +12,6 @@ public class DartsScoreboardApplication extends Application {
         sApplication = this;
     }
 
-//    public static DartsScoreboardApplication getApplication() {
-//        return sApplication;
-//    }
-
     public static Context getContext() {
         return sApplication.getApplicationContext();
     }

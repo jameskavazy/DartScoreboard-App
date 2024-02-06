@@ -1,5 +1,6 @@
 package com.example.dartscoreboard;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,16 +26,18 @@ public class RecyclerAdapterMatchHistory extends ListAdapter<GameState, Recycler
     private static final DiffUtil.ItemCallback<GameState> DIFF_CALLBACK = new DiffUtil.ItemCallback<GameState>() {
         @Override
         public boolean areItemsTheSame(@NonNull GameState oldItem, @NonNull GameState newItem) {
+            Log.d("dom test","areItemsTheSame? Ids" + oldItem.getGameID() + newItem.getGameID());
             return oldItem.getGameID() == newItem.getGameID();
         }
 
         @Override
         public boolean areContentsTheSame(@NonNull GameState oldItem, @NonNull GameState newItem) {
-            return oldItem.getOffsetDateTime().equals(newItem.getOffsetDateTime());
+            Log.d("dom test","areContentsTheSame times -" + oldItem.getGameID() + " " + oldItem.getOffsetDateTime() + newItem.getGameID() + " " + newItem.getOffsetDateTime());
+            return oldItem.getOffsetDateTime().isEqual(newItem.getOffsetDateTime());
         }
-
-
     };
+
+
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
