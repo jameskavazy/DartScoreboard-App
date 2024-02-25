@@ -33,6 +33,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private Toolbar toolbar;
     private MatchHistoryViewModel matchHistoryViewModel;
+
+    private UserViewModel userViewModel;
     public static final String GAME_STATE_ID = "GAME_STATE_ID_KEY";
     public static final String MATCH_HISTORY_EXTRA_KEY = "OPEN_GAME_ACTIVITY_KEY";
     private RecyclerView recyclerView;
@@ -73,6 +75,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         doneButton.setOnClickListener(this);
         inputScoreEditText.setOnEditorActionListener((v, actionId, event) -> onScoreEntered());
         matchHistoryViewModel = new ViewModelProvider(this).get(MatchHistoryViewModel.class);
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         launchGameSetUp();
     }
 
@@ -134,6 +137,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             Log.d("dom test", "IME_ACTION_DONE");
             setBanana();
             GameController.getInstance().playerVisit(input);
+
             adapter.notifyDataSetChanged(); //todo once turn is used by game controller as int, change this?
             if (input > 180) {
                 Toast.makeText(GameActivity.this, "Invalid Score", Toast.LENGTH_SHORT).show();
@@ -186,6 +190,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             inputScoreEditText.setVisibility(View.GONE);
             doneButton.setVisibility(View.GONE);
             matchHistoryViewModel.deleteGameStateByID(GameController.getInstance().getGameID());
+            updateAllUsers();
         }
     }
 
@@ -224,7 +229,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         int menuItem = item.getItemId();
         if (menuItem == R.id.undo_menu_button) {
             Log.d("dom test", "Undo Click");
-
             //Brings back text input if game was finished.
             if (GameController.gameStateEnd) {
                 inputScoreEditText.setVisibility(View.VISIBLE);
@@ -233,6 +237,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 GameState gameState = getGameInfo();
                 gameState.setGameID(GameController.getInstance().getGameID());
                 matchHistoryViewModel.insert(gameState);
+                updateAllUsers();
             }
             try {
                 GameController.getInstance().undo(adapter);
@@ -248,8 +253,16 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         return super.onOptionsItemSelected(item);
     }
 
+    private void updateAllUsers() {
+        for (User user : GameController.getInstance().getPlayersList()){
+            userViewModel.updateUser(user);
+        }
+    }
+
     private void setBanana() {
         if (GameController.getInstance().bananaSplit()) {
+            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(recyclerView.getApplicationWindowToken(), 0);
             bananaView.setVisibility(View.VISIBLE);
             bananaView.postDelayed(() -> {
                 bananaView.setVisibility(View.GONE);

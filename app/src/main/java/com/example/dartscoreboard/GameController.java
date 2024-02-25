@@ -1,7 +1,10 @@
 package com.example.dartscoreboard;
 
+import android.app.NotificationManager;
 import android.util.Log;
 import android.widget.Toast;
+
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.dartscoreboard.models.User;
 
@@ -11,8 +14,8 @@ import java.util.Stack;
 
 public final class GameController {
 
-    private long gameID;
     public static GameController gameController;
+    private long gameID;
     public int turnIndex = 0;
     private int turnIndexLegs = 0;
     private int turnIndexSets = 0;
@@ -43,10 +46,21 @@ public final class GameController {
             // checks for valid score input
             User currentPlayer = playersList.get(turnIndex);
             int currentScore = currentPlayer.getPlayerScore();
+            setIsCheckoutFlag(currentPlayer, currentScore);
             currentPlayer.setPlayerScore(subtract(currentScore, scoreInt));
             incrementTurnIndex();
         }
         nextLeg();
+    }
+
+    private void setIsCheckoutFlag(User currentPlayer, int currentScore) {
+//       todo make this code below popup dialogue that asks how many attempts on double
+        currentPlayer.setCheckout((currentScore <= 170) &&
+                ((currentScore != 169) && (currentScore != 168) &&
+                        (currentScore != 166) && (currentScore != 165) &&
+                        (currentScore != 163) && (currentScore != 162) &&
+                        (currentScore != 159)));
+//        currentPlayer.setCheckout((currentScore == 50 || currentScore <= 40) && currentScore % 2 == 0);
     }
 
 
@@ -79,6 +93,13 @@ public final class GameController {
         if (currentTypedScore > 180) {
             return playerScore;
         }
+
+        if (currentPlayer.isCheckout()){
+            if (currentTypedScore == playerScore){
+                currentPlayer.incrementCheckoutMade();
+            } else currentPlayer.incrementCheckoutMissed();
+        }
+
         if (newScore > 1) {
             currentPlayer.addToPreviousScoresList(currentTypedScore);
             return newScore;
@@ -93,8 +114,16 @@ public final class GameController {
         }
     }
 
+    public void dartsThrownCO(){
+        User currentPlayer = getPlayersList().get(turnIndex);
+        if (currentPlayer.isCheckout()){
+            //todo alert dialog?
+        }
+    }
+
+
     public void saveForUndo() throws CloneNotSupportedException {
-        //Make a "deep copy" todo does casting them to a User lose that level of detail?
+        //Make a "deep copy" todo go back to serialization?
         ArrayList<User> playerListCopy =  new ArrayList<>();
         for (User user : getPlayersList()){
                 playerListCopy.add((User) user.clone());
@@ -261,6 +290,13 @@ public final class GameController {
     public void endGame() {
         //Clear down controller at end of game.
         gameStateEnd = true;
+        for (User user : getPlayersList()){
+            if  (getPlayersList().size() > 1) {
+                if (user.getPlayerScore() == 0) {
+                    user.incrementWins();
+                } else user.incrementLosses();
+            }
+        }
         clearTurnIndices();
         gameSettings.clear();
     }

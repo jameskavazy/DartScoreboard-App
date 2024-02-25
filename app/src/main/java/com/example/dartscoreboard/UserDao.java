@@ -33,4 +33,6 @@ public interface UserDao {
     @Query("SELECT * FROM user_table WHERE active = :active")
     LiveData<List<User>> getActiveUsers(boolean active);
 
+
+
 }

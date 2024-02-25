@@ -64,10 +64,6 @@ public class MatchHistoryActivity extends AppCompatActivity {
         setAdapter();
     }
 
-//    private void undoDeletion() {
-//        Log.d("dom test","snack bar undo");
-//        matchHistoryViewModel.insert(recentlyDeletedGameState);
-//    }
 
     private void setAdapter() {
         final RecyclerAdapterMatchHistory adapter = new RecyclerAdapterMatchHistory();

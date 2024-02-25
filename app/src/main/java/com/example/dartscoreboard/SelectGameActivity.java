@@ -219,10 +219,10 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         ThreeO("301", 301),
         SevenO("170", 170);
 
-        final String name;
-        final int startingScore;
+        public final String name;
+        public final int startingScore;
 
-        GameType(String name, int startingScore) {
+       GameType(String name, int startingScore) {
             this.name = name;
             this.startingScore = startingScore;
         }

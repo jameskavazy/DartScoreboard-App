@@ -23,7 +23,15 @@ public class User implements Serializable, Cloneable { //todo guy easter egg
     @Ignore
     protected int currentSets;
 
+    @Ignore
+    protected boolean isCheckout;
+
     public boolean isGuy;
+
+    public int checkoutMade;
+
+    public int checkoutMissed;
+
 
     public User(String username, boolean active) {
         this.username = username;
@@ -124,10 +132,6 @@ public class User implements Serializable, Cloneable { //todo guy easter egg
     private int losses;
 
 
-    public void setTotalMatches(int totalMatches) {
-        this.totalMatches = totalMatches;
-    }
-
     public void setNumberOf180s(int numberOf180s) {
         this.numberOf180s = numberOf180s;
     }
@@ -136,7 +140,7 @@ public class User implements Serializable, Cloneable { //todo guy easter egg
         this.numberOfDartsThrown = numberOfDartsThrown;
     }
 
-    private int totalMatches;
+
 
     public int getNumberOf180s() {
         return numberOf180s;
@@ -166,8 +170,16 @@ public class User implements Serializable, Cloneable { //todo guy easter egg
         return losses;
     }
 
+    public int getCheckoutMade(){
+        return checkoutMade;
+    }
+
+    public int getCheckoutMissed(){
+        return checkoutMissed;
+    }
+
     public int getWinRate(){
-        return (getWins() / getTotalMatches()) * 100;
+        return Math.round(((float) getWins() / getTotalMatches()) * 100);
     }
 
     public void incrementWins(){
@@ -178,8 +190,12 @@ public class User implements Serializable, Cloneable { //todo guy easter egg
        losses++;
     }
 
-    public void incrementMatches(){
-        totalMatches++;
+    public void incrementCheckoutMade(){
+        checkoutMade++;
+    }
+
+    public void incrementCheckoutMissed(){
+        checkoutMissed++;
     }
 
     public void increment180(){
@@ -197,7 +213,7 @@ public class User implements Serializable, Cloneable { //todo guy easter egg
     }
 
     public int getTotalMatches() {
-        return totalMatches;
+        return wins + losses;
     }
 
     public int getTotalScores(){
@@ -208,6 +224,14 @@ public class User implements Serializable, Cloneable { //todo guy easter egg
             } else return 0;
         }
         return totalScores;
+    }
+
+    public boolean isCheckout() {
+        return isCheckout;
+    }
+
+    public void setCheckout(boolean checkout) {
+        this.isCheckout = checkout;
     }
 
 
