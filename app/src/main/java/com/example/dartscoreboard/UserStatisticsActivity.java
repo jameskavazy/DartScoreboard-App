@@ -1,15 +1,18 @@
 package com.example.dartscoreboard;
 
+import android.os.Bundle;
+import android.widget.TextView;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
-import android.os.Bundle;
-import android.widget.TextView;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.dartscoreboard.models.User;
 
 public class UserStatisticsActivity extends AppCompatActivity {
+
+    private UserStatsViewModel userStatsViewModel;
 
     private Toolbar toolbar;
 
@@ -19,7 +22,7 @@ public class UserStatisticsActivity extends AppCompatActivity {
     private TextView winRateTextView;
     private TextView checkoutRateTextView;
 
-    private User user;
+//    private User user;
 
 
     @Override
@@ -32,33 +35,24 @@ public class UserStatisticsActivity extends AppCompatActivity {
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle(getUser().getUsername() + " Stats");
+        toolbar.setTitle(userStatsViewModel.getUser().getUsername() + " Stats");
     }
     private void setupUI(){
         setContentView(R.layout.activity_user_statistics);
+        userStatsViewModel = new ViewModelProvider(this).get(UserStatsViewModel.class);
         Bundle arguments = getIntent().getExtras();
         if (arguments != null){
-            setUser((User) arguments.getSerializable(StatisticsActivity.userStatKey));
+            userStatsViewModel.setUser((User) arguments.getSerializable(StatisticsActivity.userStatKey));
             winsTextView  = findViewById(R.id.winsCount);
             lossesTextView = findViewById(R.id.lossesCount);
             winRateTextView = findViewById(R.id.winRateCount);
             checkoutRateTextView = findViewById(R.id.checkoutRate);
-            assert user != null;
-            winsTextView.setText(String.valueOf(getUser().getWins()));
-            lossesTextView.setText(String.valueOf(getUser().getLosses()));
-            winRateTextView.setText(getUser().getWinRate() + "%");
-            checkoutRateTextView.setText(getCheckoutRate() + "%");
+            winsTextView.setText(String.valueOf(userStatsViewModel.getUser().getWins()));
+            lossesTextView.setText(String.valueOf(userStatsViewModel.getUser().getLosses()));
+            winRateTextView.setText(userStatsViewModel.getUser().getWinRate() + "%");
+            checkoutRateTextView.setText(userStatsViewModel.getCheckoutRate() + "%");
         }
     }
-    private void setUser(User user) {
-        this.user = user;
-    }
 
-    private User getUser(){
-        return user;
-    }
 
-    private int getCheckoutRate(){
-        return Math.round((float) getUser().getCheckoutMade() / (getUser().getCheckoutMade() + getUser().getCheckoutMissed()) * 100);
-    }
 }
