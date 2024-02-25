@@ -1,10 +1,7 @@
 package com.example.dartscoreboard;
 
-import android.app.NotificationManager;
 import android.util.Log;
 import android.widget.Toast;
-
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.dartscoreboard.models.User;
 
@@ -22,7 +19,7 @@ public final class GameController {
 
     private List<User> playersList;
 
-    private SelectGameActivity.GameType gameType;
+    private GameType gameType;
     public static boolean gameStateEnd;
 
     private Stack<MatchState> matchStateStack = new Stack<>();
@@ -237,11 +234,11 @@ public final class GameController {
         return gameSettings;
     }
 
-    public void setGameType(SelectGameActivity.GameType gameType) {
+    public void setGameType(GameType gameType) {
         this.gameType = gameType;
     }
 
-    public SelectGameActivity.GameType getGameType() {
+    public GameType getGameType() {
         return gameType;
     }
 
@@ -303,7 +300,7 @@ public final class GameController {
 
 
     public void initialiseGameController(
-            SelectGameActivity.GameType gameType, GameSettings gameSettings, List<User> playersList, int turnIndex,
+            GameType gameType, GameSettings gameSettings, List<User> playersList, int turnIndex,
             int turnLeadForLegs, int turnLeadForSets, Stack<MatchState> matchStateStack, long gameID) {
         //boolean flag to tell controller whether we need to set starting scores or not.
         gameStateEnd = false;

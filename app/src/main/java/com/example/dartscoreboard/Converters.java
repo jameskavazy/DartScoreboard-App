@@ -2,7 +2,6 @@ package com.example.dartscoreboard;
 
 import androidx.room.TypeConverter;
 
-import com.example.dartscoreboard.models.GuyUser;
 import com.example.dartscoreboard.models.User;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -10,7 +9,6 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
@@ -40,10 +38,6 @@ public class Converters {
 
     //type converter using clone to help keep Guy User intact.
 
-
-
-
-
     @TypeConverter
     public GameSettings gameSettingsFromJsonString(String gameSettingsJsonString){
         return new Gson().fromJson(gameSettingsJsonString, GameSettings.class);
@@ -54,12 +48,12 @@ public class Converters {
     }
 
     @TypeConverter
-    public SelectGameActivity.GameType gameTypeFromString (String gameTypeJsonString){
-        return new Gson().fromJson(gameTypeJsonString, SelectGameActivity.GameType.class);
+    public GameType gameTypeFromString (String gameTypeJsonString){
+        return new Gson().fromJson(gameTypeJsonString, GameType.class);
     }
 
     @TypeConverter
-    public String gameTypeToString (SelectGameActivity.GameType gameType){
+    public String gameTypeToString (GameType gameType){
         return new Gson().toJson(gameType);
     }
 
