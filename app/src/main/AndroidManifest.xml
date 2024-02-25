@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
     <application
-        android:name=".DartsScoreboardApplication"
+        android:name=".Application.DartsScoreboardApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -16,28 +16,28 @@
         android:theme="@style/Theme.DartScoreboard"
         tools:targetApi="31">
         <activity
-            android:name=".UserStatisticsActivity"
+            android:name=".Statistics.UserStatisticsActivity"
             android:exported="false" />
         <activity
-            android:name=".StatisticsActivity"
+            android:name=".Statistics.StatisticsActivity"
             android:exported="false"
             android:label="@string/title_activity_statistics"
             android:theme="@style/Theme.DartScoreboard" />
         <activity
-            android:name=".MatchHistoryActivity"
+            android:name=".MatchHistory.MatchHistoryActivity"
             android:exported="false" />
         <activity
-            android:name=".CreateUserActivity"
+            android:name=".User.CreateUserActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".PlayerSelectActivity"
+            android:name=".SetupGame.PlayerSelectActivity"
             android:exported="false" />
         <activity
-            android:name=".UsersActivity"
+            android:name=".User.UsersActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".Main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,11 +46,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".GameActivity"
+            android:name=".Game.GameActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".SelectGameActivity"
+            android:name=".SetupGame.SelectGameActivity"
             android:exported="true" />
     </application>
 
