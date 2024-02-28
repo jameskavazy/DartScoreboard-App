@@ -4,6 +4,8 @@
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
+
+
     <application
         android:name=".Application.DartsScoreboardApplication"
         android:allowBackup="true"
@@ -37,7 +39,7 @@
             android:name=".User.UsersActivity"
             android:exported="false" />
         <activity
-            android:name=".Main.MainActivity"
+            android:name=".MainActivity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -52,6 +54,8 @@
         <activity
             android:name=".SetupGame.SelectGameActivity"
             android:exported="true" />
+
+        <receiver android:name=".NotificationService.ReminderNotificationReceiver"/>
     </application>
 
 </manifest>

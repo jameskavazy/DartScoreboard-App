@@ -1,5 +1,8 @@
-package com.example.dartscoreboard.Main;
+package com.example.dartscoreboard.MainActivity;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,10 +14,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.dartscoreboard.MatchHistory.MatchHistoryActivity;
+import com.example.dartscoreboard.NotificationService.ReminderNotificationReceiver;
 import com.example.dartscoreboard.R;
 import com.example.dartscoreboard.SetupGame.SelectGameActivity;
 import com.example.dartscoreboard.Statistics.StatisticsActivity;
 import com.example.dartscoreboard.User.UsersActivity;
+
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -22,16 +28,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button usersButton;
     private Button statsButton;
     private Button continueButton;
-
     private Toolbar toolbar;
 
+    private Calendar calendar;
+
+    private AlarmManager alarmManager;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("dom test", "newHomeActivityonCreate");
+        Log.d("dom test", "MainActivityOnCreate");
         super.onCreate(savedInstanceState);
         setupUI();
+        setReminderNotificationTime();
     }
 
     @Override
@@ -110,5 +119,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Intent intent = new Intent(this, MatchHistoryActivity.class);
         startActivity(intent);
     }
+
+    public void setReminderNotificationTime(){
+        calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY,20);
+        calendar.set(Calendar.MINUTE, 15);
+        calendar.set(Calendar.SECOND,0);
+        calendar.set(Calendar.MILLISECOND,0);
+
+        alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, ReminderNotificationReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this,1,intent, PendingIntent.FLAG_IMMUTABLE);
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY,pendingIntent);
+    }
+
 
 }
