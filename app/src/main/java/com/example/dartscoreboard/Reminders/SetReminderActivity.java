@@ -16,7 +16,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.dartscoreboard.NotificationService.ReminderNotificationReceiver;
 import com.example.dartscoreboard.R;
 import com.example.dartscoreboard.Utils.PreferencesController;
 
@@ -54,7 +53,9 @@ public class SetReminderActivity extends AppCompatActivity implements View.OnCli
         Button cancelReminderButton = findViewById(R.id.cancel_reminder_button);
         cancelReminderButton.setOnClickListener(this);
         setTimeButton.setOnClickListener(this);
-        timeOfReminderTextView.setText(PreferencesController.getInstance().getReminderTime());
+        if (PreferencesController.getInstance().getReminderTime() == null){
+            clearReminderTimeTextView();
+        } else timeOfReminderTextView.setText(PreferencesController.getInstance().getReminderTime());
     }
 
     @Override
@@ -78,9 +79,13 @@ public class SetReminderActivity extends AppCompatActivity implements View.OnCli
     private void cancelReminder() {
         if (alarmManager != null){
             alarmManager.cancel(PendingIntent.getBroadcast(getApplicationContext(),1,new Intent(), PendingIntent.FLAG_IMMUTABLE));
-            timeOfReminderTextView.setText("--:--");
+            clearReminderTimeTextView();
             PreferencesController.getInstance().clearReminderTime();
         }
+    }
+
+    private void clearReminderTimeTextView() {
+        timeOfReminderTextView.setText("--:--");
     }
 
     private void openTimeDialog() {
@@ -96,7 +101,6 @@ public class SetReminderActivity extends AppCompatActivity implements View.OnCli
             timePicker.set(Calendar.MINUTE, minute);
             timePicker.set(Calendar.SECOND,0);
             timePicker.set(Calendar.MILLISECOND,0);
-
 
             receiverIntent = new Intent(getApplicationContext(), ReminderNotificationReceiver.class);
             pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),1,receiverIntent, PendingIntent.FLAG_IMMUTABLE);

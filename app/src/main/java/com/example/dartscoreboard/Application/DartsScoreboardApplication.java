@@ -1,6 +1,6 @@
 package com.example.dartscoreboard.Application;
 
-import static com.example.dartscoreboard.NotificationService.ReminderNotificationService.reminderChannel;
+import static com.example.dartscoreboard.Reminders.ReminderNotificationService.reminderChannel;
 
 import android.app.Application;
 import android.app.NotificationChannel;

@@ -1,4 +1,4 @@
-package com.example.dartscoreboard.NotificationService;
+package com.example.dartscoreboard.Reminders;
 
 import android.Manifest;
 import android.app.PendingIntent;

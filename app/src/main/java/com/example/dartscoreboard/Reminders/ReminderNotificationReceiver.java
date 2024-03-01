@@ -1,4 +1,4 @@
-package com.example.dartscoreboard.NotificationService;
+package com.example.dartscoreboard.Reminders;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
