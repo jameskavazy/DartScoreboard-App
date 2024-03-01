@@ -10,6 +10,7 @@ import com.example.dartscoreboard.Application.DartsScoreboardApplication;
 public final class PreferencesController {
 
     public static final String GAME_SELECT = "GAME_SELECT";
+    public static final String REMINDER_TIME = "REMINDER_TIME";
     private static PreferencesController preferenceController;
 
     private PreferencesController() {
@@ -31,6 +32,19 @@ public final class PreferencesController {
 
     public void clearSelectedGame(){
         getSharedPreferences().edit().remove(GAME_SELECT).apply();
+    }
+
+
+    public void saveReminderTime(String time){
+        getSharedPreferences().edit().putString(REMINDER_TIME, time).apply();
+    }
+
+    public String getReminderTime(){
+        return getSharedPreferences().getString(REMINDER_TIME,null);
+    }
+
+    public void clearReminderTime(){
+        getSharedPreferences().edit().remove(REMINDER_TIME).apply();
     }
 
     private static SharedPreferences getSharedPreferences() {

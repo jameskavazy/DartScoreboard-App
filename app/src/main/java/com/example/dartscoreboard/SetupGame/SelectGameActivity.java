@@ -65,7 +65,7 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
 
     private void setupUI() {
         Log.d("dom test", "setupUI");
-        setContentView(R.layout.select_game_activity);
+        setContentView(R.layout.activity_select_game);
         Button startGameBtn = findViewById(R.id.gameStartButton);
         Button randomisePlayersBtn = findViewById(R.id.randomise_players_button);
         Button clearPlayersBtn = findViewById(R.id.remove_players_button);

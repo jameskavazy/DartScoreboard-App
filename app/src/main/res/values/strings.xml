@@ -77,5 +77,8 @@
     <string name="no_recent_games_alert">Looks like there\'s no recent games. Your recent ongoing matches will show here.</string>
     <string name="enter">ENTER</string>
     <string name="enter_score">Enter Score</string>
+    <string name="training_reminders">Training Reminders</string>
+    <string name="reminder_hint">Set a training reminder. Practicing frequently and often helps you to develop a routine and helps you to improve.</string>
+    <string name="set_time">Set Time</string>
 
 </resources>

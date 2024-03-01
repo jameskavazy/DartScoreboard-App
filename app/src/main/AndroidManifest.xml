@@ -2,9 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
-
-
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
 
     <application
         android:name=".Application.DartsScoreboardApplication"
@@ -17,6 +17,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DartScoreboard"
         tools:targetApi="31">
+        <activity
+            android:name=".Reminders.SetReminderActivity"
+            android:exported="false" />
         <activity
             android:name=".Statistics.UserStatisticsActivity"
             android:exported="false" />
@@ -55,7 +58,7 @@
             android:name=".SetupGame.SelectGameActivity"
             android:exported="true" />
 
-        <receiver android:name=".NotificationService.ReminderNotificationReceiver"/>
+        <receiver android:name=".NotificationService.ReminderNotificationReceiver" />
     </application>
 
 </manifest>
