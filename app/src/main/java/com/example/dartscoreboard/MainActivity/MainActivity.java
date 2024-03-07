@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.dartscoreboard.LiveMatches.LiveMatchesActivity;
 import com.example.dartscoreboard.MatchHistory.MatchHistoryActivity;
 import com.example.dartscoreboard.R;
 import com.example.dartscoreboard.Reminders.SetReminderActivity;
@@ -26,13 +27,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button continueButton;
     private Toolbar toolbar;
 
+    private Button liveProMatchesButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("dom test", "MainActivityOnCreate");
         super.onCreate(savedInstanceState);
         setupUI();
-        setReminderNotificationTime();
     }
 
     @Override
@@ -49,11 +50,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         continueButton = findViewById(R.id.continueButton);
         statsButton = findViewById(R.id.statsButton);
         trainingReminderButton = findViewById(R.id.trainingRemindersButton);
+        liveProMatchesButton = findViewById(R.id.live_pro_matches_button);
         statsButton.setOnClickListener(this);
         newGameButton.setOnClickListener(this);
         usersButton.setOnClickListener(this);
         continueButton.setOnClickListener(this);
         trainingReminderButton.setOnClickListener(this);
+        liveProMatchesButton.setOnClickListener(this);
         setContinueBtnVisibility();
     }
 
@@ -78,7 +81,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             onStatsButtonClicked();
         } else if (viewId == R.id.trainingRemindersButton){
             onTrainingReminderClicked();
+        } else if (viewId == R.id.live_pro_matches_button){
+            onLiveProMatchesButtonClicked();
         }
+    }
+
+    private void onLiveProMatchesButtonClicked() {
+        openLiveMatchesActivity();
+    }
+
+    private void openLiveMatchesActivity() {
+        Intent intent = new Intent(this, LiveMatchesActivity.class);
+        startActivity(intent);
     }
 
     private void onStatsButtonClicked() {
@@ -129,16 +143,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Intent intent = new Intent(this, SetReminderActivity.class);
         startActivity(intent);
     }
-
-    public void setReminderNotificationTime(){
-
-
-
-
-        //This one definitely works:
-//        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
-    }
-
-
-
 }

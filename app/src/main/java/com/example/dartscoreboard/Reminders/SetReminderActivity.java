@@ -105,6 +105,8 @@ public class SetReminderActivity extends AppCompatActivity implements View.OnCli
             receiverIntent = new Intent(getApplicationContext(), ReminderNotificationReceiver.class);
             pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),1,receiverIntent, PendingIntent.FLAG_IMMUTABLE);
             alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, timePicker.getTimeInMillis(),AlarmManager.INTERVAL_DAY, pendingIntent);
+            // TODO: 01/03/2024 Is there a way to reset up an exactAlarm ? So that when the exact goes off we can get another?
+            //  As there is no exactRepeating that exists.
             reminderViewModel.setHourOfDaySelected(hourOfDay);
             reminderViewModel.setMinuteOfDaySelected(minute);
             timeOfReminderTextView.setText(hourOfDay+":"+minute);

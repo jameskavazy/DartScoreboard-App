@@ -65,6 +65,13 @@
             android:layout_marginTop="20dp"
             android:text="@string/training_reminders" />
 
+        <Button
+            android:id="@+id/live_pro_matches_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/live_pro_matches"/>
+
 
     </LinearLayout>
 

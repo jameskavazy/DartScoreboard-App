@@ -16,7 +16,7 @@ import com.example.dartscoreboard.SetupGame.SelectGameActivity;
 
 public class ReminderNotificationService {
 
-    private Context context;
+    private final Context context;
 
     public static final String reminderChannel = "REMINDER_CHANNEL";
 
@@ -55,6 +55,7 @@ public class ReminderNotificationService {
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
+
             return;
         }
         notificationManager.notify(1, notification.build());
