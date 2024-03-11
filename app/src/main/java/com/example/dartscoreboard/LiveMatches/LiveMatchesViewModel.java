@@ -7,7 +7,10 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -28,36 +31,35 @@ public class LiveMatchesViewModel extends AndroidViewModel {
         return matchesResponseList;
     }
 
-//    public void setMatchList(MutableLiveData<List<MatchesResponse>> matchList) {
-//        this.matchList = matchList;
-//    }
+    public void getDataFromApi(String dateString){
+        if (dateString == null){
+            Calendar calendar = Calendar.getInstance();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            dateString = simpleDateFormat.format(calendar.getTime());
+        }
 
-
-
-    public void getDataFromApi(){
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://darts-devs.p.rapidapi.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        JsonPlaceHolderApi jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
-        Call<List<MatchesResponse>> call = jsonPlaceHolderApi.getPosts();
+        MatchesApi matchesApi = retrofit.create(MatchesApi.class);
+        Call<List<MatchesResponse>> call = matchesApi.getMatchResponse(0,50,"eq."+dateString,"en");
         call.enqueue(new Callback<List<MatchesResponse>>() {
+            //todo pagination?
             @Override
             public void onResponse(@NonNull Call<List<MatchesResponse>> call, @NonNull Response<List<MatchesResponse>> response) {
                 if (!response.isSuccessful()){
                     Log.d("dom test", String.valueOf(response.code()));
                     return;
                 }
-//                assert response.body() != null;
                 matchesResponseList.postValue(response.body());
             }
-
             @Override
             public void onFailure(@NonNull Call<List<MatchesResponse>> call, @NonNull Throwable t) {
                 Log.d("dom test", "onFailure" + Objects.requireNonNull(t.getMessage()));
             }
         });
-        ///matches-by-date?offset=0&limit=50&date=eq.2024-03-03&lang=en
     }
+
 }

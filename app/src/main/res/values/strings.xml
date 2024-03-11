@@ -81,5 +81,6 @@
     <string name="reminder_hint">Set a training reminder. Practicing frequently and often helps you to develop a routine and helps you to improve.</string>
     <string name="set_time">Set Time</string>
     <string name="live_pro_matches">Live Pro Matches</string>
+    <string name="choose_date">Choose Date</string>
 
 </resources>
