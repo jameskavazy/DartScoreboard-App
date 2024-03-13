@@ -2,6 +2,7 @@ package com.example.dartscoreboard.LiveMatches;
 
 import android.app.Application;
 import android.util.Log;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -31,7 +32,9 @@ public class LiveMatchesViewModel extends AndroidViewModel {
         return matchesResponseList;
     }
 
-    public void getDataFromApi(String dateString){
+    public void getDataFromApi(String dateString, View view){
+
+
         if (dateString == null){
             Calendar calendar = Calendar.getInstance();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -46,6 +49,7 @@ public class LiveMatchesViewModel extends AndroidViewModel {
         MatchesApi matchesApi = retrofit.create(MatchesApi.class);
         Call<List<MatchesResponse>> call = matchesApi.getMatchResponse(0,50,"eq."+dateString,"en");
         call.enqueue(new Callback<List<MatchesResponse>>() {
+
             //todo pagination?
             @Override
             public void onResponse(@NonNull Call<List<MatchesResponse>> call, @NonNull Response<List<MatchesResponse>> response) {
@@ -54,6 +58,8 @@ public class LiveMatchesViewModel extends AndroidViewModel {
                     return;
                 }
                 matchesResponseList.postValue(response.body());
+//                ProgressBar progressBar = view.findViewById(R.id.progressBar);
+                view.setVisibility(View.GONE);
             }
             @Override
             public void onFailure(@NonNull Call<List<MatchesResponse>> call, @NonNull Throwable t) {

@@ -8,6 +8,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -32,6 +33,8 @@ public class LiveMatchesActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private  LiveMatchesViewModel liveMatchesViewModel;
 
+    private ProgressBar progressBar;
+
     /*
      TODO: 11/03/2024 Add a Textview, possibly a scrollable one that displays currently selected date.
       Calendar picker should open on this date.
@@ -44,7 +47,8 @@ public class LiveMatchesActivity extends AppCompatActivity {
         setupUI();
         setAdapter();
         liveMatchesViewModel = new ViewModelProvider(this).get(LiveMatchesViewModel.class);
-        liveMatchesViewModel.getDataFromApi(null);
+        progressBar.setVisibility(View.VISIBLE);
+        liveMatchesViewModel.getDataFromApi(null,progressBar);
         liveMatchesViewModel.getMatchesResponseList().observe(this, new Observer<List<MatchesResponse>>() {
             @Override
             public void onChanged(List<MatchesResponse> matchesResponseList) {
@@ -68,6 +72,7 @@ public class LiveMatchesActivity extends AppCompatActivity {
 
     private void setupUI(){
         setContentView(R.layout.activity_live_matches);
+        progressBar = findViewById(R.id.progressBar);
         recyclerView = findViewById(R.id.live_matches_recycler_view);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -111,7 +116,7 @@ public class LiveMatchesActivity extends AppCompatActivity {
 
         String dateString = year + "-" + monthString + "-" + dayOfMonthString;
         Log.d("dom test", dateString);
-        liveMatchesViewModel.getDataFromApi(dateString);
+        liveMatchesViewModel.getDataFromApi(dateString,progressBar);
     }
 
     private void setAdapter(){
