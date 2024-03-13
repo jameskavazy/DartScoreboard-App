@@ -21,7 +21,7 @@ import com.example.dartscoreboard.Utils.PreferencesController;
 
 import java.util.Calendar;
 
-public class SetReminderActivity extends AppCompatActivity implements View.OnClickListener {
+public class ReminderActivity extends AppCompatActivity implements View.OnClickListener {
 
     private AlarmManager alarmManager;
 
@@ -92,9 +92,6 @@ public class SetReminderActivity extends AppCompatActivity implements View.OnCli
         TextClock textClock = new TextClock(this);
         Calendar calendar = Calendar.getInstance();
 
-        // TODO: 01/03/2024 Make reminder work between boots
-        // TODO: 01/03/2024 Set TextView to the current time of the reminder alarm
-
         TimePickerDialog timePickerDialog = new TimePickerDialog(this, (view, hourOfDay, minute) -> {
             Calendar timePicker = Calendar.getInstance();
             timePicker.set(Calendar.HOUR_OF_DAY,hourOfDay);
@@ -105,8 +102,6 @@ public class SetReminderActivity extends AppCompatActivity implements View.OnCli
             receiverIntent = new Intent(getApplicationContext(), ReminderNotificationReceiver.class);
             pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),1,receiverIntent, PendingIntent.FLAG_IMMUTABLE);
             alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, timePicker.getTimeInMillis(),AlarmManager.INTERVAL_DAY, pendingIntent);
-            // TODO: 01/03/2024 Is there a way to reset up an exactAlarm ? So that when the exact goes off we can get another?
-            //  As there is no exactRepeating that exists.
             reminderViewModel.setHourOfDaySelected(hourOfDay);
             reminderViewModel.setMinuteOfDaySelected(minute);
             timeOfReminderTextView.setText(hourOfDay+":"+minute);

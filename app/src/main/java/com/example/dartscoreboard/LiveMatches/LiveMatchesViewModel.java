@@ -61,5 +61,4 @@ public class LiveMatchesViewModel extends AndroidViewModel {
             }
         });
     }
-
 }

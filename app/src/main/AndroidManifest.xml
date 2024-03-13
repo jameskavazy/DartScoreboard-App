@@ -22,7 +22,7 @@
             android:name=".LiveMatches.LiveMatchesActivity"
             android:exported="false" />
         <activity
-            android:name=".Reminders.SetReminderActivity"
+            android:name=".Reminders.ReminderActivity"
             android:exported="false" />
         <activity
             android:name=".Statistics.UserStatisticsActivity"

@@ -13,7 +13,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.example.dartscoreboard.LiveMatches.LiveMatchesActivity;
 import com.example.dartscoreboard.MatchHistory.MatchHistoryActivity;
 import com.example.dartscoreboard.R;
-import com.example.dartscoreboard.Reminders.SetReminderActivity;
+import com.example.dartscoreboard.Reminders.ReminderActivity;
 import com.example.dartscoreboard.SetupGame.SelectGameActivity;
 import com.example.dartscoreboard.Statistics.StatisticsActivity;
 import com.example.dartscoreboard.User.UsersActivity;
@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void openTrainingReminderActivity() {
-        Intent intent = new Intent(this, SetReminderActivity.class);
+        Intent intent = new Intent(this, ReminderActivity.class);
         startActivity(intent);
     }
 }
