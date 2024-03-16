@@ -1,5 +1,7 @@
 package com.example.dartscoreboard.LiveMatches;
 
+import static com.example.dartscoreboard.LiveMatches.LiveProMatchesActivity.DATE_TODAY;
+
 import android.app.Application;
 import android.util.Log;
 import android.view.View;
@@ -38,7 +40,7 @@ public class LiveProMatchesViewModel extends AndroidViewModel {
     public void getDataFromApi(String dateString, View view){
 
 
-        if (dateString == null){
+        if (Objects.equals(dateString, DATE_TODAY)){
             Calendar calendar = Calendar.getInstance();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             dateString = simpleDateFormat.format(calendar.getTime());

@@ -32,6 +32,8 @@ import io.reactivex.rxjava3.disposables.Disposable;
 
 public class LiveProMatchesActivity extends AppCompatActivity {
 
+    public static final String DATE_TODAY = "TODAY";
+
     private RecyclerView recyclerView;
     private RecyclerAdapterLiveProMatches adapter;
     private Toolbar toolbar;
@@ -72,7 +74,7 @@ public class LiveProMatchesActivity extends AppCompatActivity {
                     adapter.setMatchesList(matches);
                 } else {
                     progressBar.setVisibility(View.VISIBLE);
-                    liveProMatchesViewModel.getDataFromApi(null, progressBar); //todo don't pass a null string isn't clear, pass a STATIC string
+                    liveProMatchesViewModel.getDataFromApi(DATE_TODAY, progressBar);
                     //getMatchReponse on mainthread because must observe the live data
                     Handler handler = new Handler(Looper.getMainLooper());
                     handler.post(() -> getMatchesResponse());
