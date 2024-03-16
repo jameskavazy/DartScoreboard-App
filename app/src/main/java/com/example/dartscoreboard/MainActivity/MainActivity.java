@@ -10,7 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.example.dartscoreboard.LiveMatches.LiveMatchesActivity;
+import com.example.dartscoreboard.LiveMatches.LiveProMatchesActivity;
 import com.example.dartscoreboard.MatchHistory.MatchHistoryActivity;
 import com.example.dartscoreboard.R;
 import com.example.dartscoreboard.Reminders.ReminderActivity;
@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void openLiveMatchesActivity() {
-        Intent intent = new Intent(this, LiveMatchesActivity.class);
+        Intent intent = new Intent(this, LiveProMatchesActivity.class);
         startActivity(intent);
     }
 

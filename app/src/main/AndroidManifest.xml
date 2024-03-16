@@ -19,7 +19,7 @@
         android:theme="@style/Theme.DartScoreboard"
         tools:targetApi="31">
         <activity
-            android:name=".LiveMatches.LiveMatchesActivity"
+            android:name=".LiveMatches.LiveProMatchesActivity"
             android:exported="false" />
         <activity
             android:name=".Reminders.ReminderActivity"

@@ -1,7 +1,12 @@
 package com.example.dartscoreboard.LiveMatches;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity (tableName = "pro_match_cache")
 public class Match {
 
+    @PrimaryKey
     private int id;
     private String name;
     private String status;
@@ -121,6 +126,102 @@ public class Match {
 
     public int getHome_team_period_1_score() {
         return home_team_period_1_score;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public void setLeague_id(int league_id) {
+        this.league_id = league_id;
+    }
+
+    public void setSeason_id(int season_id) {
+        this.season_id = season_id;
+    }
+
+    public void setStart_time(String start_time) {
+        this.start_time = start_time;
+    }
+
+    public void setLeague_name(String league_name) {
+        this.league_name = league_name;
+    }
+
+    public void setSeason_name(String season_name) {
+        this.season_name = season_name;
+    }
+
+    public void setAway_team_id(int away_team_id) {
+        this.away_team_id = away_team_id;
+    }
+
+    public void setHome_team_id(int home_team_id) {
+        this.home_team_id = home_team_id;
+    }
+
+    public void setStatus_reason(String status_reason) {
+        this.status_reason = status_reason;
+    }
+
+    public void setTournament_id(int tournament_id) {
+        this.tournament_id = tournament_id;
+    }
+
+    public void setAway_team_name(String away_team_name) {
+        this.away_team_name = away_team_name;
+    }
+
+    public void setHome_team_name(String home_team_name) {
+        this.home_team_name = home_team_name;
+    }
+
+    public void setAway_team_score(int away_team_score) {
+        this.away_team_score = away_team_score;
+    }
+
+    public void setHome_team_score(int home_team_score) {
+        this.home_team_score = home_team_score;
+    }
+
+    public void setTournament_name(String tournament_name) {
+        this.tournament_name = tournament_name;
+    }
+
+    public void setLeague_hash_image(String league_hash_image) {
+        this.league_hash_image = league_hash_image;
+    }
+
+    public void setAway_team_hash_image(String away_team_hash_image) {
+        this.away_team_hash_image = away_team_hash_image;
+    }
+
+    public void setHome_team_hash_image(String home_team_hash_image) {
+        this.home_team_hash_image = home_team_hash_image;
+    }
+
+    public void setTournament_importance(int tournament_importance) {
+        this.tournament_importance = tournament_importance;
+    }
+
+    public void setAway_team_period_1_score(int away_team_period_1_score) {
+        this.away_team_period_1_score = away_team_period_1_score;
+    }
+
+    public void setHome_team_period_1_score(int home_team_period_1_score) {
+        this.home_team_period_1_score = home_team_period_1_score;
     }
 }
 

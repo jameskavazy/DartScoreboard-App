@@ -159,6 +159,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void saveGameStateToDb() {
+        // TODO: 15/03/2024 Move to GameController
         GameState gameState = getGameInfo();
 //      Create GameState object + attach the id for DB update
         if (GameController.getInstance().getGameID() != 0) {
@@ -179,10 +180,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
                 @Override
                 public void onError(@NonNull Throwable e) {
-
                 }
             });
-
         }
     }
 

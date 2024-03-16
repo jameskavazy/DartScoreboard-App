@@ -14,14 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class RecyclerAdapterLiveMatches extends RecyclerView.Adapter<RecyclerAdapterLiveMatches.MatchViewHolder> {
-
-
-//    private List<MatchesResponse> matchesResponseList = new ArrayList<>();
+public class RecyclerAdapterLiveProMatches extends RecyclerView.Adapter<RecyclerAdapterLiveProMatches.MatchViewHolder> {
 
     private List<Match> matchList = new ArrayList<>();
 
-    public RecyclerAdapterLiveMatches(){
+    public RecyclerAdapterLiveProMatches(){
     }
 
     public class MatchViewHolder extends RecyclerView.ViewHolder {
@@ -62,7 +59,7 @@ public class RecyclerAdapterLiveMatches extends RecyclerView.Adapter<RecyclerAda
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerAdapterLiveMatches.MatchViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerAdapterLiveProMatches.MatchViewHolder holder, int position) {
         Match match = matchList.get(position);
         int home_score = match.getHome_team_score();
         int away_score = match.getAway_team_score();

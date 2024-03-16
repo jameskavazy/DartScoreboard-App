@@ -14,18 +14,21 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+import io.reactivex.rxjava3.core.Single;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class LiveMatchesViewModel extends AndroidViewModel {
+public class LiveProMatchesViewModel extends AndroidViewModel {
 
+    private LiveProMatchRepository repository;
     private MutableLiveData<List<MatchesResponse>> matchesResponseList;
-    public LiveMatchesViewModel(@NonNull Application application) {
+    public LiveProMatchesViewModel(@NonNull Application application) {
         super(application);
         matchesResponseList = new MutableLiveData<>();
+        repository = new LiveProMatchRepository(application);
     }
 
     public MutableLiveData<List<MatchesResponse>> getMatchesResponseList() {
@@ -67,4 +70,17 @@ public class LiveMatchesViewModel extends AndroidViewModel {
             }
         });
     }
+
+    public void upsertAll(List<Match> matchesList){
+        repository.upsertAll(matchesList);
+    }
+
+    public void deleteAll(){
+        repository.deleteAll();
+    }
+
+    public Single<List<Match>> getAllProMatches(){
+       return repository.getAllLiveProMatches();
+    }
+
 }
