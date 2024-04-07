@@ -17,8 +17,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.dartscoreboard.Game.GameActivity;
-import com.example.dartscoreboard.Game.GameController;
 import com.example.dartscoreboard.Game.GameSettings;
+import com.example.dartscoreboard.Game.GameViewModel;
 import com.example.dartscoreboard.MatchHistory.MatchState;
 import com.example.dartscoreboard.R;
 import com.example.dartscoreboard.User.User;
@@ -47,6 +47,8 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
     private TextView playerListTextViewButton;
 
     private UserViewModel userViewModel;
+
+    private GameViewModel gameViewModel;
 
     private final Stack<MatchState> matchStateStack = new Stack<>();
 
@@ -93,6 +95,8 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
 
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         userViewModel.getActiveUsers(true).observe(this, this::setPlayersToGame);
+        //todo make a SelectGameViewModel Class & remove call to gameViewModel From here
+        gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
         setPlayersTextBox(getPlayersToGame());
     }
 
@@ -145,27 +149,27 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
 
     private void openFiveOGameActivity() {
         Log.d("dom test", "openFiveOGameActivity");
-        GameController.getInstance().setGameID(0);
+        GameViewModel.setGameID(0);
         launchGameActivity();
-        GameController.getInstance().initialiseGameController(GameType.FiveO,getGameSettings(),getPlayersToGame(),
+        gameViewModel.initialiseGameController(GameType.FiveO,getGameSettings(),getPlayersToGame(),
                 0,0,0,matchStateStack,0);
         finish();
     }
 
     private void openThreeOGameActivity() {
         Log.d("dom test", "openThreeOGameActivity");
-        GameController.getInstance().setGameID(0);
+        GameViewModel.setGameID(0);
         launchGameActivity();
-        GameController.getInstance().initialiseGameController(GameType.ThreeO,getGameSettings(),getPlayersToGame(),
+        gameViewModel.initialiseGameController(GameType.ThreeO,getGameSettings(),getPlayersToGame(),
                 0,0,0,matchStateStack, 0);
         finish();
     }
 
     private void openSevenOGameActivity() {
         Log.d("dom test", "openSevenOGameActivity");
-        GameController.getInstance().setGameID(0);
+        GameViewModel.setGameID(0);
         launchGameActivity();
-        GameController.getInstance().initialiseGameController(GameType.SevenO,getGameSettings(),getPlayersToGame(),
+        gameViewModel.initialiseGameController(GameType.SevenO,getGameSettings(),getPlayersToGame(),
                 0,0,0,matchStateStack,0);
         finish();
     }

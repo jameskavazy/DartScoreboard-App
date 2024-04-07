@@ -61,7 +61,7 @@ public class RecyclerAdapterGamePlayers extends RecyclerView.Adapter<RecyclerAda
         holder.playerScoreTextView.setText(String.valueOf(gameScore));
         holder.legsTextView.setText(String.valueOf(currentLegs));
         holder.setsTextView.setText(String.valueOf(currentSets));
-        if (position == GameController.getInstance().getTurnIndex()){
+        if (position == GameViewModel.getTurnIndex()){
             holder.playerIndicator.setVisibility(View.VISIBLE);
         } else holder.playerIndicator.setVisibility(View.INVISIBLE);
     }

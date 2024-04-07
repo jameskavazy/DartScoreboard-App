@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.dartscoreboard.Application.DartsScoreboardApplication;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -28,10 +27,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class LiveProMatchesViewModel extends AndroidViewModel {
 
     private LiveProMatchRepository repository;
-    private List<MatchesResponse> matchesResponseList;
     public LiveProMatchesViewModel(@NonNull Application application) {
         super(application);
-        matchesResponseList = new ArrayList<>();
         repository = new LiveProMatchRepository(application);
     }
 
