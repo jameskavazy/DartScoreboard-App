@@ -2,8 +2,6 @@ package com.example.dartscoreboard.LiveMatches;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -11,7 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.ProgressBar;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,28 +22,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dartscoreboard.R;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.List;
-
-import io.reactivex.rxjava3.core.SingleObserver;
-import io.reactivex.rxjava3.disposables.Disposable;
+import java.util.Locale;
 
 public class LiveProMatchesActivity extends AppCompatActivity {
-
-    public static final String DATE_TODAY = "TODAY";
 
     private RecyclerView recyclerView;
     private RecyclerAdapterLiveProMatches adapter;
     private Toolbar toolbar;
     private LiveProMatchesViewModel liveProMatchesViewModel;
-
+    private TextView dateSelectedTextView;
     private ProgressBar progressBar;
-
-    /*
-     TODO: 11/03/2024 Add a Textview, possibly a scrollable one that displays currently selected date.
-      Calendar picker should open on this date.
-      Also caching is important too
-     */
+    public static String DATE_SELECTED = "TODAY";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,55 +42,22 @@ public class LiveProMatchesActivity extends AppCompatActivity {
         setupUI();
         setAdapter();
         liveProMatchesViewModel = new ViewModelProvider(this).get(LiveProMatchesViewModel.class);
-        liveProMatchesViewModel.deleteAll();
-        getProMatchesList();
+        getCachedProMatches();
     }
 
 
-    private void getProMatchesList() {
-        //Checks Cache first -> API if cache empty
-        liveProMatchesViewModel.getAllProMatches().subscribe(new SingleObserver<List<Match>>() {
-            @Override
-            public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
-                Log.d("dom test","onSubscribe hit");
+    private void getCachedProMatches() {
+        liveProMatchesViewModel.getAllProMatches().observe(this, matches -> {
+            Log.d("dom test","onChanged hit");
+            if (matches.isEmpty()) {
+//                progressBar.setVisibility(View.VISIBLE);
+                liveProMatchesViewModel.getDataFromApi(DATE_SELECTED,progressBar,recyclerView);
+                progressBar.setVisibility(View.GONE);
+                return;
             }
-
-            @Override
-            public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull List<Match> matches) {
-                Log.d("dom test","onSuccess hit");
-                if (!matches.isEmpty()) {
-                    progressBar.setVisibility(View.GONE);
-                    adapter.setMatchesList(matches);
-                } else {
-                    progressBar.setVisibility(View.VISIBLE);
-                    liveProMatchesViewModel.getDataFromApi(DATE_TODAY, progressBar);
-                    //getMatchReponse on mainthread because must observe the live data
-                    Handler handler = new Handler(Looper.getMainLooper());
-                    handler.post(() -> getMatchesResponse());
-                }
-            }
-
-            @Override
-            public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
-                Log.d("dom test","onError hit");
-                e.printStackTrace();
-            }
-        });
-
-
-    }
-
-    private void getMatchesResponse() {
-        liveProMatchesViewModel.getMatchesResponseList().observe(this, matchesResponseList -> {
-            if (matchesResponseList.isEmpty()) {
-                Log.d("dom test", "response is empty");
-                Toast.makeText(LiveProMatchesActivity.this, "No Matches Found", Toast.LENGTH_SHORT).show();
-                recyclerView.setVisibility(View.GONE);
-            } else {
-                recyclerView.setVisibility(View.VISIBLE);
-                liveProMatchesViewModel.upsertAll(matchesResponseList.get(0).getMatches());
-                adapter.setMatchesList(matchesResponseList.get(0).getMatches());
-            }
+            String uglyOffsetDateTime = matches.get(0).getStart_time();
+            dateSelectedTextView.setText(uglyOffsetDateTime.substring(0,10));
+            adapter.setMatchesList(matches);
             progressBar.setVisibility(View.GONE);
         });
     }
@@ -114,10 +70,18 @@ public class LiveProMatchesActivity extends AppCompatActivity {
 
     private void setupUI() {
         setContentView(R.layout.activity_live_matches);
+        dateSelectedTextView = findViewById(R.id.date_selected_text_view);
         progressBar = findViewById(R.id.progressBar);
         recyclerView = findViewById(R.id.live_matches_recycler_view);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        if (dateSelectedTextView.toString().equals("TODAY")){
+            Calendar calendar = Calendar.getInstance();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+            String dateString = simpleDateFormat.format(calendar.getTime());
+            dateSelectedTextView.setText(dateString);
+        }
     }
 
     @Override
@@ -156,14 +120,14 @@ public class LiveProMatchesActivity extends AppCompatActivity {
             dayOfMonthString = "0" + dayOfMonth;
         } else dayOfMonthString = String.valueOf(dayOfMonth);
 
-        String dateString = year + "-" + monthString + "-" + dayOfMonthString;
-        Log.d("dom test", dateString);
-        liveProMatchesViewModel.deleteAll();
-        liveProMatchesViewModel.getDataFromApi(dateString, progressBar);
-
-        //TODO we've left off where we need build logic to determine whether or not to pull data from the cache or from the API.
-
+        DATE_SELECTED = year + "-" + monthString + "-" + dayOfMonthString;
+        dateSelectedTextView.setText(DATE_SELECTED);
+        Log.d("dom test", DATE_SELECTED);
+        progressBar.setVisibility(View.VISIBLE);
+        liveProMatchesViewModel.getDataFromApi(DATE_SELECTED, progressBar, recyclerView);
     }
+
+
 
     private void setAdapter() {
         adapter = new RecyclerAdapterLiveProMatches();

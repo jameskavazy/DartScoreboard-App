@@ -1,22 +1,24 @@
 package com.example.dartscoreboard.LiveMatches;
 
-import static com.example.dartscoreboard.LiveMatches.LiveProMatchesActivity.DATE_TODAY;
-
 import android.app.Application;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.LiveData;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.dartscoreboard.Application.DartsScoreboardApplication;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-import io.reactivex.rxjava3.core.Single;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -26,21 +28,18 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class LiveProMatchesViewModel extends AndroidViewModel {
 
     private LiveProMatchRepository repository;
-    private MutableLiveData<List<MatchesResponse>> matchesResponseList;
+    private List<MatchesResponse> matchesResponseList;
     public LiveProMatchesViewModel(@NonNull Application application) {
         super(application);
-        matchesResponseList = new MutableLiveData<>();
+        matchesResponseList = new ArrayList<>();
         repository = new LiveProMatchRepository(application);
     }
 
-    public MutableLiveData<List<MatchesResponse>> getMatchesResponseList() {
-        return matchesResponseList;
-    }
-
-    public void getDataFromApi(String dateString, View view){
+    public void getDataFromApi(String dateString, View progressBar, RecyclerView recyclerView){
+        //Todo no longer need to pass the view to this method?
 
 
-        if (Objects.equals(dateString, DATE_TODAY)){
+        if (Objects.equals(dateString, "TODAY")){
             Calendar calendar = Calendar.getInstance();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             dateString = simpleDateFormat.format(calendar.getTime());
@@ -62,9 +61,17 @@ public class LiveProMatchesViewModel extends AndroidViewModel {
                     Log.d("dom test", String.valueOf(response.code()));
                     return;
                 }
-                matchesResponseList.postValue(response.body());
-//                ProgressBar progressBar = view.findViewById(R.id.progressBar);
-                view.setVisibility(View.GONE);
+
+                if (response.body() != null && !response.body().isEmpty()){
+                    deleteAll();
+                    upsertAll(response.body().get(0).getMatches());
+                    recyclerView.setVisibility(View.VISIBLE);
+                } else {
+                    Log.d("dom test", "response.body is empty or null");
+                    Toast.makeText(DartsScoreboardApplication.getContext(), "No Matches Found", Toast.LENGTH_SHORT).show();
+                    recyclerView.setVisibility(View.GONE);
+                }
+                progressBar.setVisibility(View.GONE);
             }
             @Override
             public void onFailure(@NonNull Call<List<MatchesResponse>> call, @NonNull Throwable t) {
@@ -72,6 +79,7 @@ public class LiveProMatchesViewModel extends AndroidViewModel {
             }
         });
     }
+
 
     public void upsertAll(List<Match> matchesList){
         repository.upsertAll(matchesList);
@@ -81,7 +89,7 @@ public class LiveProMatchesViewModel extends AndroidViewModel {
         repository.deleteAll();
     }
 
-    public Single<List<Match>> getAllProMatches(){
+    public LiveData<List<Match>> getAllProMatches(){
        return repository.getAllLiveProMatches();
     }
 

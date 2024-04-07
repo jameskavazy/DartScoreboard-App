@@ -7,11 +7,21 @@
 
     <include layout="@layout/toolbar"/>
 
+    <TextView
+        android:id="@+id/date_selected_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="80dp"
+        android:textSize="18sp"
+        android:padding="2dp"
+        tools:text="23-05-97"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/live_matches_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="100dp"
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"
         android:padding="5dp"/>

@@ -1,5 +1,6 @@
 package com.example.dartscoreboard.LiveMatches;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Query;
 import androidx.room.Upsert;
@@ -16,5 +17,5 @@ public interface LiveProMatchesDao {
     void deleteAll();
 
     @Query("SELECT * FROM pro_match_cache")
-    List<Match> getAll();
+    LiveData<List<Match>> getAll();
 }
