@@ -34,12 +34,12 @@ import io.reactivex.rxjava3.disposables.Disposable;
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
 
+    public static final String GAME_STATE_ID = "GAME_STATE_ID_KEY";
+    public static final String MATCH_HISTORY_EXTRA_KEY = "OPEN_GAME_ACTIVITY_KEY";
     private Toolbar toolbar;
     private MatchHistoryViewModel matchHistoryViewModel;
 
     private UserViewModel userViewModel;
-    public static final String GAME_STATE_ID = "GAME_STATE_ID_KEY";
-    public static final String MATCH_HISTORY_EXTRA_KEY = "OPEN_GAME_ACTIVITY_KEY";
     private RecyclerView recyclerView;
     private EditText inputScoreEditText;
     private TextView averageScoreTextView;

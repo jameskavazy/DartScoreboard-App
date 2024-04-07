@@ -36,6 +36,8 @@ public class LiveProMatchesActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     public static String DATE_SELECTED = "TODAY";
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +52,6 @@ public class LiveProMatchesActivity extends AppCompatActivity {
         liveProMatchesViewModel.getAllProMatches().observe(this, matches -> {
             Log.d("dom test","onChanged hit");
             if (matches.isEmpty()) {
-//                progressBar.setVisibility(View.VISIBLE);
                 liveProMatchesViewModel.getDataFromApi(DATE_SELECTED,progressBar,recyclerView);
                 progressBar.setVisibility(View.GONE);
                 return;

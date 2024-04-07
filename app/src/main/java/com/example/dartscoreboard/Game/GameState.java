@@ -23,8 +23,6 @@ public class GameState implements Serializable {
     @ColumnInfo
    public OffsetDateTime offsetDateTime = OffsetDateTime.now();
 
-
-    //todo add Stack of gameStates?
     public GameType gameType;
 
     public List<User> playerList;

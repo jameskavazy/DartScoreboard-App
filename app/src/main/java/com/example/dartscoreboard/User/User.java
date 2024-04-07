@@ -234,28 +234,6 @@ public class User implements Serializable, Cloneable { //todo guy easter egg
         this.isCheckout = checkout;
     }
 
-
-
-    /*
-    todo
-    Overall averages -
-    flag for is checkout (or if score is 170 or less, we've already got that functionality within out subtract function; calcualte checkout rate
-
-    leg win rate
-
-    [x]wins, losses
-    Match win rate?
-    [x]no of 180s
-
-
-    dartsThrown variable - getVisits *3.
-
-    On game end - as how many darts to finish
-
-        All of the metrics will be updated at the end of the match only. This will save number of updates
-        + improve data quality.
-     */
-
     @NonNull
     @Override
     public Object clone() throws CloneNotSupportedException {
