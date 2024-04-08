@@ -3,27 +3,27 @@ package com.example.dartscoreboard.MatchHistory;
 import com.example.dartscoreboard.User.User;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.List;
 
 public class MatchState implements Serializable {
 
-    private ArrayList<User> playerList;
+    private List<User> playerList;
     private int turnIndex;
     private int turnIndexForLegs;
     private int turnIndexForSets;
 
-    public MatchState(ArrayList<User> playerList, int turnIndex, int turnIndexForLegs, int turnIndexForSets){
+    public MatchState(List<User> playerList, int turnIndex, int turnIndexForLegs, int turnIndexForSets){
         this.playerList = playerList;
         this.turnIndex = turnIndex;
         this.turnIndexForLegs = turnIndexForLegs;
         this.turnIndexForSets = turnIndexForSets;
     }
 
-    public ArrayList<User> getPlayerList() {
+    public List<User> getPlayerList() {
         return playerList;
     }
 
-    public void setPlayerList(ArrayList<User> playerList) {
+    public void setPlayerList(List<User> playerList) {
         this.playerList = playerList;
     }
 

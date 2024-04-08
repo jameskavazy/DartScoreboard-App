@@ -135,8 +135,16 @@ public class MatchHistoryActivity extends AppCompatActivity {
         adapter.setOnItemClickListener(gameState -> {
             Intent intent = new Intent(MatchHistoryActivity.this, GameActivity.class);
             Bundle arguments = new Bundle();
-            arguments.putSerializable(GameActivity.MATCH_HISTORY_EXTRA_KEY, gameState);
-            intent.putExtra(GameActivity.GAME_STATE_ID, gameState.getGameID());
+            arguments.putSerializable(GameActivity.GAME_STATE_KEY,gameState);
+
+//            arguments.putSerializable(GameActivity.GAME_TYPE_KEY, gameState.getGameType());
+//            arguments.putSerializable(GameActivity.GAME_SETTINGS_KEY,gameState.getGameSettings());
+//            arguments.putSerializable(GameActivity.PLAYER_LIST_KEY, (Serializable) gameState.getPlayerList());
+//            arguments.putSerializable(GameActivity.MATCH_STATE_STACK_KEY,gameState.getMatchStateStack());
+//            arguments.putInt(GameActivity.TURN_INDEX, gameState.getTurnIndex());
+//            arguments.putInt(GameActivity.TURN_INDEX_LEGS, gameState.getTurnLeadForLegs());
+//            arguments.putInt(GameActivity.TURN_INDEX_SETS,gameState.getTurnLeadForSets());
+//            arguments.putLong(GameActivity.GAME_STATE_ID_KEY, gameState.getGameID());
             intent.putExtras(arguments);
             startActivity(intent);
             finish();

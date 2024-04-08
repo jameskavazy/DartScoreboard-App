@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.dartscoreboard.Game.GameActivity;
 import com.example.dartscoreboard.Game.GameSettings;
+import com.example.dartscoreboard.Game.GameState;
 import com.example.dartscoreboard.Game.GameViewModel;
 import com.example.dartscoreboard.MatchHistory.MatchState;
 import com.example.dartscoreboard.R;
@@ -31,6 +32,7 @@ import java.util.List;
 import java.util.Stack;
 
 public class SelectGameActivity extends AppCompatActivity implements View.OnClickListener {
+
 
     private final String[] gameSelectList = {"501","301","170"};
 
@@ -50,7 +52,7 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
 
     private GameViewModel gameViewModel;
 
-    private final Stack<MatchState> matchStateStack = new Stack<>();
+    private Stack<MatchState> matchStateStack = new Stack<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,34 +151,40 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
 
     private void openFiveOGameActivity() {
         Log.d("dom test", "openFiveOGameActivity");
-        GameViewModel.setGameID(0);
-        launchGameActivity();
-        gameViewModel.initialiseGameController(GameType.FiveO,getGameSettings(),getPlayersToGame(),
-                0,0,0,matchStateStack,0);
+        Intent intent = new Intent(this,GameActivity.class);
+        Bundle arguments = new Bundle();
+        GameState gameState = initialiseGameState(GameType.FiveO);
+        arguments.putSerializable(GameActivity.GAME_STATE_KEY,gameState);
+        intent.putExtras(arguments);
+        startActivity(intent);
         finish();
     }
 
     private void openThreeOGameActivity() {
         Log.d("dom test", "openThreeOGameActivity");
-        GameViewModel.setGameID(0);
-        launchGameActivity();
-        gameViewModel.initialiseGameController(GameType.ThreeO,getGameSettings(),getPlayersToGame(),
-                0,0,0,matchStateStack, 0);
+        Intent intent = new Intent(this,GameActivity.class);
+        Bundle arguments = new Bundle();
+        GameState gameState = initialiseGameState(GameType.ThreeO);
+        arguments.putSerializable(GameActivity.GAME_STATE_KEY,gameState);
+        intent.putExtras(arguments);
+        startActivity(intent);
         finish();
     }
-
     private void openSevenOGameActivity() {
         Log.d("dom test", "openSevenOGameActivity");
-        GameViewModel.setGameID(0);
-        launchGameActivity();
-        gameViewModel.initialiseGameController(GameType.SevenO,getGameSettings(),getPlayersToGame(),
-                0,0,0,matchStateStack,0);
+        Intent intent = new Intent(this,GameActivity.class);
+        Bundle arguments = new Bundle();
+        GameState gameState = initialiseGameState(GameType.SevenO);
+        arguments.putSerializable(GameActivity.GAME_STATE_KEY,gameState);
+        intent.putExtras(arguments);
+        startActivity(intent);
         finish();
     }
 
-    private void launchGameActivity() {
-        Intent intent = new Intent(this, GameActivity.class);
-        startActivity(intent);
+    private GameState initialiseGameState(GameType gameType){
+        GameState gameState = new GameState(gameType,getGameSettings(),getPlayersToGame(),0,0,0,matchStateStack);
+        gameState.setGameID(0);
+        return gameState;
     }
 
     private void setUpGameTypeDropDownMenu(){

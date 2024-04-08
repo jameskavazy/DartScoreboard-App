@@ -23,9 +23,7 @@ import io.reactivex.rxjava3.core.Single;
 public class GameViewModel extends AndroidViewModel {
     private UserRepository userRepository;
     private MatchHistoryRepository matchHistoryRepository;
-
-    private static long gameID;
-
+    private long gameID;
     public static int turnIndex = 0;
     private int turnIndexLegs = 0;
     private int turnIndexSets = 0;
@@ -52,7 +50,6 @@ public class GameViewModel extends AndroidViewModel {
 
     public void update(GameState gameState){
         matchHistoryRepository.update(gameState);
-
     }
 
     public void deleteGameStateByID(long id){
@@ -304,8 +301,8 @@ public class GameViewModel extends AndroidViewModel {
         return gameID;
     }
 
-    public static void setGameID(long gameID) {
-        GameViewModel.gameID = gameID;
+    public void setGameID(long gameID) {
+        this.gameID = gameID;
     }
 
     public void endGame() {
@@ -320,6 +317,32 @@ public class GameViewModel extends AndroidViewModel {
         }
         clearTurnIndices();
         gameSettings.clear();
+    }
+
+    public void setGameState(GameState gameState){
+        //todo do we need boolean flag to determine if new starting scores needed??
+        setPlayersList(gameState.getPlayerList());
+        setGameID(gameState.getGameID());
+        setGameType(gameState.getGameType());
+        setGameSettings(gameState.getGameSettings());
+        setMatchStateStack(gameState.getMatchStateStack());
+        setTurnIndex(gameState.getTurnIndex());
+        setTurnIndexLegs(gameState.getTurnLeadForLegs());
+        setTurnIndexSets(gameState.getTurnLeadForSets());
+        if (gameID == 0) {
+            setPlayerStartingScores();
+            gameStateEnd = false;
+        }
+
+//        Log.d("dom test",
+//        gameState.getPlayerList()+"\n"+
+//        gameState.getGameID()+"\n"+
+//        gameState.getGameType()+"\n"+
+//        gameState.getGameSettings()+"\n"+
+//        gameState.getMatchStateStack()+"\n"+
+//        gameState.getTurnIndex()+"\n"+
+//        gameState.getTurnLeadForLegs()+"\n"+
+//        gameState.getTurnLeadForSets());
     }
 
 
