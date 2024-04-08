@@ -335,18 +335,13 @@ public class GameViewModel extends AndroidViewModel {
             setPlayerStartingScores();
             gameStateEnd = false;
         }
-
-//        Log.d("dom test",
-//        gameState.getPlayerList()+"\n"+
-//        gameState.getGameID()+"\n"+
-//        gameState.getGameType()+"\n"+
-//        gameState.getGameSettings()+"\n"+
-//        gameState.getMatchStateStack()+"\n"+
-//        gameState.getTurnIndex()+"\n"+
-//        gameState.getTurnLeadForLegs()+"\n"+
-//        gameState.getTurnLeadForSets());
     }
 
+    public void updateAllUsers() {
+        for (User user : getPlayersList()){
+            updateUser(user);
+        }
+    }
 
     public void saveGameStateToDb() {
 //      Create GameState object + attach the id for DB update

@@ -38,7 +38,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private TextView visitsTextView;
     private Button doneButton;
     private RecyclerAdapterGamePlayers adapter;
-
     private View bananaView;
 
     @Override
@@ -130,7 +129,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             setVisitsTextView();
             gameViewModel.saveGameStateToDb();
             endGameChecker();
-
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -145,7 +143,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             inputScoreEditText.setVisibility(View.GONE);
             doneButton.setVisibility(View.GONE);
             gameViewModel.deleteGameStateByID(gameViewModel.getGameID());
-            updateAllUsers();
+            gameViewModel.updateAllUsers();
         }
     }
 
@@ -180,7 +178,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 GameState gameState = gameViewModel.getGameInfo();
                 gameState.setGameID(gameViewModel.getGameID());
                 gameViewModel.insert(gameState);
-                updateAllUsers();
+                gameViewModel.updateAllUsers();
             }
             try {
                 gameViewModel.undo(adapter);
@@ -194,12 +192,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             gameViewModel.update(gameState);
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void updateAllUsers() {
-        for (User user : gameViewModel.getPlayersList()){
-            gameViewModel.updateUser(user);
-        }
     }
 
     private void setBanana() {

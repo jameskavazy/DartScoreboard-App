@@ -19,7 +19,6 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.dartscoreboard.Game.GameActivity;
 import com.example.dartscoreboard.Game.GameSettings;
 import com.example.dartscoreboard.Game.GameState;
-import com.example.dartscoreboard.Game.GameViewModel;
 import com.example.dartscoreboard.MatchHistory.MatchState;
 import com.example.dartscoreboard.R;
 import com.example.dartscoreboard.User.User;
@@ -49,8 +48,6 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
     private TextView playerListTextViewButton;
 
     private UserViewModel userViewModel;
-
-    private GameViewModel gameViewModel;
 
     private Stack<MatchState> matchStateStack = new Stack<>();
 
@@ -98,7 +95,6 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         userViewModel.getActiveUsers(true).observe(this, this::setPlayersToGame);
         //todo make a SelectGameViewModel Class & remove call to gameViewModel From here
-        gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
         setPlayersTextBox(getPlayersToGame());
     }
 
