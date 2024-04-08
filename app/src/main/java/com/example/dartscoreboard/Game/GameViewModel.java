@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Stack;
 
 import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.core.SingleObserver;
+import io.reactivex.rxjava3.disposables.Disposable;
 
 public class GameViewModel extends AndroidViewModel {
     private UserRepository userRepository;
@@ -40,19 +42,19 @@ public class GameViewModel extends AndroidViewModel {
         matchHistoryRepository = new MatchHistoryRepository(application);
     }
 
-    public void updateUser(User user){
+    public void updateUser(User user) {
         userRepository.updateUser(user);
     }
 
-    public Single<Long> insert(GameState gameState){
-       return matchHistoryRepository.insert(gameState);
+    public Single<Long> insert(GameState gameState) {
+        return matchHistoryRepository.insert(gameState);
     }
 
-    public void update(GameState gameState){
+    public void update(GameState gameState) {
         matchHistoryRepository.update(gameState);
     }
 
-    public void deleteGameStateByID(long id){
+    public void deleteGameStateByID(long id) {
         matchHistoryRepository.deleteGameStateByID(id);
     }
 
@@ -112,8 +114,8 @@ public class GameViewModel extends AndroidViewModel {
             return playerScore;
         }
 
-        if (currentPlayer.isCheckout()){
-            if (currentTypedScore == playerScore){
+        if (currentPlayer.isCheckout()) {
+            if (currentTypedScore == playerScore) {
                 currentPlayer.incrementCheckoutMade();
             } else currentPlayer.incrementCheckoutMissed();
         }
@@ -132,9 +134,9 @@ public class GameViewModel extends AndroidViewModel {
         }
     }
 
-    public void dartsThrownCO(){
+    public void dartsThrownCO() {
         User currentPlayer = getPlayersList().get(turnIndex);
-        if (currentPlayer.isCheckout()){
+        if (currentPlayer.isCheckout()) {
             //todo alert dialog?
         }
     }
@@ -142,8 +144,8 @@ public class GameViewModel extends AndroidViewModel {
 
     public void saveForUndo() throws CloneNotSupportedException {
         //Make a "deep copy" todo go back to serialization?
-        ArrayList<User> playerListCopy =  new ArrayList<>();
-        for (User user : getPlayersList()){
+        ArrayList<User> playerListCopy = new ArrayList<>();
+        for (User user : getPlayersList()) {
             playerListCopy.add((User) user.clone());
         }
         MatchState matchState = new MatchState(playerListCopy, getTurnIndex(), getTurnIndexLegs(), getTurnIndexSets());
@@ -153,7 +155,7 @@ public class GameViewModel extends AndroidViewModel {
 
 
     public void undo(RecyclerAdapterGamePlayers adapter) throws CloneNotSupportedException {
-        if (!getMatchStateStack().isEmpty()){
+        if (!getMatchStateStack().isEmpty()) {
             MatchState matchState = getMatchStateStack().pop();
             List<User> previousUserList = matchState.getPlayerList();
             ArrayList<Integer> previousUserPreviousScoresList;
@@ -308,8 +310,8 @@ public class GameViewModel extends AndroidViewModel {
     public void endGame() {
         //Clear down controller at end of game.
         gameStateEnd = true;
-        for (User user : getPlayersList()){
-            if  (getPlayersList().size() > 1) {
+        for (User user : getPlayersList()) {
+            if (getPlayersList().size() > 1) {
                 if (user.getPlayerScore() == 0) {
                     user.incrementWins();
                 } else user.incrementLosses();
@@ -319,7 +321,7 @@ public class GameViewModel extends AndroidViewModel {
         gameSettings.clear();
     }
 
-    public void setGameState(GameState gameState){
+    public void setGameState(GameState gameState) {
         //todo do we need boolean flag to determine if new starting scores needed??
         setPlayersList(gameState.getPlayerList());
         setGameID(gameState.getGameID());
@@ -346,24 +348,42 @@ public class GameViewModel extends AndroidViewModel {
     }
 
 
-    public void initialiseGameController(
-            GameType gameType, GameSettings gameSettings, List<User> playersList, int turnIndex,
-            int turnLeadForLegs, int turnLeadForSets, Stack<MatchState> matchStateStack, long gameID) {
-        //boolean flag to tell controller whether we need to set starting scores or not.
-        gameStateEnd = false;
-        setPlayersList(playersList);
-        setGameType(gameType);
-        setGameSettings(gameSettings);
-        setTurnIndex(turnIndex);
-        setTurnIndexLegs(turnLeadForLegs);
-        setTurnIndexSets(turnLeadForSets);
-        setMatchStateStack(matchStateStack);
-        if (gameID == 0) {
-            setPlayerStartingScores();
+    public void saveGameStateToDb() {
+//      Create GameState object + attach the id for DB update
+        GameState gameState = getGameInfo();
+        if (getGameID() != 0) {
+            gameState.setGameID(getGameID());
+            update(gameState);
+        } else {
+            insert(gameState).subscribe(new SingleObserver<Long>() {
+                @Override
+                public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
+
+                }
+
+                @Override
+                public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull Long aLong) {
+                    Log.d("dom test", "onSuccess " + aLong);
+                    setGameID(aLong);
+                }
+
+                @Override
+                public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+                }
+            });
         }
-        setGameID(gameID);
     }
 
+    public GameState getGameInfo() {
+        return new GameState(
+                getGameType(),
+                getGameSettings(),
+                getPlayersList(),
+                getTurnIndex(),
+                getTurnIndexLegs(),
+                getTurnIndexSets(),
+                getMatchStateStack());
+    }
 
     public Stack<MatchState> getMatchStateStack() {
         if (matchStateStack == null) {
@@ -383,13 +403,10 @@ public class GameViewModel extends AndroidViewModel {
         return Math.round(average * 10.0) / 10.0;
     }
 
-    public boolean bananaSplit(){
+    public boolean bananaSplit() {
         return getPlayersList().get(getTurnIndex()).isGuy
                 && getPlayersList().get(getTurnIndex()).getVisits() % 7 == 0;
     }
-
-
-
 
 
 }

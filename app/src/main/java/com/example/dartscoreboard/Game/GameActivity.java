@@ -25,26 +25,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.dartscoreboard.R;
 import com.example.dartscoreboard.User.User;
 
-import io.reactivex.rxjava3.annotations.NonNull;
-import io.reactivex.rxjava3.core.SingleObserver;
-import io.reactivex.rxjava3.disposables.Disposable;
+import java.util.Objects;
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final String GAME_STATE_KEY = "GAME_STATE";
-
-    public static final String GAME_TYPE_KEY = "GAME_TYPE_KEY";
-    public static final String PLAYER_LIST_KEY = "PLAYER_LIST_KEY";
-    public static final String GAME_SETTINGS_KEY = "GAME_SETTINGS_KEY";
-    public static final String MATCH_STATE_STACK_KEY = "MATCH_STATE_STACK_KEY";
-    public static final String TURN_INDEX ="TURN_INDEX";
-    public static final String TURN_INDEX_LEGS ="TURN_INDEX_LEGS";
-    public static final String TURN_INDEX_SETS ="TURN_INDEX_SETS";
-
-    public static final String GAME_STATE_ID_KEY = "GAME_STATE_ID_KEY";
-    public static final String MATCH_HISTORY_EXTRA_KEY = "OPEN_GAME_ACTIVITY_KEY";
-
-    public static final String TURN_INDEX_KEY = "TURN_INDEX_KEY";
     private Toolbar toolbar;
     private GameViewModel gameViewModel;
     private RecyclerView recyclerView;
@@ -66,7 +51,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-//        toolbar.setTitle(gameViewModel.getGameType().name);
+        toolbar.setTitle(gameViewModel.getGameType().name);
         toolbar.setTitleMarginStart(24);
     }
 
@@ -89,37 +74,13 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void launchGameSetUp() {
-//        Intent intent = getIntent();
         Bundle arguments = getIntent().getExtras();
-        gameViewModel.setGameState((GameState) arguments.getSerializable(GAME_STATE_KEY));
+        if (arguments != null) {
+            gameViewModel.setGameState((GameState) Objects.requireNonNull(arguments.getSerializable(GAME_STATE_KEY)));
+        }
         setVisitsTextView();
         setAverageScoreTextView();
-        saveGameStateToDb();
-
-
-
-
-
-
-
-//        //-------------Set Title and GameSettings based on Extras------------------
-//        Intent intent = getIntent();
-//        Bundle arguments = getIntent().getExtras();
-//
-//        if (intent.hasExtra(GAME_STATE_ID)) {
-//            //Get information for game from the MatchHistoryScreen - Existing Game
-//            long gameId = intent.getLongExtra(GAME_STATE_ID, -1);
-//            GameState gameState = (GameState) arguments.getSerializable(MATCH_HISTORY_EXTRA_KEY);
-//            gameViewModel.initialiseGameController(gameState.getGameType(), gameState.getGameSettings()
-//                    , gameState.getPlayerList(), gameState.getTurnIndex(), gameState.getTurnLeadForLegs(), gameState.getTurnLeadForSets(), gameState.getMatchStateStack(), gameId);
-//            setVisitsTextView();
-//            setAverageScoreTextView();
-//            //clear the intent after use; only want to init GameController once with the initial GS data
-//            intent.removeExtra(GAME_STATE_ID);
-//        } else { //just use Controller info
-//            // NEW GAME - (GameSettings are passed directly to controller) OR onCreate called again by .eg. orientation change (Controller already has relevant information)
-//            saveGameStateToDb();
-//        }
+        gameViewModel.saveGameStateToDb();
     }
 
     private void setAverageScoreTextView() {
@@ -167,40 +128,13 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             ((EditText) findViewById(R.id.inputUserNameEditText)).getText().clear();
             setAverageScoreTextView();
             setVisitsTextView();
-            saveGameStateToDb();
+            gameViewModel.saveGameStateToDb();
             endGameChecker();
 
             return true;
         } catch (Exception e) {
             e.printStackTrace();
             return true;
-        }
-    }
-
-    private void saveGameStateToDb() {
-        // TODO: 15/03/2024 Move to GameViewModel
-        GameState gameState = getGameInfo();
-//      Create GameState object + attach the id for DB update
-        if (gameViewModel.getGameID() != 0) {
-            gameState.setGameID(gameViewModel.getGameID());
-            gameViewModel.update(gameState);
-        } else {
-            gameViewModel.insert(gameState).subscribe(new SingleObserver<Long>() {
-                @Override
-                public void onSubscribe(@NonNull Disposable d) {
-
-                }
-
-                @Override
-                public void onSuccess(@NonNull Long aLong) {
-                    Log.d("dom test", "onSuccess " + aLong);
-                    gameViewModel.setGameID(aLong);
-                }
-
-                @Override
-                public void onError(@NonNull Throwable e) {
-                }
-            });
         }
     }
 
@@ -225,18 +159,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-
-    private GameState getGameInfo() {
-        return new GameState(
-                gameViewModel.getGameType(),
-                gameViewModel.getGameSettings(),
-                gameViewModel.getPlayersList(),
-                GameViewModel.getTurnIndex(),
-                gameViewModel.getTurnIndexLegs(),
-                gameViewModel.getTurnIndexSets(),
-                gameViewModel.getMatchStateStack());
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
@@ -255,7 +177,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 inputScoreEditText.setVisibility(View.VISIBLE);
                 doneButton.setVisibility(View.VISIBLE);
                 GameViewModel.gameStateEnd = false;
-                GameState gameState = getGameInfo();
+                GameState gameState = gameViewModel.getGameInfo();
                 gameState.setGameID(gameViewModel.getGameID());
                 gameViewModel.insert(gameState);
                 updateAllUsers();
@@ -267,7 +189,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             }
             setAverageScoreTextView();
             setVisitsTextView();
-            GameState gameState = getGameInfo();
+            GameState gameState = gameViewModel.getGameInfo();
             gameState.setGameID(gameViewModel.getGameID());
             gameViewModel.update(gameState);
         }
