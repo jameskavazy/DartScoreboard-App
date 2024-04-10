@@ -104,8 +104,15 @@ public class ReminderActivity extends AppCompatActivity implements View.OnClickL
             alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, timePicker.getTimeInMillis(),AlarmManager.INTERVAL_DAY, pendingIntent);
             reminderViewModel.setHourOfDaySelected(hourOfDay);
             reminderViewModel.setMinuteOfDaySelected(minute);
-            timeOfReminderTextView.setText(hourOfDay+":"+minute);
-            PreferencesController.getInstance().saveReminderTime(hourOfDay+":"+minute);
+
+            String minuteFormatted;
+            if (minute <= 10){
+                minuteFormatted = "0"+minute;
+            } else minuteFormatted = String.valueOf(minute);
+
+            String timeToDisplay = hourOfDay+":"+minuteFormatted;
+            timeOfReminderTextView.setText(timeToDisplay);
+            PreferencesController.getInstance().saveReminderTime(timeToDisplay);
 
         }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), textClock.is24HourModeEnabled());
         timePickerDialog.show();

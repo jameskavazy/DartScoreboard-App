@@ -21,13 +21,8 @@ import com.example.dartscoreboard.User.UsersActivity;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
 
-    private Button trainingReminderButton;
-    private Button usersButton;
-    private Button statsButton;
     private Button continueButton;
     private Toolbar toolbar;
-
-    private Button liveProMatchesButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,11 +41,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         toolbar = findViewById(R.id.toolbar);
         Button newGameButton = findViewById(R.id.startNewGameButton);
-        usersButton = findViewById(R.id.usersButton);
+        Button usersButton = findViewById(R.id.usersButton);
         continueButton = findViewById(R.id.continueButton);
-        statsButton = findViewById(R.id.statsButton);
-        trainingReminderButton = findViewById(R.id.trainingRemindersButton);
-        liveProMatchesButton = findViewById(R.id.live_pro_matches_button);
+        Button statsButton = findViewById(R.id.statsButton);
+        Button trainingReminderButton = findViewById(R.id.trainingRemindersButton);
+        Button liveProMatchesButton = findViewById(R.id.live_pro_matches_button);
         statsButton.setOnClickListener(this);
         newGameButton.setOnClickListener(this);
         usersButton.setOnClickListener(this);

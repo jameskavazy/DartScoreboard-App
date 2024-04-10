@@ -37,11 +37,11 @@ public class UserViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<User>> getAllUsers(){
-       return repository.getAllUsers();
+       return usersList;
     }
 
-    public LiveData<List<User>> getActiveUsers(boolean active){
-        return repository.getActiveUsers(active);
+    public LiveData<List<User>> getActiveUsers(){
+        return repository.getActiveUsers(true);
     }
 
 

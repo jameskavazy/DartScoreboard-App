@@ -79,7 +79,8 @@ public class RecyclerAdapterMatchHistory extends ListAdapter<GameState, Recycler
         String dateStamp = currentGameState.getCreatedDate().format(dateFormatter);
         String timeStamp = currentGameState.getCreatedDate().truncatedTo(ChronoUnit.MINUTES).format(timeFormatter);
         String timeStampTruncated = timeStamp.substring(0,timeStamp.length() - 3);
-        holder.gameDateCreatedTextView.setText(dateStamp+ "\n" + timeStampTruncated);
+        String dateTimeFormatted = dateStamp+"\n"+timeStampTruncated;
+        holder.gameDateCreatedTextView.setText(dateTimeFormatted);
     }
 
     public GameState getGameStateAtPosition(int position) {

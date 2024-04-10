@@ -48,7 +48,7 @@ public class MatchHistoryViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<GameState>> getAllGames() {
-        return repository.getAllMatchHistory();
+        return allGames;
     }
 
     public long getInsertedId(){

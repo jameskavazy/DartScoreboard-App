@@ -23,8 +23,8 @@ import io.reactivex.rxjava3.core.SingleObserver;
 import io.reactivex.rxjava3.disposables.Disposable;
 
 public class GameViewModel extends AndroidViewModel {
-    private UserRepository userRepository;
-    private MatchHistoryRepository matchHistoryRepository;
+    private final UserRepository userRepository;
+    private final MatchHistoryRepository matchHistoryRepository;
     private long gameID;
     public static int turnIndex = 0;
     private int turnIndexLegs = 0;
@@ -266,7 +266,7 @@ public class GameViewModel extends AndroidViewModel {
     }
 
     public void setTurnIndex(int turnIndex) {
-        this.turnIndex = turnIndex;
+        GameViewModel.turnIndex = turnIndex;
     }
 
     public static int getTurnIndex() {
