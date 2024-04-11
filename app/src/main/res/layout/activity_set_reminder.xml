@@ -7,13 +7,14 @@
 
     <include layout="@layout/toolbar"/>
 
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="5dp"
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="140dp"
         android:text="@string/reminder_hint"/>
 
 
@@ -41,5 +42,16 @@
         android:layout_gravity="center"
         android:layout_marginBottom="50dp"
         android:text="Cancel" />
+
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/toggleNotificationPermissions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="120dp"
+        android:layout_marginEnd="120dp"
+        android:layout_marginTop="80dp"
+        android:padding="5dp"
+        android:text="Grant Permissions" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

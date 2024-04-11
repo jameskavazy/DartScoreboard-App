@@ -201,7 +201,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             bananaView.setVisibility(View.VISIBLE);
             bananaView.postDelayed(() -> {
                 bananaView.setVisibility(View.GONE);
-            }, 50);
+            }, 75);
         } else bananaView.setVisibility(View.GONE);
     }
 }

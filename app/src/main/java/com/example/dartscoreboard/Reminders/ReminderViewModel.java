@@ -9,10 +9,11 @@ public class ReminderViewModel extends AndroidViewModel {
     private int hourOfDaySelected;
     private int minuteOfDaySelected;
 
+    public static boolean notificationPermissions;
+
     public ReminderViewModel(@NonNull Application application) {
         super(application);
     }
-
     public int getHourOfDaySelected(){
         return hourOfDaySelected;
     }
@@ -28,4 +29,12 @@ public class ReminderViewModel extends AndroidViewModel {
     public void setMinuteOfDaySelected(int minuteOfDaySelected) {
         this.minuteOfDaySelected = minuteOfDaySelected;
     }
+
+//    public boolean isNotificationPermissions() {
+//        return notificationPermissions;
+//    }
+//
+//    public void setNotificationPermissions(boolean notificationPermissions) {
+//        ReminderViewModel.notificationPermissions = notificationPermissions;
+//    }
 }
