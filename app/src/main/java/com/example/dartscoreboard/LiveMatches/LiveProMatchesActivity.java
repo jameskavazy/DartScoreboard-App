@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -34,9 +35,7 @@ public class LiveProMatchesActivity extends AppCompatActivity {
     private LiveProMatchesViewModel liveProMatchesViewModel;
     private TextView dateSelectedTextView;
     private ProgressBar progressBar;
-    public static String DATE_SELECTED = "TODAY";
-
-
+    public static final String DATE_SELECTED = "TODAY";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,21 +44,33 @@ public class LiveProMatchesActivity extends AppCompatActivity {
         setAdapter();
         liveProMatchesViewModel = new ViewModelProvider(this).get(LiveProMatchesViewModel.class);
         getCachedProMatches();
+        setRecyclerViewVisibility();
     }
 
 
     private void getCachedProMatches() {
+        //TODO Do not pass views to ViewModel! Bad practice!
         liveProMatchesViewModel.getAllProMatches().observe(this, matches -> {
             Log.d("dom test","onChanged hit");
             if (matches.isEmpty()) {
-                liveProMatchesViewModel.getDataFromApi(DATE_SELECTED,progressBar,recyclerView);
+                progressBar.setVisibility(View.VISIBLE);
+                liveProMatchesViewModel.getDataFromApi(DATE_SELECTED);
                 progressBar.setVisibility(View.GONE);
                 return;
             }
+            progressBar.setVisibility(View.GONE);
             String uglyOffsetDateTime = matches.get(0).getStart_time();
             dateSelectedTextView.setText(uglyOffsetDateTime.substring(0,10));
             adapter.setMatchesList(matches);
-            progressBar.setVisibility(View.GONE);
+        });
+    }
+
+    private void setRecyclerViewVisibility(){
+        liveProMatchesViewModel.getRecyclerViewVisibility().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                recyclerView.setVisibility(integer);
+            }
         });
     }
 
@@ -121,11 +132,11 @@ public class LiveProMatchesActivity extends AppCompatActivity {
             dayOfMonthString = "0" + dayOfMonth;
         } else dayOfMonthString = String.valueOf(dayOfMonth);
 
-        DATE_SELECTED = year + "-" + monthString + "-" + dayOfMonthString;
-        dateSelectedTextView.setText(DATE_SELECTED);
-        Log.d("dom test", DATE_SELECTED);
+        String date = year + "-" + monthString + "-" + dayOfMonthString;
+        dateSelectedTextView.setText(date);
+        Log.d("dom test", date);
         progressBar.setVisibility(View.VISIBLE);
-        liveProMatchesViewModel.getDataFromApi(DATE_SELECTED, progressBar, recyclerView);
+        liveProMatchesViewModel.getDataFromApi(date);
     }
 
 

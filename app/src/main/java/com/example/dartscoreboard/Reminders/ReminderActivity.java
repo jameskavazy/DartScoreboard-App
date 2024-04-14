@@ -14,7 +14,6 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,8 +34,9 @@ import java.util.Calendar;
 
 public class ReminderActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private AlarmManager alarmManager;
 
+
+    private AlarmManager alarmManager;
     private Intent receiverIntent;
     private PendingIntent pendingIntent;
 
@@ -74,25 +74,18 @@ public class ReminderActivity extends AppCompatActivity implements View.OnClickL
         Button setTimeButton = findViewById(R.id.set_time_button);
         Button cancelReminderButton = findViewById(R.id.cancel_reminder_button);
         toggleNotificationPermissionsSwitch = findViewById(R.id.toggleNotificationPermissions);
-        toggleNotificationPermissionsSwitch.setOnClickListener(this);
         toggleNotificationPermissionsSwitch.setChecked(checkNotificationPermission(this));
-        toggleNotificationPermissionsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked){
-                    if (!checkNotificationPermission(ReminderActivity.this)) {
-                        requestNotificationPermission(ReminderActivity.this,222);
-                    } else {
-                        //permission already granted
-                    }
-                } else {
-                    // Switch turned off, open system settings to block notifications
-                    openNotificationSettings();
-
+        toggleNotificationPermissionsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked){
+                if (!checkNotificationPermission(ReminderActivity.this)) {
+                    requestNotificationPermission(ReminderActivity.this,222);
                 }
+
+            } else {
+                // Switch turned off, open system settings to block notifications
+                openNotificationSettings();
             }
         });
-
         cancelReminderButton.setOnClickListener(this);
         setTimeButton.setOnClickListener(this);
         if (PreferencesController.getInstance().getReminderTime() == null) {
@@ -109,22 +102,6 @@ public class ReminderActivity extends AppCompatActivity implements View.OnClickL
         } else if (viewID == R.id.cancel_reminder_button) {
             onCancelClicked();
         }
-//        else if (viewID == R.id.toggleNotificationPermissions){
-//            if (toggleNotificationPermissionsSwitch.isChecked()){
-//                //remove permissions
-//            } else {
-//                requestNotificationPermission(this,222);
-//                toggleNotificationPermissionsSwitch.setChecked(true);
-//
-//
-////                if (checkNotificationPermission(this)) {
-////                    toggleNotificationPermissionsSwitch.setActivated(true);
-//////                Toast.makeText(this, "Notification Permission Already Granted", Toast.LENGTH_SHORT).show();
-////                } else {
-////                    requestNotificationPermission(this, 222);
-////                }
-//            }
-//        }
     }
 
     private void onSetTimeClicked() {
@@ -175,6 +152,8 @@ public class ReminderActivity extends AppCompatActivity implements View.OnClickL
             timeOfReminderTextView.setText(timeToDisplay);
             PreferencesController.getInstance().saveReminderTime(timeToDisplay);
 
+
+
         }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), textClock.is24HourModeEnabled());
         timePickerDialog.show();
     }
@@ -182,8 +161,7 @@ public class ReminderActivity extends AppCompatActivity implements View.OnClickL
     public static boolean checkNotificationPermission(Activity activity) { //true if GRANTED
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             return ContextCompat.checkSelfPermission(activity, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED;
-        }
-        return false;
+        } else return false;
     }
 
     public static void requestNotificationPermission(Activity activity, int requestId) {
@@ -205,7 +183,7 @@ public class ReminderActivity extends AppCompatActivity implements View.OnClickL
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             if (requestCode == 222) {
-                Toast.makeText(this, "NotificationPermission Granted Successfully", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Notification Permission Granted", Toast.LENGTH_SHORT).show();
             }
         } else {
             toggleNotificationPermissionsSwitch.setChecked(false);

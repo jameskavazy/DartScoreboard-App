@@ -8,7 +8,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.dartscoreboard.Application.DartsScoreboardApplication;
 
@@ -26,15 +26,16 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LiveProMatchesViewModel extends AndroidViewModel {
 
-    private LiveProMatchRepository repository;
+    private final LiveProMatchRepository repository;
+
+    private MutableLiveData<Integer> recyclerViewVisibility = new MutableLiveData<>();
+
     public LiveProMatchesViewModel(@NonNull Application application) {
         super(application);
         repository = new LiveProMatchRepository(application);
     }
 
-    public void getDataFromApi(String dateString, View progressBar, RecyclerView recyclerView){
-        //Todo no longer need to pass the view to this method?
-
+    public void getDataFromApi(String dateString){
 
         if (Objects.equals(dateString, "TODAY")){
             Calendar calendar = Calendar.getInstance();
@@ -60,15 +61,14 @@ public class LiveProMatchesViewModel extends AndroidViewModel {
                 }
 
                 if (response.body() != null && !response.body().isEmpty()){
+                    recyclerViewVisibility.setValue(View.VISIBLE);
                     deleteAll();
                     upsertAll(response.body().get(0).getMatches());
-                    recyclerView.setVisibility(View.VISIBLE);
                 } else {
                     Log.d("dom test", "response.body is empty or null");
+                    recyclerViewVisibility.setValue(View.GONE);
                     Toast.makeText(DartsScoreboardApplication.getContext(), "No Matches Found", Toast.LENGTH_SHORT).show();
-                    recyclerView.setVisibility(View.GONE);
                 }
-                progressBar.setVisibility(View.GONE);
             }
             @Override
             public void onFailure(@NonNull Call<List<MatchesResponse>> call, @NonNull Throwable t) {
@@ -88,6 +88,10 @@ public class LiveProMatchesViewModel extends AndroidViewModel {
 
     public LiveData<List<Match>> getAllProMatches(){
        return repository.getAllLiveProMatches();
+    }
+
+    public MutableLiveData<Integer> getRecyclerViewVisibility(){
+        return recyclerViewVisibility;
     }
 
 }
