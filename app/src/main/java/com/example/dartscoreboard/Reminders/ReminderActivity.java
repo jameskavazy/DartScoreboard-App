@@ -1,15 +1,9 @@
 package com.example.dartscoreboard.Reminders;
 
-import android.Manifest;
-import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
@@ -22,23 +16,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.dartscoreboard.R;
+import com.example.dartscoreboard.Utils.PermissionCheckController;
 import com.example.dartscoreboard.Utils.PreferencesController;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.util.Calendar;
 
 public class ReminderActivity extends AppCompatActivity implements View.OnClickListener {
-
-
-
-    private AlarmManager alarmManager;
-    private Intent receiverIntent;
-    private PendingIntent pendingIntent;
 
     private TextView timeOfReminderTextView;
     private ReminderViewModel reminderViewModel;
@@ -61,26 +48,23 @@ public class ReminderActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onResume() {
         super.onResume();
-        boolean currentPermission = checkNotificationPermission(this);
-        // Optionally, display a message about permission change
+        boolean currentPermission = PermissionCheckController.getInstance().checkNotificationPermission(this);
         toggleNotificationPermissionsSwitch.setChecked(currentPermission);
     }
 
     private void setupUI() {
         setContentView(R.layout.activity_set_reminder);
-        alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         reminderViewModel = new ViewModelProvider(this).get(ReminderViewModel.class);
         timeOfReminderTextView = findViewById(R.id.current_reminder_time);
         Button setTimeButton = findViewById(R.id.set_time_button);
         Button cancelReminderButton = findViewById(R.id.cancel_reminder_button);
         toggleNotificationPermissionsSwitch = findViewById(R.id.toggleNotificationPermissions);
-        toggleNotificationPermissionsSwitch.setChecked(checkNotificationPermission(this));
+        toggleNotificationPermissionsSwitch.setChecked(PermissionCheckController.getInstance().checkNotificationPermission(this));
         toggleNotificationPermissionsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked){
-                if (!checkNotificationPermission(ReminderActivity.this)) {
-                    requestNotificationPermission(ReminderActivity.this,222);
+                if (!PermissionCheckController.getInstance().checkNotificationPermission(ReminderActivity.this)) {
+                    PermissionCheckController.getInstance().requestNotificationPermission(ReminderActivity.this,222);
                 }
-
             } else {
                 // Switch turned off, open system settings to block notifications
                 openNotificationSettings();
@@ -101,6 +85,7 @@ public class ReminderActivity extends AppCompatActivity implements View.OnClickL
             onSetTimeClicked();
         } else if (viewID == R.id.cancel_reminder_button) {
             onCancelClicked();
+            clearReminderTimeTextView();
         }
     }
 
@@ -109,15 +94,7 @@ public class ReminderActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void onCancelClicked() {
-        cancelReminder();
-    }
-
-    private void cancelReminder() {
-        if (alarmManager != null) {
-            alarmManager.cancel(PendingIntent.getBroadcast(getApplicationContext(), 1, new Intent(), PendingIntent.FLAG_IMMUTABLE));
-            clearReminderTimeTextView();
-            PreferencesController.getInstance().clearReminderTime();
-        }
+        reminderViewModel.cancelReminder();
     }
 
     private void clearReminderTimeTextView() {
@@ -134,48 +111,13 @@ public class ReminderActivity extends AppCompatActivity implements View.OnClickL
             timePicker.set(Calendar.MINUTE, minute);
             timePicker.set(Calendar.SECOND, 0);
             timePicker.set(Calendar.MILLISECOND, 0);
-
             //TODO broadcast receiver for battery saver detected - alert user this function may not perform as intended.
-
-            receiverIntent = new Intent(getApplicationContext(), ReminderNotificationReceiver.class);
-            pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 1, receiverIntent, PendingIntent.FLAG_IMMUTABLE);
-            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, timePicker.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
-            reminderViewModel.setHourOfDaySelected(hourOfDay);
-            reminderViewModel.setMinuteOfDaySelected(minute);
-
-            String minuteFormatted;
-            if (minute <= 10) {
-                minuteFormatted = "0" + minute;
-            } else minuteFormatted = String.valueOf(minute);
-
-            String timeToDisplay = hourOfDay + ":" + minuteFormatted;
-            timeOfReminderTextView.setText(timeToDisplay);
-            PreferencesController.getInstance().saveReminderTime(timeToDisplay);
-
-
-
+            reminderViewModel.setTimeSetInMillis(timePicker.getTimeInMillis());
+            reminderViewModel.setReceiverAlarm();
+            timeOfReminderTextView.setText(formatDate(hourOfDay,minute));
+            PreferencesController.getInstance().saveReminderTime(formatDate(hourOfDay,minute));
         }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), textClock.is24HourModeEnabled());
         timePickerDialog.show();
-    }
-
-    public static boolean checkNotificationPermission(Activity activity) { //true if GRANTED
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            return ContextCompat.checkSelfPermission(activity, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED;
-        } else return false;
-    }
-
-    public static void requestNotificationPermission(Activity activity, int requestId) {
-        boolean isGranted = false;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            isGranted = ContextCompat.checkSelfPermission(activity, android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED;
-        }
-
-        if (!isGranted) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.POST_NOTIFICATIONS,}, requestId);
-            }
-
-        }
     }
 
     @Override
@@ -194,5 +136,14 @@ public class ReminderActivity extends AppCompatActivity implements View.OnClickL
         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         intent.setData(Uri.fromParts("package", getPackageName(), null));
         startActivity(intent);
+    }
+
+    private String formatDate(int hourOfDay, int minute){
+        String minuteFormatted;
+        if (minute <= 10) {
+            minuteFormatted = "0" + minute;
+        } else minuteFormatted = String.valueOf(minute);
+
+        return hourOfDay + ":" + minuteFormatted;
     }
 }

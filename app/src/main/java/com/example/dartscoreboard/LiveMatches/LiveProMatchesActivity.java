@@ -49,7 +49,6 @@ public class LiveProMatchesActivity extends AppCompatActivity {
 
 
     private void getCachedProMatches() {
-        //TODO Do not pass views to ViewModel! Bad practice!
         liveProMatchesViewModel.getAllProMatches().observe(this, matches -> {
             Log.d("dom test","onChanged hit");
             if (matches.isEmpty()) {
@@ -138,9 +137,6 @@ public class LiveProMatchesActivity extends AppCompatActivity {
         progressBar.setVisibility(View.VISIBLE);
         liveProMatchesViewModel.getDataFromApi(date);
     }
-
-
-
     private void setAdapter() {
         adapter = new RecyclerAdapterLiveProMatches();
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
