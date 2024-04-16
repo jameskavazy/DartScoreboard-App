@@ -112,7 +112,6 @@ public class ReminderActivity extends AppCompatActivity implements View.OnClickL
             timePicker.set(Calendar.MINUTE, minute);
             timePicker.set(Calendar.SECOND, 0);
             timePicker.set(Calendar.MILLISECOND, 0);
-            //TODO broadcast receiver for battery saver detected - alert user this function may not perform as intended.
             reminderViewModel.setTimeSetInMillis(timePicker.getTimeInMillis());
             reminderViewModel.setReceiverAlarm();
             timeOfReminderTextView.setText(formatDate(hourOfDay,minute));
@@ -129,7 +128,7 @@ public class ReminderActivity extends AppCompatActivity implements View.OnClickL
                     "Batter saver mode detected. Reminder functionality may not work correctly.",Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    
+
                 }
             });
             snackbar.show();

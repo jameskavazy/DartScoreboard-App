@@ -27,7 +27,7 @@ public class DartsScoreboardApplication extends Application {
                 "Reminder",
                 NotificationManager.IMPORTANCE_DEFAULT
         );
-        channel.setDescription("Reminder to play darts if you've missed your practice for the week");
+        channel.setDescription("Remind yourself to practice darts to build a daily habit.");
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.createNotificationChannel(channel);
     }
