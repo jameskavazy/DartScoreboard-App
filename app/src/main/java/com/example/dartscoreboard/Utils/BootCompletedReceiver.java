@@ -16,6 +16,9 @@ public class BootCompletedReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (Objects.equals(intent.getAction(), Intent.ACTION_BOOT_COMPLETED)){
             //Gets saved time from prefs, parse data and set to calendar instance for resetting reminder
+
+            if (PreferencesController.getInstance().getReminderTime() == null) return;
+
             String hourOfDay = PreferencesController.getInstance().getReminderTime();
             String[] timeArray = hourOfDay.split(":");
             Calendar calendar = Calendar.getInstance();

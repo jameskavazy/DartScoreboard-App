@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.dartscoreboard.R;
 import com.example.dartscoreboard.Utils.PermissionCheckController;
 import com.example.dartscoreboard.Utils.PreferencesController;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.util.Calendar;
@@ -118,6 +119,21 @@ public class ReminderActivity extends AppCompatActivity implements View.OnClickL
             PreferencesController.getInstance().saveReminderTime(formatDate(hourOfDay,minute));
         }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), textClock.is24HourModeEnabled());
         timePickerDialog.show();
+        showBatterSaverWarning();
+
+    }
+
+    private void showBatterSaverWarning(){
+        if (reminderViewModel.isPowerSaveActive()){
+            Snackbar snackbar = Snackbar.make(findViewById(R.id.reminder_coordinator_layout),
+                    "Batter saver mode detected. Reminder functionality may not work correctly.",Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    
+                }
+            });
+            snackbar.show();
+        }
     }
 
     @Override
@@ -140,10 +156,9 @@ public class ReminderActivity extends AppCompatActivity implements View.OnClickL
 
     private String formatDate(int hourOfDay, int minute){
         String minuteFormatted;
-        if (minute <= 10) {
+        if (minute < 10) {
             minuteFormatted = "0" + minute;
         } else minuteFormatted = String.valueOf(minute);
-
         return hourOfDay + ":" + minuteFormatted;
     }
 }
