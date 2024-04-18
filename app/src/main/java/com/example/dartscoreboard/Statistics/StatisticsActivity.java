@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dartscoreboard.R;
-import com.example.dartscoreboard.User.User;
 import com.example.dartscoreboard.User.UserViewModel;
 import com.example.dartscoreboard.User.recyclerAdapterUsers;
 
@@ -25,13 +24,11 @@ public class StatisticsActivity extends AppCompatActivity {
 
     public static String userStatKey = "USER_STAT_KEY";
 
-    private UserViewModel userViewModel;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupUI();
-        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        UserViewModel userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         userViewModel.getAllUsers().observe(this, adapter::setUsersList);
     }
 
@@ -52,13 +49,10 @@ public class StatisticsActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
-        adapter.setOnItemClickListener(new recyclerAdapterUsers.OnItemClickListener() {
-            @Override
-            public void onItemClicked(User user) {
-                Intent intent = new Intent(getApplicationContext(), UserStatisticsActivity.class);
-                intent.putExtra(userStatKey,user);
-                startActivity(intent);
-            }
+        adapter.setOnItemClickListener(user -> {
+            Intent intent = new Intent(getApplicationContext(), UserStatisticsActivity.class);
+            intent.putExtra(userStatKey,user);
+            startActivity(intent);
         });
     }
 

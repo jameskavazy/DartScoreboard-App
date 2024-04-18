@@ -51,12 +51,7 @@ public class UsersActivity extends AppCompatActivity implements OnClickListener 
             userViewModel.getAllUsers().observe(this,adapter::setUsersList);
 
 
-            adapter.setOnItemClickListener(new recyclerAdapterUsers.OnItemClickListener() {
-                @Override
-                public void onItemClicked(User user) {
-                    onCreateDialogue(user).show();
-                }
-            });
+            adapter.setOnItemClickListener(user -> onCreateDialogue(user).show());
     }
 
     @Override
@@ -83,12 +78,10 @@ public class UsersActivity extends AppCompatActivity implements OnClickListener 
     public Dialog onCreateDialogue(User user){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Are you sure you want to delete" + " " + user.getUsername() + "? Any statistics will also be deleted.")
-                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // Deletes player
-                        userViewModel.deleteUser(user);
-                        adapter.notifyDataSetChanged();
-                    }
+                .setPositiveButton("Delete", (dialog, id) -> {
+                    // Deletes player
+                    userViewModel.deleteUser(user);
+                    adapter.notifyDataSetChanged();
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {

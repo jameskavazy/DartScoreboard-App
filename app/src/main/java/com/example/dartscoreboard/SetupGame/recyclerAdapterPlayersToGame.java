@@ -28,20 +28,17 @@ public class recyclerAdapterPlayersToGame extends RecyclerView.Adapter<recyclerA
     public recyclerAdapterPlayersToGame(){
     }
     public class ViewHolderPTG extends RecyclerView.ViewHolder {
-        private TextView nameText;
-        private CheckBox checkBox;
+        private final TextView nameText;
+        private final CheckBox checkBox;
 
         public ViewHolderPTG(final View view){
             super(view);
             nameText = view.findViewById(R.id.name_text1);
             checkBox = view.findViewById(R.id.checkbox);
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = getAdapterPosition();
-                    if (listener != null && position != RecyclerView.NO_POSITION){
-                        listener.onClick(usersList.get(position),position);
-                    }
+            view.setOnClickListener(v -> {
+                int position = getBindingAdapterPosition();
+                if (listener != null && position != RecyclerView.NO_POSITION){
+                    listener.onClick(usersList.get(position),position);
                 }
             });
         }

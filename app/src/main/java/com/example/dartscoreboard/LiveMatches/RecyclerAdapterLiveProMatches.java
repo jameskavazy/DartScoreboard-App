@@ -21,18 +21,18 @@ public class RecyclerAdapterLiveProMatches extends RecyclerView.Adapter<Recycler
     public RecyclerAdapterLiveProMatches(){
     }
 
-    public class MatchViewHolder extends RecyclerView.ViewHolder {
+    public static class MatchViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView homePlayerNameTextView;
-        private TextView awayPlayerNameTextView;
-        private TextView matchStatusTextView;
+        private final TextView homePlayerNameTextView;
+        private final TextView awayPlayerNameTextView;
+        private final TextView matchStatusTextView;
 
-        private TextView startTimeTextView;
+        private final TextView startTimeTextView;
 
-        private TextView tournamentNameTextView;
+        private final TextView tournamentNameTextView;
 
-        private TextView homeScoreTextView;
-        private TextView awayScoreTextView;
+        private final TextView homeScoreTextView;
+        private final TextView awayScoreTextView;
 
 
         public MatchViewHolder(final View view) {

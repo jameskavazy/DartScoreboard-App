@@ -7,7 +7,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.DatePicker;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -15,7 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -65,12 +63,7 @@ public class LiveProMatchesActivity extends AppCompatActivity {
     }
 
     private void setRecyclerViewVisibility(){
-        liveProMatchesViewModel.getRecyclerViewVisibility().observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                recyclerView.setVisibility(integer);
-            }
-        });
+        liveProMatchesViewModel.getRecyclerViewVisibility().observe(this, integer -> recyclerView.setVisibility(integer));
     }
 
     @Override
@@ -109,12 +102,8 @@ public class LiveProMatchesActivity extends AppCompatActivity {
             Log.d("dom test", "calendar picker click");
             Calendar calendar = Calendar.getInstance();
 
-            DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
-                @Override
-                public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                    getNewMatchList(year, month, dayOfMonth);
-                }
-            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+            DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, year, month, dayOfMonth) -> getNewMatchList(year, month, dayOfMonth),
+                    calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
             datePickerDialog.show();
         }
         return super.onOptionsItemSelected(item);

@@ -12,26 +12,25 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.dartscoreboard.R;
 import com.example.dartscoreboard.User.User;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RecyclerAdapterGamePlayers extends RecyclerView.Adapter<RecyclerAdapterGamePlayers.GameViewHolder> {
 
-    private List<User> usersList = new ArrayList<>();
+    private List<User> usersList;
     public RecyclerAdapterGamePlayers(List<User> usersList){
         this.usersList = usersList;
     }
 
-    public class GameViewHolder extends RecyclerView.ViewHolder {
+    public static class GameViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView nameText;
+        private final TextView nameText;
 
-        private TextView setsTextView;
-        private TextView legsTextView;
+        private final TextView setsTextView;
+        private final TextView legsTextView;
 
-        private TextView playerScoreTextView;
+        private final TextView playerScoreTextView;
 
-        private FrameLayout playerIndicator;
+        private final FrameLayout playerIndicator;
 
         public GameViewHolder (final View view){
             super(view);

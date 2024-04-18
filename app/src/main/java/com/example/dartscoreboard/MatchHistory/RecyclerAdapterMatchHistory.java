@@ -54,7 +54,7 @@ public class RecyclerAdapterMatchHistory extends ListAdapter<GameState, Recycler
             gameDateCreatedTextView = view.findViewById(R.id.match_history_date_textview);
 
             view.setOnClickListener(v -> {
-                int position = getAdapterPosition();
+                int position = getBindingAdapterPosition();
                 if (listener != null && position != RecyclerView.NO_POSITION) {
                     listener.onItemClick(getItem(position));
                 }

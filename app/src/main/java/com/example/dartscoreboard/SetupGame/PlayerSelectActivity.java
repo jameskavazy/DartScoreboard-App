@@ -14,12 +14,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dartscoreboard.R;
-import com.example.dartscoreboard.User.User;
 import com.example.dartscoreboard.User.UserViewModel;
 
 public class PlayerSelectActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Toolbar toolbar;
     private recyclerAdapterPlayersToGame adapter;
 
     private UserViewModel userViewModel;
@@ -35,7 +33,7 @@ public class PlayerSelectActivity extends AppCompatActivity implements View.OnCl
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Select Players");
     }
 
@@ -48,13 +46,10 @@ public class PlayerSelectActivity extends AppCompatActivity implements View.OnCl
         userViewModel.getAllUsers().observe(this,adapter::setUsersList);
 
 
-        adapter.setOnItemClickListener(new recyclerAdapterPlayersToGame.OnItemClickListener() {
-            @Override
-            public void onClick(User user, int position) {
-                user.setActive(!user.getActive());
-                userViewModel.updateUser(user);
-                adapter.notifyItemChanged(position);
-            }
+        adapter.setOnItemClickListener((user, position) -> {
+            user.setActive(!user.getActive());
+            userViewModel.updateUser(user);
+            adapter.notifyItemChanged(position);
         });
     }
 

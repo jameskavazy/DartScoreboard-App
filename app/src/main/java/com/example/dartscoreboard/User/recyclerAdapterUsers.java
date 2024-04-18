@@ -24,36 +24,26 @@ public class recyclerAdapterUsers extends RecyclerView.Adapter<recyclerAdapterUs
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView nameTxt;
+        private final TextView nameTxt;
 
-        private CheckBox checkBox;
+        private final CheckBox checkBox;
 
         public MyViewHolder(final View view){
             super(view);
             nameTxt = view.findViewById(R.id.name_text1);
             checkBox = view.findViewById(R.id.checkbox);
             view.setOnClickListener(v -> {
-                int position = getAdapterPosition();
+                int position = getBindingAdapterPosition();
                 if (listener != null && position != RecyclerView.NO_POSITION) {
                     listener.onItemClicked(usersList.get(position));
                 }
             });
         }
-
-
-//        @Override
-//        public void onClick(View v) {
-//            clickHandler.onMyButtonClicked(v, getAdapterPosition());
-//        }
     }
 
     public void setUsersList(List<User> usersList){
         this.usersList = usersList;
         notifyDataSetChanged();
-    }
-
-    public User getUserAtPosition(int position){
-        return usersList.get(position);
     }
 
     public interface OnItemClickListener{

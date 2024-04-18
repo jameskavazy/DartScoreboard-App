@@ -12,34 +12,30 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class LiveProMatchRepository {
 
-        private LiveProMatchesDao liveProMatchesDao;
-        private LiveData<List<Match>> allLiveProMatches;
-        private LiveProMatchDatabase liveProMatchDatabase;
+    private final LiveProMatchesDao liveProMatchesDao;
+    private final LiveData<List<Match>> allLiveProMatches;
 
-        public LiveProMatchRepository(Application application){
-            liveProMatchDatabase = LiveProMatchDatabase.getInstance(application);
-            liveProMatchesDao = liveProMatchDatabase.liveMatchesDao();
-            allLiveProMatches = liveProMatchesDao.getAll();
-        }
+    public LiveProMatchRepository(Application application) {
+        LiveProMatchDatabase liveProMatchDatabase = LiveProMatchDatabase.getInstance(application);
+        liveProMatchesDao = liveProMatchDatabase.liveMatchesDao();
+        allLiveProMatches = liveProMatchesDao.getAll();
+    }
 
-        public Completable upsertAll(List<Match> matchesList){
-            Log.d("dom test", "liveProMatchRepo upsertAll");
-            Completable completable = Completable.fromAction(() -> liveProMatchesDao.upsertAll(matchesList));
-            completable.subscribeOn(Schedulers.io()).subscribe();
-            return completable;
-        }
+    public void upsertAll(List<Match> matchesList) {
+        Log.d("dom test", "liveProMatchRepo upsertAll");
+        Completable completable = Completable.fromAction(() -> liveProMatchesDao.upsertAll(matchesList));
+        completable.subscribeOn(Schedulers.io()).subscribe();
+    }
 
-        public Completable deleteAll(){
-            Log.d("dom test", "liveProMatchRepo deleteAll");
-            Completable completable = Completable.fromAction(()-> liveProMatchesDao.deleteAll());
-            completable.subscribeOn(Schedulers.io()).subscribe();
-            return completable;
-        }
+    public void deleteAll() {
+        Log.d("dom test", "liveProMatchRepo deleteAll");
+        Completable completable = Completable.fromAction(liveProMatchesDao::deleteAll);
+        completable.subscribeOn(Schedulers.io()).subscribe();
+    }
 
-        public LiveData<List<Match>> getAllLiveProMatches() {
-            return allLiveProMatches;
-        }
-
+    public LiveData<List<Match>> getAllLiveProMatches() {
+        return allLiveProMatches;
+    }
 
 
 }

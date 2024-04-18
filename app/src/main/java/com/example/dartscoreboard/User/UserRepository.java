@@ -11,15 +11,12 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class UserRepository {
 
-    private UserDao userDao;
-    private UserDatabase userDatabase;
+    private final UserDao userDao;
 
-    private LiveData<List<User>> allUsers;
-
-    private LiveData<List<User>> activeUsers;
+    private final LiveData<List<User>> allUsers;
 
     public UserRepository(Application application){
-        userDatabase = UserDatabase.getInstance(application);
+        UserDatabase userDatabase = UserDatabase.getInstance(application);
         userDao = userDatabase.userDao();
         allUsers = userDao.getAllUsers();
     }
@@ -37,7 +34,7 @@ public class UserRepository {
     }
 
     public void deleteAllUsers(){
-        Completable.fromAction(()-> userDao.deleteAllUsers()).subscribeOn(Schedulers.io()).subscribe();
+        Completable.fromAction(userDao::deleteAllUsers).subscribeOn(Schedulers.io()).subscribe();
     }
 
     public LiveData<List<User>> getAllUsers(){

@@ -7,10 +7,10 @@ import java.util.List;
 
 public class MatchState implements Serializable {
 
-    private List<User> playerList;
-    private int turnIndex;
-    private int turnIndexForLegs;
-    private int turnIndexForSets;
+    private final List<User> playerList;
+    private final int turnIndex;
+    private final int turnIndexForLegs;
+    private final int turnIndexForSets;
 
     public MatchState(List<User> playerList, int turnIndex, int turnIndexForLegs, int turnIndexForSets){
         this.playerList = playerList;
@@ -23,33 +23,19 @@ public class MatchState implements Serializable {
         return playerList;
     }
 
-    public void setPlayerList(List<User> playerList) {
-        this.playerList = playerList;
-    }
-
     public int getTurnIndex() {
         return turnIndex;
-    }
-
-    public void setTurnIndex(int turnIndex) {
-        this.turnIndex = turnIndex;
     }
 
     public int getTurnIndexForLegs() {
         return turnIndexForLegs;
     }
 
-    public void setTurnIndexForLegs(int turnIndexForLegs) {
-        this.turnIndexForLegs = turnIndexForLegs;
-    }
-
     public int getTurnIndexForSets() {
         return turnIndexForSets;
     }
 
-    public void setTurnIndexForSets(int turnIndexForSets) {
-        this.turnIndexForSets = turnIndexForSets;
-    }
+
 
 
 

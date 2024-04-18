@@ -18,8 +18,6 @@ public class MatchHistoryViewModel extends AndroidViewModel {
     private final MatchHistoryRepository repository;
     private final LiveData<List<GameState>> allGames;
 
-    private long id;
-
     public MatchHistoryViewModel(@NonNull Application application) {
         super(application);
         repository = new MatchHistoryRepository(application);
@@ -39,10 +37,6 @@ public class MatchHistoryViewModel extends AndroidViewModel {
         repository.delete(gameState);
     }
 
-    public LiveData<GameState> findGameById(int id){
-        return repository.getGameStateById(id);
-    }
-
     public void deleteAllMatches() {
         repository.deleteAll();
     }
@@ -50,14 +44,5 @@ public class MatchHistoryViewModel extends AndroidViewModel {
     public LiveData<List<GameState>> getAllGames() {
         return allGames;
     }
-
-    public long getInsertedId(){
-        return id;
-    }
-
-    public void deleteGameStateByID(long id){
-        repository.deleteGameStateByID(id);
-    }
-
 
 }

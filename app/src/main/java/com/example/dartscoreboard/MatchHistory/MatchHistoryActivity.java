@@ -90,16 +90,13 @@ public class MatchHistoryActivity extends AppCompatActivity {
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                GameState gameState = adapter.getGameStateAtPosition(viewHolder.getAdapterPosition());
+                GameState gameState = adapter.getGameStateAtPosition(viewHolder.getBindingAdapterPosition());
                 matchHistoryViewModel.delete(gameState);
-                undoSnackBar.setAction("OK", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //todo reactivate insertion below and debug why this isn't operating as expected
-                        //Todo diffUtil preventing insert?
+                undoSnackBar.setAction("OK", v -> {
+                    //todo reactivate insertion below and debug why this isn't operating as expected
+                    //Todo diffUtil preventing insert?
 //                        matchHistoryViewModel.insert(gameState);
 //                        Log.d("dom test", "gameState = " + gameState.getGameID() + " " + gameState.getOffsetDateTime());
-                    }
                 });
                 undoSnackBar.show();
             }

@@ -134,12 +134,12 @@ public class GameViewModel extends AndroidViewModel {
         }
     }
 
-    public void dartsThrownCO() {
-        User currentPlayer = getPlayersList().get(turnIndex);
-        if (currentPlayer.isCheckout()) {
-            //todo alert dialog?
-        }
-    }
+//    public void dartsThrownCO() {
+//        User currentPlayer = getPlayersList().get(turnIndex);
+//        if (currentPlayer.isCheckout()) {
+//            //todo alert dialog?
+//        }
+//    }
 
 
     public void saveForUndo() throws CloneNotSupportedException {
@@ -394,7 +394,13 @@ public class GameViewModel extends AndroidViewModel {
     public double getPlayerAverage() {
         User activePlayer = getPlayersList().get(getTurnIndex());
         int totalScores = activePlayer.getTotalScores();
-        double average = (double) totalScores / activePlayer.getVisits();
+        int activePlayerVisits = activePlayer.getVisits();
+
+        if (activePlayerVisits == 0){
+            activePlayerVisits++;
+        }
+
+        double average = (double) totalScores / activePlayerVisits;
         return Math.round(average * 10.0) / 10.0;
     }
 

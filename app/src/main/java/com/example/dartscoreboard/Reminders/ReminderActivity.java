@@ -125,12 +125,9 @@ public class ReminderActivity extends AppCompatActivity implements View.OnClickL
     private void showBatterSaverWarning(){
         if (reminderViewModel.isPowerSaveActive()){
             Snackbar snackbar = Snackbar.make(findViewById(R.id.reminder_coordinator_layout),
-                    "Batter saver mode detected. Reminder functionality may not work correctly.",Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+                    "Batter saver mode detected. Reminder functionality may not work correctly.",Snackbar.LENGTH_INDEFINITE).setAction("OK", v -> {
 
-                }
-            });
+                    });
             snackbar.show();
         }
     }

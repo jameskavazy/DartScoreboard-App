@@ -28,7 +28,7 @@ public class LiveProMatchesViewModel extends AndroidViewModel {
 
     private final LiveProMatchRepository repository;
 
-    private MutableLiveData<Integer> recyclerViewVisibility = new MutableLiveData<>();
+    private final MutableLiveData<Integer> recyclerViewVisibility = new MutableLiveData<>();
 
     public LiveProMatchesViewModel(@NonNull Application application) {
         super(application);

@@ -15,15 +15,7 @@ public class UserStatisticsActivity extends AppCompatActivity {
 
     private UserStatsViewModel userStatsViewModel;
 
-    private Toolbar toolbar;
-
-    private TextView winsTextView;
-    private TextView lossesTextView;
-
-    private TextView winRateTextView;
-    private TextView checkoutRateTextView;
-
-//    private User user;
+    //    private User user;
 
 
     @Override
@@ -35,7 +27,7 @@ public class UserStatisticsActivity extends AppCompatActivity {
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(userStatsViewModel.getUser().getUsername() + " Stats");
     }
     private void setupUI(){
@@ -44,14 +36,16 @@ public class UserStatisticsActivity extends AppCompatActivity {
         Bundle arguments = getIntent().getExtras();
         if (arguments != null){
             userStatsViewModel.setUser((User) arguments.getSerializable(StatisticsActivity.userStatKey));
-            winsTextView  = findViewById(R.id.winsCount);
-            lossesTextView = findViewById(R.id.lossesCount);
-            winRateTextView = findViewById(R.id.winRateCount);
-            checkoutRateTextView = findViewById(R.id.checkoutRate);
+            TextView winsTextView = findViewById(R.id.winsCount);
+            TextView lossesTextView = findViewById(R.id.lossesCount);
+            TextView winRateTextView = findViewById(R.id.winRateCount);
+            TextView checkoutRateTextView = findViewById(R.id.checkoutRate);
             winsTextView.setText(String.valueOf(userStatsViewModel.getUser().getWins()));
             lossesTextView.setText(String.valueOf(userStatsViewModel.getUser().getLosses()));
-            winRateTextView.setText(userStatsViewModel.getUser().getWinRate() + "%");
-            checkoutRateTextView.setText(userStatsViewModel.getCheckoutRate() + "%");
+            String winRate = userStatsViewModel.getUser().getWinRate() + "%";
+            String checkoutRate = userStatsViewModel.getCheckoutRate() + "%";
+            winRateTextView.setText(winRate);
+            checkoutRateTextView.setText(checkoutRate);
         }
     }
 

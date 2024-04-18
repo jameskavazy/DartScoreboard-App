@@ -71,9 +71,8 @@ public class User implements Serializable, Cloneable { //todo guy easter egg
 
 
     public int getVisits() {
-        //If previous scores list is empty then return 1 to avoid divide by zero
         if (previousScoresList == null) {
-            return 1;
+            return 0;
         } else return previousScoresList.size();
     }
 

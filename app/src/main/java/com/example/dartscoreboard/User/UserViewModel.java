@@ -10,9 +10,9 @@ import java.util.List;
 
 public class UserViewModel extends AndroidViewModel {
 
-    private LiveData<List<User>> usersList;
+    private final LiveData<List<User>> usersList;
 
-    private UserRepository repository;
+    private final UserRepository repository;
 
     public UserViewModel(@NonNull Application application) {
         super(application);
@@ -32,9 +32,9 @@ public class UserViewModel extends AndroidViewModel {
         repository.deleteUser(user);
     }
 
-    public void deleteAllUsers(){
-        repository.deleteAllUsers();
-    }
+//    public void deleteAllUsers(){
+//        repository.deleteAllUsers();
+//    }
 
     public LiveData<List<User>> getAllUsers(){
        return usersList;

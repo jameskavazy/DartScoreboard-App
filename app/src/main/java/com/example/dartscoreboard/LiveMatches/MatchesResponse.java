@@ -7,6 +7,9 @@ public class MatchesResponse {
     private String date;
     private List<Match> matches;
 
+    public MatchesResponse() {
+    }
+
     public String getDate() {
         return date;
     }

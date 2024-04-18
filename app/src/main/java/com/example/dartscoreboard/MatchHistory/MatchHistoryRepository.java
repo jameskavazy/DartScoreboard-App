@@ -14,8 +14,8 @@ import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class MatchHistoryRepository {
-    private MatchesDao matchesDao;
-    private LiveData<List<GameState>> allMatchHistory;
+    private final MatchesDao matchesDao;
+    private final LiveData<List<GameState>> allMatchHistory;
     MatchHistoryDatabase matchHistoryDatabase;
 
     public MatchHistoryRepository(Application application){
@@ -42,7 +42,7 @@ public class MatchHistoryRepository {
     }
 
     public void deleteAll(){
-        Completable completable = Completable.fromAction(()-> matchesDao.deleteAllMatchHistory());
+        Completable completable = Completable.fromAction(matchesDao::deleteAllMatchHistory);
         completable.subscribeOn(Schedulers.io()).subscribe();
     }
 
