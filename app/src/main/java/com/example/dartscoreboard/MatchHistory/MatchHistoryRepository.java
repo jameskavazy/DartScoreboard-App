@@ -41,10 +41,9 @@ public class MatchHistoryRepository {
         return completable;
     }
 
-    public Completable deleteAll(){
+    public void deleteAll(){
         Completable completable = Completable.fromAction(()-> matchesDao.deleteAllMatchHistory());
         completable.subscribeOn(Schedulers.io()).subscribe();
-        return completable;
     }
 
     public LiveData<GameState> getGameStateById(int id){

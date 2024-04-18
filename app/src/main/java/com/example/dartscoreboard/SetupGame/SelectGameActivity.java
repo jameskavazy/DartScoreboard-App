@@ -130,17 +130,25 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
     }
 
     public void openGameActivity() {
-        if (gameTypeAutoCompleteTextView.getText().toString().equals("501")) { // todo make switch
-            Log.d("dom test", "openFiveOGameActivity");
-            openFiveOGameActivity();
-        } else if (gameTypeAutoCompleteTextView.getText().toString().equals("301")) {
-            Log.d("dom test", "openThreeOGameActivity");
-            openThreeOGameActivity();
-        } else if (gameTypeAutoCompleteTextView.getText().toString().equals("170")) {
-            Log.d("dom test", "openSevenOGameActivity");
-            openSevenOGameActivity();
-        } else if (gameTypeAutoCompleteTextView.getText().toString().isEmpty()) {
-            Toast.makeText(this, "You must select a game type", Toast.LENGTH_SHORT).show();
+        String gameTypeSelected = gameTypeAutoCompleteTextView.getText().toString();
+
+        switch (gameTypeSelected) {
+            case "501":
+                Log.d("dom test", "openFiveOGameActivity");
+                openFiveOGameActivity();
+                break;
+
+            case "301":
+                Log.d("dom test", "openThreeOGameActivity");
+                openThreeOGameActivity();
+                break;
+            case "170":
+                Log.d("dom test", "openSevenOGameActivity");
+                openSevenOGameActivity();
+                break;
+            case "":
+                Toast.makeText(this, "You must select a game type", Toast.LENGTH_SHORT).show();
+                break;
         }
     }
 

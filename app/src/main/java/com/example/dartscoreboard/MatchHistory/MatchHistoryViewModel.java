@@ -15,8 +15,8 @@ import io.reactivex.rxjava3.core.Single;
 
 public class MatchHistoryViewModel extends AndroidViewModel {
 
-    private MatchHistoryRepository repository;
-    private LiveData<List<GameState>> allGames;
+    private final MatchHistoryRepository repository;
+    private final LiveData<List<GameState>> allGames;
 
     private long id;
 
