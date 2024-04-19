@@ -68,18 +68,15 @@ public class MatchHistoryActivity extends AppCompatActivity {
     private void setAdapter() {
         final RecyclerAdapterMatchHistory adapter = new RecyclerAdapterMatchHistory();
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        recyclerView.setHasFixedSize(true);
+        recyclerView.setHasFixedSize(true); //todo what is this for exactly? Do we need it
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
         matchHistoryViewModel = new ViewModelProvider(this).get(MatchHistoryViewModel.class);
-        matchHistoryViewModel.getAllGames().observe(this, adapter::submitList);
-
-
         matchHistoryViewModel.getAllGames().observe(this, gameStates -> {
-            if (gameStates.isEmpty()){
-                noRecentGamesTextView.setVisibility(View.VISIBLE);
-            } else noRecentGamesTextView.setVisibility(View.GONE);
+            adapter.submitList(gameStates);
+            noRecentGamesTextView.setVisibility(gameStates.isEmpty() ? View.VISIBLE : View.GONE);
         });
+
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -105,7 +102,7 @@ public class MatchHistoryActivity extends AppCompatActivity {
             public void onSelectedChanged(@Nullable RecyclerView.ViewHolder viewHolder, int actionState) {
 
                 super.onSelectedChanged(viewHolder, actionState);
-                if (actionState == ACTION_STATE_SWIPE){
+                if (actionState == ACTION_STATE_SWIPE) {
                     if (viewHolder != null) {
                         viewHolder.itemView.setAlpha(0.25F);
                     }
@@ -132,7 +129,7 @@ public class MatchHistoryActivity extends AppCompatActivity {
         adapter.setOnItemClickListener(gameState -> {
             Intent intent = new Intent(MatchHistoryActivity.this, GameActivity.class);
             Bundle arguments = new Bundle();
-            arguments.putSerializable(GameActivity.GAME_STATE_KEY,gameState);
+            arguments.putSerializable(GameActivity.GAME_STATE_KEY, gameState);
             intent.putExtras(arguments);
             startActivity(intent);
             finish();
@@ -165,11 +162,13 @@ public class MatchHistoryActivity extends AppCompatActivity {
                 });
         return builder.create();
     }
-    public Dialog onDeleteAllRecentGamesMenuItem(){
+
+    public Dialog onDeleteAllRecentGamesMenuItem() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Are you sure you want to delete all match history?")
-                .setPositiveButton("Yes",((dialog, which) ->matchHistoryViewModel.deleteAllMatches()))
-                .setNegativeButton("Cancel",((dialog, which) -> {}));
+                .setPositiveButton("Yes", ((dialog, which) -> matchHistoryViewModel.deleteAllMatches()))
+                .setNegativeButton("Cancel", ((dialog, which) -> {
+                }));
         return builder.create();
     }
 
