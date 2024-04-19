@@ -60,7 +60,7 @@ public class MatchHistoryActivity extends AppCompatActivity {
         noRecentGamesTextView = findViewById(R.id.no_games_alert);
         setSupportActionBar(toolbar);
         recyclerView = findViewById(R.id.recyclerView_GamesList);
-        undoSnackBar = Snackbar.make(findViewById(R.id.recent_games_coordinator_layout),"Match Deleted", Snackbar.LENGTH_LONG);
+        undoSnackBar = Snackbar.make(findViewById(R.id.recent_games_coordinator_layout), "Match Deleted", Snackbar.LENGTH_LONG);
         setAdapter();
     }
 
@@ -89,12 +89,7 @@ public class MatchHistoryActivity extends AppCompatActivity {
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 GameState gameState = adapter.getGameStateAtPosition(viewHolder.getBindingAdapterPosition());
                 matchHistoryViewModel.delete(gameState);
-                undoSnackBar.setAction("OK", v -> {
-                    //todo reactivate insertion below and debug why this isn't operating as expected
-                    //Todo diffUtil preventing insert?
-//                        matchHistoryViewModel.insert(gameState);
-//                        Log.d("dom test", "gameState = " + gameState.getGameID() + " " + gameState.getOffsetDateTime());
-                });
+                undoSnackBar.setAction("Undo", v -> matchHistoryViewModel.insert(gameState).subscribe());
                 undoSnackBar.show();
             }
 
@@ -149,7 +144,7 @@ public class MatchHistoryActivity extends AppCompatActivity {
         int menuItem = item.getItemId();
         if (menuItem == R.id.delete_all_recent_games) {
             onDeleteAllRecentGamesMenuItem().show();
-        } else if (menuItem == R.id.more_info_menu_item){
+        } else if (menuItem == R.id.more_info_menu_item) {
             onMoreInfoMenuItem().show();
         }
         return super.onOptionsItemSelected(item);
