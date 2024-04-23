@@ -1,7 +1,6 @@
 package com.example.dartscoreboard.User;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -49,8 +48,6 @@ public class UsersActivity extends AppCompatActivity implements OnClickListener 
             recyclerView.setAdapter(adapter);
             userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
             userViewModel.getAllUsers().observe(this,adapter::setUsersList);
-
-
             adapter.setOnItemClickListener(user -> onCreateDialogue(user).show());
     }
 
@@ -83,10 +80,8 @@ public class UsersActivity extends AppCompatActivity implements OnClickListener 
                     userViewModel.deleteUser(user);
                     adapter.notifyDataSetChanged();
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // User cancels the dialog.
-                    }
+                .setNegativeButton("Cancel", (dialog, id) -> {
+                    // User cancels the dialog.
                 });
         // Create the AlertDialog object and return it.
         return builder.create();

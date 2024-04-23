@@ -38,8 +38,6 @@ public class MatchHistoryActivity extends AppCompatActivity {
 
     private Snackbar undoSnackBar;
 
-//    private GameState recentlyDeletedGameState;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,7 +93,6 @@ public class MatchHistoryActivity extends AppCompatActivity {
 
             @Override
             public void onSelectedChanged(@Nullable RecyclerView.ViewHolder viewHolder, int actionState) {
-
                 super.onSelectedChanged(viewHolder, actionState);
                 if (actionState == ACTION_STATE_SWIPE) {
                     if (viewHolder != null) {
@@ -166,5 +163,4 @@ public class MatchHistoryActivity extends AppCompatActivity {
                 }));
         return builder.create();
     }
-
 }

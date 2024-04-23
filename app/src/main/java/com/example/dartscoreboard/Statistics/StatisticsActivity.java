@@ -2,6 +2,7 @@ package com.example.dartscoreboard.Statistics;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,11 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.dartscoreboard.R;
 import com.example.dartscoreboard.User.UserViewModel;
 import com.example.dartscoreboard.User.recyclerAdapterUsers;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class StatisticsActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-
     private recyclerAdapterUsers adapter;
     Toolbar toolbar;
 
@@ -39,8 +40,10 @@ public class StatisticsActivity extends AppCompatActivity {
     }
 
     private void setupUI(){
-        setContentView(R.layout.activity_statistics);
-        recyclerView = findViewById(R.id.stats_users_recycler_view);
+        setContentView(R.layout.activity_users);
+        recyclerView = findViewById(R.id.recycler_view_username_list);
+        FloatingActionButton floatingActionButton = findViewById(R.id.add_new_user_button);
+        floatingActionButton.setVisibility(View.GONE);
         setAdapter();
     }
 

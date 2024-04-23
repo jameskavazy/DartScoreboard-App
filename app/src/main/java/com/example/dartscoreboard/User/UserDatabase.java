@@ -14,12 +14,11 @@ import com.example.dartscoreboard.Utils.Converters;
 public abstract class UserDatabase extends RoomDatabase {
 
     public abstract UserDao userDao();
-
     private static volatile UserDatabase instance;
 
     public static synchronized UserDatabase getInstance(Context context){
         if (instance == null){
-            instance = Room.databaseBuilder(context.getApplicationContext(),UserDatabase.class,"userDb")
+            instance = Room.databaseBuilder(context.getApplicationContext(), UserDatabase.class,"userDb")
                     .fallbackToDestructiveMigration().build();
         }
         return instance;

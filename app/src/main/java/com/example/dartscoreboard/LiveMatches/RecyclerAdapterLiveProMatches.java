@@ -48,9 +48,6 @@ public class RecyclerAdapterLiveProMatches extends RecyclerView.Adapter<Recycler
 
     }
 
-
-
-
     @NonNull
     @Override
     public MatchViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
