@@ -6,9 +6,16 @@ import android.content.SharedPreferences;
 import androidx.preference.PreferenceManager;
 
 import com.example.dartscoreboard.Application.DartsScoreboardApplication;
+import com.example.dartscoreboard.User.User;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class PreferencesController {
 
+    public static final String PLAYER_LIST = "PLAYER_LIST";
     public static final String GAME_SELECT = "GAME_SELECT";
     public static final String REMINDER_TIME = "REMINDER_TIME";
     private static PreferencesController preferenceController;
@@ -47,8 +54,22 @@ public final class PreferencesController {
         getSharedPreferences().edit().remove(REMINDER_TIME).apply();
     }
 
+    public List<User> getPlayerListCopy() {
+        String jsonString = getSharedPreferences().getString(PLAYER_LIST,null);
+        return new Gson().fromJson(jsonString, new TypeToken<ArrayList<User>>(){}.getType());
+    }
+
+    public void copyPlayerList(List<User> playerList){
+//        Type type = new TypeToken<ArrayList<User>>(){}.getType();
+        String jsonString = new Gson().toJson(playerList);
+        getSharedPreferences().edit().putString(PLAYER_LIST,jsonString).apply();
+    }
+
+
     private static SharedPreferences getSharedPreferences() {
         Context context = DartsScoreboardApplication.getContext();
         return PreferenceManager.getDefaultSharedPreferences(context);
     }
+
+
 }

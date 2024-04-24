@@ -13,6 +13,7 @@ import com.example.dartscoreboard.MatchHistory.MatchState;
 import com.example.dartscoreboard.SetupGame.GameType;
 import com.example.dartscoreboard.User.User;
 import com.example.dartscoreboard.User.UserRepository;
+import com.example.dartscoreboard.Utils.PreferencesController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -142,14 +143,10 @@ public class GameViewModel extends AndroidViewModel {
 //    }
 
 
-    public void saveForUndo() throws CloneNotSupportedException {
-        //Make a "deep copy" todo go back to serialization?
-        ArrayList<User> playerListCopy = new ArrayList<>();
-        for (User user : getPlayersList()) {
-            playerListCopy.add((User) user.clone());
-        }
+    public void saveForUndo() {
+        PreferencesController.getInstance().copyPlayerList(getPlayersList());
+        List<User> playerListCopy = PreferencesController.getInstance().getPlayerListCopy();
         MatchState matchState = new MatchState(playerListCopy, getTurnIndex(), getTurnIndexLegs(), getTurnIndexSets());
-        //saves matchStateStack within the controller to pass it to the db.
         getMatchStateStack().push(matchState);
     }
 

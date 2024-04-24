@@ -1,6 +1,5 @@
 package com.example.dartscoreboard.User;
 
-import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
@@ -233,9 +232,9 @@ public class User implements Serializable, Cloneable { //todo guy easter egg
         this.isCheckout = checkout;
     }
 
-    @NonNull
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
+//    @NonNull
+//    @Override
+//    public Object clone() throws CloneNotSupportedException {
+//        return super.clone();
+//    }
 }
