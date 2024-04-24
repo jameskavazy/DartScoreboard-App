@@ -84,62 +84,67 @@ public class GameViewModel extends AndroidViewModel {
     }
 
 
-    private int subtract(int playerScore, int currentTypedScore) {
-        User currentPlayer = playersList.get(turnIndex); //todo could be a switch below?
-        if (currentPlayer.isGuy) {
-            Log.d("dom test", "subtract guy" + currentTypedScore);
+    private int subtract(int playerScore, int input) {
+        if (input > 180) return playerScore;
 
+        User currentPlayer = playersList.get(turnIndex);
+
+        if (currentPlayer.isGuy) {
+            Log.d("dom test", "subtract guy" + input);
             if (playerScore > 100
-                    && currentTypedScore > 10
-                    && currentTypedScore % 5 != 0
+                    && input > 10
+                    && input % 5 != 0
                     && playerScore % 5 != 0
                     && playerScore != 501
                     && playerScore != 301)
 
-                currentTypedScore = currentTypedScore - 3;
+                input = input - 3;
         }
-        int newScore = playerScore - currentTypedScore;
+        int newScore = playerScore - input;
 
-        if ((((playerScore <= 180) && (playerScore >= 171)) ||
-                (playerScore == 169) || (playerScore == 168) ||
-                (playerScore == 166) || (playerScore == 165) ||
-                (playerScore == 163) || (playerScore == 162) ||
-                (playerScore == 159))
-                && (currentTypedScore == playerScore)) {
+        if (newScore < 0){
+            //BUST
             currentPlayer.addToPreviousScoresList(0);
             Toast.makeText(DartsScoreboardApplication.getContext(), "BUST", Toast.LENGTH_SHORT).show();
             return playerScore;
         }
-        if (currentTypedScore > 180) {
-            return playerScore;
-        }
 
-        if (currentPlayer.isCheckout()) {
-            if (currentTypedScore == playerScore) {
-                currentPlayer.incrementCheckoutMade();
-            } else currentPlayer.incrementCheckoutMissed();
-        }
 
-        if (newScore > 1) {
-            currentPlayer.addToPreviousScoresList(currentTypedScore);
+        if (newScore == 0){
+            if (playerScore >= 171) {
+                currentPlayer.addToPreviousScoresList(0);
+                Toast.makeText(DartsScoreboardApplication.getContext(), "BUST", Toast.LENGTH_SHORT).show();
+                return playerScore;
+            }
+
+            switch (playerScore){
+                case 169:
+                case 168:
+                case 166:
+                case 165:
+                case 163:
+                case 162:
+                case 159:
+                    currentPlayer.addToPreviousScoresList(0);
+                    Toast.makeText(DartsScoreboardApplication.getContext(), "BUST", Toast.LENGTH_SHORT).show();
+                    return playerScore;
+            }
+            currentPlayer.incrementCheckoutMade();
+            currentPlayer.addToPreviousScoresList(input);
             return newScore;
         }
-        if (newScore == 0) {
-            currentPlayer.addToPreviousScoresList(currentTypedScore);
+
+        if (newScore > 1){
+            if (currentPlayer.isCheckout()) currentPlayer.incrementCheckoutMissed();
+            currentPlayer.addToPreviousScoresList(input);
             return newScore;
         } else {
+            //score is 1
             currentPlayer.addToPreviousScoresList(0);
             Toast.makeText(DartsScoreboardApplication.getContext(), "BUST", Toast.LENGTH_SHORT).show();
             return playerScore;
         }
     }
-
-//    public void dartsThrownCO() {
-//        User currentPlayer = getPlayersList().get(turnIndex);
-//        if (currentPlayer.isCheckout()) {
-//            //todo alert dialog?
-//        }
-//    }
 
 
     public void saveForUndo() throws CloneNotSupportedException {
