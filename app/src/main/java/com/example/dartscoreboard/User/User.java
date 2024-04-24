@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 @Entity(tableName = "user_table")
-public class User implements Serializable, Cloneable { //todo guy easter egg
+public class User implements Serializable {
     @PrimaryKey(autoGenerate = true)
     protected int userID;
     protected String username;
