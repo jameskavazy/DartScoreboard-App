@@ -60,7 +60,7 @@ public class GameViewModel extends AndroidViewModel {
     }
 
 
-    public void playerVisit(int scoreInt) throws CloneNotSupportedException {
+    public void playerVisit(int scoreInt) {
 //        //Save current gameState for undo
         saveForUndo();
         if (scoreInt <= 180) {
@@ -86,8 +86,6 @@ public class GameViewModel extends AndroidViewModel {
 
 
     private int subtract(int playerScore, int input) {
-        if (input > 180) return playerScore;
-
         User currentPlayer = playersList.get(turnIndex);
 
         if (currentPlayer.isGuy) {
@@ -103,7 +101,7 @@ public class GameViewModel extends AndroidViewModel {
         }
         int newScore = playerScore - input;
 
-        if (newScore < 0){
+        if (newScore < 0) {
             //BUST
             currentPlayer.addToPreviousScoresList(0);
             Toast.makeText(DartsScoreboardApplication.getContext(), "BUST", Toast.LENGTH_SHORT).show();
@@ -111,14 +109,14 @@ public class GameViewModel extends AndroidViewModel {
         }
 
 
-        if (newScore == 0){
+        if (newScore == 0) {
             if (playerScore >= 171) {
                 currentPlayer.addToPreviousScoresList(0);
                 Toast.makeText(DartsScoreboardApplication.getContext(), "BUST", Toast.LENGTH_SHORT).show();
                 return playerScore;
             }
 
-            switch (playerScore){
+            switch (playerScore) {
                 case 169:
                 case 168:
                 case 166:
@@ -135,7 +133,7 @@ public class GameViewModel extends AndroidViewModel {
             return newScore;
         }
 
-        if (newScore > 1){
+        if (newScore > 1) {
             if (currentPlayer.isCheckout()) currentPlayer.incrementCheckoutMissed();
             currentPlayer.addToPreviousScoresList(input);
             return newScore;
@@ -156,12 +154,11 @@ public class GameViewModel extends AndroidViewModel {
     }
 
 
-    public void undo(RecyclerAdapterGamePlayers adapter) throws CloneNotSupportedException {
+    public void undo(RecyclerAdapterGamePlayers adapter) {
         if (!getMatchStateStack().isEmpty()) {
             MatchState matchState = getMatchStateStack().pop();
             List<User> previousUserList = matchState.getPlayerList();
-            ArrayList<Integer> previousUserPreviousScoresList;
-            previousUserPreviousScoresList = previousUserList.get(matchState.getTurnIndex()).getPreviousScoresList();
+            ArrayList<Integer> previousUserPreviousScoresList = previousUserList.get(matchState.getTurnIndex()).getPreviousScoresList();
             if (!previousUserPreviousScoresList.isEmpty()) {
                 //// TODO: 28/01/2024 Why does this need to happen. Having to manually remove last visit. Deep copy doesn't work
                 previousUserPreviousScoresList.remove(previousUserPreviousScoresList.size() - 1);
@@ -340,7 +337,7 @@ public class GameViewModel extends AndroidViewModel {
     }
 
     public void updateAllUsers() {
-        for (User user : getPlayersList()){
+        for (User user : getPlayersList()) {
             updateUser(user);
         }
     }
@@ -398,7 +395,7 @@ public class GameViewModel extends AndroidViewModel {
         int totalScores = activePlayer.getTotalScores();
         int activePlayerVisits = activePlayer.getVisits();
 
-        if (activePlayerVisits == 0){
+        if (activePlayerVisits == 0) {
             activePlayerVisits++;
         }
 

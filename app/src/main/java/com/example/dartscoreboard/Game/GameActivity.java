@@ -119,8 +119,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             Log.d("dom test", "IME_ACTION_DONE");
             setBanana();
             gameViewModel.playerVisit(input);
-
-            adapter.notifyDataSetChanged(); //todo once turn is used by game controller as int, change this?
+            adapter.notifyDataSetChanged();
             if (input > 180) {
                 Toast.makeText(GameActivity.this, "Invalid Score", Toast.LENGTH_SHORT).show();
             }
@@ -180,11 +179,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 gameViewModel.insert(gameState).subscribe();
                 gameViewModel.updateAllUsers();
             }
-            try {
-                gameViewModel.undo(adapter);
-            } catch (CloneNotSupportedException e) {
-                throw new RuntimeException(e);
-            }
+            gameViewModel.undo(adapter);
             setAverageScoreTextView();
             setVisitsTextView();
             GameState gameState = gameViewModel.getGameInfo();
