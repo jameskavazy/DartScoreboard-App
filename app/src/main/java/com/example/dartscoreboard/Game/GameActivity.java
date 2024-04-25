@@ -177,7 +177,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 GameViewModel.gameStateEnd = false;
                 GameState gameState = gameViewModel.getGameInfo();
                 gameState.setGameID(gameViewModel.getGameID());
-                gameViewModel.insert(gameState);
+                gameViewModel.insert(gameState).subscribe();
                 gameViewModel.updateAllUsers();
             }
             try {
