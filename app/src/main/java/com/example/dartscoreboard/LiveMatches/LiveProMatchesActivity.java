@@ -60,7 +60,6 @@ public class LiveProMatchesActivity extends AppCompatActivity {
             dateSelectedTextView.setText(uglyOffsetDateTime.substring(0,10));
             adapter.setMatchesList(matches);
         });
-        
     }
 
     private void setRecyclerViewVisibility(){
