@@ -21,11 +21,12 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView_GamesList"
-        android:layout_width="392dp"
-        android:layout_height="666dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_marginStart="8dp"
         android:layout_marginTop="75dp"
         android:layout_marginEnd="8dp"
+        android:scrollbars="vertical"
         android:fadingEdgeLength="100dp"
         android:requiresFadingEdge="vertical" />
 

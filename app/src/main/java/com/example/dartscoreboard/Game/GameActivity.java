@@ -1,6 +1,7 @@
 package com.example.dartscoreboard.Game;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -73,9 +74,14 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void launchGameSetUp() {
+        // Reads from intent once, then removes extra. If onCreate is called again, data is pulled directly from ViewModel class.
+        Intent intent = getIntent();
         Bundle arguments = getIntent().getExtras();
-        if (arguments != null) {
-            gameViewModel.setGameState((GameState) Objects.requireNonNull(arguments.getSerializable(GAME_STATE_KEY)));
+        if (intent != null) {
+            if (arguments != null) {
+                gameViewModel.setGameState((GameState) Objects.requireNonNull(arguments.getSerializable(GAME_STATE_KEY)));
+            }
+            intent.removeExtra(GAME_STATE_KEY);
         }
         setVisitsTextView();
         setAverageScoreTextView();

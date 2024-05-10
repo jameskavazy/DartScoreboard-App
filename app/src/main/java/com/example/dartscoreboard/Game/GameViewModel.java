@@ -63,6 +63,8 @@ public class GameViewModel extends AndroidViewModel {
     public void playerVisit(int scoreInt) {
 //        //Save current gameState for undo
         saveForUndo();
+        if (scoreInt == 0)
+            Toast.makeText(DartsScoreboardApplication.getContext(), "No score.", Toast.LENGTH_SHORT).show(); 
         if (scoreInt <= 180) {
             // checks for valid score input
             User currentPlayer = playersList.get(turnIndex);
