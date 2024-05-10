@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         toolbar = findViewById(R.id.toolbar);
         Button newGameButton = findViewById(R.id.startNewGameButton);
-        Button usersButton = findViewById(R.id.usersButton);
+        Button usersButton = findViewById(R.id.users_button);
         continueButton = findViewById(R.id.continueButton);
         Button statsButton = findViewById(R.id.statsButton);
         Button trainingReminderButton = findViewById(R.id.trainingRemindersButton);
@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (viewId == R.id.startNewGameButton) {
             Log.d("dom test", "fiveoBtn click");
             onStartGameActivityClick();
-        } else if (viewId == R.id.usersButton){
+        } else if (viewId == R.id.users_button){
             Log.d("dom test", "usersButton click");
             onUsersButtonClick();
         } else if (viewId == R.id.continueButton) {
