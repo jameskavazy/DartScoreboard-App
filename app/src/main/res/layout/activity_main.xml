@@ -17,6 +17,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:padding="32dp"
+        android:textSize="11sp"
         android:text="@string/new_game"
         app:layout_constraintBottom_toTopOf="@+id/statsButton"
         app:layout_constraintEnd_toStartOf="@id/continueButton"
@@ -29,6 +30,7 @@
         android:padding="32dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
+        android:textSize="11sp"
         android:text="@string/continue_game"
         app:layout_constraintBottom_toTopOf="@id/users_button"
         app:layout_constraintEnd_toEndOf="parent"
@@ -43,6 +45,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:text="@string/stats"
+        android:textSize="11sp"
         app:layout_constraintBottom_toTopOf="@id/trainingRemindersButton"
         app:layout_constraintEnd_toStartOf="@+id/users_button"
         app:layout_constraintStart_toStartOf="parent"
@@ -57,6 +60,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:text="@string/manage_users"
+        android:textSize="11sp"
         app:layout_constraintBottom_toTopOf="@id/live_pro_matches_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/statsButton" />
@@ -74,6 +78,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/live_pro_matches_button"
         app:layout_goneMarginStart="8dp"
+        android:textSize="11sp"
         />
 
     <Button
@@ -85,6 +90,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="75dp"
         android:text="@string/live_pro_matches"
+        android:textSize="11sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/trainingRemindersButton"/>
@@ -98,6 +104,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@id/startNewGameButton"
         android:layout_marginBottom="100dp"
+        android:radius="100dp"
          />
 
     <TextView
