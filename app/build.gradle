@@ -19,7 +19,13 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "DartScoreboard_API_KEY", project.properties["DartScoreboard-App_API_KEY"]
         }
+        debug {
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "DartScoreboard_API_KEY", project.properties["DartScoreboard-App_API_KEY"]
+        }
+
     }
 
     compileOptions {
@@ -27,7 +33,9 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     buildFeatures {
+        buildConfig = true
         viewBinding true
+        android.buildFeatures.buildConfig true
     }
 
 }

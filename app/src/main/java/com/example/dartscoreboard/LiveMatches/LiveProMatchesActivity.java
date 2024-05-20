@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.dartscoreboard.BuildConfig;
 import com.example.dartscoreboard.R;
 
 import java.text.SimpleDateFormat;
@@ -34,6 +35,9 @@ public class LiveProMatchesActivity extends AppCompatActivity {
     private TextView dateSelectedTextView;
     private ProgressBar progressBar;
     public static final String DATE_SELECTED = "TODAY";
+
+
+    String API_KEY = BuildConfig.DartScoreboard_API_KEY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
