@@ -9,7 +9,7 @@ import androidx.room.TypeConverters;
 
 import com.example.dartscoreboard.Utils.Converters;
 
-@Database(entities = User.class, version = 1)
+@Database(entities = User.class, version = 2)
 @TypeConverters({Converters.class})
 public abstract class UserDatabase extends RoomDatabase {
 

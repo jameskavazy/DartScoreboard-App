@@ -11,6 +11,7 @@ import com.example.dartscoreboard.Application.DartsScoreboardApplication;
 import com.example.dartscoreboard.MatchHistory.MatchHistoryRepository;
 import com.example.dartscoreboard.MatchHistory.MatchState;
 import com.example.dartscoreboard.SetupGame.GameType;
+import com.example.dartscoreboard.Statistics.StatsHelper;
 import com.example.dartscoreboard.User.User;
 import com.example.dartscoreboard.User.UserRepository;
 import com.example.dartscoreboard.Utils.PreferencesController;
@@ -140,7 +141,6 @@ public class GameViewModel extends AndroidViewModel {
             currentPlayer.addToPreviousScoresList(input);
             return newScore;
         } else {
-            //score is 1
             currentPlayer.addToPreviousScoresList(0);
             Toast.makeText(DartsScoreboardApplication.getContext(), "BUST", Toast.LENGTH_SHORT).show();
             return playerScore;
@@ -312,7 +312,13 @@ public class GameViewModel extends AndroidViewModel {
         //Clear down controller at end of game.
         gameStateEnd = true;
         for (User user : getPlayersList()) {
+            //Only add scores for non practice games
             if (getPlayersList().size() > 1) {
+
+                StatsHelper.getInstance().updateLifeTimeScores(user);
+                StatsHelper.getInstance().updateLifeTimeVisits(user);
+
+
                 if (user.getPlayerScore() == 0) {
                     user.incrementWins();
                 } else user.incrementLosses();

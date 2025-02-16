@@ -31,6 +31,11 @@ public class User implements Serializable {
 
     public int checkoutMissed;
 
+    public int lifeTimeVisits;
+
+    public int lifeTimeScore;
+
+
 
     public User(String username, boolean active) {
         this.username = username;
@@ -232,9 +237,27 @@ public class User implements Serializable {
         this.isCheckout = checkout;
     }
 
-//    @NonNull
-//    @Override
-//    public Object clone() throws CloneNotSupportedException {
-//        return super.clone();
-//    }
+
+    public int getLifeTimeVisits() {
+        return lifeTimeVisits;
+    }
+
+    public void setLifeTimeVisits(int lifeTimeVisits) {
+        this.lifeTimeVisits = lifeTimeVisits;
+    }
+
+    public int getLifeTimeScore() {
+        return lifeTimeScore;
+    }
+
+    public void setLifeTimeScore(int lifeTimeScore) {
+        this.lifeTimeScore = lifeTimeScore;
+    }
+
+    public double getLifeTimeAvgScore(){
+        return Math.round((float) getLifeTimeScore() / getLifeTimeVisits());
+    }
+
+
+
 }

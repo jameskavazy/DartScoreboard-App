@@ -11,9 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal">
-
-
-
     </LinearLayout>
 
     <LinearLayout
@@ -37,7 +34,7 @@
 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="wins" />
+            android:text="@string/wins" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -50,7 +47,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="losses" />
+            android:text="@string/losses" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -63,7 +60,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Win Rate" />
+            android:text="@string/win_rate" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -76,11 +73,20 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Checkout Rate" />
+            android:text="@string/checkout_rate" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/avg_score_text_view"
+            android:layout_marginTop="5dp"
+            android:textSize="25sp"
+            tools:text="100"/>
 
-
-
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/avg_score"/>
 
     </LinearLayout>
 

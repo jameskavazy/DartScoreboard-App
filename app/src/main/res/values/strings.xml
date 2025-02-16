@@ -83,5 +83,10 @@
     <string name="set_time">Set Time</string>
     <string name="live_pro_matches">Live Pro Matches</string>
     <string name="choose_date">Choose Date</string>
+    <string name="avg_score">Avg Score</string>
+    <string name="checkout_rate">Checkout Rate</string>
+    <string name="win_rate">Win Rate</string>
+    <string name="losses">losses</string>
+    <string name="wins">wins</string>
 
 </resources>
