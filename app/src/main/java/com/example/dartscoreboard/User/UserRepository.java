@@ -4,6 +4,8 @@ import android.app.Application;
 
 import androidx.lifecycle.LiveData;
 
+import com.example.dartscoreboard.Db.Database;
+
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
@@ -16,8 +18,8 @@ public class UserRepository {
     private final LiveData<List<User>> allUsers;
 
     public UserRepository(Application application){
-        UserDatabase userDatabase = UserDatabase.getInstance(application);
-        userDao = userDatabase.userDao();
+        Database db = Database.getInstance(application);
+        userDao = db.userDao();
         allUsers = userDao.getAllUsers();
     }
 

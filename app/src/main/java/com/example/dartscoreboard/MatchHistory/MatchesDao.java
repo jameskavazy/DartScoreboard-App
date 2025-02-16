@@ -11,8 +11,6 @@ import com.example.dartscoreboard.Game.GameState;
 
 import java.util.List;
 
-
-
 @Dao
 public interface MatchesDao {
 

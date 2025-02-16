@@ -5,6 +5,8 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
+import com.example.dartscoreboard.Db.Database;
+
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
@@ -16,8 +18,8 @@ public class LiveProMatchRepository {
     private final LiveData<List<Match>> allLiveProMatches;
 
     public LiveProMatchRepository(Application application) {
-        LiveProMatchDatabase liveProMatchDatabase = LiveProMatchDatabase.getInstance(application);
-        liveProMatchesDao = liveProMatchDatabase.liveMatchesDao();
+        Database db = Database.getInstance(application);
+        liveProMatchesDao = db.liveProMatchesDao();
         allLiveProMatches = liveProMatchesDao.getAll();
     }
 

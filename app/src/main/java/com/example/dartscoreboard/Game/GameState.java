@@ -1,6 +1,7 @@
 package com.example.dartscoreboard.Game;
 
 import androidx.room.ColumnInfo;
+import androidx.room.Database;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 

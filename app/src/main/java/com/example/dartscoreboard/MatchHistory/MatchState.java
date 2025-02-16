@@ -35,8 +35,4 @@ public class MatchState implements Serializable {
         return turnIndexForSets;
     }
 
-
-
-
-
 }

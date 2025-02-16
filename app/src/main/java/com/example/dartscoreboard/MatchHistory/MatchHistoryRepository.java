@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
+import com.example.dartscoreboard.Db.Database;
 import com.example.dartscoreboard.Game.GameState;
 
 import java.util.List;
@@ -16,11 +17,11 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class MatchHistoryRepository {
     private final MatchesDao matchesDao;
     private final LiveData<List<GameState>> allMatchHistory;
-    MatchHistoryDatabase matchHistoryDatabase;
+    Database database;
 
     public MatchHistoryRepository(Application application){
-        matchHistoryDatabase = MatchHistoryDatabase.getInstance(application);
-        matchesDao = matchHistoryDatabase.matchesDao();
+        database = Database.getInstance(application);
+        matchesDao = database.matchesDao();
         allMatchHistory = matchesDao.getAllMatchHistory();
     }
 
@@ -50,7 +51,6 @@ public class MatchHistoryRepository {
         return matchesDao.findGameByID(id);
     }
 
-
     public void deleteGameStateByID(long id){
         Completable completable = Completable.fromAction(()-> matchesDao.deleteGameStateByID(id));
         completable.subscribeOn(Schedulers.io()).subscribe();
@@ -58,8 +58,4 @@ public class MatchHistoryRepository {
     public LiveData<List<GameState>> getAllMatchHistory(){
         return allMatchHistory;
     }
-
-
-
-
 }

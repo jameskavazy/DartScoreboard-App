@@ -31,5 +31,4 @@ public interface UserDao {
     LiveData<List<User>> getActiveUsers(boolean active);
 
 
-
 }
