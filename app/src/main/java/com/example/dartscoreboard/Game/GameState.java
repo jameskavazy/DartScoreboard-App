@@ -1,7 +1,6 @@
 package com.example.dartscoreboard.Game;
 
 import androidx.room.ColumnInfo;
-import androidx.room.Database;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -15,14 +14,14 @@ import java.util.List;
 import java.util.Stack;
 
 
-@Entity (tableName = "match_history")
+@Entity (tableName = "match")
 public class GameState implements Serializable {
 
     @PrimaryKey (autoGenerate = true)
     public long gameID;
 
-    @ColumnInfo
-   public OffsetDateTime offsetDateTime = OffsetDateTime.now();
+    @ColumnInfo(name = "datetime")
+    public OffsetDateTime offsetDateTime = OffsetDateTime.now();
 
     public GameType gameType;
 

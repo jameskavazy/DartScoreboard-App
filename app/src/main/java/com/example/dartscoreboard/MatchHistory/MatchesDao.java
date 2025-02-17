@@ -23,15 +23,15 @@ public interface MatchesDao {
     @Delete
     void deleteGameState(GameState gameState);
 
-    @Query("DELETE FROM match_history")
+    @Query("DELETE FROM `match`")
     void deleteAllMatchHistory();
 
-    @Query("SELECT * FROM match_history ORDER BY offsetDateTime DESC")
+    @Query("SELECT * FROM `match` ORDER BY datetime DESC")
     LiveData<List<GameState>> getAllMatchHistory();
 
-    @Query("SELECT * FROM match_history WHERE gameID LIKE :id")
+    @Query("SELECT * FROM `match` WHERE gameID = :id")
     LiveData<GameState> findGameByID(int id);
 
-    @Query("DELETE FROM match_history WHERE gameID = :id")
+    @Query("DELETE FROM `match` WHERE gameID = :id")
     void deleteGameStateByID(long id);
 }

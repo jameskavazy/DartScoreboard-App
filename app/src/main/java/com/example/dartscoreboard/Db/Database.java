@@ -20,7 +20,7 @@ import com.example.dartscoreboard.Utils.Converters;
                 GameState.class,
                 Match.class
         },
-        version = 2)
+        version = 3)
 @TypeConverters({Converters.class})
 public abstract class Database extends RoomDatabase {
 

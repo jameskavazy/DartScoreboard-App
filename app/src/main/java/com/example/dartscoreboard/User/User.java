@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-@Entity(tableName = "user_table")
+@Entity(tableName = "user")
 public class User implements Serializable {
     @PrimaryKey(autoGenerate = true)
     protected int userID;

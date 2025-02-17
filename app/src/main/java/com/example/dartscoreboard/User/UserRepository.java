@@ -47,6 +47,4 @@ public class UserRepository {
         return userDao.getActiveUsers(active);
     }
 
-
-
 }

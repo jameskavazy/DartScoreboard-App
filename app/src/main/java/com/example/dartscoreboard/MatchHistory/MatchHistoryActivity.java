@@ -66,7 +66,6 @@ public class MatchHistoryActivity extends AppCompatActivity {
     private void setAdapter() {
         final RecyclerAdapterMatchHistory adapter = new RecyclerAdapterMatchHistory();
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        recyclerView.setHasFixedSize(true); //todo what is this for exactly? Do we need it
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
         matchHistoryViewModel = new ViewModelProvider(this).get(MatchHistoryViewModel.class);

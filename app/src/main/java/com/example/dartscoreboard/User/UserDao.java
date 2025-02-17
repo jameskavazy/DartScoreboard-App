@@ -21,13 +21,13 @@ public interface UserDao {
     @Update
     void updateUser(User user);
 
-    @Query("SELECT * FROM user_table")
+    @Query("SELECT * FROM user")
     LiveData<List<User>> getAllUsers();
 
-    @Query("DELETE FROM user_table")
+    @Query("DELETE FROM user")
     void deleteAllUsers();
 
-    @Query("SELECT * FROM user_table WHERE active = :active")
+    @Query("SELECT * FROM user WHERE active = :active")
     LiveData<List<User>> getActiveUsers(boolean active);
 
 
