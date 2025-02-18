@@ -2,6 +2,7 @@ package com.example.dartscoreboard.Game;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.example.dartscoreboard.MatchHistory.MatchState;
@@ -23,19 +24,25 @@ public class GameState implements Serializable {
     @ColumnInfo(name = "datetime")
     public OffsetDateTime offsetDateTime = OffsetDateTime.now();
 
+    @ColumnInfo(name = "game_type")
     public GameType gameType;
 
     public List<User> playerList;
 
+    @ColumnInfo(name = "settings")
     private GameSettings gameSettings;
 
+    @ColumnInfo(name = "turn_index")
     public int turnIndex;
+    @ColumnInfo(name = "leg_index")
+    public int legIndex;
+    @ColumnInfo(name = "set_index")
+    public int setIndex;
 
-    public int turnLeadForLegs;
 
-    public int turnLeadForSets;
+    public boolean finished;
 
-    public Stack<MatchState> matchStateStack;
+    public Stack<MatchState> matchStateStack; // TODO delete
 
     public Stack<MatchState> getMatchStateStack() {
         return matchStateStack;
@@ -46,14 +53,15 @@ public class GameState implements Serializable {
     }
 
     public GameState(GameType gameType, GameSettings gameSettings, List<User> playerList,
-                     int turnIndex, int turnLeadForLegs, int turnLeadForSets, Stack<MatchState> matchStateStack) {
+                     int turnIndex, int legIndex, int setIndex, Stack<MatchState> matchStateStack, boolean finished) {
         this.gameType = gameType;
         this.gameSettings = gameSettings;
         this.playerList = playerList;
         this.turnIndex = turnIndex;
-        this.turnLeadForLegs = turnLeadForLegs;
-        this.turnLeadForSets = turnLeadForSets;
+        this.legIndex = legIndex;
+        this.setIndex = setIndex;
         this.matchStateStack = matchStateStack;
+        this.finished = finished;
     }
 
     public OffsetDateTime getCreatedDate() {
@@ -61,7 +69,6 @@ public class GameState implements Serializable {
     }
 
     public void setCreatedDate(OffsetDateTime offsetDateTime) {
-
         this.offsetDateTime = offsetDateTime;
     }
 
@@ -107,24 +114,31 @@ public class GameState implements Serializable {
         this.turnIndex = turnIndex;
     }
 
-    public int getTurnLeadForLegs() {
-        return turnLeadForLegs;
+    public int getLegIndex() {
+        return legIndex;
     }
 
-    public void setTurnLeadForLegs(int turnLeadForLegs) {
-        this.turnLeadForLegs = turnLeadForLegs;
+    public void setLegIndex(int legIndex) {
+        this.legIndex = legIndex;
     }
 
-    public int getTurnLeadForSets() {
-        return turnLeadForSets;
+    public int getSetIndex() {
+        return setIndex;
     }
 
-    public void setTurnLeadForSets(int turnLeadForSets) {
-        this.turnLeadForSets = turnLeadForSets;
+    public void setSetIndex(int setIndex) {
+        this.setIndex = setIndex;
     }
 
     public OffsetDateTime getOffsetDateTime() {
         return offsetDateTime;
+    }
+    public boolean isFinished() {
+        return finished;
+    }
+
+    public void setFinished(boolean finished) {
+        this.finished = finished;
     }
 
 }

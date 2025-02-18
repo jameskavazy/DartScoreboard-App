@@ -142,7 +142,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void endGameChecker() {
-        if (GameViewModel.gameStateEnd) {
+        if (GameViewModel.finished) {
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(recyclerView.getApplicationWindowToken(), 0);
             inputScoreEditText.setVisibility(View.GONE);
@@ -176,10 +176,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         if (menuItem == R.id.undo_menu_button) {
             Log.d("dom test", "Undo Click");
             //Brings back text input if game was finished.
-            if (GameViewModel.gameStateEnd) {
+            if (GameViewModel.finished) {
                 inputScoreEditText.setVisibility(View.VISIBLE);
                 doneButton.setVisibility(View.VISIBLE);
-                GameViewModel.gameStateEnd = false;
+                GameViewModel.finished = false;
                 GameState gameState = gameViewModel.getGameInfo();
                 gameState.setGameID(gameViewModel.getGameID());
                 gameViewModel.insert(gameState).subscribe();

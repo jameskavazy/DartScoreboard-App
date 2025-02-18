@@ -186,7 +186,7 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
     }
 
     private GameState initialiseGameState(GameType gameType) {
-        GameState gameState = new GameState(gameType, getGameSettings(), getPlayersToGame(), 0, 0, 0, matchStateStack);
+        GameState gameState = new GameState(gameType, getGameSettings(), getPlayersToGame(), 0, 0, 0, matchStateStack, false);
         gameState.setGameID(0);
         return gameState;
     }

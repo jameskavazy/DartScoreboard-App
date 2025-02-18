@@ -33,7 +33,7 @@ public class GameViewModel extends AndroidViewModel {
     private int turnIndexSets = 0;
     private List<User> playersList;
     private GameType gameType;
-    public static boolean gameStateEnd;
+    public static boolean finished; // TODO private and non-static?
     private Stack<MatchState> matchStateStack = new Stack<>();
 
     private GameSettings gameSettings;
@@ -196,7 +196,7 @@ public class GameViewModel extends AndroidViewModel {
                 Log.d("dom test", player.getUsername() + " current legs = " + player.getCurrentLegs());
                 nextSet();
                 matchWonChecker();
-                if (!gameStateEnd) {
+                if (!finished) {
                     setPlayerStartingScores();
                 }
             }
@@ -310,15 +310,12 @@ public class GameViewModel extends AndroidViewModel {
 
     public void endGame() {
         //Clear down controller at end of game.
-        gameStateEnd = true;
+        setFinished(true);
         for (User user : getPlayersList()) {
             //Only add scores for non practice games
             if (getPlayersList().size() > 1) {
-
                 StatsHelper.getInstance().updateLifeTimeScores(user);
                 StatsHelper.getInstance().updateLifeTimeVisits(user);
-
-
                 if (user.getPlayerScore() == 0) {
                     user.incrementWins();
                 } else user.incrementLosses();
@@ -336,11 +333,11 @@ public class GameViewModel extends AndroidViewModel {
         setGameSettings(gameState.getGameSettings());
         setMatchStateStack(gameState.getMatchStateStack());
         setTurnIndex(gameState.getTurnIndex());
-        setTurnIndexLegs(gameState.getTurnLeadForLegs());
-        setTurnIndexSets(gameState.getTurnLeadForSets());
+        setTurnIndexLegs(gameState.getLegIndex());
+        setTurnIndexSets(gameState.getSetIndex());
         if (gameID == 0) {
             setPlayerStartingScores();
-            gameStateEnd = false;
+            finished = false;
         }
     }
 
@@ -384,7 +381,9 @@ public class GameViewModel extends AndroidViewModel {
                 getTurnIndex(),
                 getTurnIndexLegs(),
                 getTurnIndexSets(),
-                getMatchStateStack());
+                getMatchStateStack(),
+                getFinished());
+
     }
 
     public Stack<MatchState> getMatchStateStack() {
@@ -414,6 +413,15 @@ public class GameViewModel extends AndroidViewModel {
     public boolean bananaSplit() {
         return getPlayersList().get(getTurnIndex()).isGuy
                 && getPlayersList().get(getTurnIndex()).getVisits() % 7 == 0;
+    }
+
+
+    private boolean getFinished() {
+        return finished;
+    }
+
+    private void setFinished(boolean f) {
+        finished = f;
     }
 
 

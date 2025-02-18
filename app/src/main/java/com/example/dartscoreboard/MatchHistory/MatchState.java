@@ -5,6 +5,8 @@ import com.example.dartscoreboard.User.User;
 import java.io.Serializable;
 import java.util.List;
 
+
+// TODO: 17/02/2025 This will probably not be needed as we won't be using stack data structure to store match history
 public class MatchState implements Serializable {
 
     private final List<User> playerList;
