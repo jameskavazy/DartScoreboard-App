@@ -71,6 +71,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         inputScoreEditText.setOnEditorActionListener((v, actionId, event) -> onScoreEntered());
         gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
         launchGameSetUp();
+        Log.d("dom test", "game id currently is: " + String.valueOf(gameViewModel.getGameID()));
+
     }
 
     private void launchGameSetUp() {
@@ -101,12 +103,13 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private void setAdapter() {
         adapter = new RecyclerAdapterGamePlayers(gameViewModel.getPlayersList());
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext()) {
-            @Override
-            public boolean canScrollVertically() {
-                return false;
-            }
-        };
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
+//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext()) {
+//            @Override
+//            public boolean canScrollVertically() {
+//                return false;
+//            }
+//        };
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
@@ -142,7 +145,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void endGameChecker() {
-        if (GameViewModel.finished) {
+        if (gameViewModel.getFinished()) {
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(recyclerView.getApplicationWindowToken(), 0);
             inputScoreEditText.setVisibility(View.GONE);
@@ -175,11 +178,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         int menuItem = item.getItemId();
         if (menuItem == R.id.undo_menu_button) {
             Log.d("dom test", "Undo Click");
-            //Brings back text input if game was finished.
-            if (GameViewModel.finished) {
+
+            if (gameViewModel.getFinished()) {
                 inputScoreEditText.setVisibility(View.VISIBLE);
                 doneButton.setVisibility(View.VISIBLE);
-                GameViewModel.finished = false;
+                gameViewModel.setFinished(false);
                 GameState gameState = gameViewModel.getGameInfo();
                 gameState.setGameID(gameViewModel.getGameID());
                 gameViewModel.insert(gameState).subscribe();

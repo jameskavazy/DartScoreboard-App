@@ -33,7 +33,7 @@ public class GameViewModel extends AndroidViewModel {
     private int turnIndexSets = 0;
     private List<User> playersList;
     private GameType gameType;
-    public static boolean finished; // TODO private and non-static?
+    private boolean finished; // TODO private and non-static?
     private Stack<MatchState> matchStateStack = new Stack<>();
 
     private GameSettings gameSettings;
@@ -416,11 +416,11 @@ public class GameViewModel extends AndroidViewModel {
     }
 
 
-    private boolean getFinished() {
+    public boolean getFinished() {
         return finished;
     }
 
-    private void setFinished(boolean f) {
+    public void setFinished(boolean f) {
         finished = f;
     }
 

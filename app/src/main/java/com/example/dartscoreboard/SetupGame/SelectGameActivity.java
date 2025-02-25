@@ -104,7 +104,7 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
             if (getPlayersToGame().isEmpty()) {
                 Toast.makeText(this, "You must select at least one player to start the match", Toast.LENGTH_SHORT).show();
             } else {
-                openGameActivity();
+                startGameActivity();
                 PreferencesController.getInstance().clearSelectedGame();
                 finish();
             }
@@ -129,65 +129,45 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         startActivity(intent);
     }
 
-    public void openGameActivity() {
+    public void startGameActivity() {
         String gameTypeSelected = gameTypeAutoCompleteTextView.getText().toString();
 
-        switch (gameTypeSelected) {
-            case "501":
-                Log.d("dom test", "openFiveOGameActivity");
-                openFiveOGameActivity();
-                break;
-
-            case "301":
-                Log.d("dom test", "openThreeOGameActivity");
-                openThreeOGameActivity();
-                break;
-            case "170":
-                Log.d("dom test", "openSevenOGameActivity");
-                openSevenOGameActivity();
-                break;
-            case "":
-                Toast.makeText(this, "You must select a game type", Toast.LENGTH_SHORT).show();
-                break;
-        }
+      if (gameTypeSelected.equals("")) {
+          Toast.makeText(this, "You must select a game type", Toast.LENGTH_SHORT).show();
+      } else {
+          GameType gameType = getGameType(gameTypeSelected);
+          openGameActivity(gameType);
+      }
     }
 
-    private void openFiveOGameActivity() {
+    private void openGameActivity(GameType gameType) {
         Log.d("dom test", "openFiveOGameActivity");
         Intent intent = new Intent(this, GameActivity.class);
         Bundle arguments = new Bundle();
-        GameState gameState = initialiseGameState(GameType.FiveO);
+        GameState gameState = initialiseGameState(gameType);
         arguments.putSerializable(GameActivity.GAME_STATE_KEY, gameState);
         intent.putExtras(arguments);
         startActivity(intent);
         finish();
     }
 
-    private void openThreeOGameActivity() {
-        Log.d("dom test", "openThreeOGameActivity");
-        Intent intent = new Intent(this, GameActivity.class);
-        Bundle arguments = new Bundle();
-        GameState gameState = initialiseGameState(GameType.ThreeO);
-        arguments.putSerializable(GameActivity.GAME_STATE_KEY, gameState);
-        intent.putExtras(arguments);
-        startActivity(intent);
-        finish();
+    private GameType getGameType(String gameTypeSelected) {
+        switch (gameTypeSelected) {
+            case "501":
+                return GameType.FiveO;
+            case "301":
+                return GameType.ThreeO;
+            case "170":
+                return GameType.SevenO;
+            default:
+                return null;
+        }
     }
 
-    private void openSevenOGameActivity() {
-        Log.d("dom test", "openSevenOGameActivity");
-        Intent intent = new Intent(this, GameActivity.class);
-        Bundle arguments = new Bundle();
-        GameState gameState = initialiseGameState(GameType.SevenO);
-        arguments.putSerializable(GameActivity.GAME_STATE_KEY, gameState);
-        intent.putExtras(arguments);
-        startActivity(intent);
-        finish();
-    }
-
-    private GameState initialiseGameState(GameType gameType) {
+       private GameState initialiseGameState(GameType gameType) {
         GameState gameState = new GameState(gameType, getGameSettings(), getPlayersToGame(), 0, 0, 0, matchStateStack, false);
         gameState.setGameID(0);
+        Log.d("db test", "the id as set" + gameState.gameID);
         return gameState;
     }
 

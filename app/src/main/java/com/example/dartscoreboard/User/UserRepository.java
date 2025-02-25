@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.lifecycle.LiveData;
 
 import com.example.dartscoreboard.Db.Database;
+import com.example.dartscoreboard.Game.GameWithUsers;
 
 import java.util.List;
 
@@ -45,6 +46,10 @@ public class UserRepository {
 
     public LiveData<List<User>> getActiveUsers(boolean active){
         return userDao.getActiveUsers(active);
+    }
+
+    public LiveData<List<GameWithUsers>> getUserFromGameState(int gameID){
+       return userDao.getUsersFromGameState(gameID);
     }
 
 }

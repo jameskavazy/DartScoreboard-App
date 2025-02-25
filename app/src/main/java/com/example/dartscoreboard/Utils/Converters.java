@@ -3,6 +3,7 @@ package com.example.dartscoreboard.Utils;
 import androidx.room.TypeConverter;
 
 import com.example.dartscoreboard.Game.GameSettings;
+import com.example.dartscoreboard.Game.GameWithUsers;
 import com.example.dartscoreboard.MatchHistory.MatchState;
 import com.example.dartscoreboard.SetupGame.GameType;
 import com.example.dartscoreboard.User.User;
@@ -69,6 +70,17 @@ public class Converters {
     public String matchStateToJsonString(Stack<MatchState> matchStateStack){
         return new Gson().toJson(matchStateStack);
     }
+
+    @TypeConverter
+    public List<GameWithUsers> gameWithUsersFromJSON(String json) {
+        return new Gson().fromJson(json, new TypeToken<List<GameWithUsers>>() {}.getType());
+    }
+
+    @TypeConverter
+    public String gameWithUsersToJsonString(List<GameWithUsers> gameWithUsers) {
+        return new Gson().toJson(gameWithUsers);
+    }
+
 
 
 }

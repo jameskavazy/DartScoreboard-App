@@ -10,7 +10,7 @@ import java.util.ArrayList;
 @Entity(tableName = "user")
 public class User implements Serializable {
     @PrimaryKey(autoGenerate = true)
-    protected int userID;
+    public int userID;
     protected String username;
     @Ignore
     protected int playerScore;

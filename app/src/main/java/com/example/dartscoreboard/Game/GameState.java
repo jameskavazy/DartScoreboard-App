@@ -2,7 +2,6 @@ package com.example.dartscoreboard.Game;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.example.dartscoreboard.MatchHistory.MatchState;

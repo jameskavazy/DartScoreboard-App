@@ -7,6 +7,7 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
 import com.example.dartscoreboard.Game.GameState;
+import com.example.dartscoreboard.Game.GameUsers;
 import com.example.dartscoreboard.LiveMatches.LiveProMatchesDao;
 import com.example.dartscoreboard.LiveMatches.Match;
 import com.example.dartscoreboard.MatchHistory.MatchesDao;
@@ -18,7 +19,8 @@ import com.example.dartscoreboard.Utils.Converters;
         entities = {
                 User.class,
                 GameState.class,
-                Match.class
+                Match.class,
+                GameUsers.class
         },
         version = 3)
 @TypeConverters({Converters.class})
@@ -32,7 +34,8 @@ public abstract class Database extends RoomDatabase {
     public static synchronized Database getInstance(Context context){
         if (instance == null){
             instance = Room.databaseBuilder(context.getApplicationContext(), Database.class,"scoreboard-db")
-                    .fallbackToDestructiveMigration().build();
+                    .fallbackToDestructiveMigration()
+                    .build();
         }
         return instance;
     }

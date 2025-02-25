@@ -5,7 +5,10 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import androidx.room.Update;
+
+import com.example.dartscoreboard.Game.GameWithUsers;
 
 import java.util.List;
 
@@ -30,5 +33,7 @@ public interface UserDao {
     @Query("SELECT * FROM user WHERE active = :active")
     LiveData<List<User>> getActiveUsers(boolean active);
 
-
+    @Transaction
+    @Query("SELECT * FROM `match` WHERE gameID = :gameID")
+    LiveData<List<GameWithUsers>> getUsersFromGameState(int gameID);
 }
