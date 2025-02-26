@@ -5,7 +5,6 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import com.example.dartscoreboard.MatchHistory.MatchState;
-import com.example.dartscoreboard.SetupGame.GameType;
 import com.example.dartscoreboard.User.User;
 
 import java.io.Serializable;

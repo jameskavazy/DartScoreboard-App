@@ -14,13 +14,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dartscoreboard.R;
+import com.example.dartscoreboard.User.User;
 import com.example.dartscoreboard.User.UserViewModel;
+import com.example.dartscoreboard.Utils.PreferencesController;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collector;
 
 public class PlayerSelectActivity extends AppCompatActivity implements View.OnClickListener {
 
     private recyclerAdapterPlayersToGame adapter;
-
-    private UserViewModel userViewModel;
 
     private RecyclerView recyclerView;
     @Override
@@ -42,13 +47,11 @@ public class PlayerSelectActivity extends AppCompatActivity implements View.OnCl
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
-        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        UserViewModel userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         userViewModel.getAllUsers().observe(this,adapter::setUsersList);
 
-
         adapter.setOnItemClickListener((user, position) -> {
-            user.setActive(!user.getActive());
-            userViewModel.updateUser(user);
+            addRemoveUser(user);
             adapter.notifyItemChanged(position);
         });
     }
@@ -66,5 +69,14 @@ public class PlayerSelectActivity extends AppCompatActivity implements View.OnCl
             startActivity(intent);
             finish();
         }
+    }
+
+    private void addRemoveUser(User user) {
+        List<User> players = PreferencesController.getInstance().getPlayers();
+        boolean removed = players.removeIf(player -> player.userID == user.userID);
+        if (!removed) {
+            players.add(user);
+        }
+        PreferencesController.getInstance().savePlayers(players);
     }
 }

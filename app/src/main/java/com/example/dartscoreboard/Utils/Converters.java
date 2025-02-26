@@ -5,7 +5,7 @@ import androidx.room.TypeConverter;
 import com.example.dartscoreboard.Game.GameSettings;
 import com.example.dartscoreboard.Game.GameWithUsers;
 import com.example.dartscoreboard.MatchHistory.MatchState;
-import com.example.dartscoreboard.SetupGame.GameType;
+import com.example.dartscoreboard.Game.GameType;
 import com.example.dartscoreboard.User.User;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;

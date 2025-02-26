@@ -40,10 +40,6 @@ public class UserViewModel extends AndroidViewModel {
        return usersList;
     }
 
-    public LiveData<List<User>> getActiveUsers(){
-        return repository.getActiveUsers(true);
-    }
-
 
 }
 

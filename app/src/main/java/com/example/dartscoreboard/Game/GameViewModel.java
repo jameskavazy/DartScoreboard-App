@@ -10,7 +10,6 @@ import androidx.lifecycle.AndroidViewModel;
 import com.example.dartscoreboard.Application.DartsScoreboardApplication;
 import com.example.dartscoreboard.MatchHistory.MatchHistoryRepository;
 import com.example.dartscoreboard.MatchHistory.MatchState;
-import com.example.dartscoreboard.SetupGame.GameType;
 import com.example.dartscoreboard.Statistics.StatsHelper;
 import com.example.dartscoreboard.User.User;
 import com.example.dartscoreboard.User.UserRepository;
@@ -149,8 +148,8 @@ public class GameViewModel extends AndroidViewModel {
 
 
     public void saveForUndo() {
-        PreferencesController.getInstance().copyPlayerList(getPlayersList());
-        List<User> playerListCopy = PreferencesController.getInstance().getPlayerListCopy();
+        PreferencesController.getInstance().savePlayers(getPlayersList());
+        List<User> playerListCopy = PreferencesController.getInstance().getPlayers();
         MatchState matchState = new MatchState(playerListCopy, getTurnIndex(), getTurnIndexLegs(), getTurnIndexSets());
         getMatchStateStack().push(matchState);
     }

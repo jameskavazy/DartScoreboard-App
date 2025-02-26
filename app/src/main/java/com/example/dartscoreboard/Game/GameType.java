@@ -1,4 +1,4 @@
-package com.example.dartscoreboard.SetupGame;
+package com.example.dartscoreboard.Game;
 
 public enum GameType {
     FiveO("501", 501),

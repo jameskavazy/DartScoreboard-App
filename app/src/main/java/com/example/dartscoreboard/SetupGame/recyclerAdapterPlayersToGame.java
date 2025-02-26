@@ -11,16 +11,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dartscoreboard.R;
 import com.example.dartscoreboard.User.User;
+import com.example.dartscoreboard.Utils.PreferencesController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class recyclerAdapterPlayersToGame extends RecyclerView.Adapter<recyclerAdapterPlayersToGame.ViewHolderPTG> {
 
     private List<User> usersList = new ArrayList<>();
 
     private OnItemClickListener listener;
-
     public interface OnItemClickListener {
         void onClick(User user, int position);
     }
@@ -66,8 +67,10 @@ public class recyclerAdapterPlayersToGame extends RecyclerView.Adapter<recyclerA
         String name = usersList.get(position).getUsername();
         holder.nameText.setText(name);
         User user = usersList.get(position);
-        boolean active = user.getActive();
-        holder.checkBox.setChecked(active);
+        boolean selected = PreferencesController.getInstance().getPlayers()
+                        .stream()
+                        .anyMatch(player -> player.userID == user.userID);
+        holder.checkBox.setChecked(selected);
     }
 
     @Override

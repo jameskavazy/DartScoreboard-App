@@ -17,18 +17,15 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.dartscoreboard.Game.GameActivity;
-import com.example.dartscoreboard.Game.GameSettings;
 import com.example.dartscoreboard.Game.GameState;
-import com.example.dartscoreboard.MatchHistory.MatchState;
+import com.example.dartscoreboard.Game.GameType;
 import com.example.dartscoreboard.R;
 import com.example.dartscoreboard.User.User;
-import com.example.dartscoreboard.User.UserViewModel;
 import com.example.dartscoreboard.Utils.PreferencesController;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Stack;
 
 public class SelectGameActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -39,7 +36,7 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
 
     private Toolbar toolbar;
 
-    private List<User> playersToGame;
+    private List<User> selectedPlayers;
     private AutoCompleteTextView gameTypeAutoCompleteTextView;
     private AutoCompleteTextView legsAutoCompleteTextView;
 
@@ -47,9 +44,7 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
 
     private TextView playerListTextViewButton;
 
-    private UserViewModel userViewModel;
-
-    private final Stack<MatchState> matchStateStack = new Stack<>();
+    private SelectGameViewModel selectGameViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +71,6 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         setsAutoCompleteTextView = findViewById(R.id.sets_drop_down);
         gameTypeAutoCompleteTextView = findViewById(R.id.gameTypeDropDownBox);
         toolbar = findViewById(R.id.toolbar);
-
         startGameBtn.setOnClickListener(this);
         addPlayersBtn.setOnClickListener(this);
         randomisePlayersBtn.setOnClickListener(this);
@@ -87,21 +81,20 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         if (PreferencesController.getInstance().getGameSelected() != null) {
             gameTypeAutoCompleteTextView.setText(PreferencesController.getInstance().getGameSelected());
         }
+        selectedPlayers = PreferencesController.getInstance().getPlayers();
+        setPlayersTextBox(selectedPlayers);
+        selectGameViewModel = new ViewModelProvider(this).get(SelectGameViewModel.class);
 
         setUpGameTypeDropDownMenu();
         setUpLegsListDropDownMenu();
         setUpSetsListDropDownMenu();
-
-        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
-        userViewModel.getActiveUsers().observe(this, this::setPlayersToGame);
-        setPlayersTextBox(getPlayersToGame());
     }
 
     @Override
     public void onClick(View v) {
         int viewId = v.getId();
-        if (viewId == R.id.gameStartButton) { // switch statement
-            if (getPlayersToGame().isEmpty()) {
+        if (viewId == R.id.gameStartButton) {
+            if (selectGameViewModel.getSelectedPlayers().isEmpty()) {
                 Toast.makeText(this, "You must select at least one player to start the match", Toast.LENGTH_SHORT).show();
             } else {
                 startGameActivity();
@@ -113,14 +106,11 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
             PreferencesController.getInstance().saveSelectedGame(gameTypeAutoCompleteTextView.getText().toString());
             finish();
         } else if (viewId == R.id.remove_players_button) {
-            for (User user : playersToGame) {
-                user.setActive(false);
-                userViewModel.updateUser(user);
-            }
+            PreferencesController.getInstance().savePlayers(new ArrayList<>());
             playerListTextViewButton.setText(null);
         } else if (viewId == R.id.randomise_players_button) {
-            Collections.shuffle(getPlayersToGame());
-            setPlayersTextBox(getPlayersToGame());
+            Collections.shuffle(selectedPlayers);
+            setPlayersTextBox(selectedPlayers);
         }
     }
 
@@ -131,26 +121,31 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
 
     public void startGameActivity() {
         String gameTypeSelected = gameTypeAutoCompleteTextView.getText().toString();
-
-      if (gameTypeSelected.equals("")) {
-          Toast.makeText(this, "You must select a game type", Toast.LENGTH_SHORT).show();
-      } else {
-          GameType gameType = getGameType(gameTypeSelected);
-          openGameActivity(gameType);
-      }
+        if (gameTypeSelected.equals("")) {
+            Toast.makeText(this, "You must select a game type", Toast.LENGTH_SHORT).show();
+        } else {
+            GameType gameType = getGameType(gameTypeSelected);
+            openGameActivity(gameType);
+        }
     }
 
     private void openGameActivity(GameType gameType) {
-        Log.d("dom test", "openFiveOGameActivity");
-        Intent intent = new Intent(this, GameActivity.class);
-        Bundle arguments = new Bundle();
-        GameState gameState = initialiseGameState(gameType);
-        arguments.putSerializable(GameActivity.GAME_STATE_KEY, gameState);
-        intent.putExtras(arguments);
-        startActivity(intent);
-        finish();
+        if (gameType != null) {
+            Log.d("dom test", "openGameActivity");
+            Intent intent = new Intent(this, GameActivity.class);
+            Bundle arguments = new Bundle();
+            GameState gameState = initialiseGameState(gameType);
+            arguments.putSerializable(GameActivity.GAME_STATE_KEY, gameState);
+            intent.putExtras(arguments);
+            startActivity(intent);
+            finish();
+        }
     }
 
+    /**
+     * GetGameType takes a string value and returns the corresponding GameType enum. Returns null
+     * GameType if string cannot be parsed.
+    * */
     private GameType getGameType(String gameTypeSelected) {
         switch (gameTypeSelected) {
             case "501":
@@ -164,11 +159,10 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
-       private GameState initialiseGameState(GameType gameType) {
-        GameState gameState = new GameState(gameType, getGameSettings(), getPlayersToGame(), 0, 0, 0, matchStateStack, false);
-        gameState.setGameID(0);
-        Log.d("db test", "the id as set" + gameState.gameID);
-        return gameState;
+    private GameState initialiseGameState(GameType gameType) {
+        int legs = Integer.parseInt(legsAutoCompleteTextView.getText().toString());
+        int sets = Integer.parseInt(setsAutoCompleteTextView.getText().toString());
+        return selectGameViewModel.createGameState(gameType, legs, sets);
     }
 
     private void setUpGameTypeDropDownMenu() {
@@ -197,24 +191,6 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
             }
             playerListTextViewButton.setText(String.join("\n", namesToGame));
         }
-    }
-
-    public void setPlayersToGame(List<User> playersToGame) {
-        this.playersToGame = playersToGame;
-        setPlayersTextBox(playersToGame);
-    }
-
-    public List<User> getPlayersToGame() {
-        if (playersToGame == null) {
-            playersToGame = new ArrayList<>();
-        }
-        return playersToGame;
-    }
-
-    public GameSettings getGameSettings() {
-        int totalLegs = Integer.parseInt(legsAutoCompleteTextView.getText().toString());
-        int totalSets = Integer.parseInt(setsAutoCompleteTextView.getText().toString());
-        return new GameSettings(totalLegs, totalSets);
     }
 }
 

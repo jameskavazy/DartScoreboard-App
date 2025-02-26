@@ -16,7 +16,6 @@ public class User implements Serializable {
     protected int playerScore;
     @Ignore
     protected ArrayList<Integer> previousScoresList;
-    protected boolean active;
     @Ignore
     protected int currentLegs;
     @Ignore
@@ -39,8 +38,6 @@ public class User implements Serializable {
 
     public User(String username, boolean active) {
         this.username = username;
-        this.active = active;
-
         if (this.username.equalsIgnoreCase("guy")) {
             isGuy = true;
         }
@@ -78,14 +75,6 @@ public class User implements Serializable {
         if (previousScoresList == null) {
             return 0;
         } else return previousScoresList.size();
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public boolean getActive() {
-        return active;
     }
 
     public void setPlayerScore(int playerScore) {

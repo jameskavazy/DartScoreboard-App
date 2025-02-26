@@ -54,13 +54,12 @@ public final class PreferencesController {
         getSharedPreferences().edit().remove(REMINDER_TIME).apply();
     }
 
-    public List<User> getPlayerListCopy() {
+    public List<User> getPlayers() {
         String jsonString = getSharedPreferences().getString(PLAYER_LIST,null);
         return new Gson().fromJson(jsonString, new TypeToken<ArrayList<User>>(){}.getType());
     }
 
-    public void copyPlayerList(List<User> playerList){
-//        Type type = new TypeToken<ArrayList<User>>(){}.getType();
+    public void savePlayers(List<User> playerList){
         String jsonString = new Gson().toJson(playerList);
         getSharedPreferences().edit().putString(PLAYER_LIST,jsonString).apply();
     }

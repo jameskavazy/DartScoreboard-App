@@ -44,10 +44,6 @@ public class UserRepository {
         return allUsers;
     }
 
-    public LiveData<List<User>> getActiveUsers(boolean active){
-        return userDao.getActiveUsers(active);
-    }
-
     public LiveData<List<GameWithUsers>> getUserFromGameState(int gameID){
        return userDao.getUsersFromGameState(gameID);
     }

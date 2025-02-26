@@ -30,10 +30,11 @@ public interface UserDao {
     @Query("DELETE FROM user")
     void deleteAllUsers();
 
-    @Query("SELECT * FROM user WHERE active = :active")
-    LiveData<List<User>> getActiveUsers(boolean active);
-
     @Transaction
     @Query("SELECT * FROM `match` WHERE gameID = :gameID")
     LiveData<List<GameWithUsers>> getUsersFromGameState(int gameID);
+
+//    @Transaction
+//    @Query("INSERT INTO GameUsers(userID, gameID) SELECT u.userID, m.gameID FROM user u CROSS JOIN `match` m WHERE m.gameID = :id AND u.userID IN (SELECT userID FROM user WHERE active = 1)")
+//    void gameUser(int id);
 }
