@@ -62,12 +62,12 @@ public class CreateUserActivity extends AppCompatActivity implements View.OnClic
 
         if (nameToAdd.equalsIgnoreCase("guy")) {
             Log.d("dom test", "onAddNewUserButtonClick GuyUser");
-            User guy = new User(nameToAdd, false);
+            User guy = new User(nameToAdd);
             guy.isGuy = true;
             userViewModel.insertUser(guy);
         } else {
             Log.d("dom test", "onAddNewUserButtonClick user");
-            userViewModel.insertUser(new User(nameToAdd, false));
+            userViewModel.insertUser(new User(nameToAdd));
         }
 
     }

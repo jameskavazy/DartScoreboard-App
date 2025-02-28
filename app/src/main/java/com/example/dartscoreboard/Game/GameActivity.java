@@ -1,7 +1,6 @@
 package com.example.dartscoreboard.Game;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -24,9 +23,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dartscoreboard.R;
-import com.example.dartscoreboard.User.User;
-
-import java.util.Objects;
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -83,21 +79,21 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         assert gameId != null;
         Log.d("gameState", "gameactivity ID: " + gameId);
 
-        setVisitsTextView();
-        setAverageScoreTextView();
+//        setVisitsTextView();
+//        setAverageScoreTextView();
         gameViewModel.saveGameStateToDb();
     }
 
-    private void setAverageScoreTextView() {
-        double avg = gameViewModel.getPlayerAverage();
-        averageScoreTextView.setText(String.valueOf(avg));
-    }
+//    private void setAverageScoreTextView() {
+//        double avg = gameViewModel.getPlayerAverage();
+//        averageScoreTextView.setText(String.valueOf(avg));
+//    }
 
-    private void setVisitsTextView() {
-        User activeUser = gameViewModel.getPlayersList().get(GameViewModel.getTurnIndex());
-        int visits = activeUser.getVisits();
-        visitsTextView.setText(String.valueOf(visits));
-    }
+//    private void setVisitsTextView() {
+//        User activeUser = gameViewModel.getPlayersList().get(GameViewModel.getTurnIndex());
+//        int visits = activeUser.getVisits();
+//        visitsTextView.setText(String.valueOf(visits));
+//    }
 
     private void setAdapter() {
         adapter = new RecyclerAdapterGamePlayers(gameViewModel.getPlayersList());
@@ -118,15 +114,15 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
         try {
             Log.d("dom test", "IME_ACTION_DONE");
-            setBanana();
+//            setBanana();
             gameViewModel.playerVisit(input);
             adapter.notifyDataSetChanged();
             if (input > 180) {
                 Toast.makeText(GameActivity.this, "Invalid Score", Toast.LENGTH_SHORT).show();
             }
             ((EditText) findViewById(R.id.inputUserNameEditText)).getText().clear();
-            setAverageScoreTextView();
-            setVisitsTextView();
+//            setAverageScoreTextView();
+//            setVisitsTextView();
             gameViewModel.saveGameStateToDb();
             endGameChecker();
             return true;
@@ -174,27 +170,27 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 inputScoreEditText.setVisibility(View.VISIBLE);
                 doneButton.setVisibility(View.VISIBLE);
                 gameViewModel.setFinished(false);
-                GameState gameState = gameViewModel.getGameInfo();
+                Game game = gameViewModel.getGameInfo();
 //                gameState.setGameID(gameViewModel.getGameID());
 //                gameViewModel.insert(gameState).subscribe();
                 gameViewModel.updateAllUsers();
             }
-            gameViewModel.undo(adapter);
-            setAverageScoreTextView();
-            setVisitsTextView();
-            GameState gameState = gameViewModel.getGameInfo();
+//            gameViewModel.undo(adapter);
+//            setAverageScoreTextView();
+//            setVisitsTextView();
+            Game game = gameViewModel.getGameInfo();
 //            gameState.setGameID(gameViewModel.getGameID());
-            gameViewModel.update(gameState);
+            gameViewModel.update(game);
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void setBanana() {
-        if (gameViewModel.bananaSplit()) {
-            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputMethodManager.hideSoftInputFromWindow(recyclerView.getApplicationWindowToken(), 0);
-            bananaView.setVisibility(View.VISIBLE);
-            bananaView.postDelayed(() -> bananaView.setVisibility(View.GONE), 150);
-        } else bananaView.setVisibility(View.GONE);
-    }
+//    private void setBanana() {
+//        if (gameViewModel.bananaSplit()) {
+//            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//            inputMethodManager.hideSoftInputFromWindow(recyclerView.getApplicationWindowToken(), 0);
+//            bananaView.setVisibility(View.VISIBLE);
+//            bananaView.postDelayed(() -> bananaView.setVisibility(View.GONE), 150);
+//        } else bananaView.setVisibility(View.GONE);
+//    }
 }

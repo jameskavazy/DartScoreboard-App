@@ -9,7 +9,7 @@ import com.example.dartscoreboard.User.User;
 import java.util.List;
 
 public class GameWithUsers {
-    @Embedded public GameState gameState;
+    @Embedded public Game game;
     @Relation(
             parentColumn = "gameID",
             entityColumn = "userID",

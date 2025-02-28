@@ -16,10 +16,6 @@ public class UserStatsViewModel extends AndroidViewModel {
         super(application);
     }
 
-    public int getCheckoutRate(){
-        return Math.round((float) getUser().getCheckoutMade() / (getUser().getCheckoutMade() + getUser().getCheckoutMissed()) * 100);
-    }
-
 
     public void setUser(User user) {
         this.user = user;

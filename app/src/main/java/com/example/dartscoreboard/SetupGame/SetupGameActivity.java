@@ -16,11 +16,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.dartscoreboard.Game.Game;
 import com.example.dartscoreboard.Game.GameActivity;
-import com.example.dartscoreboard.Game.GameState;
 import com.example.dartscoreboard.Game.GameType;
-import com.example.dartscoreboard.Game.GameUsers;
-import com.example.dartscoreboard.MatchHistory.MatchHistoryRepository;
 import com.example.dartscoreboard.R;
 import com.example.dartscoreboard.User.User;
 import com.example.dartscoreboard.Utils.PreferencesController;
@@ -139,10 +137,9 @@ public class SetupGameActivity extends AppCompatActivity implements View.OnClick
             Log.d("dom test", "openGameActivity");
             Intent intent = new Intent(this, GameActivity.class);
             Bundle arguments = new Bundle();
-            GameState gameState = initialiseGameState(gameType);
-
-            Log.d("gameState", "setupGame ID:  " + gameState.getGameID());
-            arguments.putString(GameActivity.GAME_STATE_KEY, gameState.getGameID());
+            Game game = initialiseGameState(gameType);
+            Log.d("gameState", "setupGame ID:  " + game.getGameID());
+            arguments.putString(GameActivity.GAME_STATE_KEY, game.getGameID());
             intent.putExtras(arguments);
             startActivity(intent);
             finish();
@@ -166,7 +163,7 @@ public class SetupGameActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-    private GameState initialiseGameState(GameType gameType) {
+    private Game initialiseGameState(GameType gameType) {
         int legs = Integer.parseInt(legsAutoCompleteTextView.getText().toString());
         int sets = Integer.parseInt(setsAutoCompleteTextView.getText().toString());
         return setupGameViewModel.createGameState(gameType, legs, sets);

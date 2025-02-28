@@ -7,42 +7,42 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.example.dartscoreboard.Game.GameState;
+import com.example.dartscoreboard.Game.GameRepository;
+import com.example.dartscoreboard.Game.Game;
 
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
-import io.reactivex.rxjava3.core.Single;
 
 public class MatchHistoryViewModel extends AndroidViewModel {
 
-    private final MatchHistoryRepository repository;
-    private final LiveData<List<GameState>> allGames;
+    private final GameRepository repository;
+    private final LiveData<List<Game>> allGames;
 
     public MatchHistoryViewModel(@NonNull Application application) {
         super(application);
-        repository = new MatchHistoryRepository(application);
+        repository = new GameRepository(application);
         allGames = repository.getAllMatchHistory();
     }
 
-    public Completable insert(GameState gameState) {
+    public Completable insert(Game game) {
         Log.d("dom test", "MHVM insert");
-        return repository.insert(gameState);
+        return repository.insert(game);
     }
 
-    public void update(GameState gameState) {
-        repository.update(gameState);
+    public void update(Game game) {
+        repository.update(game);
     }
 
-    public void delete(GameState gameState) {
-        repository.delete(gameState);
+    public void delete(Game game) {
+        repository.delete(game);
     }
 
     public void deleteAllMatches() {
         repository.deleteAll();
     }
 
-    public LiveData<List<GameState>> getAllGames() {
+    public LiveData<List<Game>> getAllGames() {
         return allGames;
     }
 

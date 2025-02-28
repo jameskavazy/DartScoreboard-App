@@ -5,18 +5,16 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import com.example.dartscoreboard.MatchHistory.MatchState;
 import com.example.dartscoreboard.User.User;
 
 import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Stack;
-import java.util.UUID;
+
 
 
 @Entity (tableName = "match")
-public class GameState implements Serializable {
+public class Game implements Serializable {
 
     @PrimaryKey
     @NonNull
@@ -43,25 +41,15 @@ public class GameState implements Serializable {
 
     public boolean finished;
 
-    public Stack<MatchState> matchStateStack; // TODO delete
 
-    public Stack<MatchState> getMatchStateStack() {
-        return matchStateStack;
-    }
-
-    public void setMatchStateStack(Stack<MatchState> matchStateStack) {
-        this.matchStateStack = matchStateStack;
-    }
-
-    public GameState(GameType gameType, GameSettings gameSettings, List<User> playerList,
-                     int turnIndex, int legIndex, int setIndex, Stack<MatchState> matchStateStack, boolean finished, String gameID) {
+    public Game(GameType gameType, GameSettings gameSettings, List<User> playerList,
+                int turnIndex, int legIndex, int setIndex, boolean finished, @NonNull String gameID) {
         this.gameType = gameType;
         this.gameSettings = gameSettings;
         this.playerList = playerList;
         this.turnIndex = turnIndex;
         this.legIndex = legIndex;
         this.setIndex = setIndex;
-        this.matchStateStack = matchStateStack;
         this.finished = finished;
         this.gameID = gameID;
     }

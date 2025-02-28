@@ -1,6 +1,5 @@
 package com.example.dartscoreboard.MatchHistory;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,28 +10,28 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.dartscoreboard.Game.GameState;
+import com.example.dartscoreboard.Game.Game;
 import com.example.dartscoreboard.R;
 
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
-public class RecyclerAdapterMatchHistory extends ListAdapter<GameState, RecyclerAdapterMatchHistory.MyViewHolder> {
+public class RecyclerAdapterMatchHistory extends ListAdapter<Game, RecyclerAdapterMatchHistory.MyViewHolder> {
 
     private OnItemClickListener listener;
     public RecyclerAdapterMatchHistory() {
         super(DIFF_CALLBACK);
     }
 
-    private static final DiffUtil.ItemCallback<GameState> DIFF_CALLBACK = new DiffUtil.ItemCallback<GameState>() {
+    private static final DiffUtil.ItemCallback<Game> DIFF_CALLBACK = new DiffUtil.ItemCallback<Game>() {
         @Override
-        public boolean areItemsTheSame(@NonNull GameState oldItem, @NonNull GameState newItem) {
+        public boolean areItemsTheSame(@NonNull Game oldItem, @NonNull Game newItem) {
 //            Log.d("dom test","areItemsTheSame? Ids" + oldItem.getGameID() + newItem.getGameID());
             return oldItem.getGameID() == newItem.getGameID();
         }
 
         @Override
-        public boolean areContentsTheSame(@NonNull GameState oldItem, @NonNull GameState newItem) {
+        public boolean areContentsTheSame(@NonNull Game oldItem, @NonNull Game newItem) {
 //            Log.d("dom test","areContentsTheSame times -" + oldItem.getGameID() + " " + oldItem.getOffsetDateTime() + newItem.getGameID() + " " + newItem.getOffsetDateTime());
             return oldItem.getOffsetDateTime().isEqual(newItem.getOffsetDateTime());
         }
@@ -71,25 +70,25 @@ public class RecyclerAdapterMatchHistory extends ListAdapter<GameState, Recycler
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerAdapterMatchHistory.MyViewHolder holder, int position) {
-        GameState currentGameState = getItem(position);
-        holder.gameTitleTextView.setText(currentGameState.getGameType().name);
-        holder.gamePlayersTextView.setText(usersListAsString(currentGameState));
+        Game currentGame = getItem(position);
+        holder.gameTitleTextView.setText(currentGame.getGameType().name);
+        holder.gamePlayersTextView.setText(usersListAsString(currentGame));
         DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
         DateTimeFormatter timeFormatter = DateTimeFormatter.ISO_LOCAL_TIME;
-        String dateStamp = currentGameState.getCreatedDate().format(dateFormatter);
-        String timeStamp = currentGameState.getCreatedDate().truncatedTo(ChronoUnit.MINUTES).format(timeFormatter);
+        String dateStamp = currentGame.getCreatedDate().format(dateFormatter);
+        String timeStamp = currentGame.getCreatedDate().truncatedTo(ChronoUnit.MINUTES).format(timeFormatter);
         String timeStampTruncated = timeStamp.substring(0,timeStamp.length() - 3);
         String dateTimeFormatted = dateStamp+"\n"+timeStampTruncated;
         holder.gameDateCreatedTextView.setText(dateTimeFormatted);
     }
 
-    public GameState getGameStateAtPosition(int position) {
+    public Game getGameStateAtPosition(int position) {
         return getItem(position);
     }
 
 
     public interface OnItemClickListener {
-        void onItemClick(GameState gameState);
+        void onItemClick(Game game);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -98,12 +97,12 @@ public class RecyclerAdapterMatchHistory extends ListAdapter<GameState, Recycler
 
 
 
-    private String usersListAsString(GameState gameState) {
+    private String usersListAsString(Game game) {
         String playerNamesString = null;
-        if (gameState.getPlayerList() != null) {
-            String[] namesOfGame = new String[gameState.getPlayerList().size()];
-            for (int i = 0; i < gameState.getPlayerList().size(); i++) {
-                namesOfGame[i] = gameState.getPlayerList().get(i).getUsername();
+        if (game.getPlayerList() != null) {
+            String[] namesOfGame = new String[game.getPlayerList().size()];
+            for (int i = 0; i < game.getPlayerList().size(); i++) {
+                namesOfGame[i] = game.getPlayerList().get(i).getUsername();
             }
             playerNamesString = String.join(", ", namesOfGame);
         }

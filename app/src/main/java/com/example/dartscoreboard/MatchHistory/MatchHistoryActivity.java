@@ -23,8 +23,8 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.dartscoreboard.Game.Game;
 import com.example.dartscoreboard.Game.GameActivity;
-import com.example.dartscoreboard.Game.GameState;
 import com.example.dartscoreboard.R;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -83,9 +83,9 @@ public class MatchHistoryActivity extends AppCompatActivity {
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                GameState gameState = adapter.getGameStateAtPosition(viewHolder.getBindingAdapterPosition());
-                matchHistoryViewModel.delete(gameState);
-                undoSnackBar.setAction("Undo", v -> matchHistoryViewModel.insert(gameState).subscribe());
+                Game game = adapter.getGameStateAtPosition(viewHolder.getBindingAdapterPosition());
+                matchHistoryViewModel.delete(game);
+                undoSnackBar.setAction("Undo", v -> matchHistoryViewModel.insert(game).subscribe());
                 undoSnackBar.show();
             }
 
