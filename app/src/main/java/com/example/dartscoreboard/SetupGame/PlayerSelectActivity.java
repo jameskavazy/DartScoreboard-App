@@ -73,6 +73,9 @@ public class PlayerSelectActivity extends AppCompatActivity implements View.OnCl
 
     private void addRemoveUser(User user) {
         List<User> players = PreferencesController.getInstance().getPlayers();
+        if (players == null) {
+            players = new ArrayList<>();
+        }
         boolean removed = players.removeIf(player -> player.userID == user.userID);
         if (!removed) {
             players.add(user);

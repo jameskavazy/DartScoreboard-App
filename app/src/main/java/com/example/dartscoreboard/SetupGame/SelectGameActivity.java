@@ -82,6 +82,9 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
             gameTypeAutoCompleteTextView.setText(PreferencesController.getInstance().getGameSelected());
         }
         selectedPlayers = PreferencesController.getInstance().getPlayers();
+        if (selectedPlayers == null) {
+            selectedPlayers = new ArrayList<>();
+        }
         setPlayersTextBox(selectedPlayers);
         selectGameViewModel = new ViewModelProvider(this).get(SelectGameViewModel.class);
 

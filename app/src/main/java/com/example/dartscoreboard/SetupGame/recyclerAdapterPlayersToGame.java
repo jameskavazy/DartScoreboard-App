@@ -15,6 +15,7 @@ import com.example.dartscoreboard.Utils.PreferencesController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 public class recyclerAdapterPlayersToGame extends RecyclerView.Adapter<recyclerAdapterPlayersToGame.ViewHolderPTG> {
@@ -67,9 +68,12 @@ public class recyclerAdapterPlayersToGame extends RecyclerView.Adapter<recyclerA
         String name = usersList.get(position).getUsername();
         holder.nameText.setText(name);
         User user = usersList.get(position);
-        boolean selected = PreferencesController.getInstance().getPlayers()
-                        .stream()
-                        .anyMatch(player -> player.userID == user.userID);
+
+        List<User> savedUsers = PreferencesController.getInstance().getPlayers();
+        if (savedUsers == null) {
+            savedUsers = new ArrayList<>();
+        }
+        boolean selected = savedUsers.stream().anyMatch(player -> player.userID == user.userID);
         holder.checkBox.setChecked(selected);
     }
 
