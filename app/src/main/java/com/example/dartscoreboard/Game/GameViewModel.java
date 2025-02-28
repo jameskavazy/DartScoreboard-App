@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.room.util.UUIDUtil;
 
 import com.example.dartscoreboard.Application.DartsScoreboardApplication;
 import com.example.dartscoreboard.MatchHistory.MatchHistoryRepository;
@@ -18,7 +19,9 @@ import com.example.dartscoreboard.Utils.PreferencesController;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+import java.util.UUID;
 
+import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleObserver;
 import io.reactivex.rxjava3.disposables.Disposable;
@@ -26,13 +29,13 @@ import io.reactivex.rxjava3.disposables.Disposable;
 public class GameViewModel extends AndroidViewModel {
     private final UserRepository userRepository;
     private final MatchHistoryRepository matchHistoryRepository;
-    private long gameID;
+    private String gameID;
     public static int turnIndex = 0;
     private int turnIndexLegs = 0;
     private int turnIndexSets = 0;
     private List<User> playersList;
     private GameType gameType;
-    private boolean finished; // TODO private and non-static?
+    private boolean finished;
     private Stack<MatchState> matchStateStack = new Stack<>();
 
     private GameSettings gameSettings;
@@ -47,7 +50,7 @@ public class GameViewModel extends AndroidViewModel {
         userRepository.updateUser(user);
     }
 
-    public Single<Long> insert(GameState gameState) {
+    public Completable insert(GameState gameState) {
         return matchHistoryRepository.insert(gameState);
     }
 
@@ -55,7 +58,7 @@ public class GameViewModel extends AndroidViewModel {
         matchHistoryRepository.update(gameState);
     }
 
-    public void deleteGameStateByID(long id) {
+    public void deleteGameStateByID(String id) {
         matchHistoryRepository.deleteGameStateByID(id);
     }
 
@@ -299,11 +302,11 @@ public class GameViewModel extends AndroidViewModel {
         setTurnIndexSets(0);
     }
 
-    public long getGameID() {
+    public String getGameID() {
         return gameID;
     }
 
-    public void setGameID(long gameID) {
+    public void setGameID(String gameID) {
         this.gameID = gameID;
     }
 
@@ -325,19 +328,18 @@ public class GameViewModel extends AndroidViewModel {
     }
 
     public void setGameState(GameState gameState) {
-        //todo do we need boolean flag to determine if new starting scores needed??
         setPlayersList(gameState.getPlayerList());
-        setGameID(gameState.getGameID());
+//        setGameID(gameState.getGameID());
         setGameType(gameState.getGameType());
         setGameSettings(gameState.getGameSettings());
         setMatchStateStack(gameState.getMatchStateStack());
         setTurnIndex(gameState.getTurnIndex());
         setTurnIndexLegs(gameState.getLegIndex());
         setTurnIndexSets(gameState.getSetIndex());
-        if (gameID == 0) {
-            setPlayerStartingScores();
-            finished = false;
-        }
+//        if (gameID == 0) {
+//            setPlayerStartingScores();
+//            finished = false;
+//        }
     }
 
     public void updateAllUsers() {
@@ -347,29 +349,29 @@ public class GameViewModel extends AndroidViewModel {
     }
 
     public void saveGameStateToDb() {
-//      Create GameState object + attach the id for DB update
-        GameState gameState = getGameInfo();
-        if (getGameID() != 0) {
-            gameState.setGameID(getGameID());
-            update(gameState);
-        } else {
-            insert(gameState).subscribe(new SingleObserver<Long>() {
-                @Override
-                public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
-
-                }
-
-                @Override
-                public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull Long aLong) {
-                    Log.d("dom test", "onSuccess " + aLong);
-                    setGameID(aLong);
-                }
-
-                @Override
-                public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
-                }
-            });
-        }
+////      Create GameState object + attach the id for DB update
+//        GameState gameState = getGameInfo();
+//        if (getGameID() != 0) {
+//            gameState.setGameID(getGameID());
+//            update(gameState);
+//        } else {
+//            insert(gameState).subscribe(new SingleObserver<Long>() {
+//                @Override
+//                public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
+//
+//                }
+//
+//                @Override
+//                public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull Long aLong) {
+//                    Log.d("dom test", "onSuccess " + aLong);
+//                    setGameID(aLong);
+//                }
+//
+//                @Override
+//                public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+//                }
+//            });
+//        }
     }
 
     public GameState getGameInfo() {
@@ -381,7 +383,8 @@ public class GameViewModel extends AndroidViewModel {
                 getTurnIndexLegs(),
                 getTurnIndexSets(),
                 getMatchStateStack(),
-                getFinished());
+                getFinished(),
+                getGameID());
 
     }
 

@@ -8,6 +8,7 @@ import androidx.room.Query;
 import androidx.room.Transaction;
 import androidx.room.Update;
 
+import com.example.dartscoreboard.Game.GameUsers;
 import com.example.dartscoreboard.Game.GameWithUsers;
 
 import java.util.List;
@@ -34,7 +35,8 @@ public interface UserDao {
     @Query("SELECT * FROM `match` WHERE gameID = :gameID")
     LiveData<List<GameWithUsers>> getUsersFromGameState(int gameID);
 
-//    @Transaction
-//    @Query("INSERT INTO GameUsers(userID, gameID) SELECT u.userID, m.gameID FROM user u CROSS JOIN `match` m WHERE m.gameID = :id AND u.userID IN (SELECT userID FROM user WHERE active = 1)")
-//    void gameUser(int id);
+    @Transaction
+    @Insert
+    void insertToGame(GameUsers gameUsers);
+
 }

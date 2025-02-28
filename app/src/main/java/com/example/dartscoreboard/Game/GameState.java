@@ -1,5 +1,6 @@
 package com.example.dartscoreboard.Game;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -11,13 +12,15 @@ import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Stack;
+import java.util.UUID;
 
 
 @Entity (tableName = "match")
 public class GameState implements Serializable {
 
-    @PrimaryKey (autoGenerate = true)
-    public long gameID;
+    @PrimaryKey
+    @NonNull
+    public String gameID;
 
     @ColumnInfo(name = "datetime")
     public OffsetDateTime offsetDateTime = OffsetDateTime.now();
@@ -51,7 +54,7 @@ public class GameState implements Serializable {
     }
 
     public GameState(GameType gameType, GameSettings gameSettings, List<User> playerList,
-                     int turnIndex, int legIndex, int setIndex, Stack<MatchState> matchStateStack, boolean finished) {
+                     int turnIndex, int legIndex, int setIndex, Stack<MatchState> matchStateStack, boolean finished, String gameID) {
         this.gameType = gameType;
         this.gameSettings = gameSettings;
         this.playerList = playerList;
@@ -60,6 +63,7 @@ public class GameState implements Serializable {
         this.setIndex = setIndex;
         this.matchStateStack = matchStateStack;
         this.finished = finished;
+        this.gameID = gameID;
     }
 
     public OffsetDateTime getCreatedDate() {
@@ -72,11 +76,11 @@ public class GameState implements Serializable {
 
 
 
-    public void setGameID(long gameID) {
+    public void setGameID(String gameID) {
         this.gameID = gameID;
     }
 
-    public long getGameID() {
+    public String getGameID() {
         return gameID;
     }
 

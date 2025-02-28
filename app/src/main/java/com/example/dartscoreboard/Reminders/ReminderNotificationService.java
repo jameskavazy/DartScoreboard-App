@@ -12,7 +12,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.example.dartscoreboard.R;
-import com.example.dartscoreboard.SetupGame.SelectGameActivity;
+import com.example.dartscoreboard.SetupGame.SetupGameActivity;
 
 
 public class ReminderNotificationService {
@@ -25,7 +25,7 @@ public class ReminderNotificationService {
         this.context = context;
     }
     public void showNotification() {
-        Intent selectGameActivityIntent = new Intent(context, SelectGameActivity.class);
+        Intent selectGameActivityIntent = new Intent(context, SetupGameActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(
                 context,
                 1,

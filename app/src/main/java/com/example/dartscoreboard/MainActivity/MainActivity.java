@@ -14,7 +14,7 @@ import com.example.dartscoreboard.LiveMatches.LiveProMatchesActivity;
 import com.example.dartscoreboard.MatchHistory.MatchHistoryActivity;
 import com.example.dartscoreboard.R;
 import com.example.dartscoreboard.Reminders.ReminderActivity;
-import com.example.dartscoreboard.SetupGame.SelectGameActivity;
+import com.example.dartscoreboard.SetupGame.SetupGameActivity;
 import com.example.dartscoreboard.Statistics.StatisticsActivity;
 import com.example.dartscoreboard.User.UsersActivity;
 
@@ -30,6 +30,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setupUI();
     }
+
+
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
@@ -115,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void openStartGameActivity(){
         Log.d("dom test", "openStartGameActivity");
-        Intent intent = new Intent(this, SelectGameActivity.class);
+        Intent intent = new Intent(this, SetupGameActivity.class);
         startActivity(intent);
     }
 

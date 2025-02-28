@@ -11,6 +11,7 @@ import com.example.dartscoreboard.Game.GameState;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
 
 public class MatchHistoryViewModel extends AndroidViewModel {
@@ -24,7 +25,7 @@ public class MatchHistoryViewModel extends AndroidViewModel {
         allGames = repository.getAllMatchHistory();
     }
 
-    public Single<Long> insert(GameState gameState) {
+    public Completable insert(GameState gameState) {
         Log.d("dom test", "MHVM insert");
         return repository.insert(gameState);
     }

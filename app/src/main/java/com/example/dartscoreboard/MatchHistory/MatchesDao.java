@@ -10,6 +10,7 @@ import androidx.room.Update;
 import com.example.dartscoreboard.Game.GameState;
 
 import java.util.List;
+import java.util.UUID;
 
 @Dao
 public interface MatchesDao {
@@ -18,7 +19,7 @@ public interface MatchesDao {
     void updateGameState(GameState gameState);
 
     @Insert
-    long insertGameState(GameState gameState);
+    void insertGameState(GameState gameState);
 
     @Delete
     void deleteGameState(GameState gameState);
@@ -33,5 +34,5 @@ public interface MatchesDao {
     LiveData<GameState> findGameByID(int id);
 
     @Query("DELETE FROM `match` WHERE gameID = :id")
-    void deleteGameStateByID(long id);
+    void deleteGameStateByID(String id);
 }

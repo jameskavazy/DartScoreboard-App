@@ -9,6 +9,7 @@ import com.example.dartscoreboard.Db.Database;
 import com.example.dartscoreboard.Game.GameState;
 
 import java.util.List;
+import java.util.UUID;
 
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
@@ -25,9 +26,11 @@ public class MatchHistoryRepository {
         allMatchHistory = matchesDao.getAllMatchHistory();
     }
 
-    public Single<Long> insert(GameState gameState){
+    public Completable insert(GameState gameState){
         Log.d("dom test", "repo insert");
-        return Single.fromCallable(()-> matchesDao.insertGameState(gameState)).subscribeOn(Schedulers.io());
+        Completable completable = Completable.fromAction(() -> matchesDao.insertGameState(gameState));
+        completable.subscribeOn(Schedulers.io()).subscribe();
+        return completable;
     }
 
     public Completable update(GameState gameState){
@@ -51,7 +54,7 @@ public class MatchHistoryRepository {
         return matchesDao.findGameByID(id);
     }
 
-    public void deleteGameStateByID(long id){
+    public void deleteGameStateByID(String id){
         Completable completable = Completable.fromAction(()-> matchesDao.deleteGameStateByID(id));
         completable.subscribeOn(Schedulers.io()).subscribe();
     }

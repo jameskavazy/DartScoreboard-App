@@ -20,8 +20,6 @@ import com.example.dartscoreboard.Utils.PreferencesController;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Collector;
 
 public class PlayerSelectActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -65,7 +63,7 @@ public class PlayerSelectActivity extends AppCompatActivity implements View.OnCl
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.button_done){
-            Intent intent = new Intent(this, SelectGameActivity.class);
+            Intent intent = new Intent(this, SetupGameActivity.class);
             startActivity(intent);
             finish();
         }

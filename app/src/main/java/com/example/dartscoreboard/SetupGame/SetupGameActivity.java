@@ -19,6 +19,8 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.dartscoreboard.Game.GameActivity;
 import com.example.dartscoreboard.Game.GameState;
 import com.example.dartscoreboard.Game.GameType;
+import com.example.dartscoreboard.Game.GameUsers;
+import com.example.dartscoreboard.MatchHistory.MatchHistoryRepository;
 import com.example.dartscoreboard.R;
 import com.example.dartscoreboard.User.User;
 import com.example.dartscoreboard.Utils.PreferencesController;
@@ -27,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class SelectGameActivity extends AppCompatActivity implements View.OnClickListener {
+public class SetupGameActivity extends AppCompatActivity implements View.OnClickListener {
 
 
     private final String[] gameSelectList = {"501", "301", "170"};
@@ -44,7 +46,7 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
 
     private TextView playerListTextViewButton;
 
-    private SelectGameViewModel selectGameViewModel;
+    private SetupGameViewModel setupGameViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +88,7 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
             selectedPlayers = new ArrayList<>();
         }
         setPlayersTextBox(selectedPlayers);
-        selectGameViewModel = new ViewModelProvider(this).get(SelectGameViewModel.class);
+        setupGameViewModel = new ViewModelProvider(this).get(SetupGameViewModel.class);
 
         setUpGameTypeDropDownMenu();
         setUpLegsListDropDownMenu();
@@ -97,7 +99,7 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
     public void onClick(View v) {
         int viewId = v.getId();
         if (viewId == R.id.gameStartButton) {
-            if (selectGameViewModel.getSelectedPlayers().isEmpty()) {
+            if (setupGameViewModel.getSelectedPlayers().isEmpty()) {
                 Toast.makeText(this, "You must select at least one player to start the match", Toast.LENGTH_SHORT).show();
             } else {
                 startGameActivity();
@@ -138,7 +140,9 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
             Intent intent = new Intent(this, GameActivity.class);
             Bundle arguments = new Bundle();
             GameState gameState = initialiseGameState(gameType);
-            arguments.putSerializable(GameActivity.GAME_STATE_KEY, gameState);
+
+            Log.d("gameState", "setupGame ID:  " + gameState.getGameID());
+            arguments.putString(GameActivity.GAME_STATE_KEY, gameState.getGameID());
             intent.putExtras(arguments);
             startActivity(intent);
             finish();
@@ -165,7 +169,7 @@ public class SelectGameActivity extends AppCompatActivity implements View.OnClic
     private GameState initialiseGameState(GameType gameType) {
         int legs = Integer.parseInt(legsAutoCompleteTextView.getText().toString());
         int sets = Integer.parseInt(setsAutoCompleteTextView.getText().toString());
-        return selectGameViewModel.createGameState(gameType, legs, sets);
+        return setupGameViewModel.createGameState(gameType, legs, sets);
     }
 
     private void setUpGameTypeDropDownMenu() {

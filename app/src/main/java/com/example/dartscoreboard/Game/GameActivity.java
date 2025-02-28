@@ -77,14 +77,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private void launchGameSetUp() {
         // Reads from intent once, then removes extra. If onCreate is called again, data is pulled directly from ViewModel class.
-        Intent intent = getIntent();
         Bundle arguments = getIntent().getExtras();
-        if (intent != null) {
-            if (arguments != null) {
-                gameViewModel.setGameState((GameState) Objects.requireNonNull(arguments.getSerializable(GAME_STATE_KEY)));
-            }
-            intent.removeExtra(GAME_STATE_KEY);
-        }
+        assert arguments != null;
+        String gameId = arguments.getString(GAME_STATE_KEY);
+        assert gameId != null;
+        Log.d("gameState", "gameactivity ID: " + gameId);
+
         setVisitsTextView();
         setAverageScoreTextView();
         gameViewModel.saveGameStateToDb();
@@ -104,12 +102,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private void setAdapter() {
         adapter = new RecyclerAdapterGamePlayers(gameViewModel.getPlayersList());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext()) {
-//            @Override
-//            public boolean canScrollVertically() {
-//                return false;
-//            }
-//        };
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
@@ -157,7 +149,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        // todo this would be nice as a switch
         int viewId = v.getId();
         if (viewId == R.id.done_button) {
             Log.d("dom test", "Done Click");
@@ -184,15 +175,15 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 doneButton.setVisibility(View.VISIBLE);
                 gameViewModel.setFinished(false);
                 GameState gameState = gameViewModel.getGameInfo();
-                gameState.setGameID(gameViewModel.getGameID());
-                gameViewModel.insert(gameState).subscribe();
+//                gameState.setGameID(gameViewModel.getGameID());
+//                gameViewModel.insert(gameState).subscribe();
                 gameViewModel.updateAllUsers();
             }
             gameViewModel.undo(adapter);
             setAverageScoreTextView();
             setVisitsTextView();
             GameState gameState = gameViewModel.getGameInfo();
-            gameState.setGameID(gameViewModel.getGameID());
+//            gameState.setGameID(gameViewModel.getGameID());
             gameViewModel.update(gameState);
         }
         return super.onOptionsItemSelected(item);
@@ -203,7 +194,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(recyclerView.getApplicationWindowToken(), 0);
             bananaView.setVisibility(View.VISIBLE);
-            bananaView.postDelayed(() -> bananaView.setVisibility(View.GONE), 75);
+            bananaView.postDelayed(() -> bananaView.setVisibility(View.GONE), 150);
         } else bananaView.setVisibility(View.GONE);
     }
 }
