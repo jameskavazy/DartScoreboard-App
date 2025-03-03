@@ -3,6 +3,7 @@ package com.example.dartscoreboard.Game;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.example.dartscoreboard.User.User;
@@ -26,8 +27,6 @@ public class Game implements Serializable {
     @ColumnInfo(name = "game_type")
     public GameType gameType;
 
-    public List<User> playerList;
-
     @ColumnInfo(name = "settings")
     private GameSettings gameSettings;
 
@@ -37,20 +36,17 @@ public class Game implements Serializable {
     public int legIndex;
     @ColumnInfo(name = "set_index")
     public int setIndex;
+    public int winnerId; //TODO relate to UserID
+    public String playersCSVString;
 
 
-    public boolean finished;
-
-
-    public Game(GameType gameType, GameSettings gameSettings, List<User> playerList,
-                int turnIndex, int legIndex, int setIndex, boolean finished, @NonNull String gameID) {
+    public Game(GameType gameType, GameSettings gameSettings,
+                int turnIndex, int legIndex, int setIndex, @NonNull String gameID) {
         this.gameType = gameType;
         this.gameSettings = gameSettings;
-        this.playerList = playerList;
         this.turnIndex = turnIndex;
         this.legIndex = legIndex;
         this.setIndex = setIndex;
-        this.finished = finished;
         this.gameID = gameID;
     }
 
@@ -78,14 +74,6 @@ public class Game implements Serializable {
 
     public void setGameType(GameType gameType) {
         this.gameType = gameType;
-    }
-
-    public List<User> getPlayerList() {
-        return playerList;
-    }
-
-    public void setPlayerList(List<User> playerList) {
-        this.playerList = playerList;
     }
 
     public GameSettings getGameSettings() {
@@ -123,12 +111,20 @@ public class Game implements Serializable {
     public OffsetDateTime getOffsetDateTime() {
         return offsetDateTime;
     }
-    public boolean isFinished() {
-        return finished;
-    }
 
-    public void setFinished(boolean finished) {
-        this.finished = finished;
+    public void setPlayersCSV(List<User> players) {
+
+        if (players == null) {
+           this.playersCSVString = "";
+           return;
+        }
+
+
+        String[] namesOfGame = new String[players.size()];
+        for (int i = 0; i < players.size(); i++) {
+            namesOfGame[i] = players.get(i).getUsername();
+        }
+        this.playersCSVString = String.join(", ", namesOfGame);
     }
 
 }

@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -25,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dartscoreboard.Game.Game;
 import com.example.dartscoreboard.Game.GameActivity;
+import com.example.dartscoreboard.Game.GameWithUsers;
 import com.example.dartscoreboard.R;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -57,7 +60,8 @@ public class MatchHistoryActivity extends AppCompatActivity {
         noRecentGamesTextView = findViewById(R.id.no_games_alert);
         setSupportActionBar(toolbar);
         recyclerView = findViewById(R.id.recyclerView_GamesList);
-        undoSnackBar = Snackbar.make(findViewById(R.id.recent_games_coordinator_layout), "Match Deleted", Snackbar.LENGTH_LONG);
+        undoSnackBar = Snackbar.make(
+                findViewById(R.id.recent_games_coordinator_layout), "Match Deleted", Snackbar.LENGTH_LONG);
         setAdapter();
     }
 
@@ -68,9 +72,11 @@ public class MatchHistoryActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
         matchHistoryViewModel = new ViewModelProvider(this).get(MatchHistoryViewModel.class);
-        matchHistoryViewModel.getAllGames().observe(this, gameStates -> {
-            adapter.submitList(gameStates);
-            noRecentGamesTextView.setVisibility(gameStates.isEmpty() ? View.VISIBLE : View.GONE);
+
+
+        matchHistoryViewModel.getAllGames().observe(this, games -> {
+            adapter.submitList(games);
+            noRecentGamesTextView.setVisibility(games.isEmpty() ? View.VISIBLE : View.GONE);
         });
 
 
@@ -119,7 +125,7 @@ public class MatchHistoryActivity extends AppCompatActivity {
         adapter.setOnItemClickListener(gameState -> {
             Intent intent = new Intent(MatchHistoryActivity.this, GameActivity.class);
             Bundle arguments = new Bundle();
-            arguments.putSerializable(GameActivity.GAME_STATE_KEY, gameState);
+            arguments.putSerializable(GameActivity.GAME_STATE_KEY, gameState); // TODO: 02/03/2025 putString (gameId)
             intent.putExtras(arguments);
             startActivity(intent);
             finish();

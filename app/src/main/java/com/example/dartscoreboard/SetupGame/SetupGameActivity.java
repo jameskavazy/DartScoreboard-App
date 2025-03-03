@@ -166,7 +166,7 @@ public class SetupGameActivity extends AppCompatActivity implements View.OnClick
     private Game initialiseGameState(GameType gameType) {
         int legs = Integer.parseInt(legsAutoCompleteTextView.getText().toString());
         int sets = Integer.parseInt(setsAutoCompleteTextView.getText().toString());
-        return setupGameViewModel.createGameState(gameType, legs, sets);
+        return setupGameViewModel.createGame(gameType, legs, sets);
     }
 
     private void setUpGameTypeDropDownMenu() {

@@ -9,6 +9,8 @@ import androidx.lifecycle.LiveData;
 
 import com.example.dartscoreboard.Game.GameRepository;
 import com.example.dartscoreboard.Game.Game;
+import com.example.dartscoreboard.Game.GameWithUsers;
+import com.example.dartscoreboard.User.UserRepository;
 
 import java.util.List;
 
@@ -17,11 +19,14 @@ import io.reactivex.rxjava3.core.Completable;
 public class MatchHistoryViewModel extends AndroidViewModel {
 
     private final GameRepository repository;
+
+    private UserRepository userRepository;
     private final LiveData<List<Game>> allGames;
 
     public MatchHistoryViewModel(@NonNull Application application) {
         super(application);
         repository = new GameRepository(application);
+        userRepository = new UserRepository(application);
         allGames = repository.getAllMatchHistory();
     }
 
@@ -44,6 +49,10 @@ public class MatchHistoryViewModel extends AndroidViewModel {
 
     public LiveData<List<Game>> getAllGames() {
         return allGames;
+    }
+
+    public LiveData<GameWithUsers> getPlayersInGame(String gameId){
+        return userRepository.getUserFromGame(gameId);
     }
 
 }

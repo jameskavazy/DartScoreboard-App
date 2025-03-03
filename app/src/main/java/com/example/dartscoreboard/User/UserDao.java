@@ -32,8 +32,8 @@ public interface UserDao {
     void deleteAllUsers();
 
     @Transaction
-    @Query("SELECT * FROM `match` WHERE gameID = :gameID")
-    LiveData<List<GameWithUsers>> getUsersFromGameState(int gameID);
+    @Query("SELECT * FROM `match` WHERE gameID = :gameId")
+    LiveData<GameWithUsers> getUsersFromGame(String gameId);
 
     @Transaction
     @Insert

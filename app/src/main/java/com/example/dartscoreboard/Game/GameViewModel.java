@@ -303,7 +303,6 @@ public class GameViewModel extends AndroidViewModel {
 //    }
 
     public void setGameState(Game game) {
-        setPlayersList(game.getPlayerList());
 //        setGameID(gameState.getGameID());
         setGameType(game.getGameType());
         setGameSettings(game.getGameSettings());
@@ -352,13 +351,10 @@ public class GameViewModel extends AndroidViewModel {
         return new Game(
                 getGameType(),
                 getGameSettings(),
-                getPlayersList(),
                 getTurnIndex(),
                 getTurnIndexLegs(),
-                getTurnIndexSets(),
-                getFinished(),
+                getTurnIndexLegs(),
                 getGameID());
-
     }
 
 

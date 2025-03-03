@@ -11,7 +11,6 @@ import com.example.dartscoreboard.Game.GameWithUsers;
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
-import io.reactivex.rxjava3.functions.Action;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class UserRepository {
@@ -46,8 +45,8 @@ public class UserRepository {
         return allUsers;
     }
 
-    public LiveData<List<GameWithUsers>> getUserFromGameState(int gameID){
-       return userDao.getUsersFromGameState(gameID);
+    public LiveData<GameWithUsers> getUserFromGame(String gameID){
+       return userDao.getUsersFromGame(gameID);
     }
 
     public void addUsersToMatch(GameUsers gameUsers) {

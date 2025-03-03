@@ -25,7 +25,7 @@ public class SetupGameViewModel extends AndroidViewModel {
     private UserRepository userRepository;
 
     private GameRepository gameRepository;
-    private List<User> playersToGame = new ArrayList<>();
+    private List<User> playersToGame;
 
 
     public SetupGameViewModel(@NonNull Application application) {
@@ -40,11 +40,13 @@ public class SetupGameViewModel extends AndroidViewModel {
         return new GameSettings(legs, sets);
     }
 
-    public Game createGameState(GameType gameType, int legs, int sets) {
+    public Game createGame(GameType gameType, int legs, int sets) {
         gameId = UUID.randomUUID().toString();
         Game game = new Game(
-                gameType, getGameSettings(legs, sets), playersToGame, 0, 0, 0,
-                false, gameId);
+                gameType, getGameSettings(legs, sets),
+                0, 0, 0,
+                gameId);
+        game.setPlayersCSV(getSelectedPlayers());
         Log.d("db test", "the id as set" + game.gameID);
         addUsersToGame();
         gameRepository.insert(game);

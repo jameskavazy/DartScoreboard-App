@@ -32,4 +32,6 @@ public interface GameDao {
 
     @Query("DELETE FROM `match` WHERE gameID = :id")
     void deleteGameStateByID(String id);
+
+
 }
