@@ -35,8 +35,8 @@ public interface GameDao {
     @Query("DELETE FROM `match` WHERE gameId = :id")
     void deleteGameStateByID(String id);
 
-    @Query("SELECT * FROM visit WHERE gameId = :id")
-    LiveData<List<Visit>> getVisitsInMatch(String id);
+    @Query("SELECT * FROM visit WHERE gameId = :gameId")
+    LiveData<List<Visit>> getVisitsInMatch(String gameId);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertVisit(Visit visit);

@@ -13,11 +13,15 @@ import com.example.dartscoreboard.R;
 import com.example.dartscoreboard.User.User;
 
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder> {
 
     private List<User> usersList;
     private Game game;
+
+    private List<Visit> visits;
     public GameAdapter(List<User> usersList){
         this.usersList = usersList;
     }
@@ -55,11 +59,22 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
     public void onBindViewHolder(@NonNull GameViewHolder holder, int position) {
         String name = usersList.get(position).getUsername();
 
-        int gameScore = game.getGameType().startingScore;
+        int startingScore = game.getGameType().startingScore;
+        List<Visit> userVisits = visits.stream()
+                .filter(visit -> visit.userID == usersList.get(position).userID)
+                .collect(Collectors.toList());
+
+        int visitScores = 0;
+        for (Visit visit: userVisits) {
+            visitScores += visit.score;
+        }
+        int currentScore = startingScore - visitScores;
+
+
 //        int currentLegs = usersList.get(position).getCurrentLegs();
 //        int currentSets = usersList.get(position).getCurrentSets();
         holder.nameText.setText(name);
-        holder.playerScoreTextView.setText(String.valueOf(gameScore));
+        holder.playerScoreTextView.setText(String.valueOf(currentScore));
 //        holder.legsTextView.setText(String.valueOf(currentLegs));
 //        holder.setsTextView.setText(String.valueOf(currentSets));
         holder.playerIndicator.setVisibility(GameViewModel.getTurnIndex() == position ? View.VISIBLE : View.GONE);
@@ -80,4 +95,10 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
         this.game = game;
         notifyDataSetChanged();
     }
+
+    public void setVisits(List<Visit> visits){
+        this.visits = visits;
+        notifyDataSetChanged();
+    }
 }
+

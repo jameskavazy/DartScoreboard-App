@@ -17,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -103,6 +104,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             adapter.setGame(game);
             toolbar.setTitle(game.gameType.name);
         });
+        gameViewModel.getVisits().observe(this, visits -> adapter.setVisits(visits));
         recyclerView.setAdapter(adapter);
     }
 

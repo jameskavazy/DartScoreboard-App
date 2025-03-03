@@ -38,7 +38,9 @@ public class Visit {
 
     public int score;
 
-    public Visit(String visitId) {
+    public Visit(@NonNull String visitId) {
         this.visitId = visitId;
     }
+
+
 }

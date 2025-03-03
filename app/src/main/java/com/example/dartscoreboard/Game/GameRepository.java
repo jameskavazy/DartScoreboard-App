@@ -65,5 +65,9 @@ public class GameRepository {
         return completable;
     }
 
+    public LiveData<List<Visit>> getVisitsInGame(String gameId){
+        return gameDao.getVisitsInMatch(gameId);
+    }
+
 
 }

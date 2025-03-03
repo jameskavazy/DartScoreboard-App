@@ -397,5 +397,8 @@ public class GameViewModel extends AndroidViewModel {
         return gameRepository.getGameStateById(gameId);
     }
 
+    public LiveData<List<Visit>> getVisits(){
+        return gameRepository.getVisitsInGame(gameId);
+    }
 
 }
