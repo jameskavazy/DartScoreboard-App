@@ -23,6 +23,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dartscoreboard.R;
+import com.example.dartscoreboard.User.User;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -34,7 +38,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private TextView averageScoreTextView;
     private TextView visitsTextView;
     private Button doneButton;
-    private RecyclerAdapterGamePlayers adapter;
+    private GameAdapter adapter;
     private View bananaView;
 
     @Override
@@ -47,7 +51,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        toolbar.setTitle(gameViewModel.getGameType().name);
         toolbar.setTitleMarginStart(24);
     }
 
@@ -66,22 +69,16 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         doneButton.setOnClickListener(this);
         inputScoreEditText.setOnEditorActionListener((v, actionId, event) -> onScoreEntered());
         gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
-        launchGameSetUp();
-        Log.d("dom test", "game id currently is: " + String.valueOf(gameViewModel.getGameID()));
-
+        gameViewModel.setGameId(gameIdFromIntent());
     }
 
-    private void launchGameSetUp() {
-        // Reads from intent once, then removes extra. If onCreate is called again, data is pulled directly from ViewModel class.
+    private String gameIdFromIntent() {
         Bundle arguments = getIntent().getExtras();
         assert arguments != null;
         String gameId = arguments.getString(GAME_STATE_KEY);
         assert gameId != null;
         Log.d("gameState", "gameactivity ID: " + gameId);
-
-//        setVisitsTextView();
-//        setAverageScoreTextView();
-        gameViewModel.saveGameStateToDb();
+        return gameId;
     }
 
 //    private void setAverageScoreTextView() {
@@ -96,10 +93,16 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 //    }
 
     private void setAdapter() {
-        adapter = new RecyclerAdapterGamePlayers(gameViewModel.getPlayersList());
+        List<User> players = new ArrayList<>();
+        gameViewModel.getPlayersList().observe(this, gameWithUsers -> players.addAll(gameWithUsers.users));
+        adapter = new GameAdapter(players);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+        gameViewModel.getGame().observe(this, game -> {
+            adapter.setGame(game);
+            toolbar.setTitle(game.gameType.name);
+        });
         recyclerView.setAdapter(adapter);
     }
 
@@ -138,8 +141,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             inputMethodManager.hideSoftInputFromWindow(recyclerView.getApplicationWindowToken(), 0);
             inputScoreEditText.setVisibility(View.GONE);
             doneButton.setVisibility(View.GONE);
-            gameViewModel.deleteGameStateByID(gameViewModel.getGameID());
-            gameViewModel.updateAllUsers();
+            gameViewModel.deleteGameStateByID(gameViewModel.getGameId());
+//            gameViewModel.updateAllUsers();
         }
     }
 
@@ -173,7 +176,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 Game game = gameViewModel.getGameInfo();
 //                gameState.setGameID(gameViewModel.getGameID());
 //                gameViewModel.insert(gameState).subscribe();
-                gameViewModel.updateAllUsers();
+//                gameViewModel.updateAllUsers();
             }
 //            gameViewModel.undo(adapter);
 //            setAverageScoreTextView();

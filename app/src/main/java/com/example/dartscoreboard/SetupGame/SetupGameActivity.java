@@ -138,8 +138,8 @@ public class SetupGameActivity extends AppCompatActivity implements View.OnClick
             Intent intent = new Intent(this, GameActivity.class);
             Bundle arguments = new Bundle();
             Game game = initialiseGameState(gameType);
-            Log.d("gameState", "setupGame ID:  " + game.getGameID());
-            arguments.putString(GameActivity.GAME_STATE_KEY, game.getGameID());
+            Log.d("gameState", "setupGame ID:  " + game.getGameId());
+            arguments.putString(GameActivity.GAME_STATE_KEY, game.getGameId());
             intent.putExtras(arguments);
             startActivity(intent);
             finish();

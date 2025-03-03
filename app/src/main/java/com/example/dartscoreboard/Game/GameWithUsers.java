@@ -11,7 +11,7 @@ import java.util.List;
 public class GameWithUsers {
     @Embedded public Game game;
     @Relation(
-            parentColumn = "gameID",
+            parentColumn = "gameId",
             entityColumn = "userID",
             associateBy = @Junction(GameUsers.class)
     )

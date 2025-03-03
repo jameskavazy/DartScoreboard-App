@@ -15,7 +15,6 @@ import com.example.dartscoreboard.User.User;
 import com.example.dartscoreboard.User.UserRepository;
 import com.example.dartscoreboard.Utils.PreferencesController;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -47,7 +46,7 @@ public class SetupGameViewModel extends AndroidViewModel {
                 0, 0, 0,
                 gameId);
         game.setPlayersCSV(getSelectedPlayers());
-        Log.d("db test", "the id as set" + game.gameID);
+        Log.d("db test", "the id as set" + game.gameId);
         addUsersToGame();
         gameRepository.insert(game);
         return game;

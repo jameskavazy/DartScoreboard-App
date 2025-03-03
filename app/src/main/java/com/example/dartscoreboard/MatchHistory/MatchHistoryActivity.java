@@ -7,7 +7,6 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,7 +17,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -27,7 +25,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dartscoreboard.Game.Game;
 import com.example.dartscoreboard.Game.GameActivity;
-import com.example.dartscoreboard.Game.GameWithUsers;
 import com.example.dartscoreboard.R;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -122,10 +119,10 @@ public class MatchHistoryActivity extends AppCompatActivity {
             }
         }).attachToRecyclerView(recyclerView);
 
-        adapter.setOnItemClickListener(gameState -> {
+        adapter.setOnItemClickListener(game -> {
             Intent intent = new Intent(MatchHistoryActivity.this, GameActivity.class);
             Bundle arguments = new Bundle();
-            arguments.putSerializable(GameActivity.GAME_STATE_KEY, gameState); // TODO: 02/03/2025 putString (gameId)
+            arguments.putString(GameActivity.GAME_STATE_KEY, game.gameId);
             intent.putExtras(arguments);
             startActivity(intent);
             finish();

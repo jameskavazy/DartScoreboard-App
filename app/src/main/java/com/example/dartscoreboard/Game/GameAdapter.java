@@ -14,10 +14,11 @@ import com.example.dartscoreboard.User.User;
 
 import java.util.List;
 
-public class RecyclerAdapterGamePlayers extends RecyclerView.Adapter<RecyclerAdapterGamePlayers.GameViewHolder> {
+public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder> {
 
     private List<User> usersList;
-    public RecyclerAdapterGamePlayers(List<User> usersList){
+    private Game game;
+    public GameAdapter(List<User> usersList){
         this.usersList = usersList;
     }
 
@@ -53,11 +54,12 @@ public class RecyclerAdapterGamePlayers extends RecyclerView.Adapter<RecyclerAda
     @Override
     public void onBindViewHolder(@NonNull GameViewHolder holder, int position) {
         String name = usersList.get(position).getUsername();
-//        int gameScore = usersList.get(position).getPlayerScore();
+
+        int gameScore = game.getGameType().startingScore;
 //        int currentLegs = usersList.get(position).getCurrentLegs();
 //        int currentSets = usersList.get(position).getCurrentSets();
         holder.nameText.setText(name);
-//        holder.playerScoreTextView.setText(String.valueOf(gameScore));
+        holder.playerScoreTextView.setText(String.valueOf(gameScore));
 //        holder.legsTextView.setText(String.valueOf(currentLegs));
 //        holder.setsTextView.setText(String.valueOf(currentSets));
         holder.playerIndicator.setVisibility(GameViewModel.getTurnIndex() == position ? View.VISIBLE : View.GONE);
@@ -68,9 +70,14 @@ public class RecyclerAdapterGamePlayers extends RecyclerView.Adapter<RecyclerAda
         return usersList.size();
     }
 
-    public void setUsersList(List<User> usersList){
-        this.usersList = usersList;
+//    public void setUsersList(List<User> usersList){
+//        this.usersList = usersList;
+//        notifyDataSetChanged();
+//    }
+
+
+    public void setGame(Game game) {
+        this.game = game;
         notifyDataSetChanged();
     }
-
 }

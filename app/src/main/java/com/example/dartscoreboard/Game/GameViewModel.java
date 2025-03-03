@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 
 import com.example.dartscoreboard.Application.DartsScoreboardApplication;
 import com.example.dartscoreboard.User.User;
@@ -18,13 +19,15 @@ import io.reactivex.rxjava3.core.Completable;
 public class GameViewModel extends AndroidViewModel {
     private final UserRepository userRepository;
     private final GameRepository gameRepository;
-    private String gameID;
+    private String gameId;
     public static int turnIndex = 0;
     private int turnIndexLegs = 0;
     private int turnIndexSets = 0;
     private List<User> playersList;
     private GameType gameType;
     private boolean finished;
+
+    private Game game;
 
     private GameSettings gameSettings;
 
@@ -52,7 +55,6 @@ public class GameViewModel extends AndroidViewModel {
 
 
     public void playerVisit(int scoreInt) {
-
 
         if (scoreInt == 0)
             Toast.makeText(DartsScoreboardApplication.getContext(), "No score.", Toast.LENGTH_SHORT).show(); 
@@ -267,8 +269,8 @@ public class GameViewModel extends AndroidViewModel {
         this.turnIndexSets = turnIndexSets;
     }
 
-    public List<User> getPlayersList() {
-        return playersList;
+    public LiveData<GameWithUsers> getPlayersList() {
+       return userRepository.getUserFromGame(gameId);
     }
 
     public void clearTurnIndices() {
@@ -277,12 +279,12 @@ public class GameViewModel extends AndroidViewModel {
         setTurnIndexSets(0);
     }
 
-    public String getGameID() {
-        return gameID;
+    public String getGameId() {
+        return gameId;
     }
 
-    public void setGameID(String gameID) {
-        this.gameID = gameID;
+    public void setGameId(String gameId) {
+        this.gameId = gameId;
     }
 
 //    public void endGame() {
@@ -315,11 +317,11 @@ public class GameViewModel extends AndroidViewModel {
 //        }
     }
 
-    public void updateAllUsers() {
-        for (User user : getPlayersList()) {
-            updateUser(user);
-        }
-    }
+//    public void updateAllUsers() {
+//        for (User user : getPlayersList()) {
+//            updateUser(user);
+//        }
+//    }
 
     public void saveGameStateToDb() {
 ////      Create GameState object + attach the id for DB update
@@ -354,8 +356,10 @@ public class GameViewModel extends AndroidViewModel {
                 getTurnIndex(),
                 getTurnIndexLegs(),
                 getTurnIndexLegs(),
-                getGameID());
+                getGameId());
     }
+
+
 
 
 //    public double getPlayerAverage() {
@@ -383,6 +387,14 @@ public class GameViewModel extends AndroidViewModel {
 
     public void setFinished(boolean f) {
         finished = f;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
+    }
+
+    public LiveData<Game> getGame(){
+        return gameRepository.getGameStateById(gameId);
     }
 
 

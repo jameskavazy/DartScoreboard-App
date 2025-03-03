@@ -3,7 +3,6 @@ package com.example.dartscoreboard.Game;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.example.dartscoreboard.User.User;
@@ -19,7 +18,7 @@ public class Game implements Serializable {
 
     @PrimaryKey
     @NonNull
-    public String gameID;
+    public String gameId;
 
     @ColumnInfo(name = "datetime")
     public OffsetDateTime offsetDateTime = OffsetDateTime.now();
@@ -41,13 +40,13 @@ public class Game implements Serializable {
 
 
     public Game(GameType gameType, GameSettings gameSettings,
-                int turnIndex, int legIndex, int setIndex, @NonNull String gameID) {
+                int turnIndex, int legIndex, int setIndex, @NonNull String gameId) {
         this.gameType = gameType;
         this.gameSettings = gameSettings;
         this.turnIndex = turnIndex;
         this.legIndex = legIndex;
         this.setIndex = setIndex;
-        this.gameID = gameID;
+        this.gameId = gameId;
     }
 
     public OffsetDateTime getCreatedDate() {
@@ -60,12 +59,12 @@ public class Game implements Serializable {
 
 
 
-    public void setGameID(String gameID) {
-        this.gameID = gameID;
+    public void setGameId(String gameId) {
+        this.gameId = gameId;
     }
 
-    public String getGameID() {
-        return gameID;
+    public String getGameId() {
+        return gameId;
     }
 
     public GameType getGameType() {
@@ -125,6 +124,16 @@ public class Game implements Serializable {
             namesOfGame[i] = players.get(i).getUsername();
         }
         this.playersCSVString = String.join(", ", namesOfGame);
+    }
+
+    public void set(GameType gameType, GameSettings gameSettings,
+                int turnIndex, int legIndex, int setIndex, String gameId) {
+        this.gameType = gameType;
+        this.gameSettings = gameSettings;
+        this.turnIndex = turnIndex;
+        this.legIndex = legIndex;
+        this.setIndex = setIndex;
+        this.gameId = gameId;
     }
 
 }

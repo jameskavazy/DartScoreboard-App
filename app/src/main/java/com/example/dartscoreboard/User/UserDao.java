@@ -32,7 +32,7 @@ public interface UserDao {
     void deleteAllUsers();
 
     @Transaction
-    @Query("SELECT * FROM `match` WHERE gameID = :gameId")
+    @Query("SELECT * FROM `match` WHERE gameId = :gameId")
     LiveData<GameWithUsers> getUsersFromGame(String gameId);
 
     @Transaction

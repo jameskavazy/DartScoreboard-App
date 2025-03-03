@@ -1,31 +1,20 @@
 package com.example.dartscoreboard.MatchHistory;
 
-import android.app.Application;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.dartscoreboard.Application.DartsScoreboardApplication;
 import com.example.dartscoreboard.Game.Game;
-import com.example.dartscoreboard.Game.GameWithUsers;
 import com.example.dartscoreboard.R;
-import com.example.dartscoreboard.User.User;
-import com.example.dartscoreboard.User.UserRepository;
 
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 public class RecyclerAdapterMatchHistory extends ListAdapter<Game, RecyclerAdapterMatchHistory.MyViewHolder> {
 
@@ -38,7 +27,7 @@ public class RecyclerAdapterMatchHistory extends ListAdapter<Game, RecyclerAdapt
     private static final DiffUtil.ItemCallback<Game> DIFF_CALLBACK = new DiffUtil.ItemCallback<Game>() {
         @Override
         public boolean areItemsTheSame(@NonNull Game oldItem, @NonNull Game newItem) {
-            return oldItem.getGameID() == newItem.getGameID();
+            return oldItem.getGameId() == newItem.getGameId();
         }
 
         @Override

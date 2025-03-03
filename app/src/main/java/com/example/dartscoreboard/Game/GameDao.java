@@ -4,10 +4,12 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
 import java.util.List;
+import java.util.Map;
 
 @Dao
 public interface GameDao {
@@ -27,11 +29,15 @@ public interface GameDao {
     @Query("SELECT * FROM `match` ORDER BY datetime DESC")
     LiveData<List<Game>> getAllMatchHistory();
 
-    @Query("SELECT * FROM `match` WHERE gameID = :id")
-    LiveData<Game> findGameByID(int id);
+    @Query("SELECT * FROM `match` WHERE gameId = :id")
+    LiveData<Game> findGameByID(String id);
 
-    @Query("DELETE FROM `match` WHERE gameID = :id")
+    @Query("DELETE FROM `match` WHERE gameId = :id")
     void deleteGameStateByID(String id);
 
+    @Query("SELECT * FROM visit WHERE gameId = :id")
+    LiveData<List<Visit>> getVisitsInMatch(String id);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertVisit(Visit visit);
 }

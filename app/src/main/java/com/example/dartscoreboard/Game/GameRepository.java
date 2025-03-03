@@ -47,7 +47,7 @@ public class GameRepository {
         completable.subscribeOn(Schedulers.io()).subscribe();
     }
 
-    public LiveData<Game> getGameStateById(int id){
+    public LiveData<Game> getGameStateById(String id){
         return gameDao.findGameByID(id);
     }
 
@@ -58,4 +58,12 @@ public class GameRepository {
     public LiveData<List<Game>> getAllMatchHistory(){
         return allMatchHistory;
     }
+
+    public Completable insertVisit(Visit visit){
+        Completable completable = Completable.fromAction(() -> gameDao.insertVisit(visit));
+        completable.subscribeOn(Schedulers.io()).subscribe();
+        return completable;
+    }
+
+
 }

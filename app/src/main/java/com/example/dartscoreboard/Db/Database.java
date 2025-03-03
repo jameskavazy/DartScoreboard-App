@@ -8,6 +8,7 @@ import androidx.room.TypeConverters;
 
 import com.example.dartscoreboard.Game.Game;
 import com.example.dartscoreboard.Game.GameUsers;
+import com.example.dartscoreboard.Game.Visit;
 import com.example.dartscoreboard.LiveMatches.LiveProMatchesDao;
 import com.example.dartscoreboard.LiveMatches.Match;
 import com.example.dartscoreboard.Game.GameDao;
@@ -20,7 +21,8 @@ import com.example.dartscoreboard.Utils.Converters;
                 User.class,
                 Game.class,
                 Match.class,
-                GameUsers.class
+                GameUsers.class,
+                Visit.class
         },
         version = 3)
 @TypeConverters({Converters.class})
