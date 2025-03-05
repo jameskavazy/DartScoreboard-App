@@ -40,4 +40,7 @@ public interface GameDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertVisit(Visit visit);
+
+    @Query("SELECT * FROM visit WHERE gameId = :gameId AND userID = :userId")
+    List<Visit> getMatchVisitsByUser(String gameId, int userId);
 }

@@ -12,9 +12,14 @@ import com.example.dartscoreboard.Application.DartsScoreboardApplication;
 import com.example.dartscoreboard.User.User;
 import com.example.dartscoreboard.User.UserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import java.util.function.ToIntFunction;
 
 import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.SingleObserver;
+import io.reactivex.rxjava3.disposables.Disposable;
 
 public class GameViewModel extends AndroidViewModel {
     private final UserRepository userRepository;
@@ -55,15 +60,21 @@ public class GameViewModel extends AndroidViewModel {
 
 
     public void playerVisit(int scoreInt) {
-
         if (scoreInt == 0)
             Toast.makeText(DartsScoreboardApplication.getContext(), "No score.", Toast.LENGTH_SHORT).show(); 
         if (scoreInt <= 180) {
             // checks for valid score input
-//            User currentPlayer = playersList.get(turnIndex);
-//            int currentScore = currentPlayer.getPlayerScore();
-//            setIsCheckoutFlag(currentPlayer, currentScore);
-//            currentPlayer.setPlayerScore(subtract(currentScore, scoreInt));
+            User user = playersList.get(turnIndex);
+            int userId = user.userID;
+            List<Visit> userVisitsInMatch = gameRepository.getMatchVisitsByUser(gameId, userId).blockingGet();
+            int totalScore = userVisitsInMatch.stream().mapToInt(value -> value.score).sum();
+            Visit visit = new Visit(UUID.randomUUID().toString());
+            visit.setGameId(gameId);
+            visit.setUserID(user.userID);
+            visit.setScore(validateScore(gameType.startingScore - totalScore, scoreInt));
+
+            gameRepository.insertVisit(visit);
+
             incrementTurnIndex();
         }
 //        nextLeg();
@@ -80,7 +91,7 @@ public class GameViewModel extends AndroidViewModel {
 //    }
 
 
-    private int subtract(int playerScore, int input) {
+    private int validateScore(int playerScore, int input) {
         User currentPlayer = playersList.get(turnIndex);
 
         if (currentPlayer.isGuy) {
@@ -99,14 +110,14 @@ public class GameViewModel extends AndroidViewModel {
         if (newScore < 0) {
             //BUST
             Toast.makeText(DartsScoreboardApplication.getContext(), "BUST", Toast.LENGTH_SHORT).show();
-            return playerScore;
+            return 0;
         }
 
 
         if (newScore == 0) {
             if (playerScore >= 171) {
                 Toast.makeText(DartsScoreboardApplication.getContext(), "BUST", Toast.LENGTH_SHORT).show();
-                return playerScore;
+                return 0;
             }
 
             switch (playerScore) {
@@ -118,16 +129,16 @@ public class GameViewModel extends AndroidViewModel {
                 case 162:
                 case 159:
                     Toast.makeText(DartsScoreboardApplication.getContext(), "BUST", Toast.LENGTH_SHORT).show();
-                    return playerScore;
+                    return 0;
             }
-            return newScore;
+            return input;
         }
 
         if (newScore > 1) {
-            return newScore;
+            return input;
         } else {
             Toast.makeText(DartsScoreboardApplication.getContext(), "BUST", Toast.LENGTH_SHORT).show();
-            return playerScore;
+            return 0;
         }
     }
 

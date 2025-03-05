@@ -35,12 +35,46 @@ public class Visit {
     public int userID;
 
     public String gameId;
-
     public int score;
 
     public Visit(@NonNull String visitId) {
         this.visitId = visitId;
     }
+
+
+    @NonNull
+    public String getVisitId() {
+        return visitId;
+    }
+
+    public void setVisitId(@NonNull String visitId) {
+        this.visitId = visitId;
+    }
+
+    public int getUserID() {
+        return userID;
+    }
+
+    public void setUserID(int userID) {
+        this.userID = userID;
+    }
+
+    public String getGameId() {
+        return gameId;
+    }
+
+    public void setGameId(String gameId) {
+        this.gameId = gameId;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
 
 
 }

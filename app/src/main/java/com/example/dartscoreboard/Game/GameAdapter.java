@@ -13,7 +13,6 @@ import com.example.dartscoreboard.R;
 import com.example.dartscoreboard.User.User;
 
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder> {
@@ -64,10 +63,7 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
                 .filter(visit -> visit.userID == usersList.get(position).userID)
                 .collect(Collectors.toList());
 
-        int visitScores = 0;
-        for (Visit visit: userVisits) {
-            visitScores += visit.score;
-        }
+        int visitScores = userVisits.stream().mapToInt(visit -> visit.score).sum();
         int currentScore = startingScore - visitScores;
 
 

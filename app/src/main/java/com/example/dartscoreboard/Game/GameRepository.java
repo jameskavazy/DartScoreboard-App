@@ -10,6 +10,7 @@ import com.example.dartscoreboard.Db.Database;
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class GameRepository {
@@ -67,6 +68,10 @@ public class GameRepository {
 
     public LiveData<List<Visit>> getVisitsInGame(String gameId){
         return gameDao.getVisitsInMatch(gameId);
+    }
+
+    public Single<List<Visit>> getMatchVisitsByUser(String gameId, int userId){
+        return Single.fromCallable(()-> gameDao.getMatchVisitsByUser(gameId, userId)).subscribeOn(Schedulers.io());
     }
 
 

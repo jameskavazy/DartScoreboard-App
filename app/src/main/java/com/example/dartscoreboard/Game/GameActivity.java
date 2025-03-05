@@ -95,7 +95,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private void setAdapter() {
         List<User> players = new ArrayList<>();
-        gameViewModel.getPlayersList().observe(this, gameWithUsers -> players.addAll(gameWithUsers.users));
+        gameViewModel.getPlayersList().observe(this, gameWithUsers -> {
+            gameViewModel.setPlayersList(gameWithUsers.users);
+            gameViewModel.setGameType(gameWithUsers.game.getGameType());
+            players.addAll(gameWithUsers.users);
+        });
         adapter = new GameAdapter(players);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -121,7 +125,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             Log.d("dom test", "IME_ACTION_DONE");
 //            setBanana();
             gameViewModel.playerVisit(input);
-            adapter.notifyDataSetChanged();
+//            adapter.notifyDataSetChanged();
             if (input > 180) {
                 Toast.makeText(GameActivity.this, "Invalid Score", Toast.LENGTH_SHORT).show();
             }
