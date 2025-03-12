@@ -61,17 +61,23 @@ public class GameRepository {
     }
 
     public Completable insertVisit(Visit visit){
-        Completable completable = Completable.fromAction(() -> gameDao.insertVisit(visit));
-        completable.subscribeOn(Schedulers.io()).subscribe();
-        return completable;
+        return Completable.fromAction(() -> gameDao.insertVisit(visit)).subscribeOn(Schedulers.io());
+//        Completable completable = Completable.fromAction(() -> gameDao.insertVisit(visit));
+//        completable.subscribeOn(Schedulers.io()).subscribe();
+//        return completable;
     }
 
     public LiveData<List<Visit>> getVisitsInGame(String gameId){
         return gameDao.getVisitsInMatch(gameId);
     }
 
-    public Single<List<Visit>> getMatchVisitsByUser(String gameId, int userId){
-        return Single.fromCallable(()-> gameDao.getMatchVisitsByUser(gameId, userId)).subscribeOn(Schedulers.io());
+    public Single<Integer> getGameTotalScoreByUser(String gameId, int userId){
+       return gameDao.getGameTotalScoreByUser(gameId, userId);
+//        return Single.fromCallable(()-> gameDao.getGameTotalScoreByUser(gameId, userId)).subscribeOn(Schedulers.io());
+    }
+
+    public void deleteLatestVisit(){
+       Completable.fromAction(gameDao::deleteLastVisit).subscribeOn(Schedulers.io()).subscribe();
     }
 
 

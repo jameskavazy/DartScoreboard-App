@@ -28,26 +28,22 @@ import com.example.dartscoreboard.User.User;
 )
 public class Visit {
 
-    @PrimaryKey
-    @NonNull
-    public String visitId;
+    @PrimaryKey(autoGenerate = true)
+    public long visitId;
 
     public int userID;
 
     public String gameId;
     public int score;
 
-    public Visit(@NonNull String visitId) {
-        this.visitId = visitId;
+    public Visit() {
     }
 
-
-    @NonNull
-    public String getVisitId() {
+    public long getVisitId() {
         return visitId;
     }
 
-    public void setVisitId(@NonNull String visitId) {
+    public void setVisitId(long visitId) {
         this.visitId = visitId;
     }
 

@@ -1,6 +1,9 @@
 package com.example.dartscoreboard.Game;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -12,25 +15,24 @@ import com.example.dartscoreboard.Application.DartsScoreboardApplication;
 import com.example.dartscoreboard.User.User;
 import com.example.dartscoreboard.User.UserRepository;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-import java.util.function.ToIntFunction;
 
 import io.reactivex.rxjava3.core.Completable;
-import io.reactivex.rxjava3.core.SingleObserver;
-import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
 
 public class GameViewModel extends AndroidViewModel {
     private final UserRepository userRepository;
     private final GameRepository gameRepository;
     private String gameId;
     public static int turnIndex = 0;
-    private int turnIndexLegs = 0;
-    private int turnIndexSets = 0;
+    private int legIndex = 0;
+    private int setIndex = 0;
     private List<User> playersList;
     private GameType gameType;
     private boolean finished;
+    private final String BUST = "BUST";
+    private final String NO_SCORE = "No score";
 
     private Game game;
 
@@ -59,39 +61,45 @@ public class GameViewModel extends AndroidViewModel {
     }
 
 
+    @SuppressLint("CheckResult")
     public void playerVisit(int scoreInt) {
-        if (scoreInt == 0)
-            Toast.makeText(DartsScoreboardApplication.getContext(), "No score.", Toast.LENGTH_SHORT).show(); 
+        if (scoreInt == 0) {
+            toastMessage(NO_SCORE);
+        }
         if (scoreInt <= 180) {
             // checks for valid score input
             User user = playersList.get(turnIndex);
             int userId = user.userID;
-            List<Visit> userVisitsInMatch = gameRepository.getMatchVisitsByUser(gameId, userId).blockingGet();
-            int totalScore = userVisitsInMatch.stream().mapToInt(value -> value.score).sum();
-            Visit visit = new Visit(UUID.randomUUID().toString());
-            visit.setGameId(gameId);
-            visit.setUserID(user.userID);
-            visit.setScore(validateScore(gameType.startingScore - totalScore, scoreInt));
 
-            gameRepository.insertVisit(visit);
-
-            incrementTurnIndex();
+            gameRepository.getGameTotalScoreByUser(gameId, userId)
+                    .flatMapCompletable(sumOfVisits -> {
+                        int finalScore = calculateScore(gameType.startingScore - sumOfVisits, scoreInt);
+                        Visit visit = createVisit(user, finalScore);
+                        return gameRepository.insertVisit(visit);
+                    })
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.single())
+                    .subscribe(
+                            () -> {
+                                incrementTurnIndex();
+                                Log.d("Insert", "Visit inserted successfully");
+                            },
+                            throwable -> Log.e("Error", "Failed to insert visit", throwable)
+                    );
         }
 //        nextLeg();
     }
 
-//    private void setIsCheckoutFlag(User currentPlayer, int currentScore) {
-////       todo make this code below popup dialogue that asks how many attempts on double
-//        currentPlayer.setCheckout((currentScore <= 170) &&
-//                ((currentScore != 169) && (currentScore != 168) &&
-//                        (currentScore != 166) && (currentScore != 165) &&
-//                        (currentScore != 163) && (currentScore != 162) &&
-//                        (currentScore != 159)));
-////        currentPlayer.setCheckout((currentScore == 50 || currentScore <= 40) && currentScore % 2 == 0);
-//    }
+    @NonNull
+    private Visit createVisit(User user, int finalScore) {
+        Visit visit = new Visit();
+        visit.setGameId(gameId);
+        visit.setUserID(user.userID);
+        visit.setScore(finalScore);
+        return visit;
+    }
 
-
-    private int validateScore(int playerScore, int input) {
+    private int calculateScore(int playerScore, int input) {
         User currentPlayer = playersList.get(turnIndex);
 
         if (currentPlayer.isGuy) {
@@ -108,15 +116,14 @@ public class GameViewModel extends AndroidViewModel {
         int newScore = playerScore - input;
 
         if (newScore < 0) {
-            //BUST
-            Toast.makeText(DartsScoreboardApplication.getContext(), "BUST", Toast.LENGTH_SHORT).show();
+            toastMessage(BUST);
             return 0;
         }
 
 
         if (newScore == 0) {
             if (playerScore >= 171) {
-                Toast.makeText(DartsScoreboardApplication.getContext(), "BUST", Toast.LENGTH_SHORT).show();
+                toastMessage(BUST);
                 return 0;
             }
 
@@ -128,7 +135,7 @@ public class GameViewModel extends AndroidViewModel {
                 case 163:
                 case 162:
                 case 159:
-                    Toast.makeText(DartsScoreboardApplication.getContext(), "BUST", Toast.LENGTH_SHORT).show();
+                    toastMessage(BUST);
                     return 0;
             }
             return input;
@@ -137,33 +144,24 @@ public class GameViewModel extends AndroidViewModel {
         if (newScore > 1) {
             return input;
         } else {
-            Toast.makeText(DartsScoreboardApplication.getContext(), "BUST", Toast.LENGTH_SHORT).show();
+            toastMessage(BUST);
             return 0;
         }
     }
 
+    private void toastMessage(String msg) {
+        Handler mainHandler = new Handler(Looper.getMainLooper());
+        mainHandler.post(() -> Toast.makeText(DartsScoreboardApplication.getContext(),
+                msg, Toast.LENGTH_SHORT).show());
+    }
 
 
-
-
-//    public void undo(RecyclerAdapterGamePlayers adapter) {
-//        if (!getMatchStateStack().isEmpty()) {
-//            MatchState matchState = getMatchStateStack().pop();
-//            List<User> previousUserList = matchState.getPlayerList();
-//            ArrayList<Integer> previousUserPreviousScoresList = previousUserList.get(matchState.getTurnIndex()).getPreviousScoresList();
-//            if (!previousUserPreviousScoresList.isEmpty()) {
-//                //// TODO: 28/01/2024 Why does this need to happen. Having to manually remove last visit. Deep copy doesn't work
-//                previousUserPreviousScoresList.remove(previousUserPreviousScoresList.size() - 1);
-//            }
-//
-//            setPlayersList(previousUserList);
-//            setTurnIndex(matchState.getTurnIndex());
-//            setTurnIndexLegs(matchState.getTurnIndexForLegs());
-//            setTurnIndexSets(matchState.getTurnIndexForSets());
-//            adapter.setUsersList(previousUserList);
-//            adapter.notifyDataSetChanged();
-//        }
-//    }
+    public void undo() {
+            gameRepository.deleteLatestVisit();
+            decrementTurnIndex();
+//            decrementLegIndex();
+//            decrementSetIndex();
+    }
 
 //    public void setPlayerLegs() {
 //        for (int i = 0; i < playersList.size(); i++) {
@@ -225,15 +223,29 @@ public class GameViewModel extends AndroidViewModel {
         turnIndex = (turnIndex + 1) % playersList.size();
     }
 
-    public void incrementTurnIndexLegs() {
-        turnIndexLegs = (turnIndexLegs + 1) % playersList.size();
-        turnIndex = turnIndexLegs;
+    public void decrementTurnIndex() {
+        turnIndex = (turnIndex - 1 + playersList.size()) % playersList.size();
     }
 
-    public void incrementTurnIndexSets() {
-        turnIndexSets = (turnIndexSets + 1) % playersList.size();
-        turnIndexLegs = turnIndexSets;
-        turnIndex = turnIndexSets;
+    public void incrementLegIndex() {
+        legIndex = (legIndex + 1) % playersList.size();
+        turnIndex = legIndex;
+    }
+
+    public void decrementLegIndex() {
+        legIndex = (legIndex - 1) % playersList.size();
+        turnIndex = legIndex;
+    }
+    public void incrementSetIndex() {
+        setIndex = (setIndex + 1) % playersList.size();
+        legIndex = setIndex;
+        turnIndex = setIndex;
+    }
+
+    public void decrementSetIndex() {
+        setIndex = (setIndex - 1) % playersList.size();
+        legIndex = setIndex;
+        turnIndex = setIndex;
     }
 
     public void setPlayersList(List<User> playersList) {
@@ -264,20 +276,20 @@ public class GameViewModel extends AndroidViewModel {
         return turnIndex;
     }
 
-    public int getTurnIndexLegs() {
-        return turnIndexLegs;
+    public int getLegIndex() {
+        return legIndex;
     }
 
-    public void setTurnIndexLegs(int turnIndexLegs) {
-        this.turnIndexLegs = turnIndexLegs;
+    public void setLegIndex(int legIndex) {
+        this.legIndex = legIndex;
     }
 
-    public int getTurnIndexSets() {
-        return turnIndexSets;
+    public int getSetIndex() {
+        return setIndex;
     }
 
-    public void setTurnIndexSets(int turnIndexSets) {
-        this.turnIndexSets = turnIndexSets;
+    public void setSetIndex(int setIndex) {
+        this.setIndex = setIndex;
     }
 
     public LiveData<GameWithUsers> getPlayersList() {
@@ -286,8 +298,8 @@ public class GameViewModel extends AndroidViewModel {
 
     public void clearTurnIndices() {
         setTurnIndex(0);
-        setTurnIndexSets(0);
-        setTurnIndexSets(0);
+        setSetIndex(0);
+        setSetIndex(0);
     }
 
     public String getGameId() {
@@ -320,8 +332,8 @@ public class GameViewModel extends AndroidViewModel {
         setGameType(game.getGameType());
         setGameSettings(game.getGameSettings());
         setTurnIndex(game.getTurnIndex());
-        setTurnIndexLegs(game.getLegIndex());
-        setTurnIndexSets(game.getSetIndex());
+        setLegIndex(game.getLegIndex());
+        setSetIndex(game.getSetIndex());
 //        if (gameID == 0) {
 //            setPlayerStartingScores();
 //            finished = false;
@@ -333,43 +345,6 @@ public class GameViewModel extends AndroidViewModel {
 //            updateUser(user);
 //        }
 //    }
-
-    public void saveGameStateToDb() {
-////      Create GameState object + attach the id for DB update
-//        GameState gameState = getGameInfo();
-//        if (getGameID() != 0) {
-//            gameState.setGameID(getGameID());
-//            update(gameState);
-//        } else {
-//            insert(gameState).subscribe(new SingleObserver<Long>() {
-//                @Override
-//                public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
-//
-//                }
-//
-//                @Override
-//                public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull Long aLong) {
-//                    Log.d("dom test", "onSuccess " + aLong);
-//                    setGameID(aLong);
-//                }
-//
-//                @Override
-//                public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
-//                }
-//            });
-//        }
-    }
-
-    public Game getGameInfo() {
-        return new Game(
-                getGameType(),
-                getGameSettings(),
-                getTurnIndex(),
-                getTurnIndexLegs(),
-                getTurnIndexLegs(),
-                getGameId());
-    }
-
 
 
 

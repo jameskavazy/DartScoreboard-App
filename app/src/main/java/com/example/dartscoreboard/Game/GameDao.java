@@ -9,7 +9,8 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import java.util.List;
-import java.util.Map;
+
+import io.reactivex.rxjava3.core.Single;
 
 @Dao
 public interface GameDao {
@@ -41,6 +42,10 @@ public interface GameDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertVisit(Visit visit);
 
-    @Query("SELECT * FROM visit WHERE gameId = :gameId AND userID = :userId")
-    List<Visit> getMatchVisitsByUser(String gameId, int userId);
+    @Query("SELECT COALESCE(SUM(score), 0) FROM visit WHERE gameId = :gameId AND userID = :userId")
+    Single<Integer> getGameTotalScoreByUser(String gameId, int userId);
+
+    @Query("DELETE FROM visit WHERE visitId = (SELECT MAX(visitId) FROM visit)")
+    void deleteLastVisit();
+
 }

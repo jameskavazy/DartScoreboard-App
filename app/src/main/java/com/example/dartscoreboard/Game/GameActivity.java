@@ -17,7 +17,6 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -132,7 +131,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             ((EditText) findViewById(R.id.inputUserNameEditText)).getText().clear();
 //            setAverageScoreTextView();
 //            setVisitsTextView();
-            gameViewModel.saveGameStateToDb();
             endGameChecker();
             return true;
         } catch (Exception e) {
@@ -174,22 +172,14 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         int menuItem = item.getItemId();
         if (menuItem == R.id.undo_menu_button) {
             Log.d("dom test", "Undo Click");
-
             if (gameViewModel.getFinished()) {
                 inputScoreEditText.setVisibility(View.VISIBLE);
                 doneButton.setVisibility(View.VISIBLE);
                 gameViewModel.setFinished(false);
-                Game game = gameViewModel.getGameInfo();
-//                gameState.setGameID(gameViewModel.getGameID());
-//                gameViewModel.insert(gameState).subscribe();
-//                gameViewModel.updateAllUsers();
             }
-//            gameViewModel.undo(adapter);
+            gameViewModel.undo();
 //            setAverageScoreTextView();
 //            setVisitsTextView();
-            Game game = gameViewModel.getGameInfo();
-//            gameState.setGameID(gameViewModel.getGameID());
-            gameViewModel.update(game);
         }
         return super.onOptionsItemSelected(item);
     }

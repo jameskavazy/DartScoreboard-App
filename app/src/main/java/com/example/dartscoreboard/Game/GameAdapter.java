@@ -1,5 +1,6 @@
 package com.example.dartscoreboard.Game;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
 
     private List<Visit> visits;
     public GameAdapter(List<User> usersList){
+        Log.d("james test", "GameAdapter userList constructor: " + usersList);
         this.usersList = usersList;
     }
 
@@ -57,10 +59,11 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
     @Override
     public void onBindViewHolder(@NonNull GameViewHolder holder, int position) {
         String name = usersList.get(position).getUsername();
+        User user = usersList.get(position);
 
         int startingScore = game.getGameType().startingScore;
         List<Visit> userVisits = visits.stream()
-                .filter(visit -> visit.userID == usersList.get(position).userID)
+                .filter(visit -> visit.userID == user.userID)
                 .collect(Collectors.toList());
 
         int visitScores = userVisits.stream().mapToInt(visit -> visit.score).sum();
