@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.dartscoreboard.Application.DartsScoreboardApplication;
 import com.example.dartscoreboard.User.User;
@@ -30,7 +31,11 @@ public class GameViewModel extends AndroidViewModel {
     private int setIndex = 0;
     private List<User> playersList;
     private GameType gameType;
-    private boolean finished;
+
+    private final MutableLiveData<Boolean> _finished = new MutableLiveData<>(false);
+
+
+    public LiveData<Boolean> finished = _finished;
     private final String BUST = "BUST";
     private final String NO_SCORE = "No score";
 
@@ -138,6 +143,8 @@ public class GameViewModel extends AndroidViewModel {
                     toastMessage(BUST);
                     return 0;
             }
+            _finished.postValue(true);
+            toastMessage(currentPlayer.getUsername() + " wins the match!");
             return input;
         }
 
@@ -157,8 +164,9 @@ public class GameViewModel extends AndroidViewModel {
 
 
     public void undo() {
-            gameRepository.deleteLatestVisit();
-            decrementTurnIndex();
+        _finished.postValue(false);
+        gameRepository.deleteLatestVisit();
+        decrementTurnIndex();
 //            decrementLegIndex();
 //            decrementSetIndex();
     }
@@ -367,13 +375,6 @@ public class GameViewModel extends AndroidViewModel {
 //    }
 
 
-    public boolean getFinished() {
-        return finished;
-    }
-
-    public void setFinished(boolean f) {
-        finished = f;
-    }
 
     public void setGame(Game game) {
         this.game = game;
@@ -385,6 +386,10 @@ public class GameViewModel extends AndroidViewModel {
 
     public LiveData<List<Visit>> getVisits(){
         return gameRepository.getVisitsInGame(gameId);
+    }
+
+    public LiveData<Boolean> getFinished() {
+        return finished;
     }
 
 }

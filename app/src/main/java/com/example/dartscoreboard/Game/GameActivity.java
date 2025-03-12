@@ -17,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -70,6 +71,18 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         inputScoreEditText.setOnEditorActionListener((v, actionId, event) -> onScoreEntered());
         gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
         gameViewModel.setGameId(gameIdFromIntent());
+
+        gameViewModel.getFinished().observe(this, isFinished -> {
+            if (!isFinished) {
+                inputScoreEditText.setVisibility(View.VISIBLE);
+                doneButton.setVisibility(View.VISIBLE);
+            } else {
+                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(recyclerView.getApplicationWindowToken(), 0);
+                inputScoreEditText.setVisibility(View.GONE);
+                doneButton.setVisibility(View.GONE);
+            }
+        });
     }
 
     private String gameIdFromIntent() {
@@ -131,7 +144,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             ((EditText) findViewById(R.id.inputUserNameEditText)).getText().clear();
 //            setAverageScoreTextView();
 //            setVisitsTextView();
-            endGameChecker();
+//            endGameChecker();
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -139,16 +152,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    public void endGameChecker() {
-        if (gameViewModel.getFinished()) {
-            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputMethodManager.hideSoftInputFromWindow(recyclerView.getApplicationWindowToken(), 0);
-            inputScoreEditText.setVisibility(View.GONE);
-            doneButton.setVisibility(View.GONE);
-            gameViewModel.deleteGameStateByID(gameViewModel.getGameId());
-//            gameViewModel.updateAllUsers();
-        }
-    }
 
     @Override
     public void onClick(View v) {
@@ -172,11 +175,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         int menuItem = item.getItemId();
         if (menuItem == R.id.undo_menu_button) {
             Log.d("dom test", "Undo Click");
-            if (gameViewModel.getFinished()) {
-                inputScoreEditText.setVisibility(View.VISIBLE);
-                doneButton.setVisibility(View.VISIBLE);
-                gameViewModel.setFinished(false);
-            }
             gameViewModel.undo();
 //            setAverageScoreTextView();
 //            setVisitsTextView();
