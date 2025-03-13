@@ -17,16 +17,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder> {
-
-    private List<User> usersList;
-    private Game game;
+    private GameWithUsers gameWithUsers = new GameWithUsers();
 
     private List<Visit> visits;
-    public GameAdapter(List<User> usersList){
-        Log.d("james test", "GameAdapter userList constructor: " + usersList);
-        this.usersList = usersList;
-    }
+    public GameAdapter() {
 
+    }
     public static class GameViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView nameText;
@@ -58,15 +54,11 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull GameViewHolder holder, int position) {
-        String name = usersList.get(position).getUsername();
-        User user = usersList.get(position);
+        String name = gameWithUsers.users.get(position).getUsername();
+        User user = gameWithUsers.users.get(position);
+        int startingScore = gameWithUsers.game.getGameType().startingScore;
+        int visitScores = getVisitScores(user);
 
-        int startingScore = game.getGameType().startingScore;
-        List<Visit> userVisits = visits.stream()
-                .filter(visit -> visit.userID == user.userID)
-                .collect(Collectors.toList());
-
-        int visitScores = userVisits.stream().mapToInt(visit -> visit.score).sum();
         int currentScore = startingScore - visitScores;
 
 
@@ -76,12 +68,23 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
         holder.playerScoreTextView.setText(String.valueOf(currentScore));
 //        holder.legsTextView.setText(String.valueOf(currentLegs));
 //        holder.setsTextView.setText(String.valueOf(currentSets));
-        holder.playerIndicator.setVisibility(GameViewModel.getTurnIndex() == position ? View.VISIBLE : View.GONE);
+        holder.playerIndicator.setVisibility(gameWithUsers.game.turnIndex == position ? View.VISIBLE : View.GONE);
+    }
+
+    public int getVisitScores(User user) {
+        if (visits != null) {
+            List<Visit> userVisits = visits.stream()
+                    .filter(visit -> visit.userID == user.userID)
+                    .collect(Collectors.toList());
+
+            return userVisits.stream().mapToInt(visit -> visit.score).sum();
+        }
+        return 0;
     }
 
     @Override
     public int getItemCount() {
-        return usersList.size();
+        return  gameWithUsers != null && gameWithUsers.users != null ? gameWithUsers.users.size() : 0;
     }
 
 //    public void setUsersList(List<User> usersList){
@@ -90,11 +93,18 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
 //    }
 
 
-    public void setGame(Game game) {
-        this.game = game;
-        notifyDataSetChanged();
+//    public void setGame(Game game) {
+//        this.game = game;
+//        notifyDataSetChanged();
+//    }
+
+    public GameWithUsers getGameWithUsers() {
+        return gameWithUsers;
     }
 
+    public void setGameWithUsers(GameWithUsers gameWithUsers) {
+        this.gameWithUsers = gameWithUsers;
+    }
     public void setVisits(List<Visit> visits){
         this.visits = visits;
         notifyDataSetChanged();

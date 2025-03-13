@@ -3,6 +3,8 @@ package com.example.dartscoreboard.Game;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import com.example.dartscoreboard.User.User;
@@ -35,7 +37,7 @@ public class Game implements Serializable {
     public int legIndex;
     @ColumnInfo(name = "set_index")
     public int setIndex;
-    public int winnerId; //TODO relate to UserID
+    public int winnerId;
     public String playersCSVString;
 
 
@@ -117,8 +119,6 @@ public class Game implements Serializable {
            this.playersCSVString = "";
            return;
         }
-
-
         String[] namesOfGame = new String[players.size()];
         for (int i = 0; i < players.size(); i++) {
             namesOfGame[i] = players.get(i).getUsername();

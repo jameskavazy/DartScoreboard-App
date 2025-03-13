@@ -16,24 +16,27 @@ import com.example.dartscoreboard.Application.DartsScoreboardApplication;
 import com.example.dartscoreboard.User.User;
 import com.example.dartscoreboard.User.UserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.SingleObserver;
+import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 
 public class GameViewModel extends AndroidViewModel {
+    private final MutableLiveData<GameWithUsers> gameWithUsersMutableLiveData = new MutableLiveData<>();
     private final UserRepository userRepository;
     private final GameRepository gameRepository;
     private String gameId;
     public static int turnIndex = 0;
     private int legIndex = 0;
     private int setIndex = 0;
-    private List<User> playersList;
+    private List<User> playersList = new ArrayList<>();
     private GameType gameType;
 
     private final MutableLiveData<Boolean> _finished = new MutableLiveData<>(false);
-
 
     public LiveData<Boolean> finished = _finished;
     private final String BUST = "BUST";
@@ -143,8 +146,7 @@ public class GameViewModel extends AndroidViewModel {
                     toastMessage(BUST);
                     return 0;
             }
-            _finished.postValue(true);
-            toastMessage(currentPlayer.getUsername() + " wins the match!");
+            endGame(currentPlayer);
             return input;
         }
 
@@ -156,6 +158,12 @@ public class GameViewModel extends AndroidViewModel {
         }
     }
 
+    private void endGame(User currentPlayer) {
+        _finished.postValue(true);
+        gameRepository.setWinner(currentPlayer.userID, gameId);
+        toastMessage(currentPlayer.getUsername() + " wins the match!");
+    }
+
     private void toastMessage(String msg) {
         Handler mainHandler = new Handler(Looper.getMainLooper());
         mainHandler.post(() -> Toast.makeText(DartsScoreboardApplication.getContext(),
@@ -165,6 +173,7 @@ public class GameViewModel extends AndroidViewModel {
 
     public void undo() {
         _finished.postValue(false);
+        gameRepository.setWinner(0, gameId);
         gameRepository.deleteLatestVisit();
         decrementTurnIndex();
 //            decrementLegIndex();
@@ -229,31 +238,43 @@ public class GameViewModel extends AndroidViewModel {
 
     public void incrementTurnIndex() {
         turnIndex = (turnIndex + 1) % playersList.size();
+        gameRepository.updateTurnIndex(turnIndex, gameId);
     }
 
     public void decrementTurnIndex() {
         turnIndex = (turnIndex - 1 + playersList.size()) % playersList.size();
+        gameRepository.updateTurnIndex(turnIndex, gameId);
     }
 
     public void incrementLegIndex() {
         legIndex = (legIndex + 1) % playersList.size();
         turnIndex = legIndex;
+        gameRepository.updateTurnIndex(turnIndex, gameId);
+        gameRepository.updateLegIndex(legIndex, gameId);
     }
 
     public void decrementLegIndex() {
         legIndex = (legIndex - 1) % playersList.size();
         turnIndex = legIndex;
+        gameRepository.updateTurnIndex(turnIndex, gameId);
+        gameRepository.updateLegIndex(legIndex, gameId);
     }
     public void incrementSetIndex() {
         setIndex = (setIndex + 1) % playersList.size();
         legIndex = setIndex;
         turnIndex = setIndex;
+        gameRepository.updateTurnIndex(turnIndex, gameId);
+        gameRepository.updateLegIndex(legIndex, gameId);
+        gameRepository.updateSetIndex(setIndex, gameId);
     }
 
     public void decrementSetIndex() {
         setIndex = (setIndex - 1) % playersList.size();
         legIndex = setIndex;
         turnIndex = setIndex;
+        gameRepository.updateTurnIndex(turnIndex, gameId);
+        gameRepository.updateLegIndex(legIndex, gameId);
+        gameRepository.updateSetIndex(setIndex, gameId);
     }
 
     public void setPlayersList(List<User> playersList) {
@@ -300,14 +321,31 @@ public class GameViewModel extends AndroidViewModel {
         this.setIndex = setIndex;
     }
 
-    public LiveData<GameWithUsers> getPlayersList() {
-       return userRepository.getUserFromGame(gameId);
+    public List<User> getPlayersList(){
+        return playersList;
     }
+    public void fetchGameWithUsers(String gameId) {
+        userRepository.getUserFromGame(gameId)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new SingleObserver<GameWithUsers>() {
+                    @Override
+                    public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
 
-    public void clearTurnIndices() {
-        setTurnIndex(0);
-        setSetIndex(0);
-        setSetIndex(0);
+                    }
+
+                    @Override
+                    public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull GameWithUsers gameWithUsers) {
+                        gameWithUsersMutableLiveData.postValue(gameWithUsers);
+                        playersList.addAll(gameWithUsers.users);
+                        setGameType(gameWithUsers.game.getGameType());
+                        setGame(gameWithUsers.game);
+                    }
+
+                    @Override
+                    public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+
+                    }
+                });
     }
 
     public String getGameId() {
@@ -317,43 +355,6 @@ public class GameViewModel extends AndroidViewModel {
     public void setGameId(String gameId) {
         this.gameId = gameId;
     }
-
-//    public void endGame() {
-//        //Clear down controller at end of game.
-//        setFinished(true);
-//        for (User user : getPlayersList()) {
-//            //Only add scores for non practice games
-//            if (getPlayersList().size() > 1) {
-//                StatsHelper.getInstance().updateLifeTimeScores(user);
-//                StatsHelper.getInstance().updateLifeTimeVisits(user);
-//                if (user.getPlayerScore() == 0) {
-//                    user.incrementWins();
-//                } else user.incrementLosses();
-//            }
-//        }
-//        clearTurnIndices();
-//        gameSettings.clear();
-//    }
-
-    public void setGameState(Game game) {
-//        setGameID(gameState.getGameID());
-        setGameType(game.getGameType());
-        setGameSettings(game.getGameSettings());
-        setTurnIndex(game.getTurnIndex());
-        setLegIndex(game.getLegIndex());
-        setSetIndex(game.getSetIndex());
-//        if (gameID == 0) {
-//            setPlayerStartingScores();
-//            finished = false;
-//        }
-    }
-
-//    public void updateAllUsers() {
-//        for (User user : getPlayersList()) {
-//            updateUser(user);
-//        }
-//    }
-
 
 
 //    public double getPlayerAverage() {
@@ -390,6 +391,10 @@ public class GameViewModel extends AndroidViewModel {
 
     public LiveData<Boolean> getFinished() {
         return finished;
+    }
+
+    public MutableLiveData<GameWithUsers> getGameWithUsersMutableLiveData() {
+        return gameWithUsersMutableLiveData;
     }
 
 }

@@ -17,17 +17,12 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dartscoreboard.R;
-import com.example.dartscoreboard.User.User;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -39,7 +34,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private TextView averageScoreTextView;
     private TextView visitsTextView;
     private Button doneButton;
-    private GameAdapter adapter;
+    private GameAdapter gameAdapter;
     private View bananaView;
 
     @Override
@@ -47,6 +42,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setupUI();
         setAdapter();
+        observeViewModel();
     }
 
     @Override
@@ -69,8 +65,35 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         inputScoreEditText = findViewById(R.id.inputUserNameEditText);
         doneButton.setOnClickListener(this);
         inputScoreEditText.setOnEditorActionListener((v, actionId, event) -> onScoreEntered());
+    }
+
+    private String gameIdFromIntent() {
+        Bundle arguments = getIntent().getExtras();
+        assert arguments != null;
+        String gameId = arguments.getString(GAME_STATE_KEY);
+        assert gameId != null;
+        Log.d("gameState", "gameactivity ID: " + gameId);
+        return gameId;
+    }
+
+    private void setAdapter() {
+        gameAdapter = new GameAdapter();
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(gameAdapter);
+    }
+
+    private void observeViewModel() {
         gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
         gameViewModel.setGameId(gameIdFromIntent());
+        gameViewModel.getGameWithUsersMutableLiveData().observe(this, gameWithUsers -> {
+            if (gameWithUsers != null){
+                gameAdapter.setGameWithUsers(gameWithUsers);
+            }
+        });
+
+        gameViewModel.fetchGameWithUsers(gameIdFromIntent());
 
         gameViewModel.getFinished().observe(this, isFinished -> {
             if (!isFinished) {
@@ -83,47 +106,13 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 doneButton.setVisibility(View.GONE);
             }
         });
-    }
 
-    private String gameIdFromIntent() {
-        Bundle arguments = getIntent().getExtras();
-        assert arguments != null;
-        String gameId = arguments.getString(GAME_STATE_KEY);
-        assert gameId != null;
-        Log.d("gameState", "gameactivity ID: " + gameId);
-        return gameId;
-    }
-
-//    private void setAverageScoreTextView() {
-//        double avg = gameViewModel.getPlayerAverage();
-//        averageScoreTextView.setText(String.valueOf(avg));
-//    }
-
-//    private void setVisitsTextView() {
-//        User activeUser = gameViewModel.getPlayersList().get(GameViewModel.getTurnIndex());
-//        int visits = activeUser.getVisits();
-//        visitsTextView.setText(String.valueOf(visits));
-//    }
-
-    private void setAdapter() {
-        List<User> players = new ArrayList<>();
-        gameViewModel.getPlayersList().observe(this, gameWithUsers -> {
-            gameViewModel.setPlayersList(gameWithUsers.users);
-            gameViewModel.setGameType(gameWithUsers.game.getGameType());
-            players.addAll(gameWithUsers.users);
+        gameViewModel.getVisits().observe(this, visits -> {
+            if (visits != null)  {
+                gameAdapter.setVisits(visits);
+            }
         });
-        adapter = new GameAdapter(players);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        gameViewModel.getGame().observe(this, game -> {
-            adapter.setGame(game);
-            toolbar.setTitle(game.gameType.name);
-        });
-        gameViewModel.getVisits().observe(this, visits -> adapter.setVisits(visits));
-        recyclerView.setAdapter(adapter);
     }
-
     private Boolean onScoreEntered() {
         int input = 0;
         if (!inputScoreEditText.getText().toString().isEmpty()) {
@@ -181,6 +170,18 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
         return super.onOptionsItemSelected(item);
     }
+
+    //    private void setAverageScoreTextView() {
+//        double avg = gameViewModel.getPlayerAverage();
+//        averageScoreTextView.setText(String.valueOf(avg));
+//    }
+
+//    private void setVisitsTextView() {
+//        User activeUser = gameViewModel.getPlayersList().get(GameViewModel.getTurnIndex());
+//        int visits = activeUser.getVisits();
+//        visitsTextView.setText(String.valueOf(visits));
+//    }
+
 
 //    private void setBanana() {
 //        if (gameViewModel.bananaSplit()) {

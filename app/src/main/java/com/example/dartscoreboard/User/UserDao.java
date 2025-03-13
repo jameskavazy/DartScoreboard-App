@@ -13,6 +13,8 @@ import com.example.dartscoreboard.Game.GameWithUsers;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Single;
+
 @Dao
 public interface UserDao {
 
@@ -33,7 +35,7 @@ public interface UserDao {
 
     @Transaction
     @Query("SELECT * FROM `match` WHERE gameId = :gameId")
-    LiveData<GameWithUsers> getUsersFromGame(String gameId);
+    Single<GameWithUsers> getUsersFromGame(String gameId);
 
     @Transaction
     @Insert

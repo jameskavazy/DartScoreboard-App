@@ -48,4 +48,18 @@ public interface GameDao {
     @Query("DELETE FROM visit WHERE visitId = (SELECT MAX(visitId) FROM visit)")
     void deleteLastVisit();
 
+    @Query("UPDATE `match` SET winnerId = :userId WHERE gameId = :gameId")
+    void setWinner(int userId, String gameId);
+
+    @Query("SELECT winnerId FROM `match` WHERE gameId = :gameId")
+    Single<Integer> getWinner(String gameId);
+
+    @Query("UPDATE `match` SET turn_index = :index WHERE gameId = :gameId")
+    void updateTurnIndex(int index, String gameId);
+
+    @Query("UPDATE `match` SET leg_index = :index WHERE gameId = :gameId")
+    void updateLegIndex(int index, String gameId);
+
+    @Query("UPDATE `match` SET set_index = :index WHERE gameId = :gameId")
+    void updateSetIndex(int index, String gameId);
 }

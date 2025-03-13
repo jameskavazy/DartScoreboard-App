@@ -11,6 +11,7 @@ import com.example.dartscoreboard.Game.GameWithUsers;
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class UserRepository {
@@ -45,7 +46,7 @@ public class UserRepository {
         return allUsers;
     }
 
-    public LiveData<GameWithUsers> getUserFromGame(String gameID){
+    public Single<GameWithUsers> getUserFromGame(String gameID){
        return userDao.getUsersFromGame(gameID);
     }
 

@@ -80,5 +80,24 @@ public class GameRepository {
        Completable.fromAction(gameDao::deleteLastVisit).subscribeOn(Schedulers.io()).subscribe();
     }
 
+    public void setWinner(int userId, String gameId){
+        Completable.fromAction(() -> gameDao.setWinner(userId, gameId)).subscribeOn(Schedulers.io()).subscribe();
+    }
+
+    public Single<Integer> getWinner(String gameId){
+        return gameDao.getWinner(gameId);
+    }
+
+    public void updateTurnIndex(int index, String gameId){
+        Completable.fromAction(() -> gameDao.updateTurnIndex(index, gameId)).subscribeOn(Schedulers.io()).subscribe();
+    }
+
+    public void updateLegIndex(int index, String gameId){
+        Completable.fromAction(() -> gameDao.updateLegIndex(index, gameId)).subscribeOn(Schedulers.io()).subscribe();
+    }
+
+    public void updateSetIndex(int index, String gameId){
+        Completable.fromAction(() -> gameDao.updateSetIndex(index, gameId)).subscribeOn(Schedulers.io()).subscribe();
+    }
 
 }

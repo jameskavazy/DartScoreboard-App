@@ -51,8 +51,8 @@ public class MatchHistoryViewModel extends AndroidViewModel {
         return allGames;
     }
 
-    public LiveData<GameWithUsers> getPlayersInGame(String gameId){
-        return userRepository.getUserFromGame(gameId);
-    }
+//    public LiveData<GameWithUsers> getPlayersInGame(String gameId){
+//        return userRepository.getUserFromGame(gameId);
+//    }
 
 }
