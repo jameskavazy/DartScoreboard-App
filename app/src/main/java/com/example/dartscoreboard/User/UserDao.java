@@ -35,7 +35,7 @@ public interface UserDao {
 
     @Transaction
     @Query("SELECT * FROM `match` WHERE gameId = :gameId")
-    Single<GameWithUsers> getUsersFromGame(String gameId);
+    LiveData<GameWithUsers> getUsersFromGame(String gameId);
 
     @Transaction
     @Insert

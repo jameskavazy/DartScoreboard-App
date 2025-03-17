@@ -104,6 +104,7 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
 
     public void setGameWithUsers(GameWithUsers gameWithUsers) {
         this.gameWithUsers = gameWithUsers;
+        notifyDataSetChanged();
     }
     public void setVisits(List<Visit> visits){
         this.visits = visits;

@@ -15,13 +15,13 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class GameRepository {
     private final GameDao gameDao;
-    private final LiveData<List<Game>> allMatchHistory;
+    private final LiveData<List<Game>> unfinishedGamesHistory;
     Database database;
 
     public GameRepository(Application application){
         database = Database.getInstance(application);
         gameDao = database.matchesDao();
-        allMatchHistory = gameDao.getAllMatchHistory();
+        unfinishedGamesHistory = gameDao.getUnfinishedGameHistory();
     }
 
     public Completable insert(Game game){
@@ -56,8 +56,8 @@ public class GameRepository {
         Completable completable = Completable.fromAction(()-> gameDao.deleteGameStateByID(id));
         completable.subscribeOn(Schedulers.io()).subscribe();
     }
-    public LiveData<List<Game>> getAllMatchHistory(){
-        return allMatchHistory;
+    public LiveData<List<Game>> getUnfinishedGamesHistory(){
+        return unfinishedGamesHistory;
     }
 
     public Completable insertVisit(Visit visit){

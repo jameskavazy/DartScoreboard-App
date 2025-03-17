@@ -46,7 +46,7 @@ public class UserRepository {
         return allUsers;
     }
 
-    public Single<GameWithUsers> getUserFromGame(String gameID){
+    public LiveData<GameWithUsers> getUserFromGame(String gameID){
        return userDao.getUsersFromGame(gameID);
     }
 

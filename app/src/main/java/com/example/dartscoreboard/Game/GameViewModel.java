@@ -26,7 +26,6 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 
 
 public class GameViewModel extends AndroidViewModel {
-    private final MutableLiveData<GameWithUsers> gameWithUsersMutableLiveData = new MutableLiveData<>();
     private final UserRepository userRepository;
     private final GameRepository gameRepository;
     private String gameId;
@@ -324,28 +323,8 @@ public class GameViewModel extends AndroidViewModel {
     public List<User> getPlayersList(){
         return playersList;
     }
-    public void fetchGameWithUsers(String gameId) {
-        userRepository.getUserFromGame(gameId)
-                .subscribeOn(Schedulers.io())
-                .subscribe(new SingleObserver<GameWithUsers>() {
-                    @Override
-                    public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull GameWithUsers gameWithUsers) {
-                        gameWithUsersMutableLiveData.postValue(gameWithUsers);
-                        playersList.addAll(gameWithUsers.users);
-                        setGameType(gameWithUsers.game.getGameType());
-                        setGame(gameWithUsers.game);
-                    }
-
-                    @Override
-                    public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
-
-                    }
-                });
+    public LiveData<GameWithUsers> fetchGameWithUsers(String gameId) {
+        return userRepository.getUserFromGame(gameId);
     }
 
     public String getGameId() {
@@ -393,8 +372,6 @@ public class GameViewModel extends AndroidViewModel {
         return finished;
     }
 
-    public MutableLiveData<GameWithUsers> getGameWithUsersMutableLiveData() {
-        return gameWithUsersMutableLiveData;
-    }
+
 
 }

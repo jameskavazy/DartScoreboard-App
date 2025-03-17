@@ -126,14 +126,14 @@ public class Game implements Serializable {
         this.playersCSVString = String.join(", ", namesOfGame);
     }
 
-    public void set(GameType gameType, GameSettings gameSettings,
-                int turnIndex, int legIndex, int setIndex, String gameId) {
-        this.gameType = gameType;
-        this.gameSettings = gameSettings;
-        this.turnIndex = turnIndex;
-        this.legIndex = legIndex;
-        this.setIndex = setIndex;
-        this.gameId = gameId;
-    }
+//    public void set(GameType gameType, GameSettings gameSettings,
+//                int turnIndex, int legIndex, int setIndex, String gameId) {
+//        this.gameType = gameType;
+//        this.gameSettings = gameSettings;
+//        this.turnIndex = turnIndex;
+//        this.legIndex = legIndex;
+//        this.setIndex = setIndex;
+//        this.gameId = gameId;
+//    }
 
 }

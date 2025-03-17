@@ -30,6 +30,9 @@ public interface GameDao {
     @Query("SELECT * FROM `match` ORDER BY datetime DESC")
     LiveData<List<Game>> getAllMatchHistory();
 
+    @Query("SELECT * FROM `match` WHERE winnerId = 0 ORDER BY datetime DESC")
+    LiveData<List<Game>> getUnfinishedGameHistory();
+
     @Query("SELECT * FROM `match` WHERE gameId = :id")
     LiveData<Game> findGameByID(String id);
 

@@ -71,7 +71,7 @@ public class MatchHistoryActivity extends AppCompatActivity {
         matchHistoryViewModel = new ViewModelProvider(this).get(MatchHistoryViewModel.class);
 
 
-        matchHistoryViewModel.getAllGames().observe(this, games -> {
+        matchHistoryViewModel.getUnfinishedGames().observe(this, games -> {
             adapter.submitList(games);
             noRecentGamesTextView.setVisibility(games.isEmpty() ? View.VISIBLE : View.GONE);
         });

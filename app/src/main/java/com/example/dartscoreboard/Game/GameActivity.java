@@ -87,13 +87,18 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private void observeViewModel() {
         gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
         gameViewModel.setGameId(gameIdFromIntent());
-        gameViewModel.getGameWithUsersMutableLiveData().observe(this, gameWithUsers -> {
-            if (gameWithUsers != null){
-                gameAdapter.setGameWithUsers(gameWithUsers);
-            }
+        gameViewModel.fetchGameWithUsers(gameIdFromIntent()).observe(this, gameWithUsers -> {
+            gameAdapter.setGameWithUsers(gameWithUsers);
+            gameViewModel.setPlayersList(gameWithUsers.users);
+            gameViewModel.setGameType(gameWithUsers.game.getGameType());
+            gameViewModel.setGame(gameWithUsers.game);
         });
 
-        gameViewModel.fetchGameWithUsers(gameIdFromIntent());
+        gameViewModel.getVisits().observe(this, visits -> {
+            if (visits != null)  {
+                gameAdapter.setVisits(visits);
+            }
+        });
 
         gameViewModel.getFinished().observe(this, isFinished -> {
             if (!isFinished) {
@@ -104,12 +109,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 inputMethodManager.hideSoftInputFromWindow(recyclerView.getApplicationWindowToken(), 0);
                 inputScoreEditText.setVisibility(View.GONE);
                 doneButton.setVisibility(View.GONE);
-            }
-        });
-
-        gameViewModel.getVisits().observe(this, visits -> {
-            if (visits != null)  {
-                gameAdapter.setVisits(visits);
             }
         });
     }

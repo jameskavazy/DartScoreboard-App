@@ -9,7 +9,6 @@ import androidx.lifecycle.LiveData;
 
 import com.example.dartscoreboard.Game.GameRepository;
 import com.example.dartscoreboard.Game.Game;
-import com.example.dartscoreboard.Game.GameWithUsers;
 import com.example.dartscoreboard.User.UserRepository;
 
 import java.util.List;
@@ -21,13 +20,13 @@ public class MatchHistoryViewModel extends AndroidViewModel {
     private final GameRepository repository;
 
     private UserRepository userRepository;
-    private final LiveData<List<Game>> allGames;
+    private final LiveData<List<Game>> unfinishedGames;
 
     public MatchHistoryViewModel(@NonNull Application application) {
         super(application);
         repository = new GameRepository(application);
         userRepository = new UserRepository(application);
-        allGames = repository.getAllMatchHistory();
+        unfinishedGames = repository.getUnfinishedGamesHistory();
     }
 
     public Completable insert(Game game) {
@@ -47,8 +46,8 @@ public class MatchHistoryViewModel extends AndroidViewModel {
         repository.deleteAll();
     }
 
-    public LiveData<List<Game>> getAllGames() {
-        return allGames;
+    public LiveData<List<Game>> getUnfinishedGames() {
+        return unfinishedGames;
     }
 
 //    public LiveData<GameWithUsers> getPlayersInGame(String gameId){
