@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.util.Pair;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -20,8 +21,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.CompletableSource;
+import io.reactivex.rxjava3.core.Maybe;
+import io.reactivex.rxjava3.core.MaybeSource;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.ObservableSource;
+import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleObserver;
+import io.reactivex.rxjava3.core.SingleSource;
 import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.functions.Function;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 
@@ -79,20 +88,49 @@ public class GameViewModel extends AndroidViewModel {
             int userId = user.userID;
 
             gameRepository.getGameTotalScoreByUser(gameId, userId)
-                    .flatMapCompletable(sumOfVisits -> {
-                        int finalScore = calculateScore(gameType.startingScore - sumOfVisits, scoreInt);
-                        Visit visit = createVisit(user, finalScore);
-                        return gameRepository.insertVisit(visit);
+                    .flatMapMaybe(sumOfVisits -> {
+                        int visitScore = calculateScore(gameType.startingScore - sumOfVisits, scoreInt);
+                        Visit visit = createVisit(user, visitScore);
+                        int finalScore = gameType.startingScore - sumOfVisits - visitScore;
+                        return gameRepository.insertVisit(visit)
+                                .andThen(Single.just(finalScore))
+                                .flatMapMaybe(userScore -> {
+                                    if (userScore == 0){
+                                        return gameRepository.insertLegSetWinner(new MatchLegsSets(
+                                                        gameId, userId, MatchLegsSets.Type.Leg))
+                                                .andThen(gameRepository.getCurrentLegsSets(userId, MatchLegsSets.Type.Leg, gameId));
+                                    }
+                                    return Maybe.empty();
+                                });
+
                     })
+                    .defaultIfEmpty(-1)
                     .subscribeOn(Schedulers.io())
-                    .observeOn(Schedulers.single())
-                    .subscribe(
-                            () -> {
-                                incrementTurnIndex();
-                                Log.d("Insert", "Visit inserted successfully");
-                            },
-                            throwable -> Log.e("Error", "Failed to insert visit", throwable)
-                    );
+                    .subscribe(new SingleObserver<Integer>() {
+                        @Override
+                        public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull Integer currentLegs) {
+                            Log.d("EndGame", "onSuccessHit current legs: " + currentLegs.toString());
+                            if (currentLegs != -1){
+                                if (getGameSettings().getTotalLegs() == currentLegs){
+                                   endGame(user);
+                                } else {
+
+                                }
+                            }
+                            incrementTurnIndex();
+                            Log.d("Insert", "Visit inserted successfully");
+                        }
+
+                        @Override
+                        public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+                            Log.e("Error", "Failed to insert visit", e);
+                        }
+                    });
         }
 //        nextLeg();
     }
@@ -145,7 +183,6 @@ public class GameViewModel extends AndroidViewModel {
                     toastMessage(BUST);
                     return 0;
             }
-            endGame(currentPlayer);
             return input;
         }
 
@@ -179,17 +216,6 @@ public class GameViewModel extends AndroidViewModel {
 //            decrementSetIndex();
     }
 
-//    public void setPlayerLegs() {
-//        for (int i = 0; i < playersList.size(); i++) {
-//            playersList.get(i).setCurrentLegs(0);
-//        }
-//    }
-//
-//    public void setPlayerSets() {
-//        for (int i = 0; i < playersList.size(); i++) {
-//            playersList.get(i).setCurrentSets(0);
-//        }
-//    }
 
 
 //    public void nextLeg() {
@@ -360,9 +386,9 @@ public class GameViewModel extends AndroidViewModel {
         this.game = game;
     }
 
-    public LiveData<Game> getGame(){
-        return gameRepository.getGameStateById(gameId);
-    }
+//    public LiveData<Game> getGame(){
+//        return gameRepository.getGameStateById(gameId);
+//    }
 
     public LiveData<List<Visit>> getVisits(){
         return gameRepository.getVisitsInGame(gameId);
@@ -372,6 +398,10 @@ public class GameViewModel extends AndroidViewModel {
         return finished;
     }
 
+//    public int getCurrentLegsSets(int userId, MatchLegsSets.Type type){
+//
+//
+//    }
 
 
 }

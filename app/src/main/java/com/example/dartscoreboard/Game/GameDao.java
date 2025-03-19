@@ -10,6 +10,7 @@ import androidx.room.Update;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Single;
 
 @Dao
@@ -65,4 +66,12 @@ public interface GameDao {
 
     @Query("UPDATE `match` SET set_index = :index WHERE gameId = :gameId")
     void updateSetIndex(int index, String gameId);
+
+    @Insert
+    void insertLegSetWinner(MatchLegsSets matchLegsSets);
+    @Delete
+    void deleteLegSetWinner(MatchLegsSets matchLegsSets);
+
+    @Query("SELECT COUNT(*) FROM match_leg_set WHERE userID = :userID AND type = :type AND gameId = :gameId")
+    Maybe<Integer> getCountLegSetWon(int userID, MatchLegsSets.Type type, String gameId);
 }

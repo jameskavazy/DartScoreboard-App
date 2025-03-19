@@ -15,6 +15,7 @@ import com.example.dartscoreboard.R;
 
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Objects;
 
 public class RecyclerAdapterMatchHistory extends ListAdapter<Game, RecyclerAdapterMatchHistory.MyViewHolder> {
 
@@ -27,7 +28,7 @@ public class RecyclerAdapterMatchHistory extends ListAdapter<Game, RecyclerAdapt
     private static final DiffUtil.ItemCallback<Game> DIFF_CALLBACK = new DiffUtil.ItemCallback<Game>() {
         @Override
         public boolean areItemsTheSame(@NonNull Game oldItem, @NonNull Game newItem) {
-            return oldItem.getGameId() == newItem.getGameId();
+            return Objects.equals(oldItem.getGameId(), newItem.getGameId());
         }
 
         @Override
@@ -35,8 +36,6 @@ public class RecyclerAdapterMatchHistory extends ListAdapter<Game, RecyclerAdapt
             return oldItem.getOffsetDateTime().isEqual(newItem.getOffsetDateTime());
         }
     };
-
-
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 

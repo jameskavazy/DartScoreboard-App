@@ -90,6 +90,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         gameViewModel.fetchGameWithUsers(gameIdFromIntent()).observe(this, gameWithUsers -> {
             gameAdapter.setGameWithUsers(gameWithUsers);
             gameViewModel.setPlayersList(gameWithUsers.users);
+            gameViewModel.setGameSettings(gameWithUsers.game.getGameSettings());
             gameViewModel.setGameType(gameWithUsers.game.getGameType());
             gameViewModel.setGame(gameWithUsers.game);
         });

@@ -6,10 +6,12 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 
 import com.example.dartscoreboard.Db.Database;
+import com.example.dartscoreboard.User.User;
 
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
@@ -100,4 +102,14 @@ public class GameRepository {
         Completable.fromAction(() -> gameDao.updateSetIndex(index, gameId)).subscribeOn(Schedulers.io()).subscribe();
     }
 
+    public Completable insertLegSetWinner(MatchLegsSets matchLegsSets){
+        return Completable.fromAction(() -> gameDao.insertLegSetWinner(matchLegsSets));
+    }
+    public void deleteLegSetWinner(MatchLegsSets matchLegsSets){
+        Completable.fromAction(() -> gameDao.deleteLegSetWinner(matchLegsSets)).subscribeOn(Schedulers.io()).subscribe();
+    }
+
+    public Maybe<Integer> getCurrentLegsSets(int userId, MatchLegsSets.Type type, String gameId){
+        return gameDao.getCountLegSetWon(userId, type, gameId);
+    }
 }

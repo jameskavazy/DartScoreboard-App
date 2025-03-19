@@ -8,6 +8,7 @@ import androidx.room.TypeConverters;
 
 import com.example.dartscoreboard.Game.Game;
 import com.example.dartscoreboard.Game.GameUsers;
+import com.example.dartscoreboard.Game.MatchLegsSets;
 import com.example.dartscoreboard.Game.Visit;
 import com.example.dartscoreboard.LiveMatches.LiveProMatchesDao;
 import com.example.dartscoreboard.LiveMatches.Match;
@@ -22,9 +23,10 @@ import com.example.dartscoreboard.Utils.Converters;
                 Game.class,
                 Match.class,
                 GameUsers.class,
-                Visit.class
+                Visit.class,
+                MatchLegsSets.class
         },
-        version = 3)
+        version = 1)
 @TypeConverters({Converters.class})
 public abstract class Database extends RoomDatabase {
 
