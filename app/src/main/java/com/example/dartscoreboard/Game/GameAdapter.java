@@ -14,12 +14,12 @@ import com.example.dartscoreboard.R;
 import com.example.dartscoreboard.User.User;
 
 import java.util.List;
+import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 
 public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder> {
     private GameWithUsers gameWithUsers = new GameWithUsers();
 
-    private List<Visit> visits;
     public GameAdapter() {
 
     }
@@ -58,21 +58,30 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
         User user = gameWithUsers.users.get(position);
         int startingScore = gameWithUsers.game.getGameType().startingScore;
         int visitScores = getVisitScores(user);
-
         int currentScore = startingScore - visitScores;
+        int currentLegs = getCurrentLegsSets(user, MatchLegsSets.Type.Leg);
+        int currentSets = getCurrentLegsSets(user, MatchLegsSets.Type.Set);
 
-
-//        int currentLegs = usersList.get(position).getCurrentLegs();
-//        int currentSets = usersList.get(position).getCurrentSets();
         holder.nameText.setText(name);
         holder.playerScoreTextView.setText(String.valueOf(currentScore));
-//        holder.legsTextView.setText(String.valueOf(currentLegs));
-//        holder.setsTextView.setText(String.valueOf(currentSets));
+        holder.legsTextView.setText(String.valueOf(currentLegs));
+        holder.setsTextView.setText(String.valueOf(currentSets));
         holder.playerIndicator.setVisibility(gameWithUsers.game.turnIndex == position ? View.VISIBLE : View.GONE);
     }
 
+    private int getCurrentLegsSets(User user, MatchLegsSets.Type type) {
+        if (gameWithUsers.legsSets != null) {
+            return (int) gameWithUsers.legsSets.stream()
+                    .filter(value -> value.type == type && value.userID == user.userID)
+                    .count();
+        }
+        return 0;
+    }
+
     public int getVisitScores(User user) {
-        if (visits != null) {
+        if (gameWithUsers.visits != null) {
+            List<Visit> visits = gameWithUsers.visits;
+
             List<Visit> userVisits = visits.stream()
                     .filter(visit -> visit.userID == user.userID)
                     .collect(Collectors.toList());
@@ -87,27 +96,8 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
         return  gameWithUsers != null && gameWithUsers.users != null ? gameWithUsers.users.size() : 0;
     }
 
-//    public void setUsersList(List<User> usersList){
-//        this.usersList = usersList;
-//        notifyDataSetChanged();
-//    }
-
-
-//    public void setGame(Game game) {
-//        this.game = game;
-//        notifyDataSetChanged();
-//    }
-
-    public GameWithUsers getGameWithUsers() {
-        return gameWithUsers;
-    }
-
     public void setGameWithUsers(GameWithUsers gameWithUsers) {
         this.gameWithUsers = gameWithUsers;
-        notifyDataSetChanged();
-    }
-    public void setVisits(List<Visit> visits){
-        this.visits = visits;
         notifyDataSetChanged();
     }
 }

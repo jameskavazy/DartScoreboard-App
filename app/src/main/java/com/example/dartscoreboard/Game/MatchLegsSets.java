@@ -30,7 +30,7 @@ public class MatchLegsSets {
 
     public Type type;
 
-    enum Type {
+    public enum Type {
         Leg, Set
     }
     public MatchLegsSets(String gameId, int userID, Type type) {

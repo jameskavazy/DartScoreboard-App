@@ -24,6 +24,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dartscoreboard.R;
 
+import java.util.function.Function;
+
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final String GAME_STATE_KEY = "GAME_STATE";
@@ -88,17 +90,13 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
         gameViewModel.setGameId(gameIdFromIntent());
         gameViewModel.fetchGameWithUsers(gameIdFromIntent()).observe(this, gameWithUsers -> {
+
+
             gameAdapter.setGameWithUsers(gameWithUsers);
             gameViewModel.setPlayersList(gameWithUsers.users);
             gameViewModel.setGameSettings(gameWithUsers.game.getGameSettings());
             gameViewModel.setGameType(gameWithUsers.game.getGameType());
             gameViewModel.setGame(gameWithUsers.game);
-        });
-
-        gameViewModel.getVisits().observe(this, visits -> {
-            if (visits != null)  {
-                gameAdapter.setVisits(visits);
-            }
         });
 
         gameViewModel.getFinished().observe(this, isFinished -> {

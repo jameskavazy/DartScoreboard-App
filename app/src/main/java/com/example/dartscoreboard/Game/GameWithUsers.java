@@ -17,4 +17,18 @@ public class GameWithUsers {
     )
     public List<User> users;
 
+    @Relation(
+            parentColumn = "gameId",
+            entityColumn = "gameId"
+    )
+    public List<Visit> visits;
+
+    @Relation(
+            parentColumn = "gameId",
+            entityColumn = "gameId"
+    )
+    public List<MatchLegsSets> legsSets;
+
+
+    // TODO: 19/03/2025 Add more embedded, just needs a new relation block for each one
 }
