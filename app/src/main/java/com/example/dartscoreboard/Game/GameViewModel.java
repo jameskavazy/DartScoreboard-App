@@ -8,41 +8,56 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.util.Pair;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 
 import com.example.dartscoreboard.Application.DartsScoreboardApplication;
 import com.example.dartscoreboard.User.User;
 import com.example.dartscoreboard.User.UserRepository;
 
-import java.util.ArrayList;
+import org.reactivestreams.Subscription;
+
 import java.util.List;
 
-import io.reactivex.rxjava3.core.Completable;
-import io.reactivex.rxjava3.core.CompletableSource;
+import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.FlowableSubscriber;
 import io.reactivex.rxjava3.core.Maybe;
-import io.reactivex.rxjava3.core.MaybeSource;
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.core.ObservableSource;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleObserver;
-import io.reactivex.rxjava3.core.SingleSource;
 import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.functions.Function;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 
 public class GameViewModel extends AndroidViewModel {
-    private final UserRepository userRepository;
+
+    private GameData gameData;
+
     private final GameRepository gameRepository;
+//    public static int turnIndex = 0;
+//    private int legIndex = 0;
+//    private int setIndex = 0;
+
+    public String getGameId() {
+        return gameId;
+    }
+
+    public void setGameId(String gameId) {
+        this.gameId = gameId;
+    }
+
     private String gameId;
-    public static int turnIndex = 0;
-    private int legIndex = 0;
-    private int setIndex = 0;
-    private List<User> playersList = new ArrayList<>();
-    private GameType gameType;
+
+    public MutableLiveData<GameData> getGameDataLiveData() {
+        return gameDataLiveData;
+    }
+
+    public void setGameDataLiveData(MutableLiveData<GameData> gameDataLiveData) {
+        this.gameDataLiveData = gameDataLiveData;
+    }
+
+    private MutableLiveData<GameData> gameDataLiveData = new MutableLiveData<>();
 
     private final MutableLiveData<Boolean> _finished = new MutableLiveData<>(false);
 
@@ -50,32 +65,23 @@ public class GameViewModel extends AndroidViewModel {
     private final String BUST = "BUST";
     private final String NO_SCORE = "No score";
 
-    private Game game;
-
-    private GameSettings gameSettings;
 
     public GameViewModel(@NonNull Application application) {
         super(application);
-        userRepository = new UserRepository(application);
         gameRepository = new GameRepository(application);
     }
 
-    public void updateUser(User user) {
-        userRepository.updateUser(user);
-    }
+//    public void updateUser(User user) {
+//        userRepository.updateUser(user);
+//    }
 
-    public Completable insert(Game game) {
-        return gameRepository.insert(game);
-    }
+//    public Completable insert(Game game) {
+//        return gameRepository.insert(game);
+//    }
 
-    public void update(Game game) {
-        gameRepository.update(game);
-    }
-
-    public void deleteGameStateByID(String id) {
-        gameRepository.deleteGameStateByID(id);
-    }
-
+//    public void update(Game game) {
+//        gameRepository.update(game);
+//    }
 
     @SuppressLint("CheckResult")
     public void playerVisit(int scoreInt) {
@@ -83,22 +89,47 @@ public class GameViewModel extends AndroidViewModel {
             toastMessage(NO_SCORE);
         }
         if (scoreInt <= 180) {
-            // checks for valid score input
-            User user = playersList.get(turnIndex);
+            User user = gameData.users.get(gameData.game.turnIndex);
             int userId = user.userID;
+//            int startingScore = gameData.game.getGameType().startingScore;
+//
+//            int sumOfVisits = gameData.visits.stream()
+//                    .filter(visit -> userId == visit.userID)
+//                    .mapToInt(visit -> visit.score).sum();
+//
+//            int visitScore = calculateScore(startingScore - sumOfVisits, scoreInt);
+//            Visit visit = createVisit(user, visitScore);
+//            gameRepository.insertVisit(visit);
+//
+//            int finalScore = startingScore - sumOfVisits - visitScore;
+//            if (finalScore == 0) {
+//                gameRepository.insertLegSetWinner(new MatchLegsSets(
+//                        gameData.game.getGameId(), userId, MatchLegsSets.Type.Leg));
+//            }
+//
+//            int currentLegs = (int) gameData.legsSets.stream()
+//                    .filter(matchLegsSets -> userId == matchLegsSets.userID && matchLegsSets.type == MatchLegsSets.Type.Leg)
+//                            .count();
+//
+//            if (currentLegs == gameData.game.getGameSettings().getTotalLegs()) {
+//                endGame(user);
+//            } else {
+//                incrementTurnIndex();
+//            }
 
-            gameRepository.getGameTotalScoreByUser(gameId, userId)
+            gameRepository.getGameTotalScoreByUser(gameData.game.getGameId(), userId)
                     .flatMapMaybe(sumOfVisits -> {
-                        int visitScore = calculateScore(gameType.startingScore - sumOfVisits, scoreInt);
+                        int startingScore = gameData.game.getGameType().startingScore;
+                        int visitScore = calculateScore(startingScore - sumOfVisits, scoreInt);
                         Visit visit = createVisit(user, visitScore);
-                        int finalScore = gameType.startingScore - sumOfVisits - visitScore;
+                        int finalScore = startingScore - sumOfVisits - visitScore;
                         return gameRepository.insertVisit(visit)
                                 .andThen(Single.just(finalScore))
                                 .flatMapMaybe(userScore -> {
                                     if (userScore == 0){
                                         return gameRepository.insertLegSetWinner(new MatchLegsSets(
-                                                        gameId, userId, MatchLegsSets.Type.Leg))
-                                                .andThen(gameRepository.getCurrentLegsSets(userId, MatchLegsSets.Type.Leg, gameId));
+                                                        gameData.game.getGameId(), userId, MatchLegsSets.Type.Leg))
+                                                .andThen(gameRepository.getCurrentLegsSets(userId, MatchLegsSets.Type.Leg, gameData.game.getGameId()));
                                     }
                                     return Maybe.empty();
                                 });
@@ -116,7 +147,7 @@ public class GameViewModel extends AndroidViewModel {
                         public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull Integer currentLegs) {
                             Log.d("EndGame", "onSuccessHit current legs: " + currentLegs.toString());
                             if (currentLegs != -1){
-                                if (getGameSettings().getTotalLegs() == currentLegs){
+                                if (gameData.game.getGameSettings().getTotalLegs() == currentLegs){
                                    endGame(user);
                                 } else {
 
@@ -138,14 +169,14 @@ public class GameViewModel extends AndroidViewModel {
     @NonNull
     private Visit createVisit(User user, int finalScore) {
         Visit visit = new Visit();
-        visit.setGameId(gameId);
+        visit.setGameId(gameData.game.getGameId());
         visit.setUserID(user.userID);
         visit.setScore(finalScore);
         return visit;
     }
 
     private int calculateScore(int playerScore, int input) {
-        User currentPlayer = playersList.get(turnIndex);
+        User currentPlayer = gameData.users.get(gameData.game.turnIndex);
 
         if (currentPlayer.isGuy) {
             Log.d("dom test", "subtract guy" + input);
@@ -196,7 +227,7 @@ public class GameViewModel extends AndroidViewModel {
 
     private void endGame(User currentPlayer) {
         _finished.postValue(true);
-        gameRepository.setWinner(currentPlayer.userID, gameId);
+        gameRepository.setWinner(currentPlayer.userID, gameData.game.getGameId());
         toastMessage(currentPlayer.getUsername() + " wins the match!");
     }
 
@@ -209,7 +240,7 @@ public class GameViewModel extends AndroidViewModel {
 
     public void undo() {
         _finished.postValue(false);
-        gameRepository.setWinner(0, gameId);
+        gameRepository.setWinner(0, gameData.game.getGameId());
         gameRepository.deleteLatestVisit();
         decrementTurnIndex();
 //            decrementLegIndex();
@@ -262,103 +293,104 @@ public class GameViewModel extends AndroidViewModel {
 //    }
 
     public void incrementTurnIndex() {
-        turnIndex = (turnIndex + 1) % playersList.size();
-        gameRepository.updateTurnIndex(turnIndex, gameId);
+        gameData.game.turnIndex = (gameData.game.turnIndex + 1) % gameData.users.size();
+        gameRepository.updateTurnIndex(gameData.game.turnIndex, gameData.game.getGameId());
     }
 
     public void decrementTurnIndex() {
-        turnIndex = (turnIndex - 1 + playersList.size()) % playersList.size();
-        gameRepository.updateTurnIndex(turnIndex, gameId);
+        gameData.game.turnIndex = (gameData.game.turnIndex - 1 + gameData.users.size()) % gameData.users.size();
+        gameRepository.updateTurnIndex(gameData.game.turnIndex, gameData.game.getGameId());
     }
 
     public void incrementLegIndex() {
-        legIndex = (legIndex + 1) % playersList.size();
-        turnIndex = legIndex;
-        gameRepository.updateTurnIndex(turnIndex, gameId);
-        gameRepository.updateLegIndex(legIndex, gameId);
+        gameData.game.legIndex = (gameData.game.legIndex + 1) % gameData.users.size();
+        gameData.game.turnIndex = gameData.game.legIndex;
+        gameRepository.updateTurnIndex(gameData.game.turnIndex, gameData.game.getGameId());
+        gameRepository.updateLegIndex(gameData.game.legIndex, gameData.game.getGameId());
     }
 
     public void decrementLegIndex() {
-        legIndex = (legIndex - 1) % playersList.size();
-        turnIndex = legIndex;
-        gameRepository.updateTurnIndex(turnIndex, gameId);
-        gameRepository.updateLegIndex(legIndex, gameId);
+        gameData.game.legIndex = (gameData.game.legIndex - 1) % gameData.users.size();
+        gameData.game.turnIndex = gameData.game.legIndex;
+        gameRepository.updateTurnIndex(gameData.game.turnIndex, gameData.game.getGameId());
+        gameRepository.updateLegIndex(gameData.game.legIndex, gameData.game.getGameId());
     }
     public void incrementSetIndex() {
-        setIndex = (setIndex + 1) % playersList.size();
-        legIndex = setIndex;
-        turnIndex = setIndex;
-        gameRepository.updateTurnIndex(turnIndex, gameId);
-        gameRepository.updateLegIndex(legIndex, gameId);
-        gameRepository.updateSetIndex(setIndex, gameId);
+        gameData.game.setIndex = (gameData.game.setIndex + 1) % gameData.users.size();
+        gameData.game.legIndex = gameData.game.setIndex;
+        gameData.game.turnIndex = gameData.game.setIndex;
+        gameRepository.updateTurnIndex(gameData.game.turnIndex, gameData.game.getGameId());
+        gameRepository.updateLegIndex(gameData.game.legIndex, gameData.game.getGameId());
+        gameRepository.updateSetIndex(gameData.game.setIndex, gameData.game.getGameId());
     }
 
     public void decrementSetIndex() {
-        setIndex = (setIndex - 1) % playersList.size();
-        legIndex = setIndex;
-        turnIndex = setIndex;
-        gameRepository.updateTurnIndex(turnIndex, gameId);
-        gameRepository.updateLegIndex(legIndex, gameId);
-        gameRepository.updateSetIndex(setIndex, gameId);
+        gameData.game.setIndex = (gameData.game.setIndex - 1) % gameData.users.size();
+        gameData.game.legIndex = gameData.game.setIndex;
+        gameData.game.turnIndex = gameData.game.setIndex;
+        gameRepository.updateTurnIndex(gameData.game.turnIndex, gameData.game.getGameId());
+        gameRepository.updateLegIndex(gameData.game.legIndex, gameData.game.getGameId());
+        gameRepository.updateSetIndex(gameData.game.setIndex, gameData.game.getGameId());
     }
 
     public void setPlayersList(List<User> playersList) {
-        this.playersList = playersList;
+        this.gameData.users = playersList;
     }
 
-    public void setGameSettings(GameSettings gameSettings) {
-        this.gameSettings = gameSettings;
-    }
 
-    public GameSettings getGameSettings() {
-        return gameSettings;
-    }
+//    public void setTurnIndex(int turnIndex) {
+//        GameViewModel.turnIndex = turnIndex;
+//    }
+//
+//    public static int getTurnIndex() {
+//        return turnIndex;
+//    }
+//
+//    public int getLegIndex() {
+//        return legIndex;
+//    }
+//
+//    public void setLegIndex(int legIndex) {
+//        this.legIndex = legIndex;
+//    }
+//
+//    public int getSetIndex() {
+//        return setIndex;
+//    }
+//
+//    public void setSetIndex(int setIndex) {
+//        this.setIndex = setIndex;
+//    }
 
-    public void setGameType(GameType gameType) {
-        this.gameType = gameType;
-    }
+//    public List<User> getPlayersList(){
+//        return gameData.users;
+//    }
+    public void fetchGameData(String gameId) {
+        gameRepository.getGameData(gameId)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new FlowableSubscriber<GameData>() {
+                    @Override
+                    public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Subscription s) {
+                        s.request(Long.MAX_VALUE);
+                    }
 
-    public GameType getGameType() {
-        return gameType;
-    }
+                    @Override
+                    public void onNext(GameData gameData) {
+                        setGameData(gameData);
+                        gameDataLiveData.postValue(gameData);
+                    }
 
-    public void setTurnIndex(int turnIndex) {
-        GameViewModel.turnIndex = turnIndex;
-    }
+                    @Override
+                    public void onError(Throwable t) {
 
-    public static int getTurnIndex() {
-        return turnIndex;
-    }
+                    }
 
-    public int getLegIndex() {
-        return legIndex;
-    }
+                    @Override
+                    public void onComplete() {
 
-    public void setLegIndex(int legIndex) {
-        this.legIndex = legIndex;
-    }
+                    }
+                });
 
-    public int getSetIndex() {
-        return setIndex;
-    }
-
-    public void setSetIndex(int setIndex) {
-        this.setIndex = setIndex;
-    }
-
-    public List<User> getPlayersList(){
-        return playersList;
-    }
-    public LiveData<GameWithUsers> fetchGameWithUsers(String gameId) {
-        return userRepository.getUserFromGame(gameId);
-    }
-
-    public String getGameId() {
-        return gameId;
-    }
-
-    public void setGameId(String gameId) {
-        this.gameId = gameId;
     }
 
 
@@ -382,16 +414,12 @@ public class GameViewModel extends AndroidViewModel {
 
 
 
-    public void setGame(Game game) {
-        this.game = game;
-    }
-
 //    public LiveData<Game> getGame(){
 //        return gameRepository.getGameStateById(gameId);
 //    }
 
     public LiveData<List<Visit>> getVisits(){
-        return gameRepository.getVisitsInGame(gameId);
+        return gameRepository.getVisitsInGame(gameData.game.getGameId());
     }
 
     public LiveData<Boolean> getFinished() {
@@ -402,6 +430,11 @@ public class GameViewModel extends AndroidViewModel {
 //
 //
 //    }
+    public GameData getGameData() {
+        return gameData;
+    }
 
-
+    public void setGameData(GameData gameData) {
+        this.gameData = gameData;
+    }
 }

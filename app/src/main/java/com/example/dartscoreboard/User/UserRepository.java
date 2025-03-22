@@ -5,13 +5,12 @@ import android.app.Application;
 import androidx.lifecycle.LiveData;
 
 import com.example.dartscoreboard.Db.Database;
+import com.example.dartscoreboard.Game.GameData;
 import com.example.dartscoreboard.Game.GameUsers;
-import com.example.dartscoreboard.Game.GameWithUsers;
 
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
-import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class UserRepository {
@@ -44,10 +43,6 @@ public class UserRepository {
 
     public LiveData<List<User>> getAllUsers(){
         return allUsers;
-    }
-
-    public LiveData<GameWithUsers> getUserFromGame(String gameID){
-       return userDao.getUsersFromGame(gameID);
     }
 
     public void addUsersToMatch(GameUsers gameUsers) {

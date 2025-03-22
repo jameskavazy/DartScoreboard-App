@@ -11,6 +11,7 @@ import com.example.dartscoreboard.User.User;
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -24,6 +25,10 @@ public class GameRepository {
         database = Database.getInstance(application);
         gameDao = database.matchesDao();
         unfinishedGamesHistory = gameDao.getUnfinishedGameHistory();
+    }
+
+    public Flowable<GameData> getGameData(String gameId){
+        return gameDao.getGameData(gameId);
     }
 
     public Completable insert(Game game){

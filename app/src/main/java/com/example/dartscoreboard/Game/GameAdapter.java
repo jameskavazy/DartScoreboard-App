@@ -1,6 +1,5 @@
 package com.example.dartscoreboard.Game;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +13,10 @@ import com.example.dartscoreboard.R;
 import com.example.dartscoreboard.User.User;
 
 import java.util.List;
-import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 
 public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder> {
-    private GameWithUsers gameWithUsers = new GameWithUsers();
+    private GameData gameData = new GameData();
 
     public GameAdapter() {
 
@@ -54,9 +52,9 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull GameViewHolder holder, int position) {
-        String name = gameWithUsers.users.get(position).getUsername();
-        User user = gameWithUsers.users.get(position);
-        int startingScore = gameWithUsers.game.getGameType().startingScore;
+        String name = gameData.users.get(position).getUsername();
+        User user = gameData.users.get(position);
+        int startingScore = gameData.game.getGameType().startingScore;
         int visitScores = getVisitScores(user);
         int currentScore = startingScore - visitScores;
         int currentLegs = getCurrentLegsSets(user, MatchLegsSets.Type.Leg);
@@ -66,12 +64,12 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
         holder.playerScoreTextView.setText(String.valueOf(currentScore));
         holder.legsTextView.setText(String.valueOf(currentLegs));
         holder.setsTextView.setText(String.valueOf(currentSets));
-        holder.playerIndicator.setVisibility(gameWithUsers.game.turnIndex == position ? View.VISIBLE : View.GONE);
+        holder.playerIndicator.setVisibility(gameData.game.turnIndex == position ? View.VISIBLE : View.GONE);
     }
 
     private int getCurrentLegsSets(User user, MatchLegsSets.Type type) {
-        if (gameWithUsers.legsSets != null) {
-            return (int) gameWithUsers.legsSets.stream()
+        if (gameData.legsSets != null) {
+            return (int) gameData.legsSets.stream()
                     .filter(value -> value.type == type && value.userID == user.userID)
                     .count();
         }
@@ -79,8 +77,8 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
     }
 
     public int getVisitScores(User user) {
-        if (gameWithUsers.visits != null) {
-            List<Visit> visits = gameWithUsers.visits;
+        if (gameData.visits != null) {
+            List<Visit> visits = gameData.visits;
 
             List<Visit> userVisits = visits.stream()
                     .filter(visit -> visit.userID == user.userID)
@@ -93,11 +91,11 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
 
     @Override
     public int getItemCount() {
-        return  gameWithUsers != null && gameWithUsers.users != null ? gameWithUsers.users.size() : 0;
+        return  gameData != null && gameData.users != null ? gameData.users.size() : 0;
     }
 
-    public void setGameWithUsers(GameWithUsers gameWithUsers) {
-        this.gameWithUsers = gameWithUsers;
+    public void setGameWithUsers(GameData gameData) {
+        this.gameData = gameData;
         notifyDataSetChanged();
     }
 }

@@ -6,10 +6,12 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import androidx.room.Update;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Single;
 
@@ -74,4 +76,8 @@ public interface GameDao {
 
     @Query("SELECT COUNT(*) FROM match_leg_set WHERE userID = :userID AND type = :type AND gameId = :gameId")
     Maybe<Integer> getCountLegSetWon(int userID, MatchLegsSets.Type type, String gameId);
+
+    @Transaction
+    @Query("SELECT * FROM `match` WHERE gameId = :gameId")
+    Flowable<GameData> getGameData(String gameId);
 }

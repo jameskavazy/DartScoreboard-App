@@ -8,7 +8,7 @@ import com.example.dartscoreboard.User.User;
 
 import java.util.List;
 
-public class GameWithUsers {
+public class GameData {
     @Embedded public Game game;
     @Relation(
             parentColumn = "gameId",
@@ -29,6 +29,4 @@ public class GameWithUsers {
     )
     public List<MatchLegsSets> legsSets;
 
-
-    // TODO: 19/03/2025 Add more embedded, just needs a new relation block for each one
 }

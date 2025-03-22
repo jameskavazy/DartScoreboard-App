@@ -24,7 +24,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dartscoreboard.R;
 
-import java.util.function.Function;
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -89,14 +88,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private void observeViewModel() {
         gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
         gameViewModel.setGameId(gameIdFromIntent());
-        gameViewModel.fetchGameWithUsers(gameIdFromIntent()).observe(this, gameWithUsers -> {
+        gameViewModel.fetchGameData(gameIdFromIntent());
 
-
-            gameAdapter.setGameWithUsers(gameWithUsers);
-            gameViewModel.setPlayersList(gameWithUsers.users);
-            gameViewModel.setGameSettings(gameWithUsers.game.getGameSettings());
-            gameViewModel.setGameType(gameWithUsers.game.getGameType());
-            gameViewModel.setGame(gameWithUsers.game);
+        gameViewModel.getGameDataLiveData().observe(this, gameData -> {
+            gameAdapter.setGameWithUsers(gameData);
         });
 
         gameViewModel.getFinished().observe(this, isFinished -> {

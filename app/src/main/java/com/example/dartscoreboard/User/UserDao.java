@@ -8,12 +8,10 @@ import androidx.room.Query;
 import androidx.room.Transaction;
 import androidx.room.Update;
 
+import com.example.dartscoreboard.Game.GameData;
 import com.example.dartscoreboard.Game.GameUsers;
-import com.example.dartscoreboard.Game.GameWithUsers;
 
 import java.util.List;
-
-import io.reactivex.rxjava3.core.Single;
 
 @Dao
 public interface UserDao {
@@ -32,10 +30,6 @@ public interface UserDao {
 
     @Query("DELETE FROM user")
     void deleteAllUsers();
-
-    @Transaction
-    @Query("SELECT * FROM `match` WHERE gameId = :gameId")
-    LiveData<GameWithUsers> getUsersFromGame(String gameId);
 
     @Transaction
     @Insert
