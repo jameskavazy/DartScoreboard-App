@@ -139,7 +139,7 @@ public class SetupGameActivity extends AppCompatActivity implements View.OnClick
             Bundle arguments = new Bundle();
             Match match = initialiseMatch(matchType);
             Log.d("gameState", "setupGame ID:  " + match.matchId);
-            arguments.putString(GameActivity.GAME_STATE_KEY, match.matchId);
+            arguments.putString(GameActivity.MATCH_KEY, match.matchId);
             intent.putExtras(arguments);
             startActivity(intent);
             finish();

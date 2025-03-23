@@ -2,49 +2,36 @@ package com.example.dartscoreboard.Game;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
-import android.os.Handler;
-import android.os.Looper;
-import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.dartscoreboard.Application.DartsScoreboardApplication;
-import com.example.dartscoreboard.User.User;
-
 import org.reactivestreams.Subscription;
 
-import java.util.List;
-
 import io.reactivex.rxjava3.core.FlowableSubscriber;
-import io.reactivex.rxjava3.core.Maybe;
-import io.reactivex.rxjava3.core.Single;
-import io.reactivex.rxjava3.core.SingleObserver;
-import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 
 public class GameViewModel extends AndroidViewModel {
 
     private MatchData matchData;
-    private MutableLiveData<MatchData> gameDataLiveData = new MutableLiveData<>();
+    private MutableLiveData<MatchData> matchDataMutableLiveData = new MutableLiveData<>();
     private final GameRepository gameRepository;
 //    public static int turnIndex = 0;
 //    private int legIndex = 0;
 //    private int setIndex = 0;
 
-    public String getGameId() {
-        return gameId;
+    public String getMatchId() {
+        return matchId;
     }
 
-    public void setGameId(String gameId) {
-        this.gameId = gameId;
+    public void setMatchId(String matchId) {
+        this.matchId = matchId;
     }
 
-    private String gameId;
+    private String matchId;
     private final MutableLiveData<Boolean> _finished = new MutableLiveData<>(false);
 
     public LiveData<Boolean> finished = _finished;
@@ -373,6 +360,32 @@ public class GameViewModel extends AndroidViewModel {
 //
 //    }
 
+    public void fetchMatchData(){
+        gameRepository.getMatchData(matchId)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new FlowableSubscriber<MatchData>() {
+                    @Override
+                    public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Subscription s) {
+                        s.request(Long.MAX_VALUE);
+                    }
+
+                    @Override
+                    public void onNext(MatchData matchData) {
+                        matchDataMutableLiveData.postValue(matchData);
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
 
 //    public double getPlayerAverage() {
 //        User activePlayer = getPlayersList().get(getTurnIndex());
@@ -414,9 +427,9 @@ public class GameViewModel extends AndroidViewModel {
 //        this.matchData = matchData;
 //    }
 //
-//    public MutableLiveData<MatchData> getGameDataLiveData() {
-//        return gameDataLiveData;
-//    }
+    public MutableLiveData<MatchData> getMatchDataLiveData() {
+        return matchDataMutableLiveData;
+    }
 //
 //    public void setGameDataLiveData(MutableLiveData<MatchData> gameDataLiveData) {
 //        this.gameDataLiveData = gameDataLiveData;

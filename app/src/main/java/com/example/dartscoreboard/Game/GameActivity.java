@@ -1,6 +1,5 @@
 package com.example.dartscoreboard.Game;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -8,7 +7,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -27,7 +25,7 @@ import com.example.dartscoreboard.R;
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
 
-    public static final String GAME_STATE_KEY = "GAME_STATE";
+    public static final String MATCH_KEY = "GAME_STATE";
     private Toolbar toolbar;
     private GameViewModel gameViewModel;
     private RecyclerView recyclerView;
@@ -43,7 +41,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setupUI();
         setAdapter();
-//        observeViewModel();
+        observeViewModel();
     }
 
     @Override
@@ -71,7 +69,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private String gameIdFromIntent() {
         Bundle arguments = getIntent().getExtras();
         assert arguments != null;
-        String gameId = arguments.getString(GAME_STATE_KEY);
+        String gameId = arguments.getString(MATCH_KEY);
         assert gameId != null;
         Log.d("gameState", "gameactivity ID: " + gameId);
         return gameId;
@@ -85,15 +83,15 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView.setAdapter(gameAdapter);
     }
 
-//    private void observeViewModel() {
-//        gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
-//        gameViewModel.setGameId(gameIdFromIntent());
-//        gameViewModel.fetchGameData(gameIdFromIntent());
-//
-//        gameViewModel.getGameDataLiveData().observe(this, gameData -> {
-//            gameAdapter.setGameWithUsers(gameData);
-//        });
-//
+    private void observeViewModel() {
+        gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
+        gameViewModel.setMatchId(gameIdFromIntent());
+        gameViewModel.fetchMatchData();
+
+        gameViewModel.getMatchDataLiveData().observe(this, matchData -> {
+            gameAdapter.setGameWithUsers(matchData);
+        });
+
 //        gameViewModel.getFinished().observe(this, isFinished -> {
 //            if (!isFinished) {
 //                inputScoreEditText.setVisibility(View.VISIBLE);
@@ -105,7 +103,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 //                doneButton.setVisibility(View.GONE);
 //            }
 //        });
-//    }
+    }
     private Boolean onScoreEntered() {
         int input = 0;
         if (!inputScoreEditText.getText().toString().isEmpty()) {

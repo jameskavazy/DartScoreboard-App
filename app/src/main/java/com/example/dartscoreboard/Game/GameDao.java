@@ -73,7 +73,7 @@ public interface GameDao {
 
     @Transaction
     @Query("SELECT * FROM `match` WHERE matchId = :matchId")
-    Flowable<MatchData> getGameData(String matchId);
+    Flowable<MatchData> getMatchData(String matchId);
 
 
 }

@@ -54,16 +54,16 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
     public void onBindViewHolder(@NonNull GameViewHolder holder, int position) {
         String name = matchData.users.get(position).getUsername();
         User user = matchData.users.get(position);
-//        int startingScore = matchData.game.getGameType().startingScore;
+        int startingScore = matchData.match.getMatchType().startingScore;
         int visitScores = getVisitScores(user);
-//        int currentScore = startingScore - visitScores;
-        int currentLegs = getCurrentLegs(user);
-        int currentSets = getCurrentSets(user);
+        int currentScore = startingScore - visitScores;
+//        int currentLegs = getCurrentLegs(user);
+//        int currentSets = getCurrentSets(user);
 
         holder.nameText.setText(name);
-//        holder.playerScoreTextView.setText(String.valueOf(currentScore));
-        holder.legsTextView.setText(String.valueOf(currentLegs));
-        holder.setsTextView.setText(String.valueOf(currentSets));
+        holder.playerScoreTextView.setText(String.valueOf(currentScore));
+//        holder.legsTextView.setText(String.valueOf(currentLegs));
+//        holder.setsTextView.setText(String.valueOf(currentSets));
 //        holder.playerIndicator.setVisibility(matchData.game.turnIndex == position ? View.VISIBLE : View.GONE);
     }
     private int getCurrentLegs(User user) {

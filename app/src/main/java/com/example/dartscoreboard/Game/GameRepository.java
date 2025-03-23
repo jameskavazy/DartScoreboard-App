@@ -24,8 +24,8 @@ public class GameRepository {
         unfinishedGamesHistory = gameDao.getUnfinishedGameHistory();
     }
 
-    public Flowable<MatchData> getGameData(String gameId){
-        return gameDao.getGameData(gameId);
+    public Flowable<MatchData> getMatchData(String matchId){
+        return gameDao.getMatchData(matchId);
     }
 
     public Completable insertMatch(Match match){

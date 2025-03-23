@@ -124,7 +124,7 @@ public class MatchHistoryActivity extends AppCompatActivity {
         adapter.setOnItemClickListener(match -> {
             Intent intent = new Intent(MatchHistoryActivity.this, GameActivity.class);
             Bundle arguments = new Bundle();
-            arguments.putString(GameActivity.GAME_STATE_KEY, match.getMatchId());
+            arguments.putString(GameActivity.MATCH_KEY, match.getMatchId());
             intent.putExtras(arguments);
             startActivity(intent);
             finish();
