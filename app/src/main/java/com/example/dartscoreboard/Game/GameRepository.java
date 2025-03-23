@@ -6,19 +6,17 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 
 import com.example.dartscoreboard.Db.Database;
-import com.example.dartscoreboard.User.User;
 
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Flowable;
-import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class GameRepository {
     private final GameDao gameDao;
-    private final LiveData<List<Game>> unfinishedGamesHistory;
+    private final LiveData<List<Match>> unfinishedGamesHistory;
     Database database;
 
     public GameRepository(Application application){
@@ -27,25 +25,28 @@ public class GameRepository {
         unfinishedGamesHistory = gameDao.getUnfinishedGameHistory();
     }
 
-    public Flowable<GameData> getGameData(String gameId){
+    public Flowable<MatchData> getGameData(String gameId){
         return gameDao.getGameData(gameId);
     }
 
-    public Completable insert(Game game){
+    public void insertMatch(Match match){
+        Completable.fromAction(() -> gameDao.insertMatch(match)).subscribeOn(Schedulers.io()).subscribe();
+    }
+    public Completable insertGame(Game game){
         Log.d("dom test", "repo insert");
-        Completable completable = Completable.fromAction(() -> gameDao.insertGameState(game));
+        Completable completable = Completable.fromAction(() -> gameDao.insertGame(game));
         completable.subscribeOn(Schedulers.io()).subscribe();
         return completable;
     }
 
-    public Completable update(Game game){
-        Completable completable = Completable.fromAction(() -> gameDao.updateGameState(game));
+    public Completable updateGame(Game game){
+        Completable completable = Completable.fromAction(() -> gameDao.updateGame(game));
         completable.subscribeOn(Schedulers.io()).subscribe();
         return completable;
     }
 
     public Completable delete(Game game) {
-        Completable completable = Completable.fromAction(() -> gameDao.deleteGameState(game));
+        Completable completable = Completable.fromAction(() -> gameDao.deleteGame(game));
         completable.subscribeOn(Schedulers.io()).subscribe();
         return completable;
     }
@@ -63,15 +64,12 @@ public class GameRepository {
         Completable completable = Completable.fromAction(()-> gameDao.deleteGameStateByID(id));
         completable.subscribeOn(Schedulers.io()).subscribe();
     }
-    public LiveData<List<Game>> getUnfinishedGamesHistory(){
+    public LiveData<List<Match>> getUnfinishedGamesHistory(){
         return unfinishedGamesHistory;
     }
 
     public Completable insertVisit(Visit visit){
         return Completable.fromAction(() -> gameDao.insertVisit(visit)).subscribeOn(Schedulers.io());
-//        Completable completable = Completable.fromAction(() -> gameDao.insertVisit(visit));
-//        completable.subscribeOn(Schedulers.io()).subscribe();
-//        return completable;
     }
 
     public LiveData<List<Visit>> getVisitsInGame(String gameId){
@@ -107,14 +105,4 @@ public class GameRepository {
         Completable.fromAction(() -> gameDao.updateSetIndex(index, gameId)).subscribeOn(Schedulers.io()).subscribe();
     }
 
-    public Completable insertLegSetWinner(MatchLegsSets matchLegsSets){
-        return Completable.fromAction(() -> gameDao.insertLegSetWinner(matchLegsSets));
-    }
-    public void deleteLegSetWinner(MatchLegsSets matchLegsSets){
-        Completable.fromAction(() -> gameDao.deleteLegSetWinner(matchLegsSets)).subscribeOn(Schedulers.io()).subscribe();
-    }
-
-    public Maybe<Integer> getCurrentLegsSets(int userId, MatchLegsSets.Type type, String gameId){
-        return gameDao.getCountLegSetWon(userId, type, gameId);
-    }
 }

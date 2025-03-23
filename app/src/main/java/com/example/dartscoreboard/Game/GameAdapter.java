@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder> {
-    private GameData gameData = new GameData();
+    private MatchData matchData = new MatchData();
 
     public GameAdapter() {
 
@@ -52,50 +52,58 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull GameViewHolder holder, int position) {
-        String name = gameData.users.get(position).getUsername();
-        User user = gameData.users.get(position);
-        int startingScore = gameData.game.getGameType().startingScore;
+        String name = matchData.users.get(position).getUsername();
+        User user = matchData.users.get(position);
+//        int startingScore = matchData.game.getGameType().startingScore;
         int visitScores = getVisitScores(user);
-        int currentScore = startingScore - visitScores;
-        int currentLegs = getCurrentLegsSets(user, MatchLegsSets.Type.Leg);
-        int currentSets = getCurrentLegsSets(user, MatchLegsSets.Type.Set);
+//        int currentScore = startingScore - visitScores;
+        int currentLegs = getCurrentLegs(user);
+        int currentSets = getCurrentSets(user);
 
         holder.nameText.setText(name);
-        holder.playerScoreTextView.setText(String.valueOf(currentScore));
+//        holder.playerScoreTextView.setText(String.valueOf(currentScore));
         holder.legsTextView.setText(String.valueOf(currentLegs));
         holder.setsTextView.setText(String.valueOf(currentSets));
-        holder.playerIndicator.setVisibility(gameData.game.turnIndex == position ? View.VISIBLE : View.GONE);
+//        holder.playerIndicator.setVisibility(matchData.game.turnIndex == position ? View.VISIBLE : View.GONE);
+    }
+    private int getCurrentLegs(User user) {
+//        if (matchData.legsSets != null) {
+//            return (int) matchData.legsSets.stream()
+//                    .filter(value -> value.setNumber == matchData.game.currentSet && value.userID == user.userID)
+//                    .count();
+//        }
+        return 0;
     }
 
-    private int getCurrentLegsSets(User user, MatchLegsSets.Type type) {
-        if (gameData.legsSets != null) {
-            return (int) gameData.legsSets.stream()
-                    .filter(value -> value.type == type && value.userID == user.userID)
-                    .count();
-        }
+    private int getCurrentSets(User user) {
+//        if (matchData.legsSets != null) {
+//           return (int) (matchData.legsSets.stream()
+//                              .filter(value -> value.userID == user.userID)
+//                              .count() % matchData.game.getGameSettings().getTotalSets());
+//        }
         return 0;
     }
 
     public int getVisitScores(User user) {
-        if (gameData.visits != null) {
-            List<Visit> visits = gameData.visits;
-
-            List<Visit> userVisits = visits.stream()
-                    .filter(visit -> visit.userID == user.userID)
-                    .collect(Collectors.toList());
-
-            return userVisits.stream().mapToInt(visit -> visit.score).sum();
-        }
+//        if (matchData.visits != null) {
+//            List<Visit> visits = matchData.visits;
+//
+//            List<Visit> userVisits = visits.stream()
+//                    .filter(visit -> visit.userID == user.userID)
+//                    .collect(Collectors.toList());
+//
+//            return userVisits.stream().mapToInt(visit -> visit.score).sum();
+//        }
         return 0;
     }
 
     @Override
     public int getItemCount() {
-        return  gameData != null && gameData.users != null ? gameData.users.size() : 0;
+        return  matchData != null && matchData.users != null ? matchData.users.size() : 0;
     }
 
-    public void setGameWithUsers(GameData gameData) {
-        this.gameData = gameData;
+    public void setGameWithUsers(MatchData matchData) {
+        this.matchData = matchData;
         notifyDataSetChanged();
     }
 }

@@ -8,25 +8,22 @@ import com.example.dartscoreboard.User.User;
 
 import java.util.List;
 
-public class GameData {
-    @Embedded public Game game;
+public class MatchData {
+    @Embedded public Match match;
     @Relation(
-            parentColumn = "gameId",
+            parentColumn = "matchId",
             entityColumn = "userID",
-            associateBy = @Junction(GameUsers.class)
+            associateBy = @Junction(MatchUsers.class)
     )
     public List<User> users;
 
     @Relation(
-            parentColumn = "gameId",
+            parentColumn = "matchId",
             entityColumn = "gameId"
     )
-    public List<Visit> visits;
+    public List<Game> games;
 
-    @Relation(
-            parentColumn = "gameId",
-            entityColumn = "gameId"
-    )
-    public List<MatchLegsSets> legsSets;
+
+
 
 }

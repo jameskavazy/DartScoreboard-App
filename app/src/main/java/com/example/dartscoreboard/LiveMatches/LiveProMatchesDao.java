@@ -11,11 +11,11 @@ import java.util.List;
 public interface LiveProMatchesDao {
 
     @Upsert
-    void upsertAll(List<Match> matchList);
+    void upsertAll(List<ProMatch> proMatchList);
 
     @Query("DELETE FROM pro_match_cache")
     void deleteAll();
 
     @Query("SELECT * FROM pro_match_cache")
-    LiveData<List<Match>> getAll();
+    LiveData<List<ProMatch>> getAll();
 }

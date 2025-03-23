@@ -16,7 +16,7 @@ import java.util.List;
 
 public class RecyclerAdapterLiveProMatches extends RecyclerView.Adapter<RecyclerAdapterLiveProMatches.MatchViewHolder> {
 
-    private List<Match> matchList = new ArrayList<>();
+    private List<ProMatch> proMatchList = new ArrayList<>();
 
     public RecyclerAdapterLiveProMatches(){
     }
@@ -57,26 +57,26 @@ public class RecyclerAdapterLiveProMatches extends RecyclerView.Adapter<Recycler
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerAdapterLiveProMatches.MatchViewHolder holder, int position) {
-        Match match = matchList.get(position);
-        int home_score = match.getHome_team_score();
-        int away_score = match.getAway_team_score();
-        String time = match.getStart_time().substring(11,16);
-        holder.homePlayerNameTextView.setText(match.getHome_team_name());
-        holder.awayPlayerNameTextView.setText(match.getAway_team_name());
-        holder.tournamentNameTextView.setText(match.getTournament_name());
+        ProMatch proMatch = proMatchList.get(position);
+        int home_score = proMatch.getHome_team_score();
+        int away_score = proMatch.getAway_team_score();
+        String time = proMatch.getStart_time().substring(11,16);
+        holder.homePlayerNameTextView.setText(proMatch.getHome_team_name());
+        holder.awayPlayerNameTextView.setText(proMatch.getAway_team_name());
+        holder.tournamentNameTextView.setText(proMatch.getTournament_name());
         holder.startTimeTextView.setText(time);
-        holder.matchStatusTextView.setText(match.getStatus());
+        holder.matchStatusTextView.setText(proMatch.getStatus());
         holder.homeScoreTextView.setText(String.valueOf(home_score));
         holder.awayScoreTextView.setText(String.valueOf(away_score));
     }
 
     @Override
     public int getItemCount() {
-        return matchList.size();
+        return proMatchList.size();
     }
 
-    public void setMatchesList(List<Match> matchList) {
-        this.matchList = matchList;
+    public void setMatchesList(List<ProMatch> proMatchList) {
+        this.proMatchList = proMatchList;
         notifyDataSetChanged();
     }
 }

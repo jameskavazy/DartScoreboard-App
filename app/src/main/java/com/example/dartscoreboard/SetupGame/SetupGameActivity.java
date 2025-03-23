@@ -18,7 +18,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.dartscoreboard.Game.Game;
 import com.example.dartscoreboard.Game.GameActivity;
-import com.example.dartscoreboard.Game.GameType;
+import com.example.dartscoreboard.Game.Match;
+import com.example.dartscoreboard.Game.MatchType;
 import com.example.dartscoreboard.R;
 import com.example.dartscoreboard.User.User;
 import com.example.dartscoreboard.Utils.PreferencesController;
@@ -127,19 +128,19 @@ public class SetupGameActivity extends AppCompatActivity implements View.OnClick
         if (gameTypeSelected.equals("")) {
             Toast.makeText(this, "You must select a game type", Toast.LENGTH_SHORT).show();
         } else {
-            GameType gameType = getGameType(gameTypeSelected);
-            openGameActivity(gameType);
+            MatchType matchType = getGameType(gameTypeSelected);
+            openGameActivity(matchType);
         }
     }
 
-    private void openGameActivity(GameType gameType) {
-        if (gameType != null) {
+    private void openGameActivity(MatchType matchType) {
+        if (matchType != null) {
             Log.d("dom test", "openGameActivity");
             Intent intent = new Intent(this, GameActivity.class);
             Bundle arguments = new Bundle();
-            Game game = initialiseGameState(gameType);
-            Log.d("gameState", "setupGame ID:  " + game.getGameId());
-            arguments.putString(GameActivity.GAME_STATE_KEY, game.getGameId());
+            Match match = initialiseGame(matchType);
+            Log.d("gameState", "setupGame ID:  " + match.matchId);
+            arguments.putString(GameActivity.GAME_STATE_KEY, match.matchId);
             intent.putExtras(arguments);
             startActivity(intent);
             finish();
@@ -150,23 +151,23 @@ public class SetupGameActivity extends AppCompatActivity implements View.OnClick
      * GetGameType takes a string value and returns the corresponding GameType enum. Returns null
      * GameType if string cannot be parsed.
     * */
-    private GameType getGameType(String gameTypeSelected) {
+    private MatchType getGameType(String gameTypeSelected) {
         switch (gameTypeSelected) {
             case "501":
-                return GameType.FiveO;
+                return MatchType.FiveO;
             case "301":
-                return GameType.ThreeO;
+                return MatchType.ThreeO;
             case "170":
-                return GameType.SevenO;
+                return MatchType.SevenO;
             default:
                 return null;
         }
     }
 
-    private Game initialiseGameState(GameType gameType) {
+    private Match initialiseGame(MatchType matchType) {
         int legs = Integer.parseInt(legsAutoCompleteTextView.getText().toString());
         int sets = Integer.parseInt(setsAutoCompleteTextView.getText().toString());
-        return setupGameViewModel.createGame(gameType, legs, sets);
+        return setupGameViewModel.createMatch(matchType, legs, sets);
     }
 
     private void setUpGameTypeDropDownMenu() {

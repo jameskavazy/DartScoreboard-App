@@ -1,26 +1,26 @@
 package com.example.dartscoreboard.SetupGame;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
-import com.example.dartscoreboard.Game.GameSettings;
-import com.example.dartscoreboard.Game.Game;
-import com.example.dartscoreboard.Game.GameType;
-import com.example.dartscoreboard.Game.GameUsers;
+import com.example.dartscoreboard.Game.Match;
+import com.example.dartscoreboard.Game.MatchSettings;
+import com.example.dartscoreboard.Game.MatchType;
+import com.example.dartscoreboard.Game.MatchUsers;
 import com.example.dartscoreboard.Game.GameRepository;
 import com.example.dartscoreboard.User.User;
 import com.example.dartscoreboard.User.UserRepository;
 import com.example.dartscoreboard.Utils.PreferencesController;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
 public class SetupGameViewModel extends AndroidViewModel {
 
-    private String gameId;
+    private String matchId;
     private UserRepository userRepository;
 
     private GameRepository gameRepository;
@@ -35,32 +35,36 @@ public class SetupGameViewModel extends AndroidViewModel {
     }
 
 
-    public GameSettings getGameSettings(int legs, int sets) {
-        return new GameSettings(legs, sets);
+    public MatchSettings getMatchSettings(int legs, int sets) {
+        return new MatchSettings(legs, sets);
     }
 
-    public Game createGame(GameType gameType, int legs, int sets) {
-        gameId = UUID.randomUUID().toString();
-        Game game = new Game(
-                gameType, getGameSettings(legs, sets),
-                0, 0, 0,
-                gameId);
-        game.setPlayersCSV(getSelectedPlayers());
-        Log.d("db test", "the id as set" + game.gameId);
-        addUsersToGame();
-        gameRepository.insert(game);
-        return game;
+    public Match createMatch(MatchType matchType, int legs, int sets) {
+        matchId = UUID.randomUUID().toString();
+        Match match = new Match(matchId, matchType, new MatchSettings(legs, sets), OffsetDateTime.now());
+        addUsersToMatch();
+        gameRepository.insertMatch(match);
+        return match;
     }
+
+//    public Game createGame(MatchType matchType, int legs, int sets) {
+//        gameId = UUID.randomUUID().toString();
+//        Game game = new Game(gameId, 0, 0, 0);
+//        game.setPlayersCSV(getSelectedPlayers());
+//        addUsersToGame();
+//        gameRepository.insert(game);
+//        return game;
+//    }
 
     public List<User> getSelectedPlayers() {
         return playersToGame;
     }
 
-    public void addUsersToGame(){
+    public void addUsersToMatch(){
         for (User player :
                 playersToGame) {
-            GameUsers gameUsers = new GameUsers(player.userID, gameId, playersToGame.indexOf(player));
-            userRepository.addUsersToMatch(gameUsers);
+            MatchUsers matchUsers = new MatchUsers(player.userID, matchId, playersToGame.indexOf(player));
+            userRepository.addUsersToMatch(matchUsers);
         }
     }
 }

@@ -5,8 +5,7 @@ import android.app.Application;
 import androidx.lifecycle.LiveData;
 
 import com.example.dartscoreboard.Db.Database;
-import com.example.dartscoreboard.Game.GameData;
-import com.example.dartscoreboard.Game.GameUsers;
+import com.example.dartscoreboard.Game.MatchUsers;
 
 import java.util.List;
 
@@ -45,8 +44,8 @@ public class UserRepository {
         return allUsers;
     }
 
-    public void addUsersToMatch(GameUsers gameUsers) {
-        Completable.fromAction(() -> userDao.insertToGame(gameUsers)).subscribeOn(Schedulers.io()).subscribe();
+    public void addUsersToMatch(MatchUsers matchUsers) {
+        Completable.fromAction(() -> userDao.insertToGame(matchUsers)).subscribeOn(Schedulers.io()).subscribe();
     }
 
 }

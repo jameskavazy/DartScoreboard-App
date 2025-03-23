@@ -78,7 +78,7 @@ public class LiveProMatchesViewModel extends AndroidViewModel {
     }
 
 
-    public void upsertAll(List<Match> matchesList){
+    public void upsertAll(List<ProMatch> matchesList){
         repository.upsertAll(matchesList);
     }
 
@@ -86,7 +86,7 @@ public class LiveProMatchesViewModel extends AndroidViewModel {
         repository.deleteAll();
     }
 
-    public LiveData<List<Match>> getAllProMatches(){
+    public LiveData<List<ProMatch>> getAllProMatches(){
        return repository.getAllLiveProMatches();
     }
 

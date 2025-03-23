@@ -7,11 +7,11 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
 import com.example.dartscoreboard.Game.Game;
-import com.example.dartscoreboard.Game.GameUsers;
-import com.example.dartscoreboard.Game.MatchLegsSets;
+import com.example.dartscoreboard.Game.MatchUsers;
+import com.example.dartscoreboard.Game.Match;
 import com.example.dartscoreboard.Game.Visit;
 import com.example.dartscoreboard.LiveMatches.LiveProMatchesDao;
-import com.example.dartscoreboard.LiveMatches.Match;
+import com.example.dartscoreboard.LiveMatches.ProMatch;
 import com.example.dartscoreboard.Game.GameDao;
 import com.example.dartscoreboard.User.User;
 import com.example.dartscoreboard.User.UserDao;
@@ -22,9 +22,9 @@ import com.example.dartscoreboard.Utils.Converters;
                 User.class,
                 Game.class,
                 Match.class,
-                GameUsers.class,
-                Visit.class,
-                MatchLegsSets.class
+                ProMatch.class,
+                MatchUsers.class,
+                Visit.class
         },
         version = 1)
 @TypeConverters({Converters.class})

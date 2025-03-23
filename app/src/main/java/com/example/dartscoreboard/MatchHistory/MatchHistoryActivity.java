@@ -71,10 +71,10 @@ public class MatchHistoryActivity extends AppCompatActivity {
         matchHistoryViewModel = new ViewModelProvider(this).get(MatchHistoryViewModel.class);
 
 
-        matchHistoryViewModel.getUnfinishedGames().observe(this, games -> {
-            adapter.submitList(games);
-            noRecentGamesTextView.setVisibility(games.isEmpty() ? View.VISIBLE : View.GONE);
-        });
+//        matchHistoryViewModel.getUnfinishedGames().observe(this, games -> {
+//            adapter.submitList(games);
+//            noRecentGamesTextView.setVisibility(games.isEmpty() ? View.VISIBLE : View.GONE);
+//        });
 
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,

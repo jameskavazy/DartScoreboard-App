@@ -12,34 +12,35 @@ import androidx.room.Update;
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Flowable;
-import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Single;
 
 @Dao
 public interface GameDao {
 
+    @Insert
+    void insertMatch(Match match);
     @Update
-    void updateGameState(Game game);
+    void updateGame(Game game);
 
     @Insert
-    void insertGameState(Game game);
+    void insertGame(Game game);
 
     @Delete
-    void deleteGameState(Game game);
+    void deleteGame(Game game);
 
-    @Query("DELETE FROM `match`")
+    @Query("DELETE FROM game")
     void deleteAllMatchHistory();
 
     @Query("SELECT * FROM `match` ORDER BY datetime DESC")
-    LiveData<List<Game>> getAllMatchHistory();
+    LiveData<List<Match>> getAllMatchHistory();
 
     @Query("SELECT * FROM `match` WHERE winnerId = 0 ORDER BY datetime DESC")
-    LiveData<List<Game>> getUnfinishedGameHistory();
+    LiveData<List<Match>> getUnfinishedGameHistory();
 
-    @Query("SELECT * FROM `match` WHERE gameId = :id")
+    @Query("SELECT * FROM game WHERE gameId = :id")
     LiveData<Game> findGameByID(String id);
 
-    @Query("DELETE FROM `match` WHERE gameId = :id")
+    @Query("DELETE FROM game WHERE gameId = :id")
     void deleteGameStateByID(String id);
 
     @Query("SELECT * FROM visit WHERE gameId = :gameId")
@@ -54,30 +55,24 @@ public interface GameDao {
     @Query("DELETE FROM visit WHERE visitId = (SELECT MAX(visitId) FROM visit)")
     void deleteLastVisit();
 
-    @Query("UPDATE `match` SET winnerId = :userId WHERE gameId = :gameId")
+    @Query("UPDATE game SET winnerId = :userId WHERE gameId = :gameId")
     void setWinner(int userId, String gameId);
 
-    @Query("SELECT winnerId FROM `match` WHERE gameId = :gameId")
+    @Query("SELECT winnerId FROM game WHERE gameId = :gameId")
     Single<Integer> getWinner(String gameId);
 
-    @Query("UPDATE `match` SET turn_index = :index WHERE gameId = :gameId")
+    @Query("UPDATE game SET turn_index = :index WHERE gameId = :gameId")
     void updateTurnIndex(int index, String gameId);
 
-    @Query("UPDATE `match` SET leg_index = :index WHERE gameId = :gameId")
+    @Query("UPDATE game SET leg_index = :index WHERE gameId = :gameId")
     void updateLegIndex(int index, String gameId);
 
-    @Query("UPDATE `match` SET set_index = :index WHERE gameId = :gameId")
+    @Query("UPDATE game SET set_index = :index WHERE gameId = :gameId")
     void updateSetIndex(int index, String gameId);
 
-    @Insert
-    void insertLegSetWinner(MatchLegsSets matchLegsSets);
-    @Delete
-    void deleteLegSetWinner(MatchLegsSets matchLegsSets);
-
-    @Query("SELECT COUNT(*) FROM match_leg_set WHERE userID = :userID AND type = :type AND gameId = :gameId")
-    Maybe<Integer> getCountLegSetWon(int userID, MatchLegsSets.Type type, String gameId);
-
     @Transaction
-    @Query("SELECT * FROM `match` WHERE gameId = :gameId")
-    Flowable<GameData> getGameData(String gameId);
+    @Query("SELECT * FROM `match` WHERE matchId = :matchId")
+    Flowable<MatchData> getGameData(String matchId);
+
+
 }

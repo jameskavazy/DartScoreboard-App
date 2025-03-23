@@ -2,11 +2,11 @@ package com.example.dartscoreboard.Game;
 
 import java.io.Serializable;
 
-public class GameSettings implements Serializable {
+public class MatchSettings implements Serializable {
 
     private int totalLegs;
     private int totalSets;
-    public GameSettings(int totalLegs, int totalSets) {
+    public MatchSettings(int totalLegs, int totalSets) {
         this.totalLegs = totalLegs;
         this.totalSets = totalSets;
     }

@@ -43,7 +43,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setupUI();
         setAdapter();
-        observeViewModel();
+//        observeViewModel();
     }
 
     @Override
@@ -85,27 +85,27 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView.setAdapter(gameAdapter);
     }
 
-    private void observeViewModel() {
-        gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
-        gameViewModel.setGameId(gameIdFromIntent());
-        gameViewModel.fetchGameData(gameIdFromIntent());
-
-        gameViewModel.getGameDataLiveData().observe(this, gameData -> {
-            gameAdapter.setGameWithUsers(gameData);
-        });
-
-        gameViewModel.getFinished().observe(this, isFinished -> {
-            if (!isFinished) {
-                inputScoreEditText.setVisibility(View.VISIBLE);
-                doneButton.setVisibility(View.VISIBLE);
-            } else {
-                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(recyclerView.getApplicationWindowToken(), 0);
-                inputScoreEditText.setVisibility(View.GONE);
-                doneButton.setVisibility(View.GONE);
-            }
-        });
-    }
+//    private void observeViewModel() {
+//        gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
+//        gameViewModel.setGameId(gameIdFromIntent());
+//        gameViewModel.fetchGameData(gameIdFromIntent());
+//
+//        gameViewModel.getGameDataLiveData().observe(this, gameData -> {
+//            gameAdapter.setGameWithUsers(gameData);
+//        });
+//
+//        gameViewModel.getFinished().observe(this, isFinished -> {
+//            if (!isFinished) {
+//                inputScoreEditText.setVisibility(View.VISIBLE);
+//                doneButton.setVisibility(View.VISIBLE);
+//            } else {
+//                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//                inputMethodManager.hideSoftInputFromWindow(recyclerView.getApplicationWindowToken(), 0);
+//                inputScoreEditText.setVisibility(View.GONE);
+//                doneButton.setVisibility(View.GONE);
+//            }
+//        });
+//    }
     private Boolean onScoreEntered() {
         int input = 0;
         if (!inputScoreEditText.getText().toString().isEmpty()) {
@@ -157,7 +157,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         int menuItem = item.getItemId();
         if (menuItem == R.id.undo_menu_button) {
             Log.d("dom test", "Undo Click");
-            gameViewModel.undo();
+//            gameViewModel.undo();
 //            setAverageScoreTextView();
 //            setVisitsTextView();
         }

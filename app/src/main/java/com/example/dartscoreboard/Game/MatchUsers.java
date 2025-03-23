@@ -3,16 +3,16 @@ package com.example.dartscoreboard.Game;
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 
-@Entity(primaryKeys = {"userID", "gameId"})
-public class GameUsers {
+@Entity(primaryKeys = {"userID", "matchId"})
+public class MatchUsers {
     public long userID;
     @NonNull
-    public String gameId;
+    public String matchId;
     public int position;
 
-    public GameUsers(long userID, @NonNull String gameId, int position){
+    public MatchUsers(long userID, @NonNull String matchId, int position){
         this.userID = userID;
-        this.gameId = gameId;
+        this.matchId = matchId;
         this.position = position;
     }
 }

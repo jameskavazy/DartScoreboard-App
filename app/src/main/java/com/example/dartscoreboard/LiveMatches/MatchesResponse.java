@@ -5,7 +5,7 @@ import java.util.List;
 public class MatchesResponse {
 
     private String date;
-    private List<Match> matches;
+    private List<ProMatch> proMatches;
 
     public MatchesResponse() {
     }
@@ -14,7 +14,7 @@ public class MatchesResponse {
         return date;
     }
 
-    public List<Match> getMatches() {
-        return matches;
+    public List<ProMatch> getMatches() {
+        return proMatches;
     }
 }

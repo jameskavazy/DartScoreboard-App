@@ -2,9 +2,9 @@ package com.example.dartscoreboard.Utils;
 
 import androidx.room.TypeConverter;
 
-import com.example.dartscoreboard.Game.GameData;
-import com.example.dartscoreboard.Game.GameSettings;
-import com.example.dartscoreboard.Game.GameType;
+import com.example.dartscoreboard.Game.MatchData;
+import com.example.dartscoreboard.Game.MatchSettings;
+import com.example.dartscoreboard.Game.MatchType;
 import com.example.dartscoreboard.User.User;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -41,31 +41,31 @@ public class Converters {
     //type converter using clone to help keep Guy User intact.
 
     @TypeConverter
-    public GameSettings gameSettingsFromJsonString(String gameSettingsJsonString){
-        return new Gson().fromJson(gameSettingsJsonString, GameSettings.class);
+    public MatchSettings gameSettingsFromJsonString(String gameSettingsJsonString){
+        return new Gson().fromJson(gameSettingsJsonString, MatchSettings.class);
     }
     @TypeConverter
-    public String gameSettingsToJsonString(GameSettings gameSettings){
-        return new Gson().toJson(gameSettings);
-    }
-
-    @TypeConverter
-    public GameType gameTypeFromString (String gameTypeJsonString){
-        return new Gson().fromJson(gameTypeJsonString, GameType.class);
+    public String gameSettingsToJsonString(MatchSettings matchSettings){
+        return new Gson().toJson(matchSettings);
     }
 
     @TypeConverter
-    public String gameTypeToString (GameType gameType){
-        return new Gson().toJson(gameType);
+    public MatchType gameTypeFromString (String gameTypeJsonString){
+        return new Gson().fromJson(gameTypeJsonString, MatchType.class);
     }
 
     @TypeConverter
-    public List<GameData> gameWithUsersFromJSON(String json) {
-        return new Gson().fromJson(json, new TypeToken<List<GameData>>() {}.getType());
+    public String gameTypeToString (MatchType matchType){
+        return new Gson().toJson(matchType);
     }
 
     @TypeConverter
-    public String gameWithUsersToJsonString(List<GameData> gameWithUsers) {
+    public List<MatchData> gameWithUsersFromJSON(String json) {
+        return new Gson().fromJson(json, new TypeToken<List<MatchData>>() {}.getType());
+    }
+
+    @TypeConverter
+    public String gameWithUsersToJsonString(List<MatchData> gameWithUsers) {
         return new Gson().toJson(gameWithUsers);
     }
 

@@ -33,7 +33,8 @@ public class RecyclerAdapterMatchHistory extends ListAdapter<Game, RecyclerAdapt
 
         @Override
         public boolean areContentsTheSame(@NonNull Game oldItem, @NonNull Game newItem) {
-            return oldItem.getOffsetDateTime().isEqual(newItem.getOffsetDateTime());
+            return false;
+//            return oldItem.getOffsetDateTime().isEqual(newItem.getOffsetDateTime());
         }
     };
 
@@ -69,15 +70,15 @@ public class RecyclerAdapterMatchHistory extends ListAdapter<Game, RecyclerAdapt
     @Override
     public void onBindViewHolder(@NonNull RecyclerAdapterMatchHistory.MyViewHolder holder, int position) {
         Game game = getItem(position);
-        holder.gameTitleTextView.setText(game.getGameType().name);
-        holder.gamePlayersTextView.setText(game.playersCSVString);
+//        holder.gameTitleTextView.setText(game.getGameType().name);
+//        holder.gamePlayersTextView.setText(game.playersCSVString);
         DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
         DateTimeFormatter timeFormatter = DateTimeFormatter.ISO_LOCAL_TIME;
-        String dateStamp = game.getCreatedDate().format(dateFormatter);
-        String timeStamp = game.getCreatedDate().truncatedTo(ChronoUnit.MINUTES).format(timeFormatter);
-        String timeStampTruncated = timeStamp.substring(0,timeStamp.length() - 3);
-        String dateTimeFormatted = dateStamp+"\n"+timeStampTruncated;
-        holder.gameDateCreatedTextView.setText(dateTimeFormatted);
+//        String dateStamp = game.getCreatedDate().format(dateFormatter);
+//        String timeStamp = game.getCreatedDate().truncatedTo(ChronoUnit.MINUTES).format(timeFormatter);
+//        String timeStampTruncated = timeStamp.substring(0,timeStamp.length() - 3);
+//        String dateTimeFormatted = dateStamp+"\n"+timeStampTruncated;
+//        holder.gameDateCreatedTextView.setText(dateTimeFormatted);
     }
 
     public Game getGameStateAtPosition(int position) {

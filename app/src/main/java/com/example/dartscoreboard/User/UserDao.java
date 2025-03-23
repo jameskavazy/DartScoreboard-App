@@ -8,8 +8,7 @@ import androidx.room.Query;
 import androidx.room.Transaction;
 import androidx.room.Update;
 
-import com.example.dartscoreboard.Game.GameData;
-import com.example.dartscoreboard.Game.GameUsers;
+import com.example.dartscoreboard.Game.MatchUsers;
 
 import java.util.List;
 
@@ -33,6 +32,6 @@ public interface UserDao {
 
     @Transaction
     @Insert
-    void insertToGame(GameUsers gameUsers);
+    void insertToGame(MatchUsers matchUsers);
 
 }

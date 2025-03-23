@@ -4,7 +4,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity (tableName = "pro_match_cache")
-public class Match {
+public class ProMatch {
 
     @PrimaryKey
     private int id;

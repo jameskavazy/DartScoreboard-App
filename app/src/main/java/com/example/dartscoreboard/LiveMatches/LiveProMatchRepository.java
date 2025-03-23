@@ -15,7 +15,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class LiveProMatchRepository {
 
     private final LiveProMatchesDao liveProMatchesDao;
-    private final LiveData<List<Match>> allLiveProMatches;
+    private final LiveData<List<ProMatch>> allLiveProMatches;
 
     public LiveProMatchRepository(Application application) {
         Database db = Database.getInstance(application);
@@ -23,7 +23,7 @@ public class LiveProMatchRepository {
         allLiveProMatches = liveProMatchesDao.getAll();
     }
 
-    public void upsertAll(List<Match> matchesList) {
+    public void upsertAll(List<ProMatch> matchesList) {
         Log.d("dom test", "liveProMatchRepo upsertAll");
         Completable completable = Completable.fromAction(() -> liveProMatchesDao.upsertAll(matchesList));
         completable.subscribeOn(Schedulers.io()).subscribe();
@@ -35,7 +35,7 @@ public class LiveProMatchRepository {
         completable.subscribeOn(Schedulers.io()).subscribe();
     }
 
-    public LiveData<List<Match>> getAllLiveProMatches() {
+    public LiveData<List<ProMatch>> getAllLiveProMatches() {
         return allLiveProMatches;
     }
 
