@@ -87,10 +87,15 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
         gameViewModel.setMatchId(gameIdFromIntent());
         gameViewModel.fetchMatchData();
+        gameViewModel.fetchGameWithVisits();
 
-        gameViewModel.getMatchDataLiveData().observe(this, matchData -> {
-            gameAdapter.setGameWithUsers(matchData);
-        });
+        gameViewModel.getMatchDataLiveData()
+                .observe(this, matchData -> gameAdapter.setMatchData(matchData));
+
+        gameViewModel.getGameWithVisitsMutableLiveData()
+                .observe(this, gameWithVisits -> gameAdapter.setGameWithVisits(gameWithVisits));
+
+
 
 //        gameViewModel.getFinished().observe(this, isFinished -> {
 //            if (!isFinished) {

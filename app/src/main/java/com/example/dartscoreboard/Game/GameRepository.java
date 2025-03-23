@@ -24,6 +24,10 @@ public class GameRepository {
         unfinishedGamesHistory = gameDao.getUnfinishedGameHistory();
     }
 
+    public Flowable<GameWithVisits> getGameWithVisits(String gameId){
+        return gameDao.getGameWithVisits(gameId);
+    }
+
     public Flowable<MatchData> getMatchData(String matchId){
         return gameDao.getMatchData(matchId);
     }
@@ -85,8 +89,8 @@ public class GameRepository {
        Completable.fromAction(gameDao::deleteLastVisit).subscribeOn(Schedulers.io()).subscribe();
     }
 
-    public void setWinner(int userId, String gameId){
-        Completable.fromAction(() -> gameDao.setWinner(userId, gameId)).subscribeOn(Schedulers.io()).subscribe();
+    public Completable setWinner(int userId, String gameId){
+        return Completable.fromAction(() -> gameDao.setWinner(userId, gameId));
     }
 
     public Single<Integer> getWinner(String gameId){
@@ -103,6 +107,13 @@ public class GameRepository {
 
     public void updateSetIndex(int index, String gameId){
         Completable.fromAction(() -> gameDao.updateSetIndex(index, gameId)).subscribeOn(Schedulers.io()).subscribe();
+    }
+
+    public Single<String> insertGame(Game game){
+        return Single.fromCallable(() -> {
+            gameDao.insertGame(game);
+            return game.getGameId();
+        });
     }
 
 }

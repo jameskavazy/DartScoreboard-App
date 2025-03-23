@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder> {
     private MatchData matchData = new MatchData();
-
+    private GameWithVisits gamesWithVisits = new GameWithVisits();
     public GameAdapter() {
 
     }
@@ -57,22 +57,19 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
         int startingScore = matchData.match.getMatchType().startingScore;
         int visitScores = getVisitScores(user);
         int currentScore = startingScore - visitScores;
-//        int currentLegs = getCurrentLegs(user);
-//        int currentSets = getCurrentSets(user);
+        int currentLegs = getCurrentLegs(user);
+        int currentSets = currentLegs % matchData.match.matchSettings.getTotalSets();
 
         holder.nameText.setText(name);
         holder.playerScoreTextView.setText(String.valueOf(currentScore));
-//        holder.legsTextView.setText(String.valueOf(currentLegs));
-//        holder.setsTextView.setText(String.valueOf(currentSets));
-//        holder.playerIndicator.setVisibility(matchData.game.turnIndex == position ? View.VISIBLE : View.GONE);
+        holder.legsTextView.setText(String.valueOf(currentLegs));
+        holder.setsTextView.setText(String.valueOf(currentSets));
+        holder.playerIndicator.setVisibility(gamesWithVisits.game.turnIndex == position ? View.VISIBLE : View.GONE);
     }
     private int getCurrentLegs(User user) {
-//        if (matchData.legsSets != null) {
-//            return (int) matchData.legsSets.stream()
-//                    .filter(value -> value.setNumber == matchData.game.currentSet && value.userID == user.userID)
-//                    .count();
-//        }
-        return 0;
+        return (int) matchData.games.stream()
+                .filter(game -> game.winnerId == user.userID)
+                .count();
     }
 
     private int getCurrentSets(User user) {
@@ -85,25 +82,30 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
     }
 
     public int getVisitScores(User user) {
-//        if (matchData.visits != null) {
-//            List<Visit> visits = matchData.visits;
-//
-//            List<Visit> userVisits = visits.stream()
-//                    .filter(visit -> visit.userID == user.userID)
-//                    .collect(Collectors.toList());
-//
-//            return userVisits.stream().mapToInt(visit -> visit.score).sum();
-//        }
+        if (gamesWithVisits.visits != null) {
+            List<Visit> visits = gamesWithVisits.visits;
+
+            List<Visit> userVisits = visits.stream()
+                    .filter(visit -> visit.userID == user.userID)
+                    .collect(Collectors.toList());
+
+            return userVisits.stream().mapToInt(visit -> visit.score).sum();
+        }
         return 0;
     }
 
     @Override
     public int getItemCount() {
-        return  matchData != null && matchData.users != null ? matchData.users.size() : 0;
+        return (matchData != null && matchData.users != null) ? matchData.users.size() : 0;
     }
 
-    public void setGameWithUsers(MatchData matchData) {
+    public void setMatchData(MatchData matchData) {
         this.matchData = matchData;
+        notifyDataSetChanged();
+    }
+
+    public void setGameWithVisits(GameWithVisits gamesWithVisits) {
+        this.gamesWithVisits = gamesWithVisits;
         notifyDataSetChanged();
     }
 }

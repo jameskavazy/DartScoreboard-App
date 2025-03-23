@@ -10,7 +10,7 @@ public class GameWithVisits {
     public Game game;
     @Relation(
             parentColumn = "gameId",
-            entityColumn = "visitId"
+            entityColumn = "gameId"
     )
     public List<Visit> visits;
 

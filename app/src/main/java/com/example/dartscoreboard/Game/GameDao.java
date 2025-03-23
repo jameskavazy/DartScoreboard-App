@@ -22,7 +22,6 @@ public interface GameDao {
     @Update
     void updateMatch(Match match);
 
-
     @Delete
     void deleteMatch(Match match);
 
@@ -72,8 +71,11 @@ public interface GameDao {
     void updateSetIndex(int index, String gameId);
 
     @Transaction
+    @Query("SELECT * FROM game WHERE gameId = :gameId")
+    Flowable<GameWithVisits> getGameWithVisits(String gameId);
+
+    @Transaction
     @Query("SELECT * FROM `match` WHERE matchId = :matchId")
     Flowable<MatchData> getMatchData(String matchId);
-
 
 }

@@ -21,7 +21,6 @@ public class Game implements Serializable {
     public String gameId;
 
     public String matchId;
-
     @ColumnInfo(name = "turn_index")
     public int turnIndex;
     @ColumnInfo(name = "leg_index")
@@ -31,8 +30,9 @@ public class Game implements Serializable {
     public int winnerId;
 
 
-    public Game(@NonNull String gameId, int turnIndex, int legIndex, int setIndex) {
+    public Game(@NonNull String gameId, String matchId, int turnIndex, int legIndex, int setIndex) {
         this.gameId = gameId;
+        this.matchId = matchId;
         this.turnIndex = turnIndex;
         this.legIndex = legIndex;
         this.setIndex = setIndex;
