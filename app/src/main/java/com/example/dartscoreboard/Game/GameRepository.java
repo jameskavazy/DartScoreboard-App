@@ -1,7 +1,6 @@
 package com.example.dartscoreboard.Game;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
@@ -29,24 +28,25 @@ public class GameRepository {
         return gameDao.getGameData(gameId);
     }
 
-    public void insertMatch(Match match){
-        Completable.fromAction(() -> gameDao.insertMatch(match)).subscribeOn(Schedulers.io()).subscribe();
+    public Completable insertMatch(Match match){
+        return Completable.fromAction(() -> gameDao.insertMatch(match));
+
     }
-    public Completable insertGame(Game game){
-        Log.d("dom test", "repo insert");
-        Completable completable = Completable.fromAction(() -> gameDao.insertGame(game));
+//    public Completable insertGame(Game game){
+//        Log.d("dom test", "repo insert");
+//        Completable completable = Completable.fromAction(() -> gameDao.insertGame(game));
+//        completable.subscribeOn(Schedulers.io()).subscribe();
+//        return completable;
+//    }
+
+    public Completable updateMatch(Match match){
+        Completable completable = Completable.fromAction(() -> gameDao.updateMatch(match));
         completable.subscribeOn(Schedulers.io()).subscribe();
         return completable;
     }
 
-    public Completable updateGame(Game game){
-        Completable completable = Completable.fromAction(() -> gameDao.updateGame(game));
-        completable.subscribeOn(Schedulers.io()).subscribe();
-        return completable;
-    }
-
-    public Completable delete(Game game) {
-        Completable completable = Completable.fromAction(() -> gameDao.deleteGame(game));
+    public Completable deleteMatch(Match match) {
+        Completable completable = Completable.fromAction(() -> gameDao.deleteMatch(match));
         completable.subscribeOn(Schedulers.io()).subscribe();
         return completable;
     }
@@ -64,7 +64,7 @@ public class GameRepository {
         Completable completable = Completable.fromAction(()-> gameDao.deleteGameStateByID(id));
         completable.subscribeOn(Schedulers.io()).subscribe();
     }
-    public LiveData<List<Match>> getUnfinishedGamesHistory(){
+    public LiveData<List<Match>> getUnfinishedMatches(){
         return unfinishedGamesHistory;
     }
 

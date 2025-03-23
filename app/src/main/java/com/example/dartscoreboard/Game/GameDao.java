@@ -20,15 +20,16 @@ public interface GameDao {
     @Insert
     void insertMatch(Match match);
     @Update
-    void updateGame(Game game);
+    void updateMatch(Match match);
+
+
+    @Delete
+    void deleteMatch(Match match);
 
     @Insert
     void insertGame(Game game);
 
-    @Delete
-    void deleteGame(Game game);
-
-    @Query("DELETE FROM game")
+    @Query("DELETE FROM `match`")
     void deleteAllMatchHistory();
 
     @Query("SELECT * FROM `match` ORDER BY datetime DESC")

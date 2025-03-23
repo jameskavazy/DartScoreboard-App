@@ -11,13 +11,14 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dartscoreboard.Game.Game;
+import com.example.dartscoreboard.Game.Match;
 import com.example.dartscoreboard.R;
 
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
-public class RecyclerAdapterMatchHistory extends ListAdapter<Game, RecyclerAdapterMatchHistory.MyViewHolder> {
+public class RecyclerAdapterMatchHistory extends ListAdapter<Match, RecyclerAdapterMatchHistory.MyViewHolder> {
 
     private OnItemClickListener listener;
 
@@ -25,16 +26,15 @@ public class RecyclerAdapterMatchHistory extends ListAdapter<Game, RecyclerAdapt
         super(DIFF_CALLBACK);
     }
 
-    private static final DiffUtil.ItemCallback<Game> DIFF_CALLBACK = new DiffUtil.ItemCallback<Game>() {
+    private static final DiffUtil.ItemCallback<Match> DIFF_CALLBACK = new DiffUtil.ItemCallback<Match>() {
         @Override
-        public boolean areItemsTheSame(@NonNull Game oldItem, @NonNull Game newItem) {
-            return Objects.equals(oldItem.getGameId(), newItem.getGameId());
+        public boolean areItemsTheSame(@NonNull Match oldItem, @NonNull Match newItem) {
+            return Objects.equals(oldItem.getMatchId(), newItem.getMatchId());
         }
 
         @Override
-        public boolean areContentsTheSame(@NonNull Game oldItem, @NonNull Game newItem) {
-            return false;
-//            return oldItem.getOffsetDateTime().isEqual(newItem.getOffsetDateTime());
+        public boolean areContentsTheSame(@NonNull Match oldItem, @NonNull Match newItem) {
+            return oldItem.getOffsetDateTime().isEqual(newItem.getOffsetDateTime());
         }
     };
 
@@ -69,25 +69,25 @@ public class RecyclerAdapterMatchHistory extends ListAdapter<Game, RecyclerAdapt
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerAdapterMatchHistory.MyViewHolder holder, int position) {
-        Game game = getItem(position);
-//        holder.gameTitleTextView.setText(game.getGameType().name);
-//        holder.gamePlayersTextView.setText(game.playersCSVString);
+        Match match = getItem(position);
+        holder.gameTitleTextView.setText(match.getMatchType().name);
+        holder.gamePlayersTextView.setText(match.playersCSVString);
         DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
         DateTimeFormatter timeFormatter = DateTimeFormatter.ISO_LOCAL_TIME;
-//        String dateStamp = game.getCreatedDate().format(dateFormatter);
-//        String timeStamp = game.getCreatedDate().truncatedTo(ChronoUnit.MINUTES).format(timeFormatter);
-//        String timeStampTruncated = timeStamp.substring(0,timeStamp.length() - 3);
-//        String dateTimeFormatted = dateStamp+"\n"+timeStampTruncated;
-//        holder.gameDateCreatedTextView.setText(dateTimeFormatted);
+        String dateStamp = match.getOffsetDateTime().format(dateFormatter);
+        String timeStamp = match.getOffsetDateTime().truncatedTo(ChronoUnit.MINUTES).format(timeFormatter);
+        String timeStampTruncated = timeStamp.substring(0,timeStamp.length() - 3);
+        String dateTimeFormatted = dateStamp+"\n"+timeStampTruncated;
+        holder.gameDateCreatedTextView.setText(dateTimeFormatted);
     }
 
-    public Game getGameStateAtPosition(int position) {
+    public Match getMatchAtPosition(int position) {
         return getItem(position);
     }
 
 
     public interface OnItemClickListener {
-        void onItemClick(Game game);
+        void onItemClick(Match match);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {

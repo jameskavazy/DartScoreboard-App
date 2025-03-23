@@ -16,7 +16,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.dartscoreboard.Game.Game;
 import com.example.dartscoreboard.Game.GameActivity;
 import com.example.dartscoreboard.Game.Match;
 import com.example.dartscoreboard.Game.MatchType;
@@ -138,7 +137,7 @@ public class SetupGameActivity extends AppCompatActivity implements View.OnClick
             Log.d("dom test", "openGameActivity");
             Intent intent = new Intent(this, GameActivity.class);
             Bundle arguments = new Bundle();
-            Match match = initialiseGame(matchType);
+            Match match = initialiseMatch(matchType);
             Log.d("gameState", "setupGame ID:  " + match.matchId);
             arguments.putString(GameActivity.GAME_STATE_KEY, match.matchId);
             intent.putExtras(arguments);
@@ -164,7 +163,7 @@ public class SetupGameActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-    private Match initialiseGame(MatchType matchType) {
+    private Match initialiseMatch(MatchType matchType) {
         int legs = Integer.parseInt(legsAutoCompleteTextView.getText().toString());
         int sets = Integer.parseInt(setsAutoCompleteTextView.getText().toString());
         return setupGameViewModel.createMatch(matchType, legs, sets);

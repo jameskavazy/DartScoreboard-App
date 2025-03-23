@@ -18,6 +18,8 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
 public class SetupGameViewModel extends AndroidViewModel {
 
     private String matchId;
@@ -41,9 +43,10 @@ public class SetupGameViewModel extends AndroidViewModel {
 
     public Match createMatch(MatchType matchType, int legs, int sets) {
         matchId = UUID.randomUUID().toString();
-        Match match = new Match(matchId, matchType, new MatchSettings(legs, sets), OffsetDateTime.now());
+        Match match = new Match(matchId, matchType, getMatchSettings(legs, sets), OffsetDateTime.now());
+        match.setPlayersCSV(getSelectedPlayers());
         addUsersToMatch();
-        gameRepository.insertMatch(match);
+        gameRepository.insertMatch(match).subscribeOn(Schedulers.io()).subscribe();
         return match;
     }
 

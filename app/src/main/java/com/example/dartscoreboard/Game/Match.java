@@ -14,6 +14,7 @@ import java.util.List;
 @Entity(tableName = "match")
 public class Match {
 
+
     @PrimaryKey
     @NonNull
     public String matchId;
@@ -34,6 +35,15 @@ public class Match {
         this.matchType = matchType;
         this.matchSettings = matchSettings;
         this.offsetDateTime = offsetDateTime;
+    }
+
+    @NonNull
+    public String getMatchId() {
+        return matchId;
+    }
+
+    public void setMatchId(@NonNull String matchId) {
+        this.matchId = matchId;
     }
 
     public void setCreatedDate(OffsetDateTime offsetDateTime) {
@@ -62,7 +72,6 @@ public class Match {
     public long winnerId;
 
     public void setPlayersCSV(List<User> players) {
-
         if (players == null) {
             this.playersCSVString = "";
             return;

@@ -23,10 +23,12 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.dartscoreboard.Game.Game;
 import com.example.dartscoreboard.Game.GameActivity;
+import com.example.dartscoreboard.Game.Match;
 import com.example.dartscoreboard.R;
 import com.google.android.material.snackbar.Snackbar;
+
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 
 public class MatchHistoryActivity extends AppCompatActivity {
@@ -71,10 +73,10 @@ public class MatchHistoryActivity extends AppCompatActivity {
         matchHistoryViewModel = new ViewModelProvider(this).get(MatchHistoryViewModel.class);
 
 
-//        matchHistoryViewModel.getUnfinishedGames().observe(this, games -> {
-//            adapter.submitList(games);
-//            noRecentGamesTextView.setVisibility(games.isEmpty() ? View.VISIBLE : View.GONE);
-//        });
+        matchHistoryViewModel.getUnfinishedMatches().observe(this, matches -> {
+            adapter.submitList(matches);
+            noRecentGamesTextView.setVisibility(matches.isEmpty() ? View.VISIBLE : View.GONE);
+        });
 
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
@@ -86,9 +88,9 @@ public class MatchHistoryActivity extends AppCompatActivity {
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                Game game = adapter.getGameStateAtPosition(viewHolder.getBindingAdapterPosition());
-                matchHistoryViewModel.delete(game);
-                undoSnackBar.setAction("Undo", v -> matchHistoryViewModel.insert(game).subscribe());
+                Match match = adapter.getMatchAtPosition(viewHolder.getBindingAdapterPosition());
+                matchHistoryViewModel.delete(match);
+                undoSnackBar.setAction("Undo", v -> matchHistoryViewModel.insertMatch(match).subscribeOn(Schedulers.io()).subscribe());
                 undoSnackBar.show();
             }
 
@@ -119,10 +121,10 @@ public class MatchHistoryActivity extends AppCompatActivity {
             }
         }).attachToRecyclerView(recyclerView);
 
-        adapter.setOnItemClickListener(game -> {
+        adapter.setOnItemClickListener(match -> {
             Intent intent = new Intent(MatchHistoryActivity.this, GameActivity.class);
             Bundle arguments = new Bundle();
-            arguments.putString(GameActivity.GAME_STATE_KEY, game.gameId);
+            arguments.putString(GameActivity.GAME_STATE_KEY, match.getMatchId());
             intent.putExtras(arguments);
             startActivity(intent);
             finish();
