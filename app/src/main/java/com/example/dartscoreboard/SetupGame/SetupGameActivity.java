@@ -134,11 +134,10 @@ public class SetupGameActivity extends AppCompatActivity implements View.OnClick
 
     private void openGameActivity(MatchType matchType) {
         if (matchType != null) {
-            Log.d("dom test", "openGameActivity");
             Intent intent = new Intent(this, GameActivity.class);
             Bundle arguments = new Bundle();
             Match match = initialiseMatch(matchType);
-            Log.d("gameState", "setupGame ID:  " + match.matchId);
+            Log.d("jtest", "setupGame ID:  " + match.matchId);
             arguments.putString(GameActivity.MATCH_KEY, match.matchId);
             intent.putExtras(arguments);
             startActivity(intent);

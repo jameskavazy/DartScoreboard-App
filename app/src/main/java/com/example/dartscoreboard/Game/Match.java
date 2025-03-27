@@ -14,13 +14,12 @@ import java.util.List;
 @Entity(tableName = "match")
 public class Match {
 
-
     @PrimaryKey
     @NonNull
     public String matchId;
 
     @ColumnInfo(name = "datetime")
-    public OffsetDateTime offsetDateTime = OffsetDateTime.now();
+    public OffsetDateTime offsetDateTime;
 
     @ColumnInfo(name = "game_type")
     public MatchType matchType;

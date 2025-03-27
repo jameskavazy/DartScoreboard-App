@@ -11,6 +11,7 @@ import androidx.room.Update;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Single;
 
@@ -22,11 +23,11 @@ public interface GameDao {
     @Update
     void updateMatch(Match match);
 
-    @Delete
+    @Delete()
     void deleteMatch(Match match);
 
     @Insert
-    void insertGame(Game game);
+    Completable insertGame(Game game);
 
     @Query("DELETE FROM `match`")
     void deleteAllMatchHistory();
@@ -58,8 +59,13 @@ public interface GameDao {
     @Query("UPDATE game SET winnerId = :userId WHERE gameId = :gameId")
     void setWinner(int userId, String gameId);
 
+    @Query("UPDATE `match` SET winnerId = :userId WHERE matchId = :matchId")
+    void setMatchWinner(int userId, String matchId);
+
     @Query("SELECT winnerId FROM game WHERE gameId = :gameId")
     Single<Integer> getWinner(String gameId);
+    @Query("SELECT COUNT(*) FROM game WHERE matchId = :matchId AND winnerId = :userId ")
+    Single<Integer> legsWon(String matchId, int userId);
 
     @Query("UPDATE game SET turn_index = :index WHERE gameId = :gameId")
     void updateTurnIndex(int index, String gameId);
@@ -71,11 +77,13 @@ public interface GameDao {
     void updateSetIndex(int index, String gameId);
 
     @Transaction
-    @Query("SELECT * FROM game WHERE gameId = :gameId")
-    Flowable<GameWithVisits> getGameWithVisits(String gameId);
+    @Query("SELECT * FROM game WHERE matchId = :matchId AND winnerId = 0")
+    Flowable<GameWithVisits> getGameWithVisits(String matchId);
 
     @Transaction
     @Query("SELECT * FROM `match` WHERE matchId = :matchId")
     Flowable<MatchData> getMatchData(String matchId);
+
+
 
 }

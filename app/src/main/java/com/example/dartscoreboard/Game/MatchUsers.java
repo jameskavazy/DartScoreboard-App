@@ -2,8 +2,9 @@ package com.example.dartscoreboard.Game;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Index;
 
-@Entity(primaryKeys = {"userID", "matchId"})
+@Entity(primaryKeys = {"userID", "matchId"}, indices = {@Index(value = "matchId")})
 public class MatchUsers {
     public long userID;
     @NonNull

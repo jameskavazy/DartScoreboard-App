@@ -64,7 +64,9 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
         holder.playerScoreTextView.setText(String.valueOf(currentScore));
         holder.legsTextView.setText(String.valueOf(currentLegs));
         holder.setsTextView.setText(String.valueOf(currentSets));
-        holder.playerIndicator.setVisibility(gamesWithVisits.game.turnIndex == position ? View.VISIBLE : View.GONE);
+        if (gamesWithVisits.game != null){
+            holder.playerIndicator.setVisibility(gamesWithVisits.game.turnIndex == position ? View.VISIBLE : View.GONE);
+        }
     }
     private int getCurrentLegs(User user) {
         return (int) matchData.games.stream()

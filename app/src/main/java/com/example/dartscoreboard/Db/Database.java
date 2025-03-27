@@ -2,9 +2,11 @@ package com.example.dartscoreboard.Db;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.example.dartscoreboard.Game.Game;
 import com.example.dartscoreboard.Game.MatchUsers;
@@ -38,11 +40,20 @@ public abstract class Database extends RoomDatabase {
     public static synchronized Database getInstance(Context context){
         if (instance == null){
             instance = Room.databaseBuilder(context.getApplicationContext(), Database.class,"scoreboard-db")
+                    .addCallback(roomCallback)
                     .fallbackToDestructiveMigration()
                     .build();
         }
         return instance;
     }
+
+    private final static RoomDatabase.Callback roomCallback = new Callback() {
+        @Override
+        public void onOpen(@NonNull SupportSQLiteDatabase db) {
+            super.onOpen(db);
+            db.execSQL("PRAGMA foreign_keys=ON");
+        }
+    };
 
 
 

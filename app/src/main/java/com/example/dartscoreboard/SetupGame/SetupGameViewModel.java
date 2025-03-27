@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
+import com.example.dartscoreboard.Game.Game;
 import com.example.dartscoreboard.Game.Match;
 import com.example.dartscoreboard.Game.MatchSettings;
 import com.example.dartscoreboard.Game.MatchType;
@@ -15,9 +16,12 @@ import com.example.dartscoreboard.User.UserRepository;
 import com.example.dartscoreboard.Utils.PreferencesController;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import io.reactivex.rxjava3.core.CompletableObserver;
+import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class SetupGameViewModel extends AndroidViewModel {
@@ -46,7 +50,23 @@ public class SetupGameViewModel extends AndroidViewModel {
         Match match = new Match(matchId, matchType, getMatchSettings(legs, sets), OffsetDateTime.now());
         match.setPlayersCSV(getSelectedPlayers());
         addUsersToMatch();
-        gameRepository.insertMatch(match).subscribeOn(Schedulers.io()).subscribe();
+        gameRepository.insertMatch(match).subscribeOn(Schedulers.io()).subscribe(new CompletableObserver() {
+            @Override
+            public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
+
+            }
+
+            @Override
+            public void onComplete() {
+                gameRepository.insertGame(new Game(UUID.randomUUID().toString(), match.matchId, 0,0,0)).subscribeOn(Schedulers.io()).subscribe();
+            }
+
+            @Override
+            public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+
+            }
+        });
+
         return match;
     }
 
@@ -60,6 +80,9 @@ public class SetupGameViewModel extends AndroidViewModel {
 //    }
 
     public List<User> getSelectedPlayers() {
+        if (playersToGame == null) {
+            playersToGame = new ArrayList<>();
+        }
         return playersToGame;
     }
 

@@ -24,8 +24,8 @@ public class GameRepository {
         unfinishedGamesHistory = gameDao.getUnfinishedGameHistory();
     }
 
-    public Flowable<GameWithVisits> getGameWithVisits(String gameId){
-        return gameDao.getGameWithVisits(gameId);
+    public Flowable<GameWithVisits> getGameWithVisits(String matchId){
+        return gameDao.getGameWithVisits(matchId);
     }
 
     public Flowable<MatchData> getMatchData(String matchId){
@@ -93,6 +93,10 @@ public class GameRepository {
         return Completable.fromAction(() -> gameDao.setWinner(userId, gameId));
     }
 
+    public Completable setMatchWinner(int userId, String matchId){
+        return Completable.fromAction(() -> gameDao.setMatchWinner(userId, matchId));
+    }
+
     public Single<Integer> getWinner(String gameId){
         return gameDao.getWinner(gameId);
     }
@@ -109,11 +113,12 @@ public class GameRepository {
         Completable.fromAction(() -> gameDao.updateSetIndex(index, gameId)).subscribeOn(Schedulers.io()).subscribe();
     }
 
-    public Single<String> insertGame(Game game){
-        return Single.fromCallable(() -> {
-            gameDao.insertGame(game);
-            return game.getGameId();
-        });
+    public Completable insertGame(Game game){
+        return gameDao.insertGame(game);
+    }
+
+    public Single<Integer> legsWon(String matchId, int userId){
+        return gameDao.legsWon(matchId, userId);
     }
 
 }

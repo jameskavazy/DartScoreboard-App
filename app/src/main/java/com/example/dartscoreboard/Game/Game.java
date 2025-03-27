@@ -3,6 +3,8 @@ package com.example.dartscoreboard.Game;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import com.example.dartscoreboard.User.User;
@@ -13,12 +15,15 @@ import java.util.List;
 
 
 
-@Entity (tableName = "game")
+@Entity (
+        tableName = "game"
+)
 public class Game implements Serializable {
 
     @PrimaryKey
     @NonNull
     public String gameId;
+
 
     public String matchId;
     @ColumnInfo(name = "turn_index")

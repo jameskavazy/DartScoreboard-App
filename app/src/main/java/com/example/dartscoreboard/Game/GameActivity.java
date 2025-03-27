@@ -1,5 +1,6 @@
 package com.example.dartscoreboard.Game;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -7,6 +8,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -66,7 +68,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         inputScoreEditText.setOnEditorActionListener((v, actionId, event) -> onScoreEntered());
     }
 
-    private String gameIdFromIntent() {
+    private String getMatchIdFromIntent() {
         Bundle arguments = getIntent().getExtras();
         assert arguments != null;
         String gameId = arguments.getString(MATCH_KEY);
@@ -85,9 +87,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private void observeViewModel() {
         gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
-        gameViewModel.setMatchId(gameIdFromIntent());
+        Log.d("jtest", "matchId from intent = " + getMatchIdFromIntent());
+        gameViewModel.setMatchId(getMatchIdFromIntent());
         gameViewModel.fetchMatchData();
-        gameViewModel.fetchGameWithVisits();
+//        gameViewModel.fetchGameWithVisits();
 
         gameViewModel.getMatchDataLiveData()
                 .observe(this, matchData -> gameAdapter.setMatchData(matchData));
@@ -97,17 +100,17 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
-//        gameViewModel.getFinished().observe(this, isFinished -> {
-//            if (!isFinished) {
-//                inputScoreEditText.setVisibility(View.VISIBLE);
-//                doneButton.setVisibility(View.VISIBLE);
-//            } else {
-//                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-//                inputMethodManager.hideSoftInputFromWindow(recyclerView.getApplicationWindowToken(), 0);
-//                inputScoreEditText.setVisibility(View.GONE);
-//                doneButton.setVisibility(View.GONE);
-//            }
-//        });
+        gameViewModel.getFinished().observe(this, isFinished -> {
+            if (!isFinished) {
+                inputScoreEditText.setVisibility(View.VISIBLE);
+                doneButton.setVisibility(View.VISIBLE);
+            } else {
+                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(recyclerView.getApplicationWindowToken(), 0);
+                inputScoreEditText.setVisibility(View.GONE);
+                doneButton.setVisibility(View.GONE);
+            }
+        });
     }
     private Boolean onScoreEntered() {
         int input = 0;
