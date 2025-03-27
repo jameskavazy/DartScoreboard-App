@@ -12,11 +12,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.dartscoreboard.R;
 import com.example.dartscoreboard.User.User;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder> {
-    private MatchData matchData = new MatchData();
+
+    private List<Game> gamesInMatch = new ArrayList<>();
+    private MatchWithUsers matchWithUsers = new MatchWithUsers();
     private GameWithVisits gamesWithVisits = new GameWithVisits();
     public GameAdapter() {
 
@@ -52,13 +55,13 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull GameViewHolder holder, int position) {
-        String name = matchData.users.get(position).getUsername();
-        User user = matchData.users.get(position);
-        int startingScore = matchData.match.getMatchType().startingScore;
+        String name = matchWithUsers.users.get(position).getUsername();
+        User user = matchWithUsers.users.get(position);
+        int startingScore = matchWithUsers.match.getMatchType().startingScore;
         int visitScores = getVisitScores(user);
         int currentScore = startingScore - visitScores;
         int currentLegs = getCurrentLegs(user);
-        int currentSets = currentLegs % matchData.match.matchSettings.getTotalSets();
+        int currentSets = currentLegs % matchWithUsers.match.matchSettings.getTotalSets(); //TODO if games finished and all sets won this will cycle over to 0
 
         holder.nameText.setText(name);
         holder.playerScoreTextView.setText(String.valueOf(currentScore));
@@ -69,7 +72,7 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
         }
     }
     private int getCurrentLegs(User user) {
-        return (int) matchData.games.stream()
+        return (int) gamesInMatch.stream()
                 .filter(game -> game.winnerId == user.userID)
                 .count();
     }
@@ -98,17 +101,21 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
 
     @Override
     public int getItemCount() {
-        return (matchData != null && matchData.users != null) ? matchData.users.size() : 0;
+        return (matchWithUsers != null && matchWithUsers.users != null) ? matchWithUsers.users.size() : 0;
     }
 
-    public void setMatchData(MatchData matchData) {
-        this.matchData = matchData;
+    public void setMatchData(MatchWithUsers matchWithUsers) {
+        this.matchWithUsers = matchWithUsers;
         notifyDataSetChanged();
     }
 
     public void setGameWithVisits(GameWithVisits gamesWithVisits) {
         this.gamesWithVisits = gamesWithVisits;
         notifyDataSetChanged();
+    }
+
+    public void setGamesInMatch(List<Game> gamesInMatch) {
+        this.gamesInMatch = gamesInMatch;
     }
 }
 

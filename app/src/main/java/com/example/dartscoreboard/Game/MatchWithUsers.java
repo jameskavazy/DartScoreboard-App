@@ -8,7 +8,7 @@ import com.example.dartscoreboard.User.User;
 
 import java.util.List;
 
-public class MatchData {
+public class MatchWithUsers {
     @Embedded public Match match;
     @Relation(
             parentColumn = "matchId",
@@ -17,14 +17,5 @@ public class MatchData {
     )
     public List<User> users;
 
-    @Relation(
-            parentColumn = "matchId",
-            entityColumn = "gameId"
-    )
-    public List<Game> games;
-
-
-
-
-
 }
+

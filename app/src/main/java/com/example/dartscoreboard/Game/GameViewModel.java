@@ -5,7 +5,6 @@ import android.app.Application;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.util.Pair;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,12 +19,7 @@ import org.reactivestreams.Subscription;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Predicate;
-import java.util.function.ToIntFunction;
-import java.util.stream.Collectors;
 
-import io.reactivex.rxjava3.core.CompletableObserver;
-import io.reactivex.rxjava3.core.CompletableSource;
 import io.reactivex.rxjava3.core.FlowableSubscriber;
 import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.MaybeSource;
@@ -39,12 +33,13 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class GameViewModel extends AndroidViewModel {
 
-//    private String currentGameId;
-    private MatchData matchData;
+    private MatchWithUsers matchWithUsers;
 
     private GameWithVisits gameWithVisits;
-    private Game game;
-    private MutableLiveData<MatchData> matchDataMutableLiveData = new MutableLiveData<>();
+
+    private MutableLiveData<List<Game>> gamesInMatchLiveData = new MutableLiveData<>();
+
+    private MutableLiveData<MatchWithUsers> matchWithUsersMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<GameWithVisits> gameWithVisitsMutableLiveData = new MutableLiveData<>();
     private final GameRepository gameRepository;
 //    public static int turnIndex = 0;
@@ -78,11 +73,11 @@ public class GameViewModel extends AndroidViewModel {
         }
         if (scoreInt <= 180) {
             Log.d("jtest", "playerVisit gameId " + gameWithVisits.game.gameId);
-            User user = matchData.users.get(gameWithVisits.game.turnIndex);
+            User user = matchWithUsers.users.get(gameWithVisits.game.turnIndex);
             int userId = user.userID;
             gameRepository.getGameTotalScoreByUser(gameWithVisits.game.getGameId(), userId)
                     .flatMap((Function<Integer, SingleSource<Integer>>) sumOfVisits -> {
-                        int startingScore = matchData.match.getMatchType().startingScore;
+                        int startingScore = matchWithUsers.match.getMatchType().startingScore;
                         int visitScore = calculateScore(startingScore - sumOfVisits, scoreInt);
                         Visit visit = createVisit(user, visitScore);
                         int finalScore = startingScore - sumOfVisits - visitScore;
@@ -119,7 +114,7 @@ public class GameViewModel extends AndroidViewModel {
 
                                     @Override
                                     public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull Integer count) {
-                                        if (count == matchData.match.matchSettings.getTotalLegs()) {
+                                        if (count == matchWithUsers.match.matchSettings.getTotalLegs()) {
                                             endGame(user);
                                         }
                                         else {
@@ -157,7 +152,7 @@ public class GameViewModel extends AndroidViewModel {
     }
 
     private int calculateScore(int playerScore, int input) {
-        User currentPlayer = matchData.users.get(gameWithVisits.game.turnIndex);
+        User currentPlayer = matchWithUsers.users.get(gameWithVisits.game.turnIndex);
 
         if (currentPlayer.isGuy) {
             Log.d("dom test", "subtract guy" + input);
@@ -208,7 +203,7 @@ public class GameViewModel extends AndroidViewModel {
 
     private void endGame(User currentPlayer) {
         _finished.postValue(true);
-        gameRepository.setMatchWinner(currentPlayer.userID, matchData.match.matchId).subscribeOn(Schedulers.io()).subscribe();
+        gameRepository.setMatchWinner(currentPlayer.userID, matchWithUsers.match.matchId).subscribeOn(Schedulers.io()).subscribe();
         toastMessage(currentPlayer.getUsername() + " wins the match!");
     }
 
@@ -272,12 +267,12 @@ public class GameViewModel extends AndroidViewModel {
 //    }
 
     public void incrementTurnIndex() {
-        gameWithVisits.game.turnIndex = (gameWithVisits.game.turnIndex + 1) % matchData.users.size();
+        gameWithVisits.game.turnIndex = (gameWithVisits.game.turnIndex + 1) % matchWithUsers.users.size();
         gameRepository.updateTurnIndex(gameWithVisits.game.turnIndex, gameWithVisits.game.getGameId());
     }
 
     public void decrementTurnIndex() {
-        gameWithVisits.game.turnIndex = (gameWithVisits.game.turnIndex - 1 + matchData.users.size()) % matchData.users.size();
+        gameWithVisits.game.turnIndex = (gameWithVisits.game.turnIndex - 1 + matchWithUsers.users.size()) % matchWithUsers.users.size();
         gameRepository.updateTurnIndex(gameWithVisits.game.turnIndex, gameWithVisits.game.getGameId());
     }
 //
@@ -341,10 +336,6 @@ public class GameViewModel extends AndroidViewModel {
 //        this.setIndex = setIndex;
 //    }
 
-//    public List<User> getPlayersList(){
-//        return gameData.users;
-//    }
-
 
       public MutableLiveData<GameWithVisits> getGameWithVisitsMutableLiveData(){
         return gameWithVisitsMutableLiveData;
@@ -359,18 +350,18 @@ public class GameViewModel extends AndroidViewModel {
     }
 
     public void fetchMatchData(){
-        gameRepository.getMatchData(matchId)
+        gameRepository.getMatchWithUsers(matchId)
                 .subscribeOn(Schedulers.io())
-                .subscribe(new FlowableSubscriber<MatchData>() {
+                .subscribe(new FlowableSubscriber<MatchWithUsers>() {
                     @Override
                     public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Subscription s) {
                         s.request(Long.MAX_VALUE);
                     }
 
                     @Override
-                    public void onNext(MatchData matchData) {
-                        setMatchData(matchData);
-                        matchDataMutableLiveData.postValue(matchData);
+                    public void onNext(MatchWithUsers matchWithUsers) {
+                        setMatchData(matchWithUsers);
+                        matchWithUsersMutableLiveData.postValue(matchWithUsers);
                     }
 
                     @Override
@@ -411,11 +402,34 @@ public class GameViewModel extends AndroidViewModel {
                        Log.d("jtest", "onComplete: Game visits fetch completed");
                    }
                });
+
+        gameRepository.getGamesInMatch(matchId)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new FlowableSubscriber<List<Game>>() {
+                    @Override
+                    public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Subscription s) {
+                        s.request(Integer.MAX_VALUE);
+                    }
+
+                    @Override
+                    public void onNext(List<Game> games) {
+//                        listOfGames = games;
+                        gamesInMatchLiveData.postValue(games);
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+
     }
 
-//    private void setCurrentGameId(String gameId){
-//        this.currentGameId = gameId;
-//    }
 //    public double getPlayerAverage() {
 //        User activePlayer = getPlayersList().get(getTurnIndex());
 //        int totalScores = activePlayer.getTotalScores();
@@ -448,20 +462,17 @@ public class GameViewModel extends AndroidViewModel {
         return finished;
     }
 
-//    public int getCurrentLegsSets(int userId, MatchLegsSets.Type type){
-//
-//
-//    }
-    public MutableLiveData<MatchData> getMatchDataLiveData() {
-        return matchDataMutableLiveData;
+    public MutableLiveData<MatchWithUsers> getMatchDataLiveData() {
+        return matchWithUsersMutableLiveData;
     }
-//
-//    public void setGameDataLiveData(MutableLiveData<MatchData> gameDataLiveData) {
-//        this.gameDataLiveData = gameDataLiveData;
-//    }
 
-    private void setMatchData(MatchData matchData){
-        this.matchData = matchData;
+
+    private void setMatchData(MatchWithUsers matchWithUsers){
+        this.matchWithUsers = matchWithUsers;
+    }
+
+    public MutableLiveData<List<Game>> getGamesInMatchLiveData() {
+        return gamesInMatchLiveData;
     }
 
 }

@@ -40,6 +40,8 @@ public interface GameDao {
 
     @Query("SELECT * FROM game WHERE gameId = :id")
     LiveData<Game> findGameByID(String id);
+    @Query("SELECT * FROM game WHERE matchId = :matchId")
+    Flowable<List<Game>> getGamesInMatch(String matchId);
 
     @Query("DELETE FROM game WHERE gameId = :id")
     void deleteGameStateByID(String id);
@@ -66,7 +68,6 @@ public interface GameDao {
     Single<Integer> getWinner(String gameId);
     @Query("SELECT COUNT(*) FROM game WHERE matchId = :matchId AND winnerId = :userId ")
     Single<Integer> legsWon(String matchId, int userId);
-
     @Query("UPDATE game SET turn_index = :index WHERE gameId = :gameId")
     void updateTurnIndex(int index, String gameId);
 
@@ -82,7 +83,7 @@ public interface GameDao {
 
     @Transaction
     @Query("SELECT * FROM `match` WHERE matchId = :matchId")
-    Flowable<MatchData> getMatchData(String matchId);
+    Flowable<MatchWithUsers> getMatchData(String matchId);
 
 
 

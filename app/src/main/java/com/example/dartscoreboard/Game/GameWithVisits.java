@@ -14,4 +14,5 @@ public class GameWithVisits {
     )
     public List<Visit> visits;
 
+
 }

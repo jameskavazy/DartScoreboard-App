@@ -28,7 +28,7 @@ public class GameRepository {
         return gameDao.getGameWithVisits(matchId);
     }
 
-    public Flowable<MatchData> getMatchData(String matchId){
+    public Flowable<MatchWithUsers> getMatchWithUsers(String matchId){
         return gameDao.getMatchData(matchId);
     }
 
@@ -119,6 +119,10 @@ public class GameRepository {
 
     public Single<Integer> legsWon(String matchId, int userId){
         return gameDao.legsWon(matchId, userId);
+    }
+
+    public Flowable<List<Game>> getGamesInMatch(String matchId){
+        return gameDao.getGamesInMatch(matchId);
     }
 
 }

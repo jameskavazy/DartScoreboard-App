@@ -98,6 +98,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         gameViewModel.getGameWithVisitsMutableLiveData()
                 .observe(this, gameWithVisits -> gameAdapter.setGameWithVisits(gameWithVisits));
 
+        gameViewModel.getGamesInMatchLiveData()
+                .observe(this, games -> gameAdapter.setGamesInMatch(games));
 
 
         gameViewModel.getFinished().observe(this, isFinished -> {
