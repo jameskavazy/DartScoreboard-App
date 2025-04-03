@@ -1,4 +1,4 @@
-package com.example.dartscoreboard.Game;
+package com.example.dartscoreboard.match;
 
 import androidx.room.Embedded;
 import androidx.room.Junction;
@@ -17,5 +17,16 @@ public class MatchWithUsers {
     )
     public List<User> users;
 
+    @Relation(
+            parentColumn = "matchId",
+            entityColumn = "matchId"
+    )
+    public List<Set> sets;
+
+    @Relation(
+            parentColumn = "matchId",
+            entityColumn = "matchId"
+    )
+    public List<Game> games;
 }
 

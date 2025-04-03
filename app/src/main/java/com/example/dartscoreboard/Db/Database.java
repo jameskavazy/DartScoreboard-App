@@ -8,21 +8,23 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import com.example.dartscoreboard.Game.Game;
-import com.example.dartscoreboard.Game.MatchUsers;
-import com.example.dartscoreboard.Game.Match;
-import com.example.dartscoreboard.Game.Visit;
-import com.example.dartscoreboard.LiveMatches.LiveProMatchesDao;
-import com.example.dartscoreboard.LiveMatches.ProMatch;
-import com.example.dartscoreboard.Game.GameDao;
+import com.example.dartscoreboard.match.Game;
+import com.example.dartscoreboard.match.MatchUsers;
+import com.example.dartscoreboard.match.Match;
+import com.example.dartscoreboard.match.Set;
+import com.example.dartscoreboard.match.Visit;
+import com.example.dartscoreboard.livematches.LiveProMatchesDao;
+import com.example.dartscoreboard.livematches.ProMatch;
+import com.example.dartscoreboard.match.GameDao;
 import com.example.dartscoreboard.User.User;
 import com.example.dartscoreboard.User.UserDao;
-import com.example.dartscoreboard.Utils.Converters;
+import com.example.dartscoreboard.util.Converters;
 
 @androidx.room.Database(
         entities = {
                 User.class,
                 Game.class,
+                Set.class,
                 Match.class,
                 ProMatch.class,
                 MatchUsers.class,

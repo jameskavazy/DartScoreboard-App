@@ -10,7 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.example.dartscoreboard.LiveMatches.LiveProMatchesActivity;
+import com.example.dartscoreboard.livematches.LiveProMatchesActivity;
 import com.example.dartscoreboard.MatchHistory.MatchHistoryActivity;
 import com.example.dartscoreboard.R;
 import com.example.dartscoreboard.Reminders.ReminderActivity;

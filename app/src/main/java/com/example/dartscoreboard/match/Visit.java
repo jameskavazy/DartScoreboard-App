@@ -1,6 +1,5 @@
-package com.example.dartscoreboard.Game;
+package com.example.dartscoreboard.match;
 
-import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;

@@ -16,12 +16,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.dartscoreboard.Game.GameActivity;
-import com.example.dartscoreboard.Game.Match;
-import com.example.dartscoreboard.Game.MatchType;
+import com.example.dartscoreboard.match.GameActivity;
+import com.example.dartscoreboard.match.Match;
+import com.example.dartscoreboard.match.MatchType;
 import com.example.dartscoreboard.R;
 import com.example.dartscoreboard.User.User;
-import com.example.dartscoreboard.Utils.PreferencesController;
+import com.example.dartscoreboard.util.PreferencesController;
 
 import java.util.ArrayList;
 import java.util.Collections;

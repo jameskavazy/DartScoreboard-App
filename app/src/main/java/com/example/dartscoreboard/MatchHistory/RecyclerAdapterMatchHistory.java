@@ -10,8 +10,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.dartscoreboard.Game.Game;
-import com.example.dartscoreboard.Game.Match;
+import com.example.dartscoreboard.match.Match;
 import com.example.dartscoreboard.R;
 
 import java.time.format.DateTimeFormatter;

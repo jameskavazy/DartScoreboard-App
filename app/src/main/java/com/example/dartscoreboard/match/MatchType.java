@@ -1,4 +1,4 @@
-package com.example.dartscoreboard.Game;
+package com.example.dartscoreboard.match;
 
 public enum MatchType {
     FiveO("501", 501),

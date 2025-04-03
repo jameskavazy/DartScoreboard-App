@@ -1,4 +1,4 @@
-package com.example.dartscoreboard.Game;
+package com.example.dartscoreboard.match;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,13 +14,24 @@ import com.example.dartscoreboard.User.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder> {
 
+
+    String currentSetId;
     private List<Game> gamesInMatch = new ArrayList<>();
+
+    public void setSets(List<Set> sets) {
+        this.sets = sets;
+    }
+
+    private List<Set> sets = new ArrayList<>();
     private MatchWithUsers matchWithUsers = new MatchWithUsers();
+
     private GameWithVisits gamesWithVisits = new GameWithVisits();
+
     public GameAdapter() {
 
     }
@@ -55,26 +66,33 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull GameViewHolder holder, int position) {
+
         String name = matchWithUsers.users.get(position).getUsername();
         User user = matchWithUsers.users.get(position);
         int startingScore = matchWithUsers.match.getMatchType().startingScore;
         int visitScores = getVisitScores(user);
         int currentScore = startingScore - visitScores;
-        int currentLegs = getCurrentLegs(user);
-        int currentSets = currentLegs % matchWithUsers.match.matchSettings.getTotalSets(); //TODO if games finished and all sets won this will cycle over to 0
+
+        int currentSets = (int) matchWithUsers.sets.stream()
+                .filter(set -> set.winnerId == user.userID).count();
+
+        int currentLegs = (int) matchWithUsers.games.stream().
+                filter(game -> Objects.equals(game.setId, currentSetId) && game.winnerId == user.userID)
+                .count();
 
         holder.nameText.setText(name);
         holder.playerScoreTextView.setText(String.valueOf(currentScore));
         holder.legsTextView.setText(String.valueOf(currentLegs));
         holder.setsTextView.setText(String.valueOf(currentSets));
-        if (gamesWithVisits.game != null){
+        if (gamesWithVisits.game != null) {
             holder.playerIndicator.setVisibility(gamesWithVisits.game.turnIndex == position ? View.VISIBLE : View.GONE);
         }
+
     }
     private int getCurrentLegs(User user) {
         return (int) gamesInMatch.stream()
                 .filter(game -> game.winnerId == user.userID)
-                .count();
+                .count() % matchWithUsers.match.matchSettings.getTotalSets();
     }
 
     private int getCurrentSets(User user) {

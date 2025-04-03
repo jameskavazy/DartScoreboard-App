@@ -1,4 +1,4 @@
-package com.example.dartscoreboard.Game;
+package com.example.dartscoreboard.match;
 
 import java.io.Serializable;
 

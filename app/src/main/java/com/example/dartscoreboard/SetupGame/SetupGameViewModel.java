@@ -5,15 +5,16 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
-import com.example.dartscoreboard.Game.Game;
-import com.example.dartscoreboard.Game.Match;
-import com.example.dartscoreboard.Game.MatchSettings;
-import com.example.dartscoreboard.Game.MatchType;
-import com.example.dartscoreboard.Game.MatchUsers;
-import com.example.dartscoreboard.Game.GameRepository;
+import com.example.dartscoreboard.match.Game;
+import com.example.dartscoreboard.match.Match;
+import com.example.dartscoreboard.match.MatchSettings;
+import com.example.dartscoreboard.match.MatchType;
+import com.example.dartscoreboard.match.MatchUsers;
+import com.example.dartscoreboard.match.GameRepository;
 import com.example.dartscoreboard.User.User;
 import com.example.dartscoreboard.User.UserRepository;
-import com.example.dartscoreboard.Utils.PreferencesController;
+import com.example.dartscoreboard.match.Set;
+import com.example.dartscoreboard.util.PreferencesController;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -58,7 +59,9 @@ public class SetupGameViewModel extends AndroidViewModel {
 
             @Override
             public void onComplete() {
-                gameRepository.insertGame(new Game(UUID.randomUUID().toString(), match.matchId, 0,0,0)).subscribeOn(Schedulers.io()).subscribe();
+                String setId = UUID.randomUUID().toString();
+                gameRepository.insertSet(new Set(setId, match.matchId, 0)).subscribeOn(Schedulers.io()).subscribe();
+                gameRepository.insertGame(new Game(UUID.randomUUID().toString(), setId, match.matchId, 0,0,0)).subscribeOn(Schedulers.io()).subscribe();
             }
 
             @Override
@@ -69,15 +72,6 @@ public class SetupGameViewModel extends AndroidViewModel {
 
         return match;
     }
-
-//    public Game createGame(MatchType matchType, int legs, int sets) {
-//        gameId = UUID.randomUUID().toString();
-//        Game game = new Game(gameId, 0, 0, 0);
-//        game.setPlayersCSV(getSelectedPlayers());
-//        addUsersToGame();
-//        gameRepository.insert(game);
-//        return game;
-//    }
 
     public List<User> getSelectedPlayers() {
         if (playersToGame == null) {

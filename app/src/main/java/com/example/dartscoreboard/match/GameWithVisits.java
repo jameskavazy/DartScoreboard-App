@@ -1,4 +1,4 @@
-package com.example.dartscoreboard.Game;
+package com.example.dartscoreboard.match;
 
 import androidx.room.Embedded;
 import androidx.room.Relation;
@@ -13,6 +13,5 @@ public class GameWithVisits {
             entityColumn = "gameId"
     )
     public List<Visit> visits;
-
 
 }

@@ -1,4 +1,4 @@
-package com.example.dartscoreboard.Utils;
+package com.example.dartscoreboard.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;

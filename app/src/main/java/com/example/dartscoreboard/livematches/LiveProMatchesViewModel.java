@@ -1,4 +1,4 @@
-package com.example.dartscoreboard.LiveMatches;
+package com.example.dartscoreboard.livematches;
 
 import android.app.Application;
 import android.util.Log;

@@ -1,4 +1,4 @@
-package com.example.dartscoreboard.Game;
+package com.example.dartscoreboard.match;
 
 import android.app.Application;
 
@@ -64,8 +64,8 @@ public class GameRepository {
         return gameDao.findGameByID(id);
     }
 
-    public void deleteGameStateByID(String id){
-        Completable completable = Completable.fromAction(()-> gameDao.deleteGameStateByID(id));
+    public void deleteGameStateByID(String matchId, int winnerId){
+        Completable completable = Completable.fromAction(()-> gameDao.deleteGameStateByID(matchId, winnerId));
         completable.subscribeOn(Schedulers.io()).subscribe();
     }
     public LiveData<List<Match>> getUnfinishedMatches(){
@@ -89,8 +89,8 @@ public class GameRepository {
        Completable.fromAction(gameDao::deleteLastVisit).subscribeOn(Schedulers.io()).subscribe();
     }
 
-    public Completable setWinner(int userId, String gameId){
-        return Completable.fromAction(() -> gameDao.setWinner(userId, gameId));
+    public Completable setGameWinner(int userId, String gameId, int currentSetNumber){
+        return Completable.fromAction(() -> gameDao.setGameWinner(userId, gameId, currentSetNumber));
     }
 
     public Completable setMatchWinner(int userId, String matchId){
@@ -117,12 +117,28 @@ public class GameRepository {
         return gameDao.insertGame(game);
     }
 
-    public Single<Integer> legsWon(String matchId, int userId){
-        return gameDao.legsWon(matchId, userId);
+    public Single<Integer> legsWon(String setId, String matchId, int userId){
+        return gameDao.legsWon(setId, matchId, userId);
     }
 
     public Flowable<List<Game>> getGamesInMatch(String matchId){
         return gameDao.getGamesInMatch(matchId);
+    }
+
+    public Completable addSetWinner(String setId, int userId){
+        return Completable.fromAction(() -> gameDao.addSetWinner(setId, userId));
+    }
+
+    public Single<Integer> getSetsWon(int userId, String matchId) {
+        return gameDao.getSetsWon(userId, matchId);
+    }
+
+    public Completable insertSet(Set set){
+        return Completable.fromAction(() -> gameDao.insertSet(set));
+    }
+
+    public Flowable<List<Set>> getSetsInMatch(String matchId){
+        return gameDao.getSetsInMatch(matchId);
     }
 
 }

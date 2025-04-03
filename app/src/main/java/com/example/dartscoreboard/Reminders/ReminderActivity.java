@@ -19,8 +19,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.dartscoreboard.R;
-import com.example.dartscoreboard.Utils.PermissionCheckController;
-import com.example.dartscoreboard.Utils.PreferencesController;
+import com.example.dartscoreboard.util.PermissionCheckController;
+import com.example.dartscoreboard.util.PreferencesController;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 

@@ -1,4 +1,4 @@
-package com.example.dartscoreboard.LiveMatches;
+package com.example.dartscoreboard.livematches;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;

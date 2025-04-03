@@ -18,7 +18,7 @@
         android:theme="@style/Theme.DartScoreboard"
         tools:targetApi="31">
         <activity
-            android:name=".LiveMatches.LiveProMatchesActivity"
+            android:name=".livematches.LiveProMatchesActivity"
             android:exported="false" />
         <activity
             android:name=".Reminders.ReminderActivity"
@@ -54,7 +54,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Game.GameActivity"
+            android:name=".match.GameActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
         <activity
@@ -63,7 +63,7 @@
 
         <receiver android:name=".Reminders.ReminderNotificationReceiver" />
         <receiver
-            android:name=".Utils.BootCompletedReceiver"
+            android:name=".util.BootCompletedReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

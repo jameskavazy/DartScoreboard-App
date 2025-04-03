@@ -1,10 +1,10 @@
-package com.example.dartscoreboard.Utils;
+package com.example.dartscoreboard.util;
 
 import androidx.room.TypeConverter;
 
-import com.example.dartscoreboard.Game.MatchWithUsers;
-import com.example.dartscoreboard.Game.MatchSettings;
-import com.example.dartscoreboard.Game.MatchType;
+import com.example.dartscoreboard.match.MatchWithUsers;
+import com.example.dartscoreboard.match.MatchSettings;
+import com.example.dartscoreboard.match.MatchType;
 import com.example.dartscoreboard.User.User;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;

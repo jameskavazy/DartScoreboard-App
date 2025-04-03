@@ -1,31 +1,23 @@
-package com.example.dartscoreboard.Game;
+package com.example.dartscoreboard.match;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.ForeignKey;
-import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-import com.example.dartscoreboard.User.User;
-
 import java.io.Serializable;
-import java.time.OffsetDateTime;
-import java.util.List;
 
 
-
-@Entity (
-        tableName = "game"
-)
+@Entity (tableName = "game")
 public class Game implements Serializable {
 
     @PrimaryKey
     @NonNull
     public String gameId;
-
+    public String setId;
 
     public String matchId;
+
     @ColumnInfo(name = "turn_index")
     public int turnIndex;
     @ColumnInfo(name = "leg_index")
@@ -34,9 +26,13 @@ public class Game implements Serializable {
     public int setIndex;
     public int winnerId;
 
+    @ColumnInfo(name = "set_number")
+    public int setNumber;
 
-    public Game(@NonNull String gameId, String matchId, int turnIndex, int legIndex, int setIndex) {
+
+    public Game(@NonNull String gameId, String setId, String matchId, int turnIndex, int legIndex, int setIndex) {
         this.gameId = gameId;
+        this.setId = setId;
         this.matchId = matchId;
         this.turnIndex = turnIndex;
         this.legIndex = legIndex;

@@ -1,4 +1,4 @@
-package com.example.dartscoreboard.Game;
+package com.example.dartscoreboard.match;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -43,8 +43,8 @@ public interface GameDao {
     @Query("SELECT * FROM game WHERE matchId = :matchId")
     Flowable<List<Game>> getGamesInMatch(String matchId);
 
-    @Query("DELETE FROM game WHERE gameId = :id")
-    void deleteGameStateByID(String id);
+    @Query("DELETE FROM game WHERE matchId = :matchId AND winnerId = :winnerId ")
+    void deleteGameStateByID(String matchId, int winnerId);
 
     @Query("SELECT * FROM visit WHERE gameId = :gameId")
     LiveData<List<Visit>> getVisitsInMatch(String gameId);
@@ -58,16 +58,16 @@ public interface GameDao {
     @Query("DELETE FROM visit WHERE visitId = (SELECT MAX(visitId) FROM visit)")
     void deleteLastVisit();
 
-    @Query("UPDATE game SET winnerId = :userId WHERE gameId = :gameId")
-    void setWinner(int userId, String gameId);
+    @Query("UPDATE game SET winnerId = :userId, set_number = :setNumber WHERE gameId = :gameId")
+    void setGameWinner(int userId, String gameId, int setNumber);
 
     @Query("UPDATE `match` SET winnerId = :userId WHERE matchId = :matchId")
     void setMatchWinner(int userId, String matchId);
 
     @Query("SELECT winnerId FROM game WHERE gameId = :gameId")
     Single<Integer> getWinner(String gameId);
-    @Query("SELECT COUNT(*) FROM game WHERE matchId = :matchId AND winnerId = :userId ")
-    Single<Integer> legsWon(String matchId, int userId);
+    @Query("SELECT COUNT(*) FROM game WHERE setId = :setId AND matchId = :matchId AND winnerId = :userId ")
+    Single<Integer> legsWon(String setId, String matchId, int userId);
     @Query("UPDATE game SET turn_index = :index WHERE gameId = :gameId")
     void updateTurnIndex(int index, String gameId);
 
@@ -84,6 +84,22 @@ public interface GameDao {
     @Transaction
     @Query("SELECT * FROM `match` WHERE matchId = :matchId")
     Flowable<MatchWithUsers> getMatchData(String matchId);
+
+    @Query("UPDATE `set` SET winnerId = :winnerId WHERE setId = :setId")
+    void addSetWinner(String setId, int winnerId);
+
+    @Query("SELECT COUNT(*) FROM `set` WHERE winnerId = :userId AND matchId = :matchId")
+    Single<Integer> getSetsWon(int userId, String matchId);
+
+
+    @Insert
+    void insertSet(Set set);
+
+    @Update
+    void updateSet(Set set);
+
+    @Query("SELECT * FROM `set` WHERE matchId = :matchId")
+    Flowable<List<Set>> getSetsInMatch(String matchId);
 
 
 

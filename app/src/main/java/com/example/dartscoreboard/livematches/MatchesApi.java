@@ -1,4 +1,4 @@
-package com.example.dartscoreboard.LiveMatches;
+package com.example.dartscoreboard.livematches;
 
 import com.example.dartscoreboard.BuildConfig;
 

@@ -8,7 +8,7 @@ import androidx.room.Query;
 import androidx.room.Transaction;
 import androidx.room.Update;
 
-import com.example.dartscoreboard.Game.MatchUsers;
+import com.example.dartscoreboard.match.MatchUsers;
 
 import java.util.List;
 

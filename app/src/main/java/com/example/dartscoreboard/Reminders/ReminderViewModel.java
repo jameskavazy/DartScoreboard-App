@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
 import com.example.dartscoreboard.Application.DartsScoreboardApplication;
-import com.example.dartscoreboard.Utils.PreferencesController;
+import com.example.dartscoreboard.util.PreferencesController;
 
 public class ReminderViewModel extends AndroidViewModel {
 

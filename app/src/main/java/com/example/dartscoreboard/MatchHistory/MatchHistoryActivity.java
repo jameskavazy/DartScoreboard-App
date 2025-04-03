@@ -23,8 +23,8 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.dartscoreboard.Game.GameActivity;
-import com.example.dartscoreboard.Game.Match;
+import com.example.dartscoreboard.match.GameActivity;
+import com.example.dartscoreboard.match.Match;
 import com.example.dartscoreboard.R;
 import com.google.android.material.snackbar.Snackbar;
 

@@ -1,4 +1,4 @@
-package com.example.dartscoreboard.Game;
+package com.example.dartscoreboard.match;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.util.Pair;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -17,9 +18,11 @@ import com.example.dartscoreboard.User.User;
 
 import org.reactivestreams.Subscription;
 
-import java.util.List;
 import java.util.UUID;
 
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.CompletableSource;
+import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.FlowableSubscriber;
 import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.MaybeSource;
@@ -35,9 +38,11 @@ public class GameViewModel extends AndroidViewModel {
 
     private MatchWithUsers matchWithUsers;
 
-    private GameWithVisits gameWithVisits;
+    public void setGameWithVisits(GameWithVisits gameWithVisits) {
+        this.gameWithVisits = gameWithVisits;
+    }
 
-    private MutableLiveData<List<Game>> gamesInMatchLiveData = new MutableLiveData<>();
+    private GameWithVisits gameWithVisits;
 
     private MutableLiveData<MatchWithUsers> matchWithUsersMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<GameWithVisits> gameWithVisitsMutableLiveData = new MutableLiveData<>();
@@ -60,6 +65,8 @@ public class GameViewModel extends AndroidViewModel {
     public LiveData<Boolean> finished = _finished;
     private final static String BUST = "BUST";
     private final static String NO_SCORE = "No score";
+
+    public static int currentSetNumber = 0;
 
     public GameViewModel(@NonNull Application application) {
         super(application);
@@ -86,13 +93,35 @@ public class GameViewModel extends AndroidViewModel {
                     .flatMapMaybe(new Function<Integer, MaybeSource<Integer>>() {
                         @Override
                         public MaybeSource<Integer> apply(Integer userScore) {
+                            incrementTurnIndex();
                             if (userScore == 0) {
-                                return gameRepository.setWinner(userId, gameWithVisits.game.getGameId()).andThen(Maybe.just(1));
+                                return gameRepository.setGameWinner(userId, gameWithVisits.game.getGameId(), currentSetNumber).andThen(Maybe.just(1));
                             }
                             return Maybe.empty();
                         }
                     })
                     .defaultIfEmpty(-1)
+                    .flatMap(new Function<Integer, SingleSource<Integer>>() {
+                        @Override
+                        public SingleSource<Integer> apply(Integer gameWon) throws Throwable {
+                            if (gameWon == 1) {
+                                return gameRepository.legsWon(gameWithVisits.game.setId, matchId, userId);
+                            }
+                            return Single.just(-1);
+                        }
+                    })
+                    .flatMap(new Function<Integer, SingleSource<Integer>>() {
+                        @Override
+                        public SingleSource<Integer> apply(Integer legsWon) throws Throwable {
+
+                            if (legsWon == matchWithUsers.match.matchSettings.getTotalLegs()) {
+                                return gameRepository.addSetWinner(gameWithVisits.game.setId, userId).andThen(gameRepository.getSetsWon(userId, matchId));
+
+                            } else {
+                                return Single.just(-1);
+                            }
+                        }
+                    })
                     .subscribeOn(Schedulers.io())
                     .subscribe(new SingleObserver<Integer>() {
                         @Override
@@ -101,34 +130,19 @@ public class GameViewModel extends AndroidViewModel {
                         }
 
                         @Override
-                        public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull Integer gameWon) {
-                            if (gameWon == 1) {
-                                Log.d("jtest", "matchWon");
-                                Game game = createGame();
+                        public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull Integer setsWon) {
+                            if (setsWon == -1) return;  // No set winner
+                            if (setsWon == matchWithUsers.match.matchSettings.getTotalSets()){
+                                gameRepository.deleteGameStateByID(matchId, 0);
+                                endGame(user);
+                            } else {
+                                currentSetNumber++;
+                                Set set = new Set(UUID.randomUUID().toString(), matchId, currentSetNumber);
+                                gameRepository.insertSet(set).subscribeOn(Schedulers.io()).subscribe();
 
-                                gameRepository.legsWon(matchId, userId).subscribeOn(Schedulers.io()).subscribe(new SingleObserver<Integer>() {
-                                    @Override
-                                    public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
-
-                                    }
-
-                                    @Override
-                                    public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull Integer count) {
-                                        if (count == matchWithUsers.match.matchSettings.getTotalLegs()) {
-                                            endGame(user);
-                                        }
-                                        else {
-                                            gameRepository.insertGame(game).subscribeOn(Schedulers.io()).subscribe();
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
-
-                                    }
-                                });
+                                Game game = new Game(UUID.randomUUID().toString(), set.setId, matchId,0,0,0);
+                                gameRepository.insertGame(game).subscribeOn(Schedulers.io()).subscribe();
                             }
-                            incrementTurnIndex();
                         }
 
                         @Override
@@ -136,10 +150,7 @@ public class GameViewModel extends AndroidViewModel {
 
                         }
                     });
-
-
         }
-//        nextLeg();
     }
 
     @NonNull
@@ -214,7 +225,7 @@ public class GameViewModel extends AndroidViewModel {
     }
     public void undo() {
         _finished.postValue(false);
-        gameRepository.setWinner(0, gameWithVisits.game.getGameId());
+        gameRepository.setGameWinner(0, gameWithVisits.game.getGameId(), currentSetNumber);
         gameRepository.deleteLatestVisit();
         decrementTurnIndex();
 //            decrementLegIndex();
@@ -341,27 +352,34 @@ public class GameViewModel extends AndroidViewModel {
         return gameWithVisitsMutableLiveData;
     }
 
-    private void setGameWithVisits(GameWithVisits gameWithVisits){
-        this.gameWithVisits = gameWithVisits;
-    }
-    public Game createGame(){
-        String gameId = UUID.randomUUID().toString();
-        return new Game(gameId, matchId,0,0,0);
-    }
+//    private void setGameWithVisits(GameWithVisits gameWithVisits){
+//        this.gameWithVisits = gameWithVisits;
+//    }
+
 
     public void fetchMatchData(){
-        gameRepository.getMatchWithUsers(matchId)
-                .subscribeOn(Schedulers.io())
-                .subscribe(new FlowableSubscriber<MatchWithUsers>() {
+
+        Flowable.combineLatest(
+                gameRepository.getMatchWithUsers(matchId),
+                gameRepository.getGameWithVisits(matchId),
+                Pair::new
+        ).subscribeOn(Schedulers.io())
+                .subscribe(new FlowableSubscriber<Pair<MatchWithUsers, GameWithVisits>>() {
                     @Override
                     public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Subscription s) {
                         s.request(Long.MAX_VALUE);
                     }
 
                     @Override
-                    public void onNext(MatchWithUsers matchWithUsers) {
-                        setMatchData(matchWithUsers);
+                    public void onNext(Pair<MatchWithUsers, GameWithVisits> matchData) {
+                        MatchWithUsers matchWithUsers = matchData.first;
+                        setMatchWithUsers(matchWithUsers);
                         matchWithUsersMutableLiveData.postValue(matchWithUsers);
+
+                        GameWithVisits gameWithVisits = matchData.second;
+                        setGameWithVisits(gameWithVisits);
+                        gameWithVisitsMutableLiveData.postValue(gameWithVisits);
+
                     }
 
                     @Override
@@ -375,58 +393,6 @@ public class GameViewModel extends AndroidViewModel {
                     }
                 });
 
-
-        gameRepository.getGameWithVisits(matchId)
-                .subscribeOn(Schedulers.io())
-                .subscribe(new FlowableSubscriber<GameWithVisits>() {
-                   @Override
-                   public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Subscription s) {
-                       s.request(Integer.MAX_VALUE);
-                       Log.d("jtest", "onSubscribe matchId" + matchId);
-                   }
-
-                   @Override
-                   public void onNext(GameWithVisits gameWithVisits) {
-                       Log.d("jtest", "gameWithVisits onNext: " + gameWithVisits.game.gameId);
-                       setGameWithVisits(gameWithVisits);
-                       gameWithVisitsMutableLiveData.postValue(gameWithVisits);
-                   }
-
-                   @Override
-                   public void onError(Throwable t) {
-                       Log.d("jtest", "Error fetching game visits: "+t);
-                   }
-
-                   @Override
-                   public void onComplete() {
-                       Log.d("jtest", "onComplete: Game visits fetch completed");
-                   }
-               });
-
-        gameRepository.getGamesInMatch(matchId)
-                .subscribeOn(Schedulers.io())
-                .subscribe(new FlowableSubscriber<List<Game>>() {
-                    @Override
-                    public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Subscription s) {
-                        s.request(Integer.MAX_VALUE);
-                    }
-
-                    @Override
-                    public void onNext(List<Game> games) {
-//                        listOfGames = games;
-                        gamesInMatchLiveData.postValue(games);
-                    }
-
-                    @Override
-                    public void onError(Throwable t) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
 
     }
 
@@ -467,12 +433,12 @@ public class GameViewModel extends AndroidViewModel {
     }
 
 
-    private void setMatchData(MatchWithUsers matchWithUsers){
+    private void setMatchWithUsers(MatchWithUsers matchWithUsers){
         this.matchWithUsers = matchWithUsers;
     }
 
-    public MutableLiveData<List<Game>> getGamesInMatchLiveData() {
-        return gamesInMatchLiveData;
-    }
+//    public MutableLiveData<List<Game>> getGamesInMatchLiveData() {
+//        return gamesInMatchLiveData;
+//    }
 
 }

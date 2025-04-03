@@ -1,4 +1,4 @@
-package com.example.dartscoreboard.Utils;
+package com.example.dartscoreboard.util;
 
 import android.Manifest;
 import android.app.Activity;

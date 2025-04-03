@@ -1,4 +1,4 @@
-package com.example.dartscoreboard.LiveMatches;
+package com.example.dartscoreboard.livematches;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;

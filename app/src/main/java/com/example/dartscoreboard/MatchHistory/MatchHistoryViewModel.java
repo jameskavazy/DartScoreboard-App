@@ -7,8 +7,8 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.example.dartscoreboard.Game.GameRepository;
-import com.example.dartscoreboard.Game.Match;
+import com.example.dartscoreboard.match.GameRepository;
+import com.example.dartscoreboard.match.Match;
 import com.example.dartscoreboard.User.UserRepository;
 
 import java.util.List;

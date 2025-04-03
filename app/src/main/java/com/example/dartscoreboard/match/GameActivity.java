@@ -1,4 +1,4 @@
-package com.example.dartscoreboard.Game;
+package com.example.dartscoreboard.match;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -93,13 +93,21 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 //        gameViewModel.fetchGameWithVisits();
 
         gameViewModel.getMatchDataLiveData()
-                .observe(this, matchData -> gameAdapter.setMatchData(matchData));
+                .observe(this, matchData -> {
+                    gameAdapter.setMatchData(matchData);
+                    toolbar.setTitle(matchData.match.getMatchType().name);
+                });
 
         gameViewModel.getGameWithVisitsMutableLiveData()
-                .observe(this, gameWithVisits -> gameAdapter.setGameWithVisits(gameWithVisits));
-
-        gameViewModel.getGamesInMatchLiveData()
-                .observe(this, games -> gameAdapter.setGamesInMatch(games));
+                .observe(this, gameWithVisits -> {
+                    gameAdapter.setGameWithVisits(gameWithVisits);
+                    gameAdapter.currentSetId = gameWithVisits.game.setId;
+                });
+//
+//        gameViewModel.getGamesInMatchLiveData()
+//                .observe(this, games -> gameAdapter.setGamesInMatch(games));
+//
+//        gameViewModel.getSetsInMatchLiveData().observe(this, sets -> gameAdapter.setSets(sets));
 
 
         gameViewModel.getFinished().observe(this, isFinished -> {

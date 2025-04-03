@@ -1,4 +1,4 @@
-package com.example.dartscoreboard.Utils;
+package com.example.dartscoreboard.util;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;

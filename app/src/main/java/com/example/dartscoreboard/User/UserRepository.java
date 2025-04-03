@@ -5,7 +5,7 @@ import android.app.Application;
 import androidx.lifecycle.LiveData;
 
 import com.example.dartscoreboard.Db.Database;
-import com.example.dartscoreboard.Game.MatchUsers;
+import com.example.dartscoreboard.match.MatchUsers;
 
 import java.util.List;
 
