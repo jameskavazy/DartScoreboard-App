@@ -1,4 +1,4 @@
-package com.example.dartscoreboard.MatchHistory;
+package com.example.dartscoreboard.match.history;
 
 import static androidx.recyclerview.widget.ItemTouchHelper.ACTION_STATE_SWIPE;
 

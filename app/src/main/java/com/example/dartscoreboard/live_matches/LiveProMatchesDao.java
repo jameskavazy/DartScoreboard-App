@@ -1,4 +1,4 @@
-package com.example.dartscoreboard.livematches;
+package com.example.dartscoreboard.live_matches;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;

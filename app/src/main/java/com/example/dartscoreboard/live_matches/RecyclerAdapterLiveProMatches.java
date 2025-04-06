@@ -1,4 +1,4 @@
-package com.example.dartscoreboard.livematches;
+package com.example.dartscoreboard.live_matches;
 
 import android.view.LayoutInflater;
 import android.view.View;

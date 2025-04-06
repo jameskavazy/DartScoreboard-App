@@ -1,4 +1,4 @@
-package com.example.dartscoreboard.MatchHistory;
+package com.example.dartscoreboard.match.history;
 
 import android.view.LayoutInflater;
 import android.view.View;

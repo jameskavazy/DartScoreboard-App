@@ -18,7 +18,7 @@
         android:theme="@style/Theme.DartScoreboard"
         tools:targetApi="31">
         <activity
-            android:name=".livematches.LiveProMatchesActivity"
+            android:name=".live_matches.LiveProMatchesActivity"
             android:exported="false" />
         <activity
             android:name=".Reminders.ReminderActivity"
@@ -32,7 +32,7 @@
             android:label="@string/title_activity_statistics"
             android:theme="@style/Theme.DartScoreboard" />
         <activity
-            android:name=".MatchHistory.MatchHistoryActivity"
+            android:name=".match.history.MatchHistoryActivity"
             android:exported="false" />
         <activity
             android:name=".User.CreateUserActivity"
@@ -45,7 +45,7 @@
             android:name=".User.UsersActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity.MainActivity"
+            android:name=".main_activity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

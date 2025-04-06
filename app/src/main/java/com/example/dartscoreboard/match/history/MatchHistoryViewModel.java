@@ -1,4 +1,4 @@
-package com.example.dartscoreboard.MatchHistory;
+package com.example.dartscoreboard.match.history;
 
 import android.app.Application;
 import android.util.Log;

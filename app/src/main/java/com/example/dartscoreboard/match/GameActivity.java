@@ -90,7 +90,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         Log.d("jtest", "matchId from intent = " + getMatchIdFromIntent());
         gameViewModel.setMatchId(getMatchIdFromIntent());
         gameViewModel.fetchMatchData();
-//        gameViewModel.fetchGameWithVisits();
 
         gameViewModel.getMatchDataLiveData()
                 .observe(this, matchData -> {
@@ -101,14 +100,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         gameViewModel.getGameWithVisitsMutableLiveData()
                 .observe(this, gameWithVisits -> {
                     gameAdapter.setGameWithVisits(gameWithVisits);
-                    gameAdapter.currentSetId = gameWithVisits.game.setId;
                 });
-//
-//        gameViewModel.getGamesInMatchLiveData()
-//                .observe(this, games -> gameAdapter.setGamesInMatch(games));
-//
-//        gameViewModel.getSetsInMatchLiveData().observe(this, sets -> gameAdapter.setSets(sets));
-
 
         gameViewModel.getFinished().observe(this, isFinished -> {
             if (!isFinished) {
