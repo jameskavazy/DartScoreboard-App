@@ -6,7 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.example.dartscoreboard.Reminders.ReminderNotificationReceiver;
+import com.example.dartscoreboard.reminders.ReminderNotificationReceiver;
 
 import java.util.Calendar;
 import java.util.Objects;

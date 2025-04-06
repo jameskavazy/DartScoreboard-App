@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
-        android:name=".Application.DartsScoreboardApplication"
+        android:name=".application.DartsScoreboardApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -18,31 +18,31 @@
         android:theme="@style/Theme.DartScoreboard"
         tools:targetApi="31">
         <activity
-            android:name=".live_matches.LiveProMatchesActivity"
+            android:name=".live_matches.presentation.LiveProMatchesActivity"
             android:exported="false" />
         <activity
-            android:name=".Reminders.ReminderActivity"
+            android:name=".reminders.ReminderActivity"
             android:exported="false" />
         <activity
-            android:name=".Statistics.UserStatisticsActivity"
+            android:name=".statistics.presentation.UserStatisticsActivity"
             android:exported="false" />
         <activity
-            android:name=".Statistics.StatisticsActivity"
+            android:name=".statistics.presentation.StatisticsActivity"
             android:exported="false"
             android:label="@string/title_activity_statistics"
             android:theme="@style/Theme.DartScoreboard" />
         <activity
-            android:name=".match.history.MatchHistoryActivity"
+            android:name=".match.presentation.MatchHistoryActivity"
             android:exported="false" />
         <activity
-            android:name=".User.CreateUserActivity"
+            android:name=".user.CreateUserActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".SetupGame.PlayerSelectActivity"
+            android:name=".match.presentation.PlayerSelectActivity"
             android:exported="false" />
         <activity
-            android:name=".User.UsersActivity"
+            android:name=".user.UsersActivity"
             android:exported="false" />
         <activity
             android:name=".main_activity.MainActivity"
@@ -54,14 +54,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".match.GameActivity"
+            android:name=".match.presentation.GameActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".SetupGame.SetupGameActivity"
+            android:name=".match.presentation.SetupGameActivity"
             android:exported="true" />
 
-        <receiver android:name=".Reminders.ReminderNotificationReceiver" />
+        <receiver android:name=".reminders.ReminderNotificationReceiver" />
         <receiver
             android:name=".util.BootCompletedReceiver"
             android:exported="false">

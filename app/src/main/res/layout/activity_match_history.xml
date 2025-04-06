@@ -4,7 +4,7 @@
     android:id="@+id/recent_games_coordinator_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".match.history.MatchHistoryActivity">
+    tools:context=".match.presentation.MatchHistoryActivity">
 
     <include layout="@layout/toolbar"/>
 

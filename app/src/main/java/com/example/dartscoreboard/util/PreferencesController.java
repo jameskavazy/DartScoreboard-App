@@ -5,8 +5,8 @@ import android.content.SharedPreferences;
 
 import androidx.preference.PreferenceManager;
 
-import com.example.dartscoreboard.Application.DartsScoreboardApplication;
-import com.example.dartscoreboard.User.User;
+import com.example.dartscoreboard.application.DartsScoreboardApplication;
+import com.example.dartscoreboard.user.User;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
