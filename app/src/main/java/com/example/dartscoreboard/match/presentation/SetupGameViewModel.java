@@ -18,6 +18,7 @@ import com.example.dartscoreboard.util.PreferencesController;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,14 +32,14 @@ public class SetupGameViewModel extends AndroidViewModel {
     private UserRepository userRepository;
 
     private GameRepository gameRepository;
-    private List<User> playersToGame;
+    private List<User> selectedPlayers;
 
 
     public SetupGameViewModel(@NonNull Application application) {
         super(application);
         userRepository = new UserRepository(application);
         gameRepository = new GameRepository(application);
-        playersToGame = PreferencesController.getInstance().getPlayers();
+        selectedPlayers = PreferencesController.getInstance().getPlayers();
     }
 
 
@@ -75,17 +76,25 @@ public class SetupGameViewModel extends AndroidViewModel {
     }
 
     public List<User> getSelectedPlayers() {
-        if (playersToGame == null) {
-            playersToGame = new ArrayList<>();
+        if (selectedPlayers == null) {
+            selectedPlayers = new ArrayList<>();
         }
-        return playersToGame;
+        return selectedPlayers;
+    }
+
+    public void setSelectedPlayers(List<User> selectedPlayers){
+        this.selectedPlayers = selectedPlayers;
     }
 
     public void addUsersToMatch(){
         for (User player :
-                playersToGame) {
-            MatchUsers matchUsers = new MatchUsers(player.userID, matchId, playersToGame.indexOf(player));
+                selectedPlayers) {
+            MatchUsers matchUsers = new MatchUsers(player.userID, matchId, selectedPlayers.indexOf(player));
             userRepository.addUsersToMatch(matchUsers);
         }
+    }
+
+    public void randomisePlayerOrder(){
+        Collections.shuffle(selectedPlayers);
     }
 }

@@ -23,6 +23,7 @@ import com.example.dartscoreboard.match.data.models.Visit;
 
 import org.reactivestreams.Subscription;
 
+import java.util.Objects;
 import java.util.UUID;
 
 import io.reactivex.rxjava3.core.Flowable;
@@ -38,9 +39,6 @@ public class GameViewModel extends AndroidViewModel {
     private MutableLiveData<MatchWithUsers> matchWithUsersMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<GameWithVisits> gameWithVisitsMutableLiveData = new MutableLiveData<>();
     private final GameRepository gameRepository;
-//    public static int turnIndex = 0;
-//    private int legIndex = 0;
-//    private int setIndex = 0;
 
     public String getMatchId() {
         return matchId;
@@ -139,11 +137,16 @@ public class GameViewModel extends AndroidViewModel {
     }
     private void handleGameProgression(User user, Integer setsWon) {
         // No game and no set winner
-        if (setsWon == -1) return;
+        if (setsWon == -1) {
+            incrementTurnIndex();
+            return;
+        }
 
         // leg won, but not set.
         if (setsWon == -2) {
-            Game game = new Game(UUID.randomUUID().toString(), gameWithVisits.game.setId, matchId, gameWithVisits.game.turnIndex, 0, 0);
+            int turnIndex = (int) (matchWithUsers.games.stream().filter(game -> game.setId.equals(gameWithVisits.game.setId)).count() + currentSetNumber)
+                    % matchWithUsers.users.size();
+            Game game = new Game(UUID.randomUUID().toString(), gameWithVisits.game.setId, matchId, turnIndex, 0, 0);
             gameRepository.insertGame(game).subscribeOn(Schedulers.io()).subscribe();
             return;
         }
@@ -157,8 +160,8 @@ public class GameViewModel extends AndroidViewModel {
         Set set = new Set(UUID.randomUUID().toString(), matchId, currentSetNumber);
         gameRepository.insertSet(set).subscribeOn(Schedulers.io()).subscribe();
 
-        int turnIndex = gameWithVisits.game.turnIndex;
-        Game game = new Game(UUID.randomUUID().toString(), set.setId, matchId,turnIndex,0,0);
+        int turnIndex = matchWithUsers.sets.size() % matchWithUsers.users.size();
+        Game game = new Game(UUID.randomUUID().toString(), set.setId, matchId, turnIndex,0,0);
         gameRepository.insertGame(game).subscribeOn(Schedulers.io()).subscribe();
     }
 
@@ -174,7 +177,6 @@ public class GameViewModel extends AndroidViewModel {
     }
 
     private Single<Integer> checklegWonSingle(int userId, Integer userScore) {
-        incrementTurnIndex();
         if (userScore == 0) {
             return gameRepository.setGameWinner(userId, gameWithVisits.game.getGameId(), currentSetNumber)
                     .andThen(gameRepository.legsWon(gameWithVisits.game.setId, matchId, userId));
@@ -205,54 +207,6 @@ public class GameViewModel extends AndroidViewModel {
                 msg, Toast.LENGTH_SHORT).show());
     }
 
-
-
-
-
-
-//    public void nextLeg() {
-//        for (User player : playersList) {
-//            if (player.getPlayerScore() == 0) {
-//                player.setCurrentLegs(player.getCurrentLegs() + 1);
-//                incrementTurnIndexLegs();
-//                Log.d("dom test", player.getUsername() + " current legs = " + player.getCurrentLegs());
-//                nextSet();
-//                matchWonChecker();
-//                if (!finished) {
-//                    setPlayerStartingScores();
-//                }
-//            }
-//        }
-//    }
-
-//    public void nextSet() {
-//        for (User player : playersList
-//        ) {
-//            if (player.getPlayerScore() == 0 && player.getCurrentLegs() == gameSettings.getTotalLegs()) {
-//                player.setCurrentSets(player.getCurrentSets() + 1);
-//                setPlayerLegs();
-//                incrementTurnIndexSets();
-//            }
-//        }
-//    }
-
-//    public void matchWonChecker() {
-//        for (User player : playersList
-//        ) {
-//            if (player.getPlayerScore() == 0 && player.getCurrentSets() == gameSettings.getTotalSets()) {
-//                setTurnIndex(playersList.indexOf(player));
-//                Toast.makeText(DartsScoreboardApplication.getContext(), player.getUsername() + " wins the match!", Toast.LENGTH_LONG).show();
-//                endGame();
-//            }
-//        }
-//    }
-
-//    public void setPlayerStartingScores() {
-//        for (User user : playersList) {
-//            user.setPlayerScore(gameType.startingScore);
-//        }
-//    }
-
     public void incrementTurnIndex() {
         gameWithVisits.game.turnIndex = (gameWithVisits.game.turnIndex + 1) % matchWithUsers.users.size();
         gameRepository.updateTurnIndex(gameWithVisits.game.turnIndex, gameWithVisits.game.getGameId());
@@ -262,67 +216,6 @@ public class GameViewModel extends AndroidViewModel {
         gameWithVisits.game.turnIndex = (gameWithVisits.game.turnIndex - 1 + matchWithUsers.users.size()) % matchWithUsers.users.size();
         gameRepository.updateTurnIndex(gameWithVisits.game.turnIndex, gameWithVisits.game.getGameId());
     }
-//
-//    public void incrementLegIndex() {
-//        matchData.game.legIndex = (matchData.game.legIndex + 1) % matchData.users.size();
-//        matchData.game.turnIndex = matchData.game.legIndex;
-//        gameRepository.updateTurnIndex(matchData.game.turnIndex, matchData.game.getGameId());
-//        gameRepository.updateLegIndex(matchData.game.legIndex, matchData.game.getGameId());
-//    }
-//
-//    public void decrementLegIndex() {
-//        matchData.game.legIndex = (matchData.game.legIndex - 1) % matchData.users.size();
-//        matchData.game.turnIndex = matchData.game.legIndex;
-//        gameRepository.updateTurnIndex(matchData.game.turnIndex, matchData.game.getGameId());
-//        gameRepository.updateLegIndex(matchData.game.legIndex, matchData.game.getGameId());
-//    }
-//    public void incrementSetIndex() {
-//        matchData.game.setIndex = (matchData.game.setIndex + 1) % matchData.users.size();
-//        matchData.game.legIndex = matchData.game.setIndex;
-//        matchData.game.turnIndex = matchData.game.setIndex;
-//        gameRepository.updateTurnIndex(matchData.game.turnIndex, matchData.game.getGameId());
-//        gameRepository.updateLegIndex(matchData.game.legIndex, matchData.game.getGameId());
-//        gameRepository.updateSetIndex(matchData.game.setIndex, matchData.game.getGameId());
-//    }
-//
-//    public void decrementSetIndex() {
-//        matchData.game.setIndex = (matchData.game.setIndex - 1) % matchData.users.size();
-//        matchData.game.legIndex = matchData.game.setIndex;
-//        matchData.game.turnIndex = matchData.game.setIndex;
-//        gameRepository.updateTurnIndex(matchData.game.turnIndex, matchData.game.getGameId());
-//        gameRepository.updateLegIndex(matchData.game.legIndex, matchData.game.getGameId());
-//        gameRepository.updateSetIndex(matchData.game.setIndex, matchData.game.getGameId());
-//    }
-//
-//    public void setPlayersList(List<User> playersList) {
-//        this.matchData.users = playersList;
-//    }
-
-
-//    public void setTurnIndex(int turnIndex) {
-//        GameViewModel.turnIndex = turnIndex;
-//    }
-//
-//    public static int getTurnIndex() {
-//        return turnIndex;
-//    }
-//
-//    public int getLegIndex() {
-//        return legIndex;
-//    }
-//
-//    public void setLegIndex(int legIndex) {
-//        this.legIndex = legIndex;
-//    }
-//
-//    public int getSetIndex() {
-//        return setIndex;
-//    }
-//
-//    public void setSetIndex(int setIndex) {
-//        this.setIndex = setIndex;
-//    }
-
 
       public MutableLiveData<GameWithVisits> getGameWithVisitsMutableLiveData(){
         return gameWithVisitsMutableLiveData;

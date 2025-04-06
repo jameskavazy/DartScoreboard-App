@@ -35,7 +35,6 @@ public class SetupGameActivity extends AppCompatActivity implements View.OnClick
 
     private Toolbar toolbar;
 
-    private List<User> selectedPlayers;
     private AutoCompleteTextView gameTypeAutoCompleteTextView;
     private AutoCompleteTextView legsAutoCompleteTextView;
 
@@ -80,12 +79,10 @@ public class SetupGameActivity extends AppCompatActivity implements View.OnClick
         if (PreferencesController.getInstance().getGameSelected() != null) {
             gameTypeAutoCompleteTextView.setText(PreferencesController.getInstance().getGameSelected());
         }
-        selectedPlayers = PreferencesController.getInstance().getPlayers();
-        if (selectedPlayers == null) {
-            selectedPlayers = new ArrayList<>();
-        }
-        setPlayersTextBox(selectedPlayers);
+
         setupGameViewModel = new ViewModelProvider(this).get(SetupGameViewModel.class);
+        setPlayersTextBox(setupGameViewModel.getSelectedPlayers());
+
 
         setUpGameTypeDropDownMenu();
         setUpLegsListDropDownMenu();
@@ -111,8 +108,8 @@ public class SetupGameActivity extends AppCompatActivity implements View.OnClick
             PreferencesController.getInstance().savePlayers(new ArrayList<>());
             playerListTextViewButton.setText(null);
         } else if (viewId == R.id.randomise_players_button) {
-            Collections.shuffle(selectedPlayers);
-            setPlayersTextBox(selectedPlayers);
+            setupGameViewModel.randomisePlayerOrder();
+            setPlayersTextBox(setupGameViewModel.getSelectedPlayers());
         }
     }
 
@@ -126,7 +123,7 @@ public class SetupGameActivity extends AppCompatActivity implements View.OnClick
         if (gameTypeSelected.equals("")) {
             Toast.makeText(this, "You must select a game type", Toast.LENGTH_SHORT).show();
         } else {
-            MatchType matchType = getGameType(gameTypeSelected);
+            MatchType matchType = getMatchType(gameTypeSelected);
             openGameActivity(matchType);
         }
     }
@@ -136,7 +133,6 @@ public class SetupGameActivity extends AppCompatActivity implements View.OnClick
             Intent intent = new Intent(this, GameActivity.class);
             Bundle arguments = new Bundle();
             Match match = initialiseMatch(matchType);
-            Log.d("jtest", "setupGame ID:  " + match.matchId);
             arguments.putString(GameActivity.MATCH_KEY, match.matchId);
             intent.putExtras(arguments);
             startActivity(intent);
@@ -145,10 +141,10 @@ public class SetupGameActivity extends AppCompatActivity implements View.OnClick
     }
 
     /**
-     * GetGameType takes a string value and returns the corresponding GameType enum. Returns null
+     * GetMatchType takes a string value and returns the corresponding GameType enum. Returns null
      * GameType if string cannot be parsed.
     * */
-    private MatchType getGameType(String gameTypeSelected) {
+    private MatchType getMatchType(String gameTypeSelected) {
         switch (gameTypeSelected) {
             case "501":
                 return MatchType.FiveO;
