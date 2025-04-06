@@ -73,11 +73,16 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
         int visitScores = getVisitScores(user);
         int currentScore = startingScore - visitScores;
 
+        if (gamesWithVisits.game.winnerId == user.userID) {
+            currentScore = 0;
+        }
+
         int currentSets = (int) matchWithUsers.sets.stream()
-                .filter(set -> set.winnerId == user.userID).count();
+                .filter(set -> set.winnerId == user.userID)
+                .count();
 
         int currentLegs = (int) matchWithUsers.games.stream().
-                filter(game -> Objects.equals(game.setId, currentSetId) && game.winnerId == user.userID)
+                filter(game -> Objects.equals(game.setId, gamesWithVisits.game.setId) && game.winnerId == user.userID)
                 .count();
 
         holder.nameText.setText(name);
@@ -89,21 +94,6 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
         }
 
     }
-    private int getCurrentLegs(User user) {
-        return (int) gamesInMatch.stream()
-                .filter(game -> game.winnerId == user.userID)
-                .count() % matchWithUsers.match.matchSettings.getTotalSets();
-    }
-
-    private int getCurrentSets(User user) {
-//        if (matchData.legsSets != null) {
-//           return (int) (matchData.legsSets.stream()
-//                              .filter(value -> value.userID == user.userID)
-//                              .count() % matchData.game.getGameSettings().getTotalSets());
-//        }
-        return 0;
-    }
-
     public int getVisitScores(User user) {
         if (gamesWithVisits.visits != null) {
             List<Visit> visits = gamesWithVisits.visits;

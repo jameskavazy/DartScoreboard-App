@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
 import com.example.dartscoreboard.match.Game;
+import com.example.dartscoreboard.match.GameViewModel;
 import com.example.dartscoreboard.match.Match;
 import com.example.dartscoreboard.match.MatchSettings;
 import com.example.dartscoreboard.match.MatchType;
@@ -60,6 +61,7 @@ public class SetupGameViewModel extends AndroidViewModel {
             @Override
             public void onComplete() {
                 String setId = UUID.randomUUID().toString();
+                GameViewModel.currentSetNumber = 0;
                 gameRepository.insertSet(new Set(setId, match.matchId, 0)).subscribeOn(Schedulers.io()).subscribe();
                 gameRepository.insertGame(new Game(UUID.randomUUID().toString(), setId, match.matchId, 0,0,0)).subscribeOn(Schedulers.io()).subscribe();
             }

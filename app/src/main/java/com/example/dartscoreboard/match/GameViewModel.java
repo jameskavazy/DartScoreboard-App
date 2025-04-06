@@ -20,12 +20,8 @@ import org.reactivestreams.Subscription;
 
 import java.util.UUID;
 
-import io.reactivex.rxjava3.core.Completable;
-import io.reactivex.rxjava3.core.CompletableSource;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.FlowableSubscriber;
-import io.reactivex.rxjava3.core.Maybe;
-import io.reactivex.rxjava3.core.MaybeSource;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleObserver;
 import io.reactivex.rxjava3.core.SingleSource;
@@ -79,47 +75,46 @@ public class GameViewModel extends AndroidViewModel {
             toastMessage(NO_SCORE);
         }
         if (scoreInt <= 180) {
+
             Log.d("jtest", "playerVisit gameId " + gameWithVisits.game.gameId);
             User user = matchWithUsers.users.get(gameWithVisits.game.turnIndex);
             int userId = user.userID;
+            int startingScore = matchWithUsers.match.getMatchType().startingScore;
+
             gameRepository.getGameTotalScoreByUser(gameWithVisits.game.getGameId(), userId)
                     .flatMap((Function<Integer, SingleSource<Integer>>) sumOfVisits -> {
-                        int startingScore = matchWithUsers.match.getMatchType().startingScore;
                         int visitScore = calculateScore(startingScore - sumOfVisits, scoreInt);
                         Visit visit = createVisit(user, visitScore);
                         int finalScore = startingScore - sumOfVisits - visitScore;
+
                         return gameRepository.insertVisit(visit).andThen(Single.just(finalScore));
                     })
-                    .flatMapMaybe(new Function<Integer, MaybeSource<Integer>>() {
-                        @Override
-                        public MaybeSource<Integer> apply(Integer userScore) {
-                            incrementTurnIndex();
-                            if (userScore == 0) {
-                                return gameRepository.setGameWinner(userId, gameWithVisits.game.getGameId(), currentSetNumber).andThen(Maybe.just(1));
-                            }
-                            return Maybe.empty();
-                        }
-                    })
-                    .defaultIfEmpty(-1)
                     .flatMap(new Function<Integer, SingleSource<Integer>>() {
                         @Override
-                        public SingleSource<Integer> apply(Integer gameWon) throws Throwable {
-                            if (gameWon == 1) {
-                                return gameRepository.legsWon(gameWithVisits.game.setId, matchId, userId);
+                        public SingleSource<Integer> apply(Integer userScore) {
+                            incrementTurnIndex();
+                            if (userScore == 0) {
+                                return gameRepository.setGameWinner(userId, gameWithVisits.game.getGameId(), currentSetNumber)
+                                        .andThen(gameRepository.legsWon(gameWithVisits.game.setId, matchId, userId));
                             }
                             return Single.just(-1);
                         }
                     })
-                    .flatMap(new Function<Integer, SingleSource<Integer>>() {
+                    .flatMap(new Function<Integer,SingleSource<Integer>>() {
                         @Override
                         public SingleSource<Integer> apply(Integer legsWon) throws Throwable {
 
-                            if (legsWon == matchWithUsers.match.matchSettings.getTotalLegs()) {
-                                return gameRepository.addSetWinner(gameWithVisits.game.setId, userId).andThen(gameRepository.getSetsWon(userId, matchId));
-
-                            } else {
+                            if (legsWon == -1) {
                                 return Single.just(-1);
                             }
+
+                            if (legsWon == matchWithUsers.match.matchSettings.getTotalLegs()) {
+                                return gameRepository.addSetWinner(gameWithVisits.game.setId, userId)
+                                        .andThen(gameRepository.getSetsWon(userId, matchId));
+                            }
+
+                            return Single.just(-2);
+
                         }
                     })
                     .subscribeOn(Schedulers.io())
@@ -131,23 +126,34 @@ public class GameViewModel extends AndroidViewModel {
 
                         @Override
                         public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull Integer setsWon) {
-                            if (setsWon == -1) return;  // No set winner
-                            if (setsWon == matchWithUsers.match.matchSettings.getTotalSets()){
-                                gameRepository.deleteGameStateByID(matchId, 0);
-                                endGame(user);
-                            } else {
-                                currentSetNumber++;
-                                Set set = new Set(UUID.randomUUID().toString(), matchId, currentSetNumber);
-                                gameRepository.insertSet(set).subscribeOn(Schedulers.io()).subscribe();
+                            if (setsWon == -1) {
+                                return;
+                            }  // No game and no set winner
 
-                                Game game = new Game(UUID.randomUUID().toString(), set.setId, matchId,0,0,0);
+                            if (setsWon == -2) {
+                                Game game = new Game(UUID.randomUUID().toString(), gameWithVisits.game.setId, matchId, gameWithVisits.game.turnIndex, 0, 0);
                                 gameRepository.insertGame(game).subscribeOn(Schedulers.io()).subscribe();
-                            }
+                                return;
+                            } // leg won, but not set.
+
+                            if (setsWon == matchWithUsers.match.matchSettings.getTotalSets()){
+                                endGame(user);
+                                return;
+                            } // Set won and legs won so game over
+
+                            currentSetNumber++;
+                            Set set = new Set(UUID.randomUUID().toString(), matchId, currentSetNumber);
+                            gameRepository.insertSet(set).subscribeOn(Schedulers.io()).subscribe();
+
+                            int turnIndex = gameWithVisits.game.turnIndex;
+                            Game game = new Game(UUID.randomUUID().toString(), set.setId, matchId,turnIndex,0,0);
+                            gameRepository.insertGame(game).subscribeOn(Schedulers.io()).subscribe();
+                            //set Won but not finished, need new set and new game
                         }
 
                         @Override
                         public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
-
+                            e.printStackTrace();
                         }
                     });
         }

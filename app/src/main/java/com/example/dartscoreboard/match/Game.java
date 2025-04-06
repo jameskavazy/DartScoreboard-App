@@ -6,6 +6,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
+import java.time.OffsetDateTime;
 
 
 @Entity (tableName = "game")
@@ -25,10 +26,11 @@ public class Game implements Serializable {
     @ColumnInfo(name = "set_index")
     public int setIndex;
     public int winnerId;
-
     @ColumnInfo(name = "set_number")
     public int setNumber;
 
+    @ColumnInfo(name = "created_at")
+    public OffsetDateTime createdAt = OffsetDateTime.now();
 
     public Game(@NonNull String gameId, String setId, String matchId, int turnIndex, int legIndex, int setIndex) {
         this.gameId = gameId;

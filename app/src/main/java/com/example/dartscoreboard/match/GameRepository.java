@@ -25,7 +25,7 @@ public class GameRepository {
     }
 
     public Flowable<GameWithVisits> getGameWithVisits(String matchId){
-        return gameDao.getGameWithVisits(matchId);
+        return gameDao.getLatestGameWithVisits(matchId);
     }
 
     public Flowable<MatchWithUsers> getMatchWithUsers(String matchId){

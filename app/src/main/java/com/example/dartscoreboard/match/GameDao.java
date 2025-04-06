@@ -78,8 +78,8 @@ public interface GameDao {
     void updateSetIndex(int index, String gameId);
 
     @Transaction
-    @Query("SELECT * FROM game WHERE matchId = :matchId AND winnerId = 0")
-    Flowable<GameWithVisits> getGameWithVisits(String matchId);
+    @Query("SELECT * FROM game WHERE matchId = :matchId ORDER BY created_at DESC LIMIT 1")
+    Flowable<GameWithVisits> getLatestGameWithVisits(String matchId);
 
     @Transaction
     @Query("SELECT * FROM `match` WHERE matchId = :matchId")
