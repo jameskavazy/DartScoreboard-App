@@ -29,14 +29,16 @@ import java.util.UUID;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.FlowableSubscriber;
 import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 
 public class MatchViewModel extends AndroidViewModel {
     private MatchWithUsers matchWithUsers;
     private LegWithVisits legWithVisits;
-    private MutableLiveData<MatchWithUsers> matchWithUsersMutableLiveData = new MutableLiveData<>();
-    private MutableLiveData<LegWithVisits> gameWithVisitsMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<MatchWithUsers> matchWithUsersMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<LegWithVisits> gameWithVisitsMutableLiveData = new MutableLiveData<>();
     private final MatchRepository matchRepository;
 
     public String getMatchId() {
@@ -54,11 +56,18 @@ public class MatchViewModel extends AndroidViewModel {
 
     private static final int NO_LEG_OR_SET_WON = -1;
     private static final int LEG_WON_NOT_SET = -2;
-    public static int currentSetNumber = 0;
+
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public MatchViewModel(@NonNull Application application) {
         super(application);
         matchRepository = new MatchRepository(application);
+    }
+
+    @Override
+    protected void onCleared() {
+        compositeDisposable.clear();
+        super.onCleared();
     }
 
     @SuppressLint("CheckResult")
@@ -71,12 +80,14 @@ public class MatchViewModel extends AndroidViewModel {
             int userId = user.userID;
             int startingScore = matchWithUsers.match.getMatchType().startingScore;
 
-            matchRepository.getLegTotalScore(legWithVisits.leg.getLegId(), userId)
+            Disposable d = matchRepository.getLegTotalScore(legWithVisits.leg.getLegId(), userId)
                     .flatMap(sumOfVisits -> getNewScoreSingle(scoreInt, user, startingScore, sumOfVisits))
                     .flatMap(userScore -> checklegWonSingle(userId, userScore))
                     .flatMap(legsWon -> checkSetsWonSingle(userId, legsWon))
                     .subscribeOn(Schedulers.io())
                     .subscribe(setsWon -> handleGameProgression(user, setsWon), Throwable::printStackTrace);
+
+            compositeDisposable.add(d);
         }
     }
 
@@ -304,17 +315,20 @@ public class MatchViewModel extends AndroidViewModel {
     }
 
     private void handleGameWonUndo(int latestSetPosition) {
-        matchRepository.deleteLegById(legWithVisits.leg.legId)
+        Disposable d = matchRepository.deleteLegById(legWithVisits.leg.legId)
                 .andThen(matchRepository.getLatestLegId(matchWithUsers.match.matchId))
                 .flatMapCompletable(gameId -> matchRepository.setLegWinner(0, gameId)
                         .andThen(matchRepository.setMatchWinner(0, matchWithUsers.match.matchId)))
                 .andThen(matchRepository.addSetWinner(matchWithUsers.sets.get(latestSetPosition).setId, 0))
                 .subscribeOn(Schedulers.io())
                 .subscribe(matchRepository::deleteLatestVisit, Throwable::printStackTrace);
+
+        compositeDisposable.add(d);
+
     }
 
     private void handleSetWonUndo(String currentSetId) {
-        matchRepository.deleteSet(currentSetId)
+        Disposable d = matchRepository.deleteSet(currentSetId)
                 .andThen(matchRepository.deleteLegById(legWithVisits.leg.legId))
                 .andThen(matchRepository.getLatestLegId(matchWithUsers.match.matchId))
                 .flatMapCompletable(gameId -> matchRepository.setLegWinner(0, gameId))
@@ -322,15 +336,17 @@ public class MatchViewModel extends AndroidViewModel {
                 .flatMapCompletable(setId -> matchRepository.addSetWinner(setId,0))
                 .subscribeOn(Schedulers.io())
                 .subscribe(matchRepository::deleteLatestVisit, Throwable::printStackTrace);
+
+        compositeDisposable.add(d);
     }
 
     private void handeMatchWonUndo(int latestSetPosition) {
-        //TODO dispose of these in onDestroy?
-        matchRepository.setLegWinner(0, legWithVisits.leg.legId)
+        Disposable d =  matchRepository.setLegWinner(0, legWithVisits.leg.legId)
                 .andThen(matchRepository.addSetWinner(matchWithUsers.sets.get(latestSetPosition).setId, 0))
                 .andThen(matchRepository.setMatchWinner(0, matchWithUsers.match.matchId))
                 .subscribeOn(Schedulers.io())
                 .subscribe(matchRepository::deleteLatestVisit, Throwable::printStackTrace);
+        compositeDisposable.add(d);
     }
 
     @Nullable
@@ -362,5 +378,6 @@ public class MatchViewModel extends AndroidViewModel {
     public void setGameWithVisits(LegWithVisits legWithVisits) {
         this.legWithVisits = legWithVisits;
     }
+
 
 }

@@ -24,13 +24,11 @@ public class MatchRepository {
     private final MatchDao matchDao;
     private final LiveData<List<Match>> unfinishedMatches;
     Database database;
-
     public MatchRepository(Application application){
         database = Database.getInstance(application);
         matchDao = database.matchesDao();
         unfinishedMatches = matchDao.getUnfinishedGameHistory();
     }
-
     // Match and Leg Data
     public Flowable<MatchWithUsers> getMatchWithUsers(String matchId){
         return matchDao.getMatchData(matchId);

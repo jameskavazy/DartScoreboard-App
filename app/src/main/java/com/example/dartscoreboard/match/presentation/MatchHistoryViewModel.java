@@ -19,13 +19,11 @@ public class MatchHistoryViewModel extends AndroidViewModel {
 
     private final MatchRepository repository;
 
-    private UserRepository userRepository;
     private final LiveData<List<Match>> unfinishedMatches;
 
     public MatchHistoryViewModel(@NonNull Application application) {
         super(application);
         repository = new MatchRepository(application);
-        userRepository = new UserRepository(application);
         unfinishedMatches = repository.getUnfinishedMatches();
     }
 
@@ -49,9 +47,5 @@ public class MatchHistoryViewModel extends AndroidViewModel {
     public LiveData<List<Match>> getUnfinishedMatches() {
         return unfinishedMatches;
     }
-
-//    public LiveData<GameWithUsers> getPlayersInGame(String gameId){
-//        return userRepository.getUserFromGame(gameId);
-//    }
 
 }

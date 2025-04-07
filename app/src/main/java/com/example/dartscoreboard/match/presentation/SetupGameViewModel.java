@@ -23,17 +23,19 @@ import java.util.List;
 import java.util.UUID;
 
 import io.reactivex.rxjava3.core.CompletableObserver;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class SetupGameViewModel extends AndroidViewModel {
 
     private String matchId;
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    private MatchRepository matchRepository;
+    private final MatchRepository matchRepository;
     private List<User> selectedPlayers;
 
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public SetupGameViewModel(@NonNull Application application) {
         super(application);
@@ -42,6 +44,11 @@ public class SetupGameViewModel extends AndroidViewModel {
         selectedPlayers = PreferencesController.getInstance().getPlayers();
     }
 
+    @Override
+    protected void onCleared() {
+        compositeDisposable.clear();
+        super.onCleared();
+    }
 
     public MatchSettings getMatchSettings(int legs, int sets) {
         return new MatchSettings(legs, sets);
@@ -52,26 +59,13 @@ public class SetupGameViewModel extends AndroidViewModel {
         Match match = new Match(matchId, matchType, getMatchSettings(legs, sets), OffsetDateTime.now());
         match.setPlayersCSV(getSelectedPlayers());
         addUsersToMatch();
-        matchRepository.insertMatch(match).subscribeOn(Schedulers.io()).subscribe(new CompletableObserver() {
-            @Override
-            public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
-
-            }
-
-            @Override
-            public void onComplete() {
+        Disposable d = matchRepository.insertMatch(match).subscribeOn(Schedulers.io()).subscribe(() -> {
                 String setId = UUID.randomUUID().toString();
-                MatchViewModel.currentSetNumber = 0;
                 matchRepository.insertSet(new Set(setId, match.matchId)).subscribeOn(Schedulers.io()).subscribe();
                 matchRepository.insertLeg(new Leg(UUID.randomUUID().toString(), setId, match.matchId, 0)).subscribeOn(Schedulers.io()).subscribe();
-            }
+            });
 
-            @Override
-            public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
-
-            }
-        });
-
+        compositeDisposable.add(d);
         return match;
     }
 
@@ -97,4 +91,6 @@ public class SetupGameViewModel extends AndroidViewModel {
     public void randomisePlayerOrder(){
         Collections.shuffle(selectedPlayers);
     }
+
+
 }
