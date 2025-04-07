@@ -26,13 +26,9 @@ import org.reactivestreams.Subscription;
 
 import java.util.UUID;
 
-import io.reactivex.rxjava3.core.CompletableObserver;
-import io.reactivex.rxjava3.core.CompletableSource;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.FlowableSubscriber;
 import io.reactivex.rxjava3.core.Single;
-import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.functions.Function;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 
@@ -56,6 +52,8 @@ public class GameViewModel extends AndroidViewModel {
     private final static String BUST = "BUST";
     private final static String NO_SCORE = "No score";
 
+    private static final int NO_LEG_OR_SET_WON = -1;
+    private static final int LEG_WON_NOT_SET = -2;
     public static int currentSetNumber = 0;
 
     public GameViewModel(@NonNull Application application) {
@@ -136,54 +134,6 @@ public class GameViewModel extends AndroidViewModel {
         gameRepository.setMatchWinner(currentPlayer.userID, matchWithUsers.match.matchId).subscribeOn(Schedulers.io()).subscribe();
         toastMessage(currentPlayer.getUsername() + " wins the match!");
     }
-    private void handleGameProgression(User user, Integer setsWon) {
-        // No game and no set winner
-        if (setsWon == -1) {
-            incrementTurnIndex();
-            return;
-        }
-
-        // leg won, but not set.
-        if (setsWon == -2) {
-            int turnIndex = (int) (matchWithUsers.games.stream().filter(game -> game.setId.equals(gameWithVisits.game.setId)).count() + currentSetNumber)
-                    % matchWithUsers.users.size(); //TODO current set number (best to get this from the count of sets rather than trying to be fancy)
-            Game game = new Game(UUID.randomUUID().toString(), gameWithVisits.game.setId, matchId, turnIndex, 0, 0);
-            gameRepository.insertGame(game).subscribeOn(Schedulers.io()).subscribe();
-            return;
-        }
-        // Set won and legs won so game over
-        if (setsWon == matchWithUsers.match.matchSettings.getTotalSets()){
-            endGame(user);
-            return;
-        }
-        // Set Won but not finished, need new set and new game
-        currentSetNumber++;
-        Set set = new Set(UUID.randomUUID().toString(), matchId, currentSetNumber);
-        gameRepository.insertSet(set).subscribeOn(Schedulers.io()).subscribe();
-
-        int turnIndex = matchWithUsers.sets.size() % matchWithUsers.users.size();
-        Game game = new Game(UUID.randomUUID().toString(), set.setId, matchId, turnIndex,0,0);
-        gameRepository.insertGame(game).subscribeOn(Schedulers.io()).subscribe();
-    }
-
-    private Single<Integer> checkSetsWonSingle(int userId, Integer legsWon) {
-        if (legsWon == -1) {
-            return Single.just(-1);
-        }
-        if (legsWon == matchWithUsers.match.matchSettings.getTotalLegs()) {
-            return gameRepository.addSetWinner(gameWithVisits.game.setId, userId)
-                    .andThen(gameRepository.getSetsWon(userId, matchId));
-        }
-        return Single.just(-2);
-    }
-
-    private Single<Integer> checklegWonSingle(int userId, Integer userScore) {
-        if (userScore == 0) {
-            return gameRepository.setGameWinner(userId, gameWithVisits.game.getGameId(), currentSetNumber)
-                    .andThen(gameRepository.legsWon(gameWithVisits.game.setId, matchId, userId));
-        }
-        return Single.just(-1);
-    }
 
     private Single<Integer> getNewScoreSingle(int scoreInt, User user, int startingScore, Integer sumOfVisits) {
         int visitScore = calculateScore(startingScore - sumOfVisits, scoreInt);
@@ -191,6 +141,49 @@ public class GameViewModel extends AndroidViewModel {
         int finalScore = startingScore - sumOfVisits - visitScore;
 
         return gameRepository.insertVisit(visit).andThen(Single.just(finalScore));
+    }
+
+    private Single<Integer> checklegWonSingle(int userId, Integer userScore) {
+        if (userScore == 0) {
+            return gameRepository.setGameWinner(userId, gameWithVisits.game.getGameId(), currentSetNumber)
+                    .andThen(gameRepository.legsWon(gameWithVisits.game.setId, matchId, userId));
+        }
+        return Single.just(NO_LEG_OR_SET_WON);
+    }
+
+    private Single<Integer> checkSetsWonSingle(int userId, Integer legsWon) {
+        if (legsWon == NO_LEG_OR_SET_WON) {
+            return Single.just(NO_LEG_OR_SET_WON);
+        }
+        if (legsWon == matchWithUsers.match.matchSettings.getTotalLegs()) {
+            return gameRepository.addSetWinner(gameWithVisits.game.setId, userId)
+                    .andThen(gameRepository.getSetsWon(userId, matchId));
+        }
+        return Single.just(LEG_WON_NOT_SET);
+    }
+
+    private void handleGameProgression(User user, Integer setsWon) {
+        // No game and no set winner
+        if (setsWon == NO_LEG_OR_SET_WON) {
+            incrementTurnIndex();
+        } else if (setsWon == LEG_WON_NOT_SET) {
+            int turnIndex = (int) (matchWithUsers.games.stream().filter(game -> game.setId.equals(gameWithVisits.game.setId)).count()
+                    +  matchWithUsers.sets.size() - 1)
+                    % matchWithUsers.users.size();
+            Game game = new Game(UUID.randomUUID().toString(), gameWithVisits.game.setId, matchId, turnIndex, 0, 0);
+            gameRepository.insertGame(game).subscribeOn(Schedulers.io()).subscribe();
+        } else if (setsWon == matchWithUsers.match.matchSettings.getTotalSets()) {
+            endGame(user);
+        } else {
+            // Set Won but not finished, need new set and new game
+            currentSetNumber++;
+            Set set = new Set(UUID.randomUUID().toString(), matchId, currentSetNumber);
+            gameRepository.insertSet(set).subscribeOn(Schedulers.io()).subscribe();
+
+            int turnIndex = matchWithUsers.sets.size() % matchWithUsers.users.size();
+            Game game = new Game(UUID.randomUUID().toString(), set.setId, matchId, turnIndex,0,0);
+            gameRepository.insertGame(game).subscribeOn(Schedulers.io()).subscribe();
+        }
     }
 
     public void undo() {
@@ -220,7 +213,6 @@ public class GameViewModel extends AndroidViewModel {
         }
     }
 
-
     private void toastMessage(String msg) {
         Handler mainHandler = new Handler(Looper.getMainLooper());
         mainHandler.post(() -> Toast.makeText(DartsScoreboardApplication.getContext(),
@@ -237,9 +229,7 @@ public class GameViewModel extends AndroidViewModel {
         gameRepository.updateTurnIndex(gameWithVisits.game.turnIndex, gameWithVisits.game.getGameId());
     }
 
-      public MutableLiveData<GameWithVisits> getGameWithVisitsMutableLiveData(){
-        return gameWithVisitsMutableLiveData;
-    }
+
 
     public void fetchMatchData(){
         Flowable.combineLatest(
@@ -362,6 +352,9 @@ public class GameViewModel extends AndroidViewModel {
         return matchWithUsersMutableLiveData;
     }
 
+    public MutableLiveData<GameWithVisits> getGameWithVisitsMutableLiveData(){
+        return gameWithVisitsMutableLiveData;
+    }
 
     private void setMatchWithUsers(MatchWithUsers matchWithUsers){
         this.matchWithUsers = matchWithUsers;
