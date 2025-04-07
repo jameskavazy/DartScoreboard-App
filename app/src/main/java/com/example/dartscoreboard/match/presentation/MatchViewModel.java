@@ -40,15 +40,6 @@ public class MatchViewModel extends AndroidViewModel {
     private final MutableLiveData<MatchWithUsers> matchWithUsersMutableLiveData = new MutableLiveData<>();
     private final MutableLiveData<LegWithVisits> gameWithVisitsMutableLiveData = new MutableLiveData<>();
     private final MatchRepository matchRepository;
-
-    public String getMatchId() {
-        return matchId;
-    }
-
-    public void setMatchId(String matchId) {
-        this.matchId = matchId;
-    }
-    private String matchId;
     private final MutableLiveData<Boolean> _finished = new MutableLiveData<>(false);
     public LiveData<Boolean> finished = _finished;
     private final static String BUST = "BUST";
@@ -157,7 +148,7 @@ public class MatchViewModel extends AndroidViewModel {
     private Single<Integer> checklegWonSingle(int userId, Integer userScore) {
         if (userScore == 0) {
             return matchRepository.setLegWinner(userId, legWithVisits.leg.getLegId())
-                    .andThen(matchRepository.legsWon(legWithVisits.leg.setId, matchId, userId));
+                    .andThen(matchRepository.legsWon(legWithVisits.leg.setId, matchWithUsers.match.matchId, userId));
         }
         return Single.just(NO_LEG_OR_SET_WON);
     }
@@ -168,7 +159,7 @@ public class MatchViewModel extends AndroidViewModel {
         }
         if (legsWon == matchWithUsers.match.matchSettings.getTotalLegs()) {
             return matchRepository.addSetWinner(legWithVisits.leg.setId, userId)
-                    .andThen(matchRepository.getSetsWon(userId, matchId));
+                    .andThen(matchRepository.getSetsWon(userId, matchWithUsers.match.matchId));
         }
         return Single.just(LEG_WON_NOT_SET);
     }
@@ -181,17 +172,17 @@ public class MatchViewModel extends AndroidViewModel {
             int turnIndex = (int) (matchWithUsers.legs.stream().filter(game -> game.setId.equals(legWithVisits.leg.setId)).count()
                     +  matchWithUsers.sets.size() - 1)
                     % matchWithUsers.users.size();
-            Leg leg = new Leg(UUID.randomUUID().toString(), legWithVisits.leg.setId, matchId, turnIndex);
+            Leg leg = new Leg(UUID.randomUUID().toString(), legWithVisits.leg.setId, matchWithUsers.match.matchId, turnIndex);
             matchRepository.insertLeg(leg).subscribeOn(Schedulers.io()).subscribe();
         } else if (setsWon == matchWithUsers.match.matchSettings.getTotalSets()) {
             endGame(user);
         } else {
             // Set Won but not finished, need new set and new game
-            Set set = new Set(UUID.randomUUID().toString(), matchId);
+            Set set = new Set(UUID.randomUUID().toString(), matchWithUsers.match.matchId);
             matchRepository.insertSet(set).subscribeOn(Schedulers.io()).subscribe();
 
             int turnIndex = matchWithUsers.sets.size() % matchWithUsers.users.size();
-            Leg leg = new Leg(UUID.randomUUID().toString(), set.setId, matchId, turnIndex);
+            Leg leg = new Leg(UUID.randomUUID().toString(), set.setId, matchWithUsers.match.matchId, turnIndex);
             matchRepository.insertLeg(leg).subscribeOn(Schedulers.io()).subscribe();
         }
     }
@@ -241,7 +232,7 @@ public class MatchViewModel extends AndroidViewModel {
 
 
 
-    public void fetchMatchData(){
+    public void fetchMatchData(String matchId){
         Flowable.combineLatest(
                 matchRepository.getMatchWithUsers(matchId),
                 matchRepository.getLegWithVisits(matchId),
@@ -332,11 +323,10 @@ public class MatchViewModel extends AndroidViewModel {
                 .andThen(matchRepository.deleteLegById(legWithVisits.leg.legId))
                 .andThen(matchRepository.getLatestLegId(matchWithUsers.match.matchId))
                 .flatMapCompletable(gameId -> matchRepository.setLegWinner(0, gameId))
-                .andThen(matchRepository.getLatestSetId(matchId))
+                .andThen(matchRepository.getLatestSetId(matchWithUsers.match.matchId))
                 .flatMapCompletable(setId -> matchRepository.addSetWinner(setId,0))
                 .subscribeOn(Schedulers.io())
                 .subscribe(matchRepository::deleteLatestVisit, Throwable::printStackTrace);
-
         compositeDisposable.add(d);
     }
 
@@ -378,6 +368,4 @@ public class MatchViewModel extends AndroidViewModel {
     public void setGameWithVisits(LegWithVisits legWithVisits) {
         this.legWithVisits = legWithVisits;
     }
-
-
 }

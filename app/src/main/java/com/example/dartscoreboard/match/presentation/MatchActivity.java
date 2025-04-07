@@ -86,9 +86,7 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
 
     private void observeViewModel() {
         matchViewModel = new ViewModelProvider(this).get(MatchViewModel.class);
-
-        matchViewModel.setMatchId(getMatchIdFromIntent());
-        matchViewModel.fetchMatchData();
+        matchViewModel.fetchMatchData(getMatchIdFromIntent());
 
         matchViewModel.getMatchDataLiveData()
                 .observe(this, matchData -> {
