@@ -10,9 +10,9 @@ import com.example.dartscoreboard.user.User;
 @Entity(tableName = "visit",
         foreignKeys = {
                 @ForeignKey(
-                        entity = Game.class,
-                        parentColumns = "gameId",
-                        childColumns = "gameId"
+                        entity = Leg.class,
+                        parentColumns = "legId",
+                        childColumns = "legId"
                 ),
                 @ForeignKey(
                         entity = User.class,
@@ -21,7 +21,7 @@ import com.example.dartscoreboard.user.User;
                 )
         },
         indices = {
-                @Index(value = "gameId"),
+                @Index(value = "legId"),
                 @Index(value = "userID")
         }
 )
@@ -32,7 +32,7 @@ public class Visit {
 
     public int userID;
 
-    public String gameId;
+    public String legId;
     public int score;
 
     public Visit() {
@@ -54,12 +54,12 @@ public class Visit {
         this.userID = userID;
     }
 
-    public String getGameId() {
-        return gameId;
+    public String getLegId() {
+        return legId;
     }
 
-    public void setGameId(String gameId) {
-        this.gameId = gameId;
+    public void setLegId(String legId) {
+        this.legId = legId;
     }
 
     public int getScore() {

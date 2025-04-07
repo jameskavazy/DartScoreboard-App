@@ -14,10 +14,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.dartscoreboard.application.DartsScoreboardApplication;
+import com.example.dartscoreboard.match.data.models.Leg;
+import com.example.dartscoreboard.match.data.models.LegWithVisits;
 import com.example.dartscoreboard.user.User;
-import com.example.dartscoreboard.match.data.models.Game;
-import com.example.dartscoreboard.match.data.repository.GameRepository;
-import com.example.dartscoreboard.match.data.models.GameWithVisits;
+import com.example.dartscoreboard.match.data.repository.MatchRepository;
 import com.example.dartscoreboard.match.data.models.MatchWithUsers;
 import com.example.dartscoreboard.match.data.models.Set;
 import com.example.dartscoreboard.match.data.models.Visit;
@@ -32,12 +32,12 @@ import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 
-public class GameViewModel extends AndroidViewModel {
+public class MatchViewModel extends AndroidViewModel {
     private MatchWithUsers matchWithUsers;
-    private GameWithVisits gameWithVisits;
+    private LegWithVisits legWithVisits;
     private MutableLiveData<MatchWithUsers> matchWithUsersMutableLiveData = new MutableLiveData<>();
-    private MutableLiveData<GameWithVisits> gameWithVisitsMutableLiveData = new MutableLiveData<>();
-    private final GameRepository gameRepository;
+    private MutableLiveData<LegWithVisits> gameWithVisitsMutableLiveData = new MutableLiveData<>();
+    private final MatchRepository matchRepository;
 
     public String getMatchId() {
         return matchId;
@@ -56,9 +56,9 @@ public class GameViewModel extends AndroidViewModel {
     private static final int LEG_WON_NOT_SET = -2;
     public static int currentSetNumber = 0;
 
-    public GameViewModel(@NonNull Application application) {
+    public MatchViewModel(@NonNull Application application) {
         super(application);
-        gameRepository = new GameRepository(application);
+        matchRepository = new MatchRepository(application);
     }
 
     @SuppressLint("CheckResult")
@@ -67,11 +67,11 @@ public class GameViewModel extends AndroidViewModel {
             toastMessage(NO_SCORE);
         }
         if (scoreInt <= 180) {
-            User user = matchWithUsers.users.get(gameWithVisits.game.turnIndex);
+            User user = matchWithUsers.users.get(legWithVisits.leg.turnIndex);
             int userId = user.userID;
             int startingScore = matchWithUsers.match.getMatchType().startingScore;
 
-            gameRepository.getGameTotalScoreByUser(gameWithVisits.game.getGameId(), userId)
+            matchRepository.getLegTotalScore(legWithVisits.leg.getLegId(), userId)
                     .flatMap(sumOfVisits -> getNewScoreSingle(scoreInt, user, startingScore, sumOfVisits))
                     .flatMap(userScore -> checklegWonSingle(userId, userScore))
                     .flatMap(legsWon -> checkSetsWonSingle(userId, legsWon))
@@ -81,7 +81,7 @@ public class GameViewModel extends AndroidViewModel {
     }
 
     private int calculateScore(int playerScore, int input) {
-        User currentPlayer = matchWithUsers.users.get(gameWithVisits.game.turnIndex);
+        User currentPlayer = matchWithUsers.users.get(legWithVisits.leg.turnIndex);
 
         if (currentPlayer.isGuy) {
             if (playerScore > 100
@@ -131,7 +131,7 @@ public class GameViewModel extends AndroidViewModel {
 
     private void endGame(User currentPlayer) {
         _finished.postValue(true);
-        gameRepository.setMatchWinner(currentPlayer.userID, matchWithUsers.match.matchId).subscribeOn(Schedulers.io()).subscribe();
+        matchRepository.setMatchWinner(currentPlayer.userID, matchWithUsers.match.matchId).subscribeOn(Schedulers.io()).subscribe();
         toastMessage(currentPlayer.getUsername() + " wins the match!");
     }
 
@@ -140,13 +140,13 @@ public class GameViewModel extends AndroidViewModel {
         Visit visit = createVisit(user, visitScore);
         int finalScore = startingScore - sumOfVisits - visitScore;
 
-        return gameRepository.insertVisit(visit).andThen(Single.just(finalScore));
+        return matchRepository.insertVisit(visit).andThen(Single.just(finalScore));
     }
 
     private Single<Integer> checklegWonSingle(int userId, Integer userScore) {
         if (userScore == 0) {
-            return gameRepository.setGameWinner(userId, gameWithVisits.game.getGameId())
-                    .andThen(gameRepository.legsWon(gameWithVisits.game.setId, matchId, userId));
+            return matchRepository.setLegWinner(userId, legWithVisits.leg.getLegId())
+                    .andThen(matchRepository.legsWon(legWithVisits.leg.setId, matchId, userId));
         }
         return Single.just(NO_LEG_OR_SET_WON);
     }
@@ -156,8 +156,8 @@ public class GameViewModel extends AndroidViewModel {
             return Single.just(NO_LEG_OR_SET_WON);
         }
         if (legsWon == matchWithUsers.match.matchSettings.getTotalLegs()) {
-            return gameRepository.addSetWinner(gameWithVisits.game.setId, userId)
-                    .andThen(gameRepository.getSetsWon(userId, matchId));
+            return matchRepository.addSetWinner(legWithVisits.leg.setId, userId)
+                    .andThen(matchRepository.getSetsWon(userId, matchId));
         }
         return Single.just(LEG_WON_NOT_SET);
     }
@@ -167,21 +167,21 @@ public class GameViewModel extends AndroidViewModel {
         if (setsWon == NO_LEG_OR_SET_WON) {
             incrementTurnIndex();
         } else if (setsWon == LEG_WON_NOT_SET) {
-            int turnIndex = (int) (matchWithUsers.games.stream().filter(game -> game.setId.equals(gameWithVisits.game.setId)).count()
+            int turnIndex = (int) (matchWithUsers.legs.stream().filter(game -> game.setId.equals(legWithVisits.leg.setId)).count()
                     +  matchWithUsers.sets.size() - 1)
                     % matchWithUsers.users.size();
-            Game game = new Game(UUID.randomUUID().toString(), gameWithVisits.game.setId, matchId, turnIndex, 0, 0);
-            gameRepository.insertGame(game).subscribeOn(Schedulers.io()).subscribe();
+            Leg leg = new Leg(UUID.randomUUID().toString(), legWithVisits.leg.setId, matchId, turnIndex);
+            matchRepository.insertLeg(leg).subscribeOn(Schedulers.io()).subscribe();
         } else if (setsWon == matchWithUsers.match.matchSettings.getTotalSets()) {
             endGame(user);
         } else {
             // Set Won but not finished, need new set and new game
             Set set = new Set(UUID.randomUUID().toString(), matchId);
-            gameRepository.insertSet(set).subscribeOn(Schedulers.io()).subscribe();
+            matchRepository.insertSet(set).subscribeOn(Schedulers.io()).subscribe();
 
             int turnIndex = matchWithUsers.sets.size() % matchWithUsers.users.size();
-            Game game = new Game(UUID.randomUUID().toString(), set.setId, matchId, turnIndex,0,0);
-            gameRepository.insertGame(game).subscribeOn(Schedulers.io()).subscribe();
+            Leg leg = new Leg(UUID.randomUUID().toString(), set.setId, matchId, turnIndex);
+            matchRepository.insertLeg(leg).subscribeOn(Schedulers.io()).subscribe();
         }
     }
 
@@ -195,7 +195,7 @@ public class GameViewModel extends AndroidViewModel {
             return;
         }
 
-        boolean gameWon = gameWithVisits.visits.size() == 0;
+        boolean gameWon = legWithVisits.visits.size() == 0;
 
         if (gameWon) {
             String penultimateGameSetId = getPenultimateGameSetId();
@@ -207,7 +207,7 @@ public class GameViewModel extends AndroidViewModel {
 
         }
          else {
-            gameRepository.deleteLatestVisit();
+            matchRepository.deleteLatestVisit();
             decrementTurnIndex();
         }
     }
@@ -219,38 +219,38 @@ public class GameViewModel extends AndroidViewModel {
     }
 
     public void incrementTurnIndex() {
-        gameWithVisits.game.turnIndex = (gameWithVisits.game.turnIndex + 1) % matchWithUsers.users.size();
-        gameRepository.updateTurnIndex(gameWithVisits.game.turnIndex, gameWithVisits.game.getGameId());
+        legWithVisits.leg.turnIndex = (legWithVisits.leg.turnIndex + 1) % matchWithUsers.users.size();
+        matchRepository.updateTurnIndex(legWithVisits.leg.turnIndex, legWithVisits.leg.getLegId());
     }
 
     public void decrementTurnIndex() {
-        gameWithVisits.game.turnIndex = (gameWithVisits.game.turnIndex - 1 + matchWithUsers.users.size()) % matchWithUsers.users.size();
-        gameRepository.updateTurnIndex(gameWithVisits.game.turnIndex, gameWithVisits.game.getGameId());
+        legWithVisits.leg.turnIndex = (legWithVisits.leg.turnIndex - 1 + matchWithUsers.users.size()) % matchWithUsers.users.size();
+        matchRepository.updateTurnIndex(legWithVisits.leg.turnIndex, legWithVisits.leg.getLegId());
     }
 
 
 
     public void fetchMatchData(){
         Flowable.combineLatest(
-                gameRepository.getMatchWithUsers(matchId),
-                gameRepository.getGameWithVisits(matchId),
+                matchRepository.getMatchWithUsers(matchId),
+                matchRepository.getLegWithVisits(matchId),
                 Pair::new
         ).subscribeOn(Schedulers.io())
-                .subscribe(new FlowableSubscriber<Pair<MatchWithUsers, GameWithVisits>>() {
+                .subscribe(new FlowableSubscriber<Pair<MatchWithUsers, LegWithVisits>>() {
                     @Override
                     public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Subscription s) {
                         s.request(Long.MAX_VALUE);
                     }
 
                     @Override
-                    public void onNext(Pair<MatchWithUsers, GameWithVisits> matchData) {
+                    public void onNext(Pair<MatchWithUsers, LegWithVisits> matchData) {
                         MatchWithUsers matchWithUsers = matchData.first;
                         setMatchWithUsers(matchWithUsers);
                         matchWithUsersMutableLiveData.postValue(matchWithUsers);
 
-                        GameWithVisits gameWithVisits = matchData.second;
-                        setGameWithVisits(gameWithVisits);
-                        gameWithVisitsMutableLiveData.postValue(gameWithVisits);
+                        LegWithVisits legWithVisits = matchData.second;
+                        setGameWithVisits(legWithVisits);
+                        gameWithVisitsMutableLiveData.postValue(legWithVisits);
 
                     }
 
@@ -264,7 +264,7 @@ public class GameViewModel extends AndroidViewModel {
     @NonNull
     private Visit createVisit(User user, int finalScore) {
         Visit visit = new Visit();
-        visit.setGameId(gameWithVisits.game.getGameId());
+        visit.setLegId(legWithVisits.leg.getLegId());
         visit.setUserID(user.userID);
         visit.setScore(finalScore);
         return visit;
@@ -300,45 +300,45 @@ public class GameViewModel extends AndroidViewModel {
 
 
     private boolean setWon(String penultimateGameSetId) {
-        return !gameWithVisits.game.setId.equals(penultimateGameSetId);
+        return !legWithVisits.leg.setId.equals(penultimateGameSetId);
     }
 
     private void handleGameWonUndo(int latestSetPosition) {
-        gameRepository.deleteGameById(gameWithVisits.game.gameId)
-                .andThen(gameRepository.getLatestGameId(matchWithUsers.match.matchId))
-                .flatMapCompletable(gameId -> gameRepository.setGameWinner(0, gameId)
-                        .andThen(gameRepository.setMatchWinner(0, matchWithUsers.match.matchId)))
-                .andThen(gameRepository.addSetWinner(matchWithUsers.sets.get(latestSetPosition).setId, 0))
+        matchRepository.deleteLegById(legWithVisits.leg.legId)
+                .andThen(matchRepository.getLatestLegId(matchWithUsers.match.matchId))
+                .flatMapCompletable(gameId -> matchRepository.setLegWinner(0, gameId)
+                        .andThen(matchRepository.setMatchWinner(0, matchWithUsers.match.matchId)))
+                .andThen(matchRepository.addSetWinner(matchWithUsers.sets.get(latestSetPosition).setId, 0))
                 .subscribeOn(Schedulers.io())
-                .subscribe(gameRepository::deleteLatestVisit, Throwable::printStackTrace);
+                .subscribe(matchRepository::deleteLatestVisit, Throwable::printStackTrace);
     }
 
     private void handleSetWonUndo(String currentSetId) {
-        gameRepository.deleteSet(currentSetId)
-                .andThen(gameRepository.deleteGameById(gameWithVisits.game.gameId))
-                .andThen(gameRepository.getLatestGameId(matchWithUsers.match.matchId))
-                .flatMapCompletable(gameId -> gameRepository.setGameWinner(0, gameId))
-                .andThen(gameRepository.getLatestSetId(matchId))
-                .flatMapCompletable(setId -> gameRepository.addSetWinner(setId,0))
+        matchRepository.deleteSet(currentSetId)
+                .andThen(matchRepository.deleteLegById(legWithVisits.leg.legId))
+                .andThen(matchRepository.getLatestLegId(matchWithUsers.match.matchId))
+                .flatMapCompletable(gameId -> matchRepository.setLegWinner(0, gameId))
+                .andThen(matchRepository.getLatestSetId(matchId))
+                .flatMapCompletable(setId -> matchRepository.addSetWinner(setId,0))
                 .subscribeOn(Schedulers.io())
-                .subscribe(gameRepository::deleteLatestVisit, Throwable::printStackTrace);
+                .subscribe(matchRepository::deleteLatestVisit, Throwable::printStackTrace);
     }
 
     private void handeMatchWonUndo(int latestSetPosition) {
         //TODO dispose of these in onDestroy?
-        gameRepository.setGameWinner(0, gameWithVisits.game.gameId)
-                .andThen(gameRepository.addSetWinner(matchWithUsers.sets.get(latestSetPosition).setId, 0))
-                .andThen(gameRepository.setMatchWinner(0, matchWithUsers.match.matchId))
+        matchRepository.setLegWinner(0, legWithVisits.leg.legId)
+                .andThen(matchRepository.addSetWinner(matchWithUsers.sets.get(latestSetPosition).setId, 0))
+                .andThen(matchRepository.setMatchWinner(0, matchWithUsers.match.matchId))
                 .subscribeOn(Schedulers.io())
-                .subscribe(gameRepository::deleteLatestVisit, Throwable::printStackTrace);
+                .subscribe(matchRepository::deleteLatestVisit, Throwable::printStackTrace);
     }
 
     @Nullable
     private String getPenultimateGameSetId() {
         String penultimateGameSetId = null;
 
-        if (matchWithUsers.games.size() >= 2 ) {
-            penultimateGameSetId = matchWithUsers.games.get(matchWithUsers.games.size() - 2).setId; // This should always be true because if one game the game will have visits
+        if (matchWithUsers.legs.size() >= 2 ) {
+            penultimateGameSetId = matchWithUsers.legs.get(matchWithUsers.legs.size() - 2).setId; // This should always be true because if one game the game will have visits
         }
         return penultimateGameSetId;
     }
@@ -351,7 +351,7 @@ public class GameViewModel extends AndroidViewModel {
         return matchWithUsersMutableLiveData;
     }
 
-    public MutableLiveData<GameWithVisits> getGameWithVisitsMutableLiveData(){
+    public MutableLiveData<LegWithVisits> getGameWithVisitsMutableLiveData(){
         return gameWithVisitsMutableLiveData;
     }
 
@@ -359,8 +359,8 @@ public class GameViewModel extends AndroidViewModel {
         this.matchWithUsers = matchWithUsers;
     }
 
-    public void setGameWithVisits(GameWithVisits gameWithVisits) {
-        this.gameWithVisits = gameWithVisits;
+    public void setGameWithVisits(LegWithVisits legWithVisits) {
+        this.legWithVisits = legWithVisits;
     }
 
 }

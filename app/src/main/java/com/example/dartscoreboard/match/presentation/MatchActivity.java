@@ -25,17 +25,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.dartscoreboard.R;
 
 
-public class GameActivity extends AppCompatActivity implements View.OnClickListener {
+public class MatchActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final String MATCH_KEY = "GAME_STATE";
     private Toolbar toolbar;
-    private GameViewModel gameViewModel;
+    private MatchViewModel matchViewModel;
     private RecyclerView recyclerView;
     private EditText inputScoreEditText;
     private TextView averageScoreTextView;
     private TextView visitsTextView;
     private Button doneButton;
-    private GameAdapter gameAdapter;
+    private MatchAdapter matchAdapter;
     private View bananaView;
 
     @Override
@@ -77,31 +77,31 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void setAdapter() {
-        gameAdapter = new GameAdapter();
+        matchAdapter = new MatchAdapter();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(gameAdapter);
+        recyclerView.setAdapter(matchAdapter);
     }
 
     private void observeViewModel() {
-        gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
+        matchViewModel = new ViewModelProvider(this).get(MatchViewModel.class);
 
-        gameViewModel.setMatchId(getMatchIdFromIntent());
-        gameViewModel.fetchMatchData();
+        matchViewModel.setMatchId(getMatchIdFromIntent());
+        matchViewModel.fetchMatchData();
 
-        gameViewModel.getMatchDataLiveData()
+        matchViewModel.getMatchDataLiveData()
                 .observe(this, matchData -> {
-                    gameAdapter.setMatchData(matchData);
+                    matchAdapter.setMatchData(matchData);
                     toolbar.setTitle(matchData.match.getMatchType().name);
                 });
 
-        gameViewModel.getGameWithVisitsMutableLiveData()
+        matchViewModel.getGameWithVisitsMutableLiveData()
                 .observe(this, gameWithVisits -> {
-                    gameAdapter.setGameWithVisits(gameWithVisits);
+                    matchAdapter.setGameWithVisits(gameWithVisits);
                 });
 
-        gameViewModel.getFinished().observe(this, isFinished -> {
+        matchViewModel.getFinished().observe(this, isFinished -> {
             if (!isFinished) {
                 inputScoreEditText.setVisibility(View.VISIBLE);
                 doneButton.setVisibility(View.VISIBLE);
@@ -125,22 +125,20 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         try {
             Log.d("dom test", "IME_ACTION_DONE");
 //            setBanana();
-            gameViewModel.playerVisit(input);
-//            adapter.notifyDataSetChanged();
+            matchViewModel.playerVisit(input);
+
             if (input > 180) {
-                Toast.makeText(GameActivity.this, "Invalid Score", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MatchActivity.this, "Invalid Score", Toast.LENGTH_SHORT).show();
             }
             ((EditText) findViewById(R.id.inputUserNameEditText)).getText().clear();
 //            setAverageScoreTextView();
 //            setVisitsTextView();
-//            endGameChecker();
             return true;
         } catch (Exception e) {
             e.printStackTrace();
             return true;
         }
     }
-
 
     @Override
     public void onClick(View v) {
@@ -164,7 +162,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         int menuItem = item.getItemId();
         if (menuItem == R.id.undo_menu_button) {
             Log.d("dom test", "Undo Click");
-            gameViewModel.undo();
+            matchViewModel.undo();
 //            setAverageScoreTextView();
 //            setVisitsTextView();
         }

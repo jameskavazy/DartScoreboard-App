@@ -10,18 +10,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dartscoreboard.R;
-import com.example.dartscoreboard.match.data.models.GameWithVisits;
+import com.example.dartscoreboard.match.data.models.LegWithVisits;
 import com.example.dartscoreboard.match.data.models.MatchWithUsers;
 
 import java.util.Objects;
 
-public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder> {
+public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.GameViewHolder> {
     
     private MatchWithUsers matchWithUsers = new MatchWithUsers();
 
-    private GameWithVisits gamesWithVisits = new GameWithVisits();
+    private LegWithVisits gamesWithVisits = new LegWithVisits();
 
-    public GameAdapter() {
+    public MatchAdapter() {
 
     }
     public static class GameViewHolder extends RecyclerView.ViewHolder {
@@ -69,15 +69,15 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
         holder.playerScoreTextView.setText(String.valueOf(currentScore));
         holder.legsTextView.setText(String.valueOf(currentLegs));
         holder.setsTextView.setText(String.valueOf(currentSets));
-        if (gamesWithVisits.game != null) {
-            holder.playerIndicator.setVisibility(gamesWithVisits.game.turnIndex == position ? View.VISIBLE : View.GONE);
+        if (gamesWithVisits.leg != null) {
+            holder.playerIndicator.setVisibility(gamesWithVisits.leg.turnIndex == position ? View.VISIBLE : View.GONE);
         }
 
     }
 
     private int getCurrentLegs(int userId) {
-        return (int) matchWithUsers.games.stream().
-                filter(game -> Objects.equals(game.setId, gamesWithVisits.game.setId) && game.winnerId == userId)
+        return (int) matchWithUsers.legs.stream().
+                filter(game -> Objects.equals(game.setId, gamesWithVisits.leg.setId) && game.winnerId == userId)
                 .count();
     }
 
@@ -107,7 +107,7 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
         notifyDataSetChanged();
     }
 
-    public void setGameWithVisits(GameWithVisits gamesWithVisits) {
+    public void setGameWithVisits(LegWithVisits gamesWithVisits) {
         this.gamesWithVisits = gamesWithVisits;
         notifyDataSetChanged();
     }

@@ -8,14 +8,14 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import com.example.dartscoreboard.match.data.models.Game;
+import com.example.dartscoreboard.match.data.local.MatchDao;
+import com.example.dartscoreboard.match.data.models.Leg;
 import com.example.dartscoreboard.match.data.models.MatchUsers;
 import com.example.dartscoreboard.match.data.models.Match;
 import com.example.dartscoreboard.match.data.models.Set;
 import com.example.dartscoreboard.match.data.models.Visit;
 import com.example.dartscoreboard.live_matches.data.LiveProMatchesDao;
 import com.example.dartscoreboard.live_matches.data.ProMatch;
-import com.example.dartscoreboard.match.data.local.GameDao;
 import com.example.dartscoreboard.user.User;
 import com.example.dartscoreboard.user.UserDao;
 import com.example.dartscoreboard.util.Converters;
@@ -23,7 +23,7 @@ import com.example.dartscoreboard.util.Converters;
 @androidx.room.Database(
         entities = {
                 User.class,
-                Game.class,
+                Leg.class,
                 Set.class,
                 Match.class,
                 ProMatch.class,
@@ -35,7 +35,7 @@ import com.example.dartscoreboard.util.Converters;
 public abstract class Database extends RoomDatabase {
 
     public abstract UserDao userDao();
-    public abstract GameDao matchesDao();
+    public abstract MatchDao matchesDao();
     public abstract LiveProMatchesDao liveProMatchesDao();
     private static volatile Database instance;
 

@@ -23,7 +23,6 @@ import com.example.dartscoreboard.user.User;
 import com.example.dartscoreboard.util.PreferencesController;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class SetupGameActivity extends AppCompatActivity implements View.OnClickListener {
@@ -130,10 +129,10 @@ public class SetupGameActivity extends AppCompatActivity implements View.OnClick
 
     private void openGameActivity(MatchType matchType) {
         if (matchType != null) {
-            Intent intent = new Intent(this, GameActivity.class);
+            Intent intent = new Intent(this, MatchActivity.class);
             Bundle arguments = new Bundle();
             Match match = initialiseMatch(matchType);
-            arguments.putString(GameActivity.MATCH_KEY, match.matchId);
+            arguments.putString(MatchActivity.MATCH_KEY, match.matchId);
             intent.putExtras(arguments);
             startActivity(intent);
             finish();

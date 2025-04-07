@@ -121,9 +121,9 @@ public class MatchHistoryActivity extends AppCompatActivity {
         }).attachToRecyclerView(recyclerView);
 
         adapter.setOnItemClickListener(match -> {
-            Intent intent = new Intent(MatchHistoryActivity.this, GameActivity.class);
+            Intent intent = new Intent(MatchHistoryActivity.this, MatchActivity.class);
             Bundle arguments = new Bundle();
-            arguments.putString(GameActivity.MATCH_KEY, match.getMatchId());
+            arguments.putString(MatchActivity.MATCH_KEY, match.getMatchId());
             intent.putExtras(arguments);
             startActivity(intent);
             finish();
@@ -160,7 +160,7 @@ public class MatchHistoryActivity extends AppCompatActivity {
     public Dialog onDeleteAllRecentGamesMenuItem() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Are you sure you want to delete all match history?")
-                .setPositiveButton("Yes", ((dialog, which) -> matchHistoryViewModel.deleteAllMatches()))
+                .setPositiveButton("Yes", ((dialog, which) -> matchHistoryViewModel.deleteAllUnfinishedMatches()))
                 .setNegativeButton("Cancel", ((dialog, which) -> {
                 }));
         return builder.create();

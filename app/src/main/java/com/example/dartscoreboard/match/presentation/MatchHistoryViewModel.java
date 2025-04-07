@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.example.dartscoreboard.match.data.repository.GameRepository;
+import com.example.dartscoreboard.match.data.repository.MatchRepository;
 import com.example.dartscoreboard.match.data.models.Match;
 import com.example.dartscoreboard.user.UserRepository;
 
@@ -17,14 +17,14 @@ import io.reactivex.rxjava3.core.Completable;
 
 public class MatchHistoryViewModel extends AndroidViewModel {
 
-    private final GameRepository repository;
+    private final MatchRepository repository;
 
     private UserRepository userRepository;
     private final LiveData<List<Match>> unfinishedMatches;
 
     public MatchHistoryViewModel(@NonNull Application application) {
         super(application);
-        repository = new GameRepository(application);
+        repository = new MatchRepository(application);
         userRepository = new UserRepository(application);
         unfinishedMatches = repository.getUnfinishedMatches();
     }
@@ -42,8 +42,8 @@ public class MatchHistoryViewModel extends AndroidViewModel {
         repository.deleteMatch(match);
     }
 
-    public void deleteAllMatches() {
-        repository.deleteAll();
+    public void deleteAllUnfinishedMatches() {
+        repository.deleteAllUnfinishedMatches();
     }
 
     public LiveData<List<Match>> getUnfinishedMatches() {

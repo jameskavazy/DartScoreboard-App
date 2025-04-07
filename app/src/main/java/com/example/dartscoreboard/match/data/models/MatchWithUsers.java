@@ -4,11 +4,7 @@ import androidx.room.Embedded;
 import androidx.room.Junction;
 import androidx.room.Relation;
 
-import com.example.dartscoreboard.match.data.models.Match;
-import com.example.dartscoreboard.match.data.models.MatchUsers;
 import com.example.dartscoreboard.user.User;
-import com.example.dartscoreboard.match.data.models.Game;
-import com.example.dartscoreboard.match.data.models.Set;
 
 import java.util.List;
 
@@ -31,6 +27,6 @@ public class MatchWithUsers {
             parentColumn = "matchId",
             entityColumn = "matchId"
     )
-    public List<Game> games;
+    public List<Leg> legs;
 }
 

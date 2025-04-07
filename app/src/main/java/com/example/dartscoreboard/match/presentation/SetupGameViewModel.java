@@ -5,12 +5,12 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
-import com.example.dartscoreboard.match.data.models.Game;
+import com.example.dartscoreboard.match.data.models.Leg;
 import com.example.dartscoreboard.match.data.models.Match;
 import com.example.dartscoreboard.match.data.models.MatchSettings;
 import com.example.dartscoreboard.match.data.models.MatchType;
 import com.example.dartscoreboard.match.data.models.MatchUsers;
-import com.example.dartscoreboard.match.data.repository.GameRepository;
+import com.example.dartscoreboard.match.data.repository.MatchRepository;
 import com.example.dartscoreboard.user.User;
 import com.example.dartscoreboard.user.UserRepository;
 import com.example.dartscoreboard.match.data.models.Set;
@@ -31,14 +31,14 @@ public class SetupGameViewModel extends AndroidViewModel {
     private String matchId;
     private UserRepository userRepository;
 
-    private GameRepository gameRepository;
+    private MatchRepository matchRepository;
     private List<User> selectedPlayers;
 
 
     public SetupGameViewModel(@NonNull Application application) {
         super(application);
         userRepository = new UserRepository(application);
-        gameRepository = new GameRepository(application);
+        matchRepository = new MatchRepository(application);
         selectedPlayers = PreferencesController.getInstance().getPlayers();
     }
 
@@ -52,7 +52,7 @@ public class SetupGameViewModel extends AndroidViewModel {
         Match match = new Match(matchId, matchType, getMatchSettings(legs, sets), OffsetDateTime.now());
         match.setPlayersCSV(getSelectedPlayers());
         addUsersToMatch();
-        gameRepository.insertMatch(match).subscribeOn(Schedulers.io()).subscribe(new CompletableObserver() {
+        matchRepository.insertMatch(match).subscribeOn(Schedulers.io()).subscribe(new CompletableObserver() {
             @Override
             public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
 
@@ -61,9 +61,9 @@ public class SetupGameViewModel extends AndroidViewModel {
             @Override
             public void onComplete() {
                 String setId = UUID.randomUUID().toString();
-                GameViewModel.currentSetNumber = 0;
-                gameRepository.insertSet(new Set(setId, match.matchId)).subscribeOn(Schedulers.io()).subscribe();
-                gameRepository.insertGame(new Game(UUID.randomUUID().toString(), setId, match.matchId, 0,0,0)).subscribeOn(Schedulers.io()).subscribe();
+                MatchViewModel.currentSetNumber = 0;
+                matchRepository.insertSet(new Set(setId, match.matchId)).subscribeOn(Schedulers.io()).subscribe();
+                matchRepository.insertLeg(new Leg(UUID.randomUUID().toString(), setId, match.matchId, 0)).subscribeOn(Schedulers.io()).subscribe();
             }
 
             @Override
