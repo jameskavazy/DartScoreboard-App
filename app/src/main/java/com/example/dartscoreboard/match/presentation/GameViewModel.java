@@ -23,17 +23,19 @@ import com.example.dartscoreboard.match.data.models.Visit;
 
 import org.reactivestreams.Subscription;
 
-import java.util.Objects;
 import java.util.UUID;
 
+import io.reactivex.rxjava3.core.CompletableObserver;
+import io.reactivex.rxjava3.core.CompletableSource;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.FlowableSubscriber;
 import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.functions.Function;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 
 public class GameViewModel extends AndroidViewModel {
-
     private MatchWithUsers matchWithUsers;
     private GameWithVisits gameWithVisits;
     private MutableLiveData<MatchWithUsers> matchWithUsersMutableLiveData = new MutableLiveData<>();
@@ -47,10 +49,8 @@ public class GameViewModel extends AndroidViewModel {
     public void setMatchId(String matchId) {
         this.matchId = matchId;
     }
-
     private String matchId;
     private final MutableLiveData<Boolean> _finished = new MutableLiveData<>(false);
-
     public LiveData<Boolean> finished = _finished;
     private final static String BUST = "BUST";
     private final static String NO_SCORE = "No score";
@@ -145,7 +145,7 @@ public class GameViewModel extends AndroidViewModel {
         // leg won, but not set.
         if (setsWon == -2) {
             int turnIndex = (int) (matchWithUsers.games.stream().filter(game -> game.setId.equals(gameWithVisits.game.setId)).count() + currentSetNumber)
-                    % matchWithUsers.users.size();
+                    % matchWithUsers.users.size(); //TODO current set number (best to get this from the count of sets rather than trying to be fancy)
             Game game = new Game(UUID.randomUUID().toString(), gameWithVisits.game.setId, matchId, turnIndex, 0, 0);
             gameRepository.insertGame(game).subscribeOn(Schedulers.io()).subscribe();
             return;
@@ -194,11 +194,55 @@ public class GameViewModel extends AndroidViewModel {
 
     public void undo() {
         _finished.postValue(false);
-        gameRepository.setGameWinner(0, gameWithVisits.game.getGameId(), currentSetNumber);
-        gameRepository.deleteLatestVisit();
-        decrementTurnIndex();
-//            decrementLegIndex();
-//            decrementSetIndex();
+
+        int latestSetPosition = matchWithUsers.sets.size() - 1;
+        int latestGamePosition = matchWithUsers.games.size() - 1;
+
+        if (matchWithUsers.match.winnerId != 0) { // Match was won, so latest set wasn't won
+            gameRepository.setGameWinner(0, gameWithVisits.game.gameId, currentSetNumber)
+                    .andThen(gameRepository.addSetWinner(matchWithUsers.sets.get(latestSetPosition).setId, 0))
+                    .andThen(gameRepository.setMatchWinner(0, matchWithUsers.match.matchId))
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(gameRepository::deleteLatestVisit, Throwable::printStackTrace);
+        }
+
+        if (gameWithVisits.visits.size() == 0) { // in a new game and can safely delete preceding stuff
+            String latestSetId = matchWithUsers.sets.get(latestSetPosition).setId;
+            String latestGameSetId = gameWithVisits.game.setId;
+            String penultimateGameSetId = null;
+
+            if (matchWithUsers.games.size() >= 2 ) {
+                penultimateGameSetId = matchWithUsers.games.get(latestGamePosition-1).setId; // This should always be true because if one game the game will have visits
+            }
+
+            if (!latestGameSetId.equals(penultimateGameSetId)) { // previous set was won and needs undoing
+               //what if penulGameSetid is null?
+
+                //TODO remove latest set, latest game. and then set latest set and game winner to 0
+                gameRepository.deleteSet(latestSetId)
+                        .andThen(gameRepository.deleteGameById(gameWithVisits.game.gameId))
+                        .andThen(gameRepository.getLatestGameId(matchWithUsers.match.matchId))
+                        .flatMapCompletable(gameId -> gameRepository.setGameWinner(0, gameId, currentSetNumber))
+                        .andThen(gameRepository.getLatestSetId(matchId))
+                        .flatMapCompletable(setId -> gameRepository.addSetWinner(setId,0))
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(gameRepository::deleteLatestVisit, Throwable::printStackTrace);
+
+            } else { // previous set was not won, so just need to undo gameWinner
+               gameRepository.deleteGameById(gameWithVisits.game.gameId)
+                       .andThen(gameRepository.getLatestGameId(matchWithUsers.match.matchId))
+                       .flatMapCompletable(gameId -> gameRepository.setGameWinner(0, gameId, currentSetNumber)
+                       .andThen(gameRepository.setMatchWinner(0, matchWithUsers.match.matchId)))
+                       .andThen(gameRepository.addSetWinner(matchWithUsers.sets.get(latestSetPosition).setId, 0))
+                       .subscribeOn(Schedulers.io())
+                       .subscribe(gameRepository::deleteLatestVisit, Throwable::printStackTrace);
+            }
+
+        }
+         else {
+            gameRepository.deleteLatestVisit();
+            decrementTurnIndex();
+        }
     }
 
     private void toastMessage(String msg) {

@@ -15,6 +15,7 @@ public class Game implements Serializable {
     @PrimaryKey
     @NonNull
     public String gameId;
+
     public String setId;
 
     public String matchId;

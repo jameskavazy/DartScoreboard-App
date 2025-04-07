@@ -15,7 +15,7 @@ import com.example.dartscoreboard.match.presentation.MatchHistoryActivity;
 import com.example.dartscoreboard.R;
 import com.example.dartscoreboard.reminders.ReminderActivity;
 import com.example.dartscoreboard.match.presentation.SetupGameActivity;
-import com.example.dartscoreboard.statistics.presentation.StatisticsActivity;
+import com.example.dartscoreboard.match.presentation.StatisticsActivity;
 import com.example.dartscoreboard.user.UsersActivity;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {

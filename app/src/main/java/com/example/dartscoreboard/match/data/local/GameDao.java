@@ -50,8 +50,8 @@ public interface GameDao {
     @Query("SELECT * FROM game WHERE matchId = :matchId")
     Flowable<List<Game>> getGamesInMatch(String matchId);
 
-    @Query("DELETE FROM game WHERE matchId = :matchId AND winnerId = :winnerId ")
-    void deleteGameStateByID(String matchId, int winnerId);
+    @Query("DELETE FROM game WHERE gameId = :gameId")
+    void deleteGameById(String gameId);
 
     @Query("SELECT * FROM visit WHERE gameId = :gameId")
     LiveData<List<Visit>> getVisitsInMatch(String gameId);
@@ -98,6 +98,13 @@ public interface GameDao {
     @Query("SELECT COUNT(*) FROM `set` WHERE winnerId = :userId AND matchId = :matchId")
     Single<Integer> getSetsWon(int userId, String matchId);
 
+    @Transaction
+    @Query("SELECT gameId FROM game WHERE matchId = :matchId ORDER BY created_at DESC LIMIT 1")
+    Single<String> getLatestGameId(String matchId);
+
+
+    @Query("SELECT setId FROM `set` WHERE matchId = :matchId ORDER BY created_at DESC LIMIT 1")
+    Single<String> getLatestSetId(String matchId);
 
     @Insert
     void insertSet(Set set);
@@ -105,8 +112,13 @@ public interface GameDao {
     @Update
     void updateSet(Set set);
 
+    @Query("DELETE FROM `set` WHERE setId = :setId")
+    void deleteSet(String setId);
+
     @Query("SELECT * FROM `set` WHERE matchId = :matchId")
     Flowable<List<Set>> getSetsInMatch(String matchId);
+
+
 
 
 

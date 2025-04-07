@@ -1,4 +1,4 @@
-package com.example.dartscoreboard.statistics.presentation;
+package com.example.dartscoreboard.match.presentation;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dartscoreboard.R;
+import com.example.dartscoreboard.match.presentation.UserStatisticsActivity;
 import com.example.dartscoreboard.user.UserViewModel;
 import com.example.dartscoreboard.user.recyclerAdapterUsers;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;

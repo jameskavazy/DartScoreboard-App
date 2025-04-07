@@ -73,7 +73,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         assert arguments != null;
         String gameId = arguments.getString(MATCH_KEY);
         assert gameId != null;
-        Log.d("gameState", "gameactivity ID: " + gameId);
         return gameId;
     }
 
@@ -87,7 +86,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private void observeViewModel() {
         gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
-        Log.d("jtest", "matchId from intent = " + getMatchIdFromIntent());
+
         gameViewModel.setMatchId(getMatchIdFromIntent());
         gameViewModel.fetchMatchData();
 
@@ -165,7 +164,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         int menuItem = item.getItemId();
         if (menuItem == R.id.undo_menu_button) {
             Log.d("dom test", "Undo Click");
-//            gameViewModel.undo();
+            gameViewModel.undo();
 //            setAverageScoreTextView();
 //            setVisitsTextView();
         }

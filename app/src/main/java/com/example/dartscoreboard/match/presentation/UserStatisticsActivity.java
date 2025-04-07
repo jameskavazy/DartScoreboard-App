@@ -1,4 +1,4 @@
-package com.example.dartscoreboard.statistics.presentation;
+package com.example.dartscoreboard.match.presentation;
 
 import android.os.Bundle;
 

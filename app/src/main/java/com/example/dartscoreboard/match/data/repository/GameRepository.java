@@ -43,12 +43,6 @@ public class GameRepository {
         return Completable.fromAction(() -> gameDao.insertMatch(match));
 
     }
-//    public Completable insertGame(Game game){
-//        Log.d("dom test", "repo insert");
-//        Completable completable = Completable.fromAction(() -> gameDao.insertGame(game));
-//        completable.subscribeOn(Schedulers.io()).subscribe();
-//        return completable;
-//    }
 
     public Completable updateMatch(Match match){
         Completable completable = Completable.fromAction(() -> gameDao.updateMatch(match));
@@ -71,9 +65,8 @@ public class GameRepository {
         return gameDao.findGameByID(id);
     }
 
-    public void deleteGameStateByID(String matchId, int winnerId){
-        Completable completable = Completable.fromAction(()-> gameDao.deleteGameStateByID(matchId, winnerId));
-        completable.subscribeOn(Schedulers.io()).subscribe();
+    public Completable deleteGameById(String gameId){
+        return Completable.fromAction(()-> gameDao.deleteGameById(gameId));
     }
     public LiveData<List<Match>> getUnfinishedMatches(){
         return unfinishedGamesHistory;
@@ -148,4 +141,15 @@ public class GameRepository {
         return gameDao.getSetsInMatch(matchId);
     }
 
+    public Single<String> getLatestGameId(String matchId){
+        return gameDao.getLatestGameId(matchId);
+    }
+
+    public Single<String> getLatestSetId(String matchId){
+        return gameDao.getLatestSetId(matchId);
+    }
+
+    public Completable deleteSet(String setId){
+        return Completable.fromAction(()-> gameDao.deleteSet(setId));
+    }
 }

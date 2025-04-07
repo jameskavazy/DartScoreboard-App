@@ -62,8 +62,8 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
         int startingScore = matchWithUsers.match.getMatchType().startingScore;
         int visitScores = getVisitScores(userId);
         int currentScore = startingScore - visitScores;
-        int currentSets = getCurrentSets(userId);
         int currentLegs = getCurrentLegs(userId);
+        int currentSets = getCurrentSets(userId);
 
         holder.nameText.setText(name);
         holder.playerScoreTextView.setText(String.valueOf(currentScore));
