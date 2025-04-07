@@ -65,8 +65,8 @@ public interface GameDao {
     @Query("DELETE FROM visit WHERE visitId = (SELECT MAX(visitId) FROM visit)")
     void deleteLastVisit();
 
-    @Query("UPDATE game SET winnerId = :userId, set_number = :setNumber WHERE gameId = :gameId")
-    void setGameWinner(int userId, String gameId, int setNumber);
+    @Query("UPDATE game SET winnerId = :userId WHERE gameId = :gameId")
+    void setGameWinner(int userId, String gameId);
 
     @Query("UPDATE `match` SET winnerId = :userId WHERE matchId = :matchId")
     void setMatchWinner(int userId, String matchId);

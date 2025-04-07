@@ -27,8 +27,6 @@ public class Game implements Serializable {
     @ColumnInfo(name = "set_index")
     public int setIndex;
     public int winnerId;
-    @ColumnInfo(name = "set_number")
-    public int setNumber;
 
     @ColumnInfo(name = "created_at")
     public OffsetDateTime createdAt = OffsetDateTime.now();

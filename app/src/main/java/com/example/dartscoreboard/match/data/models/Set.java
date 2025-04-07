@@ -20,11 +20,9 @@ public class Set {
     @ColumnInfo(name = "created_at")
     public OffsetDateTime createdAt = OffsetDateTime.now();
 
-    public int setNumber; //order of set
 
-    public Set(String setId, String matchId, int setNumber) {
+    public Set(@NonNull String setId, String matchId) {
         this.setId = setId;
         this.matchId = matchId;
-        this.setNumber = setNumber;
     }
 }

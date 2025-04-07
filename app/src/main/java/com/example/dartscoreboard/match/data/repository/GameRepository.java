@@ -89,8 +89,8 @@ public class GameRepository {
        Completable.fromAction(gameDao::deleteLastVisit).subscribeOn(Schedulers.io()).subscribe();
     }
 
-    public Completable setGameWinner(int userId, String gameId, int currentSetNumber){
-        return Completable.fromAction(() -> gameDao.setGameWinner(userId, gameId, currentSetNumber));
+    public Completable setGameWinner(int userId, String gameId){
+        return Completable.fromAction(() -> gameDao.setGameWinner(userId, gameId));
     }
 
     public Completable setMatchWinner(int userId, String matchId){

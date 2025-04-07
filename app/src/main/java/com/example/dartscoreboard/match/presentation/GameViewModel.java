@@ -145,7 +145,7 @@ public class GameViewModel extends AndroidViewModel {
 
     private Single<Integer> checklegWonSingle(int userId, Integer userScore) {
         if (userScore == 0) {
-            return gameRepository.setGameWinner(userId, gameWithVisits.game.getGameId(), currentSetNumber)
+            return gameRepository.setGameWinner(userId, gameWithVisits.game.getGameId())
                     .andThen(gameRepository.legsWon(gameWithVisits.game.setId, matchId, userId));
         }
         return Single.just(NO_LEG_OR_SET_WON);
@@ -176,8 +176,7 @@ public class GameViewModel extends AndroidViewModel {
             endGame(user);
         } else {
             // Set Won but not finished, need new set and new game
-            currentSetNumber++;
-            Set set = new Set(UUID.randomUUID().toString(), matchId, currentSetNumber);
+            Set set = new Set(UUID.randomUUID().toString(), matchId);
             gameRepository.insertSet(set).subscribeOn(Schedulers.io()).subscribe();
 
             int turnIndex = matchWithUsers.sets.size() % matchWithUsers.users.size();
@@ -307,7 +306,7 @@ public class GameViewModel extends AndroidViewModel {
     private void handleGameWonUndo(int latestSetPosition) {
         gameRepository.deleteGameById(gameWithVisits.game.gameId)
                 .andThen(gameRepository.getLatestGameId(matchWithUsers.match.matchId))
-                .flatMapCompletable(gameId -> gameRepository.setGameWinner(0, gameId, currentSetNumber)
+                .flatMapCompletable(gameId -> gameRepository.setGameWinner(0, gameId)
                         .andThen(gameRepository.setMatchWinner(0, matchWithUsers.match.matchId)))
                 .andThen(gameRepository.addSetWinner(matchWithUsers.sets.get(latestSetPosition).setId, 0))
                 .subscribeOn(Schedulers.io())
@@ -318,7 +317,7 @@ public class GameViewModel extends AndroidViewModel {
         gameRepository.deleteSet(currentSetId)
                 .andThen(gameRepository.deleteGameById(gameWithVisits.game.gameId))
                 .andThen(gameRepository.getLatestGameId(matchWithUsers.match.matchId))
-                .flatMapCompletable(gameId -> gameRepository.setGameWinner(0, gameId, currentSetNumber))
+                .flatMapCompletable(gameId -> gameRepository.setGameWinner(0, gameId))
                 .andThen(gameRepository.getLatestSetId(matchId))
                 .flatMapCompletable(setId -> gameRepository.addSetWinner(setId,0))
                 .subscribeOn(Schedulers.io())
@@ -327,7 +326,7 @@ public class GameViewModel extends AndroidViewModel {
 
     private void handeMatchWonUndo(int latestSetPosition) {
         //TODO dispose of these in onDestroy?
-        gameRepository.setGameWinner(0, gameWithVisits.game.gameId, currentSetNumber)
+        gameRepository.setGameWinner(0, gameWithVisits.game.gameId)
                 .andThen(gameRepository.addSetWinner(matchWithUsers.sets.get(latestSetPosition).setId, 0))
                 .andThen(gameRepository.setMatchWinner(0, matchWithUsers.match.matchId))
                 .subscribeOn(Schedulers.io())

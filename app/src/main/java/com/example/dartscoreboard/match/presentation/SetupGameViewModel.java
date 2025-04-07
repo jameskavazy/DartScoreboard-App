@@ -62,7 +62,7 @@ public class SetupGameViewModel extends AndroidViewModel {
             public void onComplete() {
                 String setId = UUID.randomUUID().toString();
                 GameViewModel.currentSetNumber = 0;
-                gameRepository.insertSet(new Set(setId, match.matchId, 0)).subscribeOn(Schedulers.io()).subscribe();
+                gameRepository.insertSet(new Set(setId, match.matchId)).subscribeOn(Schedulers.io()).subscribe();
                 gameRepository.insertGame(new Game(UUID.randomUUID().toString(), setId, match.matchId, 0,0,0)).subscribeOn(Schedulers.io()).subscribe();
             }
 
