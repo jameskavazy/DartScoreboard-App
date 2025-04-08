@@ -1,5 +1,7 @@
 package com.example.dartscoreboard.match.presentation;
 
+import static java.lang.Math.round;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,6 +26,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dartscoreboard.R;
 import com.example.dartscoreboard.match.data.models.MatchData;
+
+import java.text.DecimalFormat;
+import java.util.Locale;
+import java.util.OptionalDouble;
 
 
 public class MatchActivity extends AppCompatActivity implements View.OnClickListener {
@@ -95,6 +101,7 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
             toolbar.setTitle(matchData.getMatchWithUsers().match.getMatchType().name);
             matchAdapter.setLegWithVisits(matchData.getLegWithVisits());
             setVisitsTextView(matchData);
+            setAverageScoreTextView(matchData);
         });
 
 
@@ -167,14 +174,15 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
         return super.onOptionsItemSelected(item);
     }
 
-//    private void setAverageScoreTextView(MatchData matchData) {
-//        double avg = gameViewModel.getPlayerAverage();
-//        averageScoreTextView.setText(String.valueOf(avg));
-//    }
+    private void setAverageScoreTextView(MatchData matchData) {
+        double avg = getAvgForCurrentPlayer(matchData);
+        String avgString = String.format(Locale.getDefault(),"%.2f", avg);
+        averageScoreTextView.setText(avgString);
+    }
 
     private void setVisitsTextView(MatchData matchData) {
-        String count = getVisitCountForCurrentUser(matchData);
-        visitsTextView.setText(count);
+        int count = getVisitCountForCurrentUser(matchData);
+        visitsTextView.setText(String.valueOf(count));
     }
 
 
@@ -187,13 +195,23 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
 //        } else bananaView.setVisibility(View.GONE);
 //    }
 
-    private String getVisitCountForCurrentUser(MatchData matchData) {
+    private int getVisitCountForCurrentUser(MatchData matchData) {
         int turnIndex = matchData.getLegWithVisits().leg.turnIndex;
         int userId = matchData.getMatchWithUsers().users.get(turnIndex).userId;
-        return String.valueOf(matchData.getLegWithVisits().visits
+        return (int) matchData.getLegWithVisits().visits
                 .stream()
                 .filter(visit -> visit.userId == userId)
-                .count());
+                .count();
     }
 
+    private double getAvgForCurrentPlayer(MatchData matchData) {
+        int turnIndex = matchData.getLegWithVisits().leg.turnIndex;
+        int userId = matchData.getMatchWithUsers().users.get(turnIndex).userId;
+        OptionalDouble optionalAvg = matchData.getLegWithVisits().visits.stream()
+                .filter(visit -> visit.userId == userId)
+                .mapToInt(visit -> visit.score)
+                .average();
+
+        return optionalAvg.isPresent() ? optionalAvg.getAsDouble() : 0.0;
+    }
 }
