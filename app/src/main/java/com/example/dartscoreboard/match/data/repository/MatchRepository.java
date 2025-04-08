@@ -129,4 +129,8 @@ public class MatchRepository {
     public void deleteLatestVisit(){
        Completable.fromAction(matchDao::deleteLastVisit).subscribeOn(Schedulers.io()).subscribe();
     }
+
+    public LiveData<Integer> countUserVisits(String legId, int userId){
+        return matchDao.countUserVisits(legId, userId);
+    }
 }

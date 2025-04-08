@@ -66,6 +66,7 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
         inputScoreEditText = findViewById(R.id.inputUserNameEditText);
         doneButton.setOnClickListener(this);
         inputScoreEditText.setOnEditorActionListener((v, actionId, event) -> onScoreEntered());
+
     }
 
     private String getMatchIdFromIntent() {
@@ -110,6 +111,8 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
                 doneButton.setVisibility(View.GONE);
             }
         });
+
+        setVisitsTextView();
     }
     private Boolean onScoreEntered() {
         int input = 0;
@@ -162,21 +165,20 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
             Log.d("dom test", "Undo Click");
             matchViewModel.undo();
 //            setAverageScoreTextView();
-//            setVisitsTextView();
+
         }
         return super.onOptionsItemSelected(item);
     }
 
-    //    private void setAverageScoreTextView() {
+//    private void setAverageScoreTextView() {
 //        double avg = gameViewModel.getPlayerAverage();
 //        averageScoreTextView.setText(String.valueOf(avg));
 //    }
 
-//    private void setVisitsTextView() {
-//        User activeUser = gameViewModel.getPlayersList().get(GameViewModel.getTurnIndex());
-//        int visits = activeUser.getVisits();
-//        visitsTextView.setText(String.valueOf(visits));
-//    }
+    private void setVisitsTextView() {
+//        matchViewModel.getVisits().observe(this,
+//                count -> visitsTextView.setText(String.valueOf(count)));
+    }
 
 
 //    private void setBanana() {

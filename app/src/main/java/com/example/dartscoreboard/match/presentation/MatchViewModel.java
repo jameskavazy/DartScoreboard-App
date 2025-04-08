@@ -24,6 +24,7 @@ import com.example.dartscoreboard.match.data.models.Visit;
 
 import org.reactivestreams.Subscription;
 
+import java.util.List;
 import java.util.UUID;
 
 import io.reactivex.rxjava3.core.Flowable;
@@ -32,6 +33,7 @@ import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import io.reactivex.rxjava3.subscribers.DisposableSubscriber;
 
 
 public class MatchViewModel extends AndroidViewModel {
@@ -39,6 +41,7 @@ public class MatchViewModel extends AndroidViewModel {
     private LegWithVisits legWithVisits;
     private final MutableLiveData<MatchWithUsers> matchWithUsersMutableLiveData = new MutableLiveData<>();
     private final MutableLiveData<LegWithVisits> gameWithVisitsMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Integer> currentUserVisits =new MutableLiveData<>(0);
     private final MatchRepository matchRepository;
     private final MutableLiveData<Boolean> _finished = new MutableLiveData<>(false);
     public LiveData<Boolean> finished = _finished;
@@ -231,36 +234,36 @@ public class MatchViewModel extends AndroidViewModel {
     }
 
 
-
     public void fetchMatchData(String matchId){
-        Flowable.combineLatest(
+       Flowable<Pair<MatchWithUsers, LegWithVisits>> flowable =  Flowable.combineLatest(
                 matchRepository.getMatchWithUsers(matchId),
                 matchRepository.getLegWithVisits(matchId),
                 Pair::new
-        ).subscribeOn(Schedulers.io())
-                .subscribe(new FlowableSubscriber<Pair<MatchWithUsers, LegWithVisits>>() {
-                    @Override
-                    public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Subscription s) {
-                        s.request(Long.MAX_VALUE);
-                    }
+        );
 
-                    @Override
-                    public void onNext(Pair<MatchWithUsers, LegWithVisits> matchData) {
-                        MatchWithUsers matchWithUsers = matchData.first;
-                        setMatchWithUsers(matchWithUsers);
-                        matchWithUsersMutableLiveData.postValue(matchWithUsers);
+        compositeDisposable.add(flowable.subscribeOn(Schedulers.io())
+               .subscribeWith(new DisposableSubscriber<Pair<MatchWithUsers, LegWithVisits>>() {
+                   @Override
+                   public void onNext(Pair<MatchWithUsers, LegWithVisits> matchData) {
+                       MatchWithUsers matchWithUsers = matchData.first;
+                       setMatchWithUsers(matchWithUsers);
+                       matchWithUsersMutableLiveData.postValue(matchWithUsers);
 
-                        LegWithVisits legWithVisits = matchData.second;
-                        setGameWithVisits(legWithVisits);
-                        gameWithVisitsMutableLiveData.postValue(legWithVisits);
+                       LegWithVisits legWithVisits = matchData.second;
+                       setGameWithVisits(legWithVisits);
+                       gameWithVisitsMutableLiveData.postValue(legWithVisits);
+                   }
 
-                    }
+                   @Override
+                   public void onError(Throwable t) {
 
-                    @Override
-                    public void onError(Throwable t) {}
-                    @Override
-                    public void onComplete() {}
-                });
+                   }
+
+                   @Override
+                   public void onComplete() {
+
+                   }
+               }));
     }
 
     @NonNull
@@ -291,14 +294,19 @@ public class MatchViewModel extends AndroidViewModel {
 
 
 
+
 //    public LiveData<Game> getGame(){
 //        return gameRepository.getGameStateById(gameId);
 //    }
 
-//    public LiveData<List<Visit>> getVisits(){
-//        return gameRepository.getVisitsInGame(matchData.game.getGameId());
-//    }
-//
+    public LiveData<Integer> getVisits(){
+        // TODO: 07/04/2025 Null pointer here...
+           int  turnIndex = legWithVisits.leg.turnIndex;
+            int userId = matchWithUsers.users.get(turnIndex).userID;
+
+        return matchRepository.countUserVisits(legWithVisits.leg.legId, userId);
+    }
+
 
 
     private boolean setWon(String penultimateGameSetId) {

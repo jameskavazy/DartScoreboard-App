@@ -99,6 +99,9 @@ public interface MatchDao {
     @Query("SELECT * FROM leg WHERE matchId = :matchId ORDER BY created_at DESC LIMIT 1")
     Flowable<LegWithVisits> getLatestGameWithVisits(String matchId);
 
+    @Query("SELECT COUNT(visitId) FROM visit WHERE legId = :legId AND userID = :userId")
+    LiveData<Integer> countUserVisits(String legId, int userId);
+
 
 
 
