@@ -74,7 +74,7 @@ public class PlayerSelectActivity extends AppCompatActivity implements View.OnCl
         if (players == null) {
             players = new ArrayList<>();
         }
-        boolean removed = players.removeIf(player -> player.userID == user.userID);
+        boolean removed = players.removeIf(player -> player.userId == user.userId);
         if (!removed) {
             players.add(user);
         }

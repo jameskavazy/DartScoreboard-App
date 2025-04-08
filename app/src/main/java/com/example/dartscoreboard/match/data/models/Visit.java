@@ -16,13 +16,13 @@ import com.example.dartscoreboard.user.User;
                 ),
                 @ForeignKey(
                         entity = User.class,
-                        parentColumns = "userID",
-                        childColumns = "userID"
+                        parentColumns = "userId",
+                        childColumns = "userId"
                 )
         },
         indices = {
                 @Index(value = "legId"),
-                @Index(value = "userID")
+                @Index(value = "userId")
         }
 )
 public class Visit {
@@ -30,7 +30,7 @@ public class Visit {
     @PrimaryKey(autoGenerate = true)
     public long visitId;
 
-    public int userID;
+    public int userId;
 
     public String legId;
     public int score;
@@ -46,12 +46,12 @@ public class Visit {
         this.visitId = visitId;
     }
 
-    public int getUserID() {
-        return userID;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setUserID(int userID) {
-        this.userID = userID;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getLegId() {

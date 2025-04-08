@@ -12,7 +12,7 @@ public class MatchWithUsers {
     @Embedded public Match match;
     @Relation(
             parentColumn = "matchId",
-            entityColumn = "userID",
+            entityColumn = "userId",
             associateBy = @Junction(MatchUsers.class)
     )
     public List<User> users;

@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dartscoreboard.R;
+import com.example.dartscoreboard.match.data.models.MatchData;
 
 
 public class MatchActivity extends AppCompatActivity implements View.OnClickListener {
@@ -89,16 +90,13 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
         matchViewModel = new ViewModelProvider(this).get(MatchViewModel.class);
         matchViewModel.fetchMatchData(getMatchIdFromIntent());
 
-        matchViewModel.getMatchDataLiveData()
-                .observe(this, matchData -> {
-                    matchAdapter.setMatchData(matchData);
-                    toolbar.setTitle(matchData.match.getMatchType().name);
-                });
+        matchViewModel.getLiveMatchData().observe(this, matchData -> {
+            matchAdapter.setMatchData(matchData.getMatchWithUsers());
+            toolbar.setTitle(matchData.getMatchWithUsers().match.getMatchType().name);
+            matchAdapter.setLegWithVisits(matchData.getLegWithVisits());
+            setVisitsTextView(matchData);
+        });
 
-        matchViewModel.getGameWithVisitsMutableLiveData()
-                .observe(this, gameWithVisits -> {
-                    matchAdapter.setGameWithVisits(gameWithVisits);
-                });
 
         matchViewModel.getFinished().observe(this, isFinished -> {
             if (!isFinished) {
@@ -112,7 +110,6 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
             }
         });
 
-        setVisitsTextView();
     }
     private Boolean onScoreEntered() {
         int input = 0;
@@ -170,14 +167,14 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
         return super.onOptionsItemSelected(item);
     }
 
-//    private void setAverageScoreTextView() {
+//    private void setAverageScoreTextView(MatchData matchData) {
 //        double avg = gameViewModel.getPlayerAverage();
 //        averageScoreTextView.setText(String.valueOf(avg));
 //    }
 
-    private void setVisitsTextView() {
-//        matchViewModel.getVisits().observe(this,
-//                count -> visitsTextView.setText(String.valueOf(count)));
+    private void setVisitsTextView(MatchData matchData) {
+        String count = getVisitCountForCurrentUser(matchData);
+        visitsTextView.setText(count);
     }
 
 
@@ -189,4 +186,14 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
 //            bananaView.postDelayed(() -> bananaView.setVisibility(View.GONE), 150);
 //        } else bananaView.setVisibility(View.GONE);
 //    }
+
+    private String getVisitCountForCurrentUser(MatchData matchData) {
+        int turnIndex = matchData.getLegWithVisits().leg.turnIndex;
+        int userId = matchData.getMatchWithUsers().users.get(turnIndex).userId;
+        return String.valueOf(matchData.getLegWithVisits().visits
+                .stream()
+                .filter(visit -> visit.userId == userId)
+                .count());
+    }
+
 }

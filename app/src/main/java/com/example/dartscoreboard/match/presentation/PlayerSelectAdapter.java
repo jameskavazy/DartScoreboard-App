@@ -71,7 +71,7 @@ public class PlayerSelectAdapter extends RecyclerView.Adapter<PlayerSelectAdapte
         if (savedUsers == null) {
             savedUsers = new ArrayList<>();
         }
-        boolean selected = savedUsers.stream().anyMatch(player -> player.userID == user.userID);
+        boolean selected = savedUsers.stream().anyMatch(player -> player.userId == user.userId);
         holder.checkBox.setChecked(selected);
     }
 

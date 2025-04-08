@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import io.reactivex.rxjava3.core.CompletableObserver;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -83,7 +82,7 @@ public class SetupGameViewModel extends AndroidViewModel {
     public void addUsersToMatch(){
         for (User player :
                 selectedPlayers) {
-            MatchUsers matchUsers = new MatchUsers(player.userID, matchId, selectedPlayers.indexOf(player));
+            MatchUsers matchUsers = new MatchUsers(player.userId, matchId, selectedPlayers.indexOf(player));
             userRepository.addUsersToMatch(matchUsers);
         }
     }

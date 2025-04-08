@@ -16,19 +16,16 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.dartscoreboard.application.DartsScoreboardApplication;
 import com.example.dartscoreboard.match.data.models.Leg;
 import com.example.dartscoreboard.match.data.models.LegWithVisits;
+import com.example.dartscoreboard.match.data.models.MatchData;
 import com.example.dartscoreboard.user.User;
 import com.example.dartscoreboard.match.data.repository.MatchRepository;
 import com.example.dartscoreboard.match.data.models.MatchWithUsers;
 import com.example.dartscoreboard.match.data.models.Set;
 import com.example.dartscoreboard.match.data.models.Visit;
 
-import org.reactivestreams.Subscription;
-
-import java.util.List;
 import java.util.UUID;
 
 import io.reactivex.rxjava3.core.Flowable;
-import io.reactivex.rxjava3.core.FlowableSubscriber;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
@@ -37,14 +34,12 @@ import io.reactivex.rxjava3.subscribers.DisposableSubscriber;
 
 
 public class MatchViewModel extends AndroidViewModel {
+
+    private final MutableLiveData<MatchData> liveMatchData = new MutableLiveData<>();
     private MatchWithUsers matchWithUsers;
     private LegWithVisits legWithVisits;
-    private final MutableLiveData<MatchWithUsers> matchWithUsersMutableLiveData = new MutableLiveData<>();
-    private final MutableLiveData<LegWithVisits> gameWithVisitsMutableLiveData = new MutableLiveData<>();
-    private final MutableLiveData<Integer> currentUserVisits =new MutableLiveData<>(0);
     private final MatchRepository matchRepository;
-    private final MutableLiveData<Boolean> _finished = new MutableLiveData<>(false);
-    public LiveData<Boolean> finished = _finished;
+    private final MutableLiveData<Boolean> finished = new MutableLiveData<>(false);
     private final static String BUST = "BUST";
     private final static String NO_SCORE = "No score";
 
@@ -71,7 +66,7 @@ public class MatchViewModel extends AndroidViewModel {
         }
         if (scoreInt <= 180) {
             User user = matchWithUsers.users.get(legWithVisits.leg.turnIndex);
-            int userId = user.userID;
+            int userId = user.userId;
             int startingScore = matchWithUsers.match.getMatchType().startingScore;
 
             Disposable d = matchRepository.getLegTotalScore(legWithVisits.leg.getLegId(), userId)
@@ -135,8 +130,8 @@ public class MatchViewModel extends AndroidViewModel {
     }
 
     private void endGame(User currentPlayer) {
-        _finished.postValue(true);
-        matchRepository.setMatchWinner(currentPlayer.userID, matchWithUsers.match.matchId).subscribeOn(Schedulers.io()).subscribe();
+        finished.postValue(true);
+        matchRepository.setMatchWinner(currentPlayer.userId, matchWithUsers.match.matchId).subscribeOn(Schedulers.io()).subscribe();
         toastMessage(currentPlayer.getUsername() + " wins the match!");
     }
 
@@ -191,7 +186,7 @@ public class MatchViewModel extends AndroidViewModel {
     }
 
     public void undo() {
-        _finished.postValue(false);
+        finished.postValue(false);
         int latestSetPosition = matchWithUsers.sets.size() - 1;
 
         boolean matchWon = matchWithUsers.match.winnerId != 0;
@@ -241,28 +236,22 @@ public class MatchViewModel extends AndroidViewModel {
                 Pair::new
         );
 
-        compositeDisposable.add(flowable.subscribeOn(Schedulers.io())
+        compositeDisposable.add(
+                flowable.subscribeOn(Schedulers.io())
                .subscribeWith(new DisposableSubscriber<Pair<MatchWithUsers, LegWithVisits>>() {
                    @Override
-                   public void onNext(Pair<MatchWithUsers, LegWithVisits> matchData) {
-                       MatchWithUsers matchWithUsers = matchData.first;
-                       setMatchWithUsers(matchWithUsers);
-                       matchWithUsersMutableLiveData.postValue(matchWithUsers);
-
-                       LegWithVisits legWithVisits = matchData.second;
-                       setGameWithVisits(legWithVisits);
-                       gameWithVisitsMutableLiveData.postValue(legWithVisits);
+                   public void onNext(Pair<MatchWithUsers, LegWithVisits> data) {
+                       MatchData matchData = new MatchData(data.first, data.second);
+                       liveMatchData.postValue(matchData);
+                       setMatchWithUsers(data.first);
+                       setLegWithVisits(data.second);
                    }
 
                    @Override
-                   public void onError(Throwable t) {
-
-                   }
+                   public void onError(Throwable t) {}
 
                    @Override
-                   public void onComplete() {
-
-                   }
+                   public void onComplete() {}
                }));
     }
 
@@ -270,7 +259,7 @@ public class MatchViewModel extends AndroidViewModel {
     private Visit createVisit(User user, int finalScore) {
         Visit visit = new Visit();
         visit.setLegId(legWithVisits.leg.getLegId());
-        visit.setUserID(user.userID);
+        visit.setUserId(user.userId);
         visit.setScore(finalScore);
         return visit;
     }
@@ -291,21 +280,6 @@ public class MatchViewModel extends AndroidViewModel {
 //        return getPlayersList().get(getTurnIndex()).isGuy
 //                && getPlayersList().get(getTurnIndex()).getVisits() % 7 == 0;
 //    }
-
-
-
-
-//    public LiveData<Game> getGame(){
-//        return gameRepository.getGameStateById(gameId);
-//    }
-
-    public LiveData<Integer> getVisits(){
-        // TODO: 07/04/2025 Null pointer here...
-           int  turnIndex = legWithVisits.leg.turnIndex;
-            int userId = matchWithUsers.users.get(turnIndex).userID;
-
-        return matchRepository.countUserVisits(legWithVisits.leg.legId, userId);
-    }
 
 
 
@@ -361,19 +335,15 @@ public class MatchViewModel extends AndroidViewModel {
         return finished;
     }
 
-    public MutableLiveData<MatchWithUsers> getMatchDataLiveData() {
-        return matchWithUsersMutableLiveData;
-    }
-
-    public MutableLiveData<LegWithVisits> getGameWithVisitsMutableLiveData(){
-        return gameWithVisitsMutableLiveData;
+    public MutableLiveData<MatchData> getLiveMatchData(){
+        return liveMatchData;
     }
 
     private void setMatchWithUsers(MatchWithUsers matchWithUsers){
         this.matchWithUsers = matchWithUsers;
     }
 
-    public void setGameWithVisits(LegWithVisits legWithVisits) {
+    public void setLegWithVisits(LegWithVisits legWithVisits) {
         this.legWithVisits = legWithVisits;
     }
 }

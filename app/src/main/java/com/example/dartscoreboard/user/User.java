@@ -8,7 +8,7 @@ import java.io.Serializable;
 @Entity(tableName = "user")
 public class User implements Serializable {
     @PrimaryKey(autoGenerate = true)
-    public int userID;
+    public int userId;
     protected String username;
 
     public boolean isGuy;

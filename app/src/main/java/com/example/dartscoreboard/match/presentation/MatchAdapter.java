@@ -57,7 +57,7 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.GameViewHold
     public void onBindViewHolder(@NonNull GameViewHolder holder, int position) {
 
         String name = matchWithUsers.users.get(position).getUsername();
-        int userId = matchWithUsers.users.get(position).userID;
+        int userId = matchWithUsers.users.get(position).userId;
         
         int startingScore = matchWithUsers.match.getMatchType().startingScore;
         int visitScores = getVisitScores(userId);
@@ -90,7 +90,7 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.GameViewHold
     public int getVisitScores(int userId) {
         if (gamesWithVisits.visits != null) {
             return gamesWithVisits.visits.stream()
-                    .filter(visit -> visit.userID == userId)
+                    .filter(visit -> visit.userId == userId)
                     .mapToInt(value -> value.score)
                     .sum();
         }
@@ -107,7 +107,7 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.GameViewHold
         notifyDataSetChanged();
     }
 
-    public void setGameWithVisits(LegWithVisits gamesWithVisits) {
+    public void setLegWithVisits(LegWithVisits gamesWithVisits) {
         this.gamesWithVisits = gamesWithVisits;
         notifyDataSetChanged();
     }

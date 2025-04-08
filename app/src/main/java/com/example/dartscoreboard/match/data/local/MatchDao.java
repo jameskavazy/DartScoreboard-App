@@ -77,7 +77,7 @@ public interface MatchDao {
     @Query("UPDATE leg SET winnerId = :userId WHERE legId = :legId")
     void setLegWinner(int userId, String legId);
 
-    @Query("SELECT COALESCE(SUM(score), 0) FROM visit WHERE legId = :gameId AND userID = :userId")
+    @Query("SELECT COALESCE(SUM(score), 0) FROM visit WHERE legId = :gameId AND userId = :userId")
     Single<Integer> getLegTotalScore(String gameId, int userId);
 
     @Query("SELECT COUNT(*) FROM leg WHERE setId = :setId AND matchId = :matchId AND winnerId = :userId ")
@@ -99,7 +99,7 @@ public interface MatchDao {
     @Query("SELECT * FROM leg WHERE matchId = :matchId ORDER BY created_at DESC LIMIT 1")
     Flowable<LegWithVisits> getLatestGameWithVisits(String matchId);
 
-    @Query("SELECT COUNT(visitId) FROM visit WHERE legId = :legId AND userID = :userId")
+    @Query("SELECT COUNT(visitId) FROM visit WHERE legId = :legId AND userId = :userId")
     LiveData<Integer> countUserVisits(String legId, int userId);
 
 
