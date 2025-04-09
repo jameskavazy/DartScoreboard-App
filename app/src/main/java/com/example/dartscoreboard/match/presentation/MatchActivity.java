@@ -1,7 +1,5 @@
 package com.example.dartscoreboard.match.presentation;
 
-import static java.lang.Math.round;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,7 +25,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.dartscoreboard.R;
 import com.example.dartscoreboard.match.data.models.MatchData;
 
-import java.text.DecimalFormat;
 import java.util.Locale;
 import java.util.OptionalDouble;
 
@@ -102,6 +99,7 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
             matchAdapter.setLegWithVisits(matchData.getLegWithVisits());
             setVisitsTextView(matchData);
             setAverageScoreTextView(matchData);
+            setBanana(matchData);
         });
 
 
@@ -123,21 +121,17 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
         if (!inputScoreEditText.getText().toString().isEmpty()) {
             try {
                 input = Integer.parseInt(inputScoreEditText.getText().toString());
-            } catch (Exception ignored) {
-
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
         try {
             Log.d("dom test", "IME_ACTION_DONE");
-//            setBanana();
             matchViewModel.playerVisit(input);
-
             if (input > 180) {
                 Toast.makeText(MatchActivity.this, "Invalid Score", Toast.LENGTH_SHORT).show();
             }
             ((EditText) findViewById(R.id.inputUserNameEditText)).getText().clear();
-//            setAverageScoreTextView();
-//            setVisitsTextView();
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -168,8 +162,6 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
         if (menuItem == R.id.undo_menu_button) {
             Log.d("dom test", "Undo Click");
             matchViewModel.undo();
-//            setAverageScoreTextView();
-
         }
         return super.onOptionsItemSelected(item);
     }
@@ -186,18 +178,22 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
     }
 
 
-//    private void setBanana() {
-//        if (gameViewModel.bananaSplit()) {
-//            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-//            inputMethodManager.hideSoftInputFromWindow(recyclerView.getApplicationWindowToken(), 0);
-//            bananaView.setVisibility(View.VISIBLE);
-//            bananaView.postDelayed(() -> bananaView.setVisibility(View.GONE), 150);
-//        } else bananaView.setVisibility(View.GONE);
-//    }
+    private void setBanana(MatchData matchData) {
+        int visitCount = getVisitCountForCurrentUser(matchData);
+        boolean isGuy = matchData.getMatchWithUsers().users
+                .stream()
+                .anyMatch(user -> user.userId == getCurrentUserId(matchData) && user.isGuy);
+
+        if (visitCount % 7 == 0 && isGuy) {
+            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(recyclerView.getApplicationWindowToken(), 0);
+            bananaView.setVisibility(View.VISIBLE);
+            bananaView.postDelayed(() -> bananaView.setVisibility(View.GONE), 150);
+        } else bananaView.setVisibility(View.GONE);
+    }
 
     private int getVisitCountForCurrentUser(MatchData matchData) {
-        int turnIndex = matchData.getLegWithVisits().leg.turnIndex;
-        int userId = matchData.getMatchWithUsers().users.get(turnIndex).userId;
+        int userId = getCurrentUserId(matchData);
         return (int) matchData.getLegWithVisits().visits
                 .stream()
                 .filter(visit -> visit.userId == userId)
@@ -205,13 +201,16 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private double getAvgForCurrentPlayer(MatchData matchData) {
-        int turnIndex = matchData.getLegWithVisits().leg.turnIndex;
-        int userId = matchData.getMatchWithUsers().users.get(turnIndex).userId;
+        int userId = getCurrentUserId(matchData);
         OptionalDouble optionalAvg = matchData.getLegWithVisits().visits.stream()
                 .filter(visit -> visit.userId == userId)
                 .mapToInt(visit -> visit.score)
                 .average();
 
         return optionalAvg.isPresent() ? optionalAvg.getAsDouble() : 0.0;
+    }
+    private int getCurrentUserId(MatchData matchData) {
+        int turnIndex = matchData.getLegWithVisits().leg.turnIndex;
+        return matchData.getMatchWithUsers().users.get(turnIndex).userId;
     }
 }

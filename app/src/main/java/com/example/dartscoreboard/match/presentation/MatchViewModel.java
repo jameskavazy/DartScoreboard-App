@@ -263,25 +263,6 @@ public class MatchViewModel extends AndroidViewModel {
         visit.setScore(finalScore);
         return visit;
     }
-//    public double getPlayerAverage() {
-//        User activePlayer = getPlayersList().get(getTurnIndex());
-//        int totalScores = activePlayer.getTotalScores();
-//        int activePlayerVisits = activePlayer.getVisits();
-//
-//        if (activePlayerVisits == 0) {
-//            activePlayerVisits++;
-//        }
-//
-//        double average = (double) totalScores / activePlayerVisits;
-//        return Math.round(average * 10.0) / 10.0;
-//    }
-
-//    public boolean bananaSplit() {
-//        return getPlayersList().get(getTurnIndex()).isGuy
-//                && getPlayersList().get(getTurnIndex()).getVisits() % 7 == 0;
-//    }
-
-
 
     private boolean setWon(String penultimateGameSetId) {
         return !legWithVisits.leg.setId.equals(penultimateGameSetId);
