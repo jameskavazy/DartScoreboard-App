@@ -104,5 +104,24 @@ public interface MatchDao {
 
 
 
+    @Query("SELECT COUNT(winnerId) FROM `match` WHERE winnerId = :userId")
+    Single<Integer> getUserMatchWins(int userId);
+
+    @Query("SELECT COUNT(winnerId) FROM `match` WHERE winnerId != :userId AND winnerId != 0")
+    Single<Integer> getUserMatchLosses(int userId);
+
+    @Query("SELECT COUNT(userId) FROM MatchUsers WHERE userId = :userId")
+    Single<Integer> getUserMatchesPlayed(int userId);
+
+    @Query("SELECT COALESCE( (" +
+            "SELECT COUNT(winnerId) * 100.0 / NULLIF((SELECT count(matchId) FROM `match`), 0)" +
+            "FROM `match`" +
+            "WHERE winnerId = :userId " +
+            "), 0)")
+    Single<Integer> getWinRate(int userId);
+
+
+
+
 
 }

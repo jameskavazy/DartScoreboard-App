@@ -52,7 +52,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/winRateCount"
+            android:id="@+id/win_rate"
             android:layout_marginTop="5dp"
             android:textSize="25sp"
             tools:text="23%" />
@@ -87,6 +87,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/avg_score"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/matches_played"
+            android:layout_marginTop="5dp"
+            android:textSize="25sp"
+            tools:text="100"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/matches_played"/>
+
 
     </LinearLayout>
 

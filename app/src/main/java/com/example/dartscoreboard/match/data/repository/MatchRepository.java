@@ -133,4 +133,21 @@ public class MatchRepository {
     public LiveData<Integer> countUserVisits(String legId, int userId){
         return matchDao.countUserVisits(legId, userId);
     }
+
+    public Single<Integer> getUserMatchWins(int userId){
+        return matchDao.getUserMatchWins(userId);
+    }
+
+    public Single<Integer> getUserMatchLosses(int userId){
+        return matchDao.getUserMatchLosses(userId);
+    }
+
+    public Single<Integer> getUserMatchesPlayed(int userId){
+        return matchDao.getUserMatchesPlayed(userId);
+    }
+
+    public Single<Integer> getWinRate(int userId){
+        return matchDao.getWinRate(userId);
+    }
+
 }

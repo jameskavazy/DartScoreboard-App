@@ -199,7 +199,7 @@ public class MatchViewModel extends AndroidViewModel {
 
         if (gameWon) {
             String penultimateGameSetId = getPenultimateGameSetId();
-            boolean setWon = setWon(penultimateGameSetId);
+            boolean setWon = isSetWon(penultimateGameSetId);
             if (setWon) {
                 String currentSetId = matchWithUsers.sets.get(latestSetPosition).setId;
                 handleSetWonUndo(currentSetId);
@@ -264,7 +264,7 @@ public class MatchViewModel extends AndroidViewModel {
         return visit;
     }
 
-    private boolean setWon(String penultimateGameSetId) {
+    private boolean isSetWon(String penultimateGameSetId) {
         return !legWithVisits.leg.setId.equals(penultimateGameSetId);
     }
 
@@ -278,7 +278,6 @@ public class MatchViewModel extends AndroidViewModel {
                 .subscribe(matchRepository::deleteLatestVisit, Throwable::printStackTrace);
 
         compositeDisposable.add(d);
-
     }
 
     private void handleSetWonUndo(String currentSetId) {

@@ -88,5 +88,7 @@
     <string name="win_rate">Win Rate</string>
     <string name="losses">losses</string>
     <string name="wins">wins</string>
+    <string name="matches_played">Matches</string>
+    <string name="percent">%</string>
 
 </resources>

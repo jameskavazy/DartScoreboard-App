@@ -10,6 +10,7 @@ import com.example.dartscoreboard.match.data.models.MatchUsers;
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class UserRepository {
@@ -46,6 +47,10 @@ public class UserRepository {
 
     public void addUsersToMatch(MatchUsers matchUsers) {
         Completable.fromAction(() -> userDao.insertToGame(matchUsers)).subscribeOn(Schedulers.io()).subscribe();
+    }
+
+    public Single<String> getUsernameById(int userId){
+        return userDao.getUsernameById(userId);
     }
 
 }

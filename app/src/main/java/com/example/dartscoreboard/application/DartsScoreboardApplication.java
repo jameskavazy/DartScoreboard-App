@@ -21,6 +21,10 @@ public class DartsScoreboardApplication extends Application {
         return sApplication.getApplicationContext();
     }
 
+    public static DartsScoreboardApplication getInstance(){
+        return sApplication;
+    }
+
     private void createNotificationChannel() {
         NotificationChannel channel = new NotificationChannel(
                 reminderChannel,

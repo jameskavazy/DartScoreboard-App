@@ -23,7 +23,6 @@ public class StatisticsActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private recyclerAdapterUsers adapter;
     Toolbar toolbar;
-
     public static String userStatKey = "USER_STAT_KEY";
 
     @Override
@@ -55,7 +54,7 @@ public class StatisticsActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         adapter.setOnItemClickListener(user -> {
             Intent intent = new Intent(getApplicationContext(), UserStatisticsActivity.class);
-            intent.putExtra(userStatKey,user);
+            intent.putExtra(userStatKey,user.userId);
             startActivity(intent);
         });
     }

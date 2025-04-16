@@ -12,6 +12,8 @@ import com.example.dartscoreboard.match.data.models.MatchUsers;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Single;
+
 @Dao
 public interface UserDao {
 
@@ -33,5 +35,7 @@ public interface UserDao {
     @Transaction
     @Insert
     void insertToGame(MatchUsers matchUsers);
+    @Query("SELECT username FROM user WHERE userId = :userId")
+    Single<String> getUsernameById(int userId);
 
 }
