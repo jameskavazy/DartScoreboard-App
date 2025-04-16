@@ -4,9 +4,13 @@ public class Statistics {
 
     private int wins;
     private int losses;
-    private int winRate;
-    private double averageScore;
+    private int matchWinRate;
+    private int averageScore;
     private int matchesPlayed;
+    private int legsWon;
+
+    private int legWinRate;
+
     public int getWins() {
         return wins;
     }
@@ -23,19 +27,19 @@ public class Statistics {
         this.losses = losses;
     }
 
-    public int getWinRate() {
-        return winRate;
+    public int getMatchWinRate() {
+        return matchWinRate;
     }
 
-    public void setWinRate(int winRate) {
-        this.winRate = winRate;
+    public void setMatchWinRate(int matchWinRate) {
+        this.matchWinRate = matchWinRate;
     }
 
-    public double getAverageScore() {
+    public int getAverageScore() {
         return averageScore;
     }
 
-    public void setAverageScore(double averageScore) {
+    public void setAverageScore(int averageScore) {
         this.averageScore = averageScore;
     }
 
@@ -47,5 +51,18 @@ public class Statistics {
         this.matchesPlayed = matchesPlayed;
     }
 
+    public int getLegsWon() {
+        return legsWon;
+    }
 
+    public void setLegsWon(int legsWon) {
+        this.legsWon = legsWon;
+    }
+    public int getLegWinRate() {
+        return legWinRate;
+    }
+
+    public void setLegWinRate(int legWinRate) {
+        this.legWinRate = legWinRate;
+    }
 }

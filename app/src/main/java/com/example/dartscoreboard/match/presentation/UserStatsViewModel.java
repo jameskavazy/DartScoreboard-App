@@ -73,7 +73,10 @@ public class UserStatsViewModel extends AndroidViewModel {
         queryAndUpdateStats(matchRepository.getUserMatchWins(userId), _statistics::setWins);
         queryAndUpdateStats(matchRepository.getUserMatchLosses(userId), _statistics::setLosses);
         queryAndUpdateStats(matchRepository.getUserMatchesPlayed(userId), _statistics::setMatchesPlayed);
-        queryAndUpdateStats(matchRepository.getWinRate(userId), _statistics::setWinRate);
+        queryAndUpdateStats(matchRepository.getMatchWinRate(userId), _statistics::setMatchWinRate);
+        queryAndUpdateStats(matchRepository.getAvgAllMatches(userId), _statistics::setAverageScore);
+        queryAndUpdateStats(matchRepository.getLegsWon(userId), _statistics::setLegsWon);
+        queryAndUpdateStats(matchRepository.getLegWinRate(userId), _statistics::setLegWinRate);
     }
 
 

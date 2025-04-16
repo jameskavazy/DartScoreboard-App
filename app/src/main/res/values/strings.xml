@@ -90,5 +90,7 @@
     <string name="wins">wins</string>
     <string name="matches_played">Matches</string>
     <string name="percent">%</string>
+    <string name="legs_won">Legs Won</string>
+    <string name="leg_win_rate">Leg Win Rate</string>
 
 </resources>

@@ -114,14 +114,26 @@ public interface MatchDao {
     Single<Integer> getUserMatchesPlayed(int userId);
 
     @Query("SELECT COALESCE( (" +
-            "SELECT COUNT(winnerId) * 100.0 / NULLIF((SELECT count(matchId) FROM `match`), 0)" +
-            "FROM `match`" +
-            "WHERE winnerId = :userId " +
+            "SELECT COUNT(winnerId) * 100.0 / NULLIF((SELECT COUNT(matchId) FROM `match`), 0)" +
+                "FROM `match`" +
+                "WHERE winnerId = :userId " +
             "), 0)")
-    Single<Integer> getWinRate(int userId);
+    Single<Integer> getMatchWinRate(int userId);
 
+    @Query("SELECT COALESCE( (" +
+            "SELECT SUM(score) / NULLIF((SELECT COUNT(visitId) FROM visit WHERE userId = :userId), 0)" +
+            "FROM visit" +
+            " WHERE userId = :userId " +
+            "), 0)")
+    Single<Integer> getAvgAllMatches(int userId);
 
+    @Query("SELECT COUNT(winnerId) FROM leg WHERE winnerId = :userId")
+    Single<Integer> getLegsWon(int userId);
 
-
-
+    @Query("SELECT COALESCE( (" +
+            "SELECT COUNT(winnerId) * 100.0 / NULLIF((SELECT COUNT(DISTINCT legId) FROM visit WHERE userId = :userId ), 0)" +
+            "FROM leg" +
+            " WHERE winnerId = :userId " +
+            "), 0)")
+    Single<Integer> getLegWinRate(int userId);
 }

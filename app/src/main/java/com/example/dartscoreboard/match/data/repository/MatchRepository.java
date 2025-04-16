@@ -146,8 +146,20 @@ public class MatchRepository {
         return matchDao.getUserMatchesPlayed(userId);
     }
 
-    public Single<Integer> getWinRate(int userId){
-        return matchDao.getWinRate(userId);
+    public Single<Integer> getMatchWinRate(int userId){
+        return matchDao.getMatchWinRate(userId);
+    }
+
+    public Single<Integer> getAvgAllMatches(int userId){
+        return matchDao.getAvgAllMatches(userId);
+    }
+
+    public Single<Integer> getLegsWon(int userId){
+        return matchDao.getLegsWon(userId);
+    }
+
+    public Single<Integer> getLegWinRate(int userId){
+        return matchDao.getLegWinRate(userId);
     }
 
 }
