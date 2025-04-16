@@ -1,5 +1,6 @@
 package com.example.dartscoreboard.match.data.models;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
@@ -34,6 +35,7 @@ public class Visit {
 
     public String legId;
     public int score;
+    public boolean checkout = false;
 
     public Visit() {
     }

@@ -23,6 +23,8 @@ import com.example.dartscoreboard.match.data.models.MatchWithUsers;
 import com.example.dartscoreboard.match.data.models.Set;
 import com.example.dartscoreboard.match.data.models.Visit;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.UUID;
 
 import io.reactivex.rxjava3.core.Flowable;
@@ -45,6 +47,8 @@ public class MatchViewModel extends AndroidViewModel {
 
     private static final int NO_LEG_OR_SET_WON = -1;
     private static final int LEG_WON_NOT_SET = -2;
+
+    java.util.Set<Integer> impossibleCheckouts = new HashSet<>(Arrays.asList(169, 168, 166, 165, 163, 162, 159));
 
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
@@ -91,7 +95,7 @@ public class MatchViewModel extends AndroidViewModel {
                     && playerScore != 501
                     && playerScore != 301)
 
-                input = input - 3;
+                input -= 3;
         }
         int newScore = playerScore - input;
 
@@ -100,21 +104,8 @@ public class MatchViewModel extends AndroidViewModel {
             return 0;
         }
 
-
         if (newScore == 0) {
-            if (playerScore >= 171) {
-                toastMessage(BUST);
-                return 0;
-            }
-
-            switch (playerScore) {
-                case 169:
-                case 168:
-                case 166:
-                case 165:
-                case 163:
-                case 162:
-                case 159:
+            if (playerScore >= 171 || impossibleCheckouts.contains(playerScore)) {
                     toastMessage(BUST);
                     return 0;
             }
@@ -136,10 +127,14 @@ public class MatchViewModel extends AndroidViewModel {
     }
 
     private Single<Integer> getNewScoreSingle(int scoreInt, User user, int startingScore, Integer sumOfVisits) {
-        int visitScore = calculateScore(startingScore - sumOfVisits, scoreInt);
-        Visit visit = createVisit(user, visitScore);
-        int finalScore = startingScore - sumOfVisits - visitScore;
+        int prevScore = startingScore - sumOfVisits;
+        int visitScore = calculateScore(prevScore, scoreInt);
 
+        Visit visit = createVisit(user, visitScore);
+        if (prevScore <= 170 && !impossibleCheckouts.contains(prevScore)){
+            visit.checkout = true;
+        }
+        int finalScore = startingScore - sumOfVisits - visitScore;
         return matchRepository.insertVisit(visit).andThen(Single.just(finalScore));
     }
 
@@ -237,7 +232,7 @@ public class MatchViewModel extends AndroidViewModel {
         );
 
         compositeDisposable.add(
-                flowable.subscribeOn(Schedulers.io())
+            flowable.subscribeOn(Schedulers.io())
                .subscribeWith(new DisposableSubscriber<Pair<MatchWithUsers, LegWithVisits>>() {
                    @Override
                    public void onNext(Pair<MatchWithUsers, LegWithVisits> data) {
