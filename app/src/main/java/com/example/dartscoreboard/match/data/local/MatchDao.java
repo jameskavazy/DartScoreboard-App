@@ -117,14 +117,14 @@ public interface MatchDao {
     Single<Integer> getUserMatchesPlayed(int userId);
 
     @Query("SELECT COALESCE( (" +
-            "SELECT COUNT(winnerId) * 100.0 / NULLIF((SELECT COUNT(matchId) FROM `match` WHERE winnerId != 0), 0)" +
+            "SELECT COUNT(winnerId) * 100.0 / (SELECT COUNT(matchId) FROM `match` WHERE winnerId != 0)" +
                 "FROM `match`" +
                 "WHERE winnerId = :userId " +
             "), 0)")
     Single<Integer> getMatchWinRate(int userId);
 
     @Query("SELECT COALESCE( (" +
-            "SELECT SUM(score) / IFNULL((SELECT COUNT(visitId) FROM visit WHERE userId = :userId), 0)" +
+            "SELECT SUM(score) / (SELECT COUNT(visitId) FROM visit WHERE userId = :userId)" +
             "FROM visit" +
             " WHERE userId = :userId " +
             "), 0)")
