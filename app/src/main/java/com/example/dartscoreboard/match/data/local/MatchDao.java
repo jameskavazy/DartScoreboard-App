@@ -107,7 +107,10 @@ public interface MatchDao {
     @Query("SELECT COUNT(winnerId) FROM `match` WHERE winnerId = :userId")
     Single<Integer> getUserMatchWins(int userId);
 
-    @Query("SELECT COUNT(winnerId) FROM `match` WHERE winnerId != :userId AND winnerId != 0")
+    @Query("SELECT COUNT(winnerId) " +
+            "FROM `match` m " +
+            "JOIN matchusers mu ON m.matchId = mu.matchId " +
+            "WHERE winnerId != :userId AND winnerId != 0 AND mu.userId = :userId")
     Single<Integer> getUserMatchLosses(int userId);
 
     @Query("SELECT COUNT(userId) FROM MatchUsers WHERE userId = :userId")
@@ -130,9 +133,13 @@ public interface MatchDao {
     @Query("SELECT COUNT(winnerId) FROM leg WHERE winnerId = :userId")
     Single<Integer> getLegsWon(int userId);
 
-    @Query("SELECT COUNT(winnerId) * 100.0 / (SELECT COUNT(visitId) FROM visit WHERE checkout = 1 AND userId = :userId) " +
-            "FROM leg" +
-            " WHERE winnerId =:userId")
+    @Query("SELECT COALESCE(" +
+            "(" +
+                "SELECT COUNT(winnerId) * 100.0 / (SELECT COUNT(visitId) FROM visit WHERE checkout = 1 AND userId = :userId) " +
+                "FROM leg" +
+                " WHERE winnerId =:userId" +
+            ")" +
+            ", 0)")
     Single<Integer> getCheckoutRate(int userId);
 
     @Query("SELECT COALESCE( (" +
