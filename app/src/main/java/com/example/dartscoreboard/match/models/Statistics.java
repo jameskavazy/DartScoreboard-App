@@ -8,8 +8,10 @@ public class Statistics {
     private int averageScore;
     private int matchesPlayed;
     private int legsWon;
-
     private int legWinRate;
+
+
+    private int checkoutRate;
 
     public int getWins() {
         return wins;
@@ -64,5 +66,12 @@ public class Statistics {
 
     public void setLegWinRate(int legWinRate) {
         this.legWinRate = legWinRate;
+    }
+    public int getCheckoutRate() {
+        return checkoutRate;
+    }
+
+    public void setCheckoutRate(int checkoutRate) {
+        this.checkoutRate = checkoutRate;
     }
 }

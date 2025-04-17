@@ -30,6 +30,7 @@ public class UserStatisticsActivity extends AppCompatActivity {
     private TextView legsWonTextView;
     private TextView legWinRateTextView;
 
+    private TextView checkoutRateTextView;
 
 
     @Override
@@ -47,6 +48,7 @@ public class UserStatisticsActivity extends AppCompatActivity {
         averageScoreTextView = findViewById(R.id.avg_score_text_view);
         legsWonTextView = findViewById(R.id.legs_won_tv);
         legWinRateTextView = findViewById(R.id.leg_win_rate);
+        checkoutRateTextView = findViewById(R.id.checkout_rate);
         int userId = getIntent().getIntExtra(StatisticsActivity.userStatKey, 0);
         userStatsViewModel = new ViewModelProvider(this,
                 new UserStatsViewModel.StatsViewModelFactory(userId)).get(UserStatsViewModel.class);
@@ -67,6 +69,8 @@ public class UserStatisticsActivity extends AppCompatActivity {
         averageScoreTextView.setText(String.valueOf(statistics.getAverageScore()));
         legsWonTextView.setText(String.valueOf(statistics.getLegsWon()));
         legWinRateTextView.setText(statistics.getLegWinRate()+"%");
+        checkoutRateTextView.setText(statistics.getCheckoutRate()+"%");
+
     }
 
 

@@ -77,6 +77,7 @@ public class UserStatsViewModel extends AndroidViewModel {
         queryAndUpdateStats(matchRepository.getAvgAllMatches(userId), _statistics::setAverageScore);
         queryAndUpdateStats(matchRepository.getLegsWon(userId), _statistics::setLegsWon);
         queryAndUpdateStats(matchRepository.getLegWinRate(userId), _statistics::setLegWinRate);
+        queryAndUpdateStats(matchRepository.getCheckoutRate(userId), _statistics::setCheckoutRate);
     }
 
 

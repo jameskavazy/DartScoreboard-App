@@ -114,14 +114,14 @@ public interface MatchDao {
     Single<Integer> getUserMatchesPlayed(int userId);
 
     @Query("SELECT COALESCE( (" +
-            "SELECT COUNT(winnerId) * 100.0 / NULLIF((SELECT COUNT(matchId) FROM `match`), 0)" +
+            "SELECT COUNT(winnerId) * 100.0 / NULLIF((SELECT COUNT(matchId) FROM `match` WHERE winnerId != 0), 0)" +
                 "FROM `match`" +
                 "WHERE winnerId = :userId " +
             "), 0)")
     Single<Integer> getMatchWinRate(int userId);
 
     @Query("SELECT COALESCE( (" +
-            "SELECT SUM(score) / NULLIF((SELECT COUNT(visitId) FROM visit WHERE userId = :userId), 0)" +
+            "SELECT SUM(score) / IFNULL((SELECT COUNT(visitId) FROM visit WHERE userId = :userId), 0)" +
             "FROM visit" +
             " WHERE userId = :userId " +
             "), 0)")
@@ -130,10 +130,24 @@ public interface MatchDao {
     @Query("SELECT COUNT(winnerId) FROM leg WHERE winnerId = :userId")
     Single<Integer> getLegsWon(int userId);
 
-    @Query("SELECT COALESCE( (" +
-            "SELECT COUNT(winnerId) * 100.0 / NULLIF((SELECT COUNT(DISTINCT legId) FROM visit WHERE userId = :userId ), 0)" +
+    @Query("SELECT COUNT(winnerId) * 100.0 / (SELECT COUNT(visitId) FROM visit WHERE checkout = 1 AND userId = :userId) " +
             "FROM leg" +
-            " WHERE winnerId = :userId " +
+            " WHERE winnerId =:userId")
+    Single<Integer> getCheckoutRate(int userId);
+
+    @Query("SELECT COALESCE( (" +
+            "SELECT COUNT(winnerId) * 100.0 / IFNULL(" +
+            "(" +
+                "SELECT COUNT(DISTINCT v.legId) " +
+                "FROM visit v " +
+                "JOIN leg l ON v.legId = l.legId " +
+                "JOIN MatchUsers mu ON l.matchId = mu.matchId " +
+                "WHERE v.userId = :userId AND mu.userId = :userId AND l.winnerId != 0" +
+            ")" +
+            ", 0)" +
+            "FROM leg" +
+            " WHERE winnerId = :userId" +
             "), 0)")
     Single<Integer> getLegWinRate(int userId);
+
 }

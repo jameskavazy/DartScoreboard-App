@@ -162,4 +162,8 @@ public class MatchRepository {
         return matchDao.getLegWinRate(userId);
     }
 
+    public Single<Integer> getCheckoutRate(int userId) {
+        return matchDao.getCheckoutRate(userId);
+    }
+
 }
