@@ -16,7 +16,7 @@ import com.example.dartscoreboard.R;
 import com.example.dartscoreboard.reminders.ReminderActivity;
 import com.example.dartscoreboard.match.presentation.SetupGameActivity;
 import com.example.dartscoreboard.match.presentation.StatisticsActivity;
-import com.example.dartscoreboard.user.UsersActivity;
+import com.example.dartscoreboard.match.presentation.UsersActivity;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -30,8 +30,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setupUI();
     }
-
-
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {

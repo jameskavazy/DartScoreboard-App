@@ -25,16 +25,11 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.GameViewHold
 
     }
     public static class GameViewHolder extends RecyclerView.ViewHolder {
-
         private final TextView nameText;
-
         private final TextView setsTextView;
         private final TextView legsTextView;
-
         private final TextView playerScoreTextView;
-
         private final FrameLayout playerIndicator;
-
         public GameViewHolder (final View view){
             super(view);
             nameText = view.findViewById(R.id.player_name_text_view);

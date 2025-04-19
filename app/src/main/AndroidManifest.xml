@@ -35,14 +35,14 @@
             android:name=".match.presentation.MatchHistoryActivity"
             android:exported="false" />
         <activity
-            android:name=".user.CreateUserActivity"
+            android:name=".match.presentation.CreateUserActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".match.presentation.PlayerSelectActivity"
             android:exported="false" />
         <activity
-            android:name=".user.UsersActivity"
+            android:name=".match.presentation.UsersActivity"
             android:exported="false" />
         <activity
             android:name=".main_activity.MainActivity"

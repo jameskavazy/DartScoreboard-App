@@ -1,4 +1,4 @@
-package com.example.dartscoreboard.user;
+package com.example.dartscoreboard.match.presentation;
 
 import android.app.Dialog;
 import android.content.Intent;
@@ -17,12 +17,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dartscoreboard.R;
+import com.example.dartscoreboard.match.data.models.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class UsersActivity extends AppCompatActivity implements OnClickListener {
 
     private RecyclerView recyclerView;
-    private recyclerAdapterUsers adapter;
+    private RecyclerAdapterUsers adapter;
     private UserViewModel userViewModel;
 
     private Toolbar toolbar;
@@ -42,7 +43,7 @@ public class UsersActivity extends AppCompatActivity implements OnClickListener 
     }
 
     private void setAdapter() {
-            adapter = new recyclerAdapterUsers();
+            adapter = new RecyclerAdapterUsers();
             recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
             recyclerView.setItemAnimator(new DefaultItemAnimator());
             recyclerView.setAdapter(adapter);

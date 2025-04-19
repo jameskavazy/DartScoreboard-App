@@ -6,8 +6,6 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import com.example.dartscoreboard.user.User;
-
 import java.time.OffsetDateTime;
 import java.util.List;
 

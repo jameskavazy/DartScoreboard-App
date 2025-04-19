@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.dartscoreboard.application.DartsScoreboardApplication;
 import com.example.dartscoreboard.match.data.repository.MatchRepository;
 import com.example.dartscoreboard.match.models.Statistics;
-import com.example.dartscoreboard.user.UserRepository;
+import com.example.dartscoreboard.match.data.repository.UserRepository;
 
 import java.util.function.Consumer;
 

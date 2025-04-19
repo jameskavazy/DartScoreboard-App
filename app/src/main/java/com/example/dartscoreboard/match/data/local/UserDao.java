@@ -1,4 +1,4 @@
-package com.example.dartscoreboard.user;
+package com.example.dartscoreboard.match.data.local;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -9,6 +9,7 @@ import androidx.room.Transaction;
 import androidx.room.Update;
 
 import com.example.dartscoreboard.match.data.models.MatchUsers;
+import com.example.dartscoreboard.match.data.models.User;
 
 import java.util.List;
 

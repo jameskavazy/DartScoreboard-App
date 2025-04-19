@@ -16,8 +16,8 @@ import com.example.dartscoreboard.match.data.models.Set;
 import com.example.dartscoreboard.match.data.models.Visit;
 import com.example.dartscoreboard.live_matches.data.LiveProMatchesDao;
 import com.example.dartscoreboard.live_matches.data.ProMatch;
-import com.example.dartscoreboard.user.User;
-import com.example.dartscoreboard.user.UserDao;
+import com.example.dartscoreboard.match.data.models.User;
+import com.example.dartscoreboard.match.data.local.UserDao;
 import com.example.dartscoreboard.util.Converters;
 
 @androidx.room.Database(

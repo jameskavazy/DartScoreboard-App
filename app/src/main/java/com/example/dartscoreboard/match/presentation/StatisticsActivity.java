@@ -13,15 +13,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dartscoreboard.R;
-import com.example.dartscoreboard.match.presentation.UserStatisticsActivity;
-import com.example.dartscoreboard.user.UserViewModel;
-import com.example.dartscoreboard.user.recyclerAdapterUsers;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class StatisticsActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private recyclerAdapterUsers adapter;
+    private RecyclerAdapterUsers adapter;
     Toolbar toolbar;
     public static String userStatKey = "USER_STAT_KEY";
 
@@ -48,7 +45,7 @@ public class StatisticsActivity extends AppCompatActivity {
     }
 
     private void setAdapter(){
-        adapter = new recyclerAdapterUsers();
+        adapter = new RecyclerAdapterUsers();
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);

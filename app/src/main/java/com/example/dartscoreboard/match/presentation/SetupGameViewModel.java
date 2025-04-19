@@ -11,8 +11,8 @@ import com.example.dartscoreboard.match.data.models.MatchSettings;
 import com.example.dartscoreboard.match.data.models.MatchType;
 import com.example.dartscoreboard.match.data.models.MatchUsers;
 import com.example.dartscoreboard.match.data.repository.MatchRepository;
-import com.example.dartscoreboard.user.User;
-import com.example.dartscoreboard.user.UserRepository;
+import com.example.dartscoreboard.match.data.models.User;
+import com.example.dartscoreboard.match.data.repository.UserRepository;
 import com.example.dartscoreboard.match.data.models.Set;
 import com.example.dartscoreboard.util.PreferencesController;
 
@@ -63,7 +63,6 @@ public class SetupGameViewModel extends AndroidViewModel {
                 matchRepository.insertSet(new Set(setId, match.matchId)).subscribeOn(Schedulers.io()).subscribe();
                 matchRepository.insertLeg(new Leg(UUID.randomUUID().toString(), setId, match.matchId, 0)).subscribeOn(Schedulers.io()).subscribe();
             });
-
         compositeDisposable.add(d);
         return match;
     }

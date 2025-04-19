@@ -1,4 +1,4 @@
-package com.example.dartscoreboard.user;
+package com.example.dartscoreboard.match.presentation;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,14 +10,15 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dartscoreboard.R;
+import com.example.dartscoreboard.match.data.models.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class recyclerAdapterUsers extends RecyclerView.Adapter<recyclerAdapterUsers.MyViewHolder> {
+public class RecyclerAdapterUsers extends RecyclerView.Adapter<RecyclerAdapterUsers.MyViewHolder> {
     private List<User> usersList = new ArrayList<>();
 
-    public recyclerAdapterUsers(){
+    public RecyclerAdapterUsers(){
     }
 
     private OnItemClickListener listener;
@@ -54,7 +55,7 @@ public class recyclerAdapterUsers extends RecyclerView.Adapter<recyclerAdapterUs
 
     @NonNull
     @Override
-    public recyclerAdapterUsers.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RecyclerAdapterUsers.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.users_list, parent, false);
         return new MyViewHolder(itemView);
     }
@@ -65,7 +66,7 @@ public class recyclerAdapterUsers extends RecyclerView.Adapter<recyclerAdapterUs
 
 
     @Override
-    public void onBindViewHolder(@NonNull recyclerAdapterUsers.MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerAdapterUsers.MyViewHolder holder, int position) {
         String name = usersList.get(position).getUsername();
         holder.nameTxt.setText(name);
         holder.checkBox.setVisibility(View.INVISIBLE);

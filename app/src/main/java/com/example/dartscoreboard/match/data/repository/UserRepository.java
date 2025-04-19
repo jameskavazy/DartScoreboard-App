@@ -1,4 +1,4 @@
-package com.example.dartscoreboard.user;
+package com.example.dartscoreboard.match.data.repository;
 
 import android.app.Application;
 
@@ -6,6 +6,8 @@ import androidx.lifecycle.LiveData;
 
 import com.example.dartscoreboard.application.data.local.Database;
 import com.example.dartscoreboard.match.data.models.MatchUsers;
+import com.example.dartscoreboard.match.data.models.User;
+import com.example.dartscoreboard.match.data.local.UserDao;
 
 import java.util.List;
 

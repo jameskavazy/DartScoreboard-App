@@ -9,7 +9,6 @@ import androidx.lifecycle.LiveData;
 
 import com.example.dartscoreboard.match.data.repository.MatchRepository;
 import com.example.dartscoreboard.match.data.models.Match;
-import com.example.dartscoreboard.user.UserRepository;
 
 import java.util.List;
 

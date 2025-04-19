@@ -17,7 +17,7 @@ import com.example.dartscoreboard.application.DartsScoreboardApplication;
 import com.example.dartscoreboard.match.data.models.Leg;
 import com.example.dartscoreboard.match.data.models.LegWithVisits;
 import com.example.dartscoreboard.match.data.models.MatchData;
-import com.example.dartscoreboard.user.User;
+import com.example.dartscoreboard.match.data.models.User;
 import com.example.dartscoreboard.match.data.repository.MatchRepository;
 import com.example.dartscoreboard.match.data.models.MatchWithUsers;
 import com.example.dartscoreboard.match.data.models.Set;

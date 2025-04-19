@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 import androidx.preference.PreferenceManager;
 
 import com.example.dartscoreboard.application.DartsScoreboardApplication;
-import com.example.dartscoreboard.user.User;
+import com.example.dartscoreboard.match.data.models.User;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

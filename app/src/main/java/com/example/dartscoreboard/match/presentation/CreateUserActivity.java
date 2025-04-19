@@ -1,4 +1,4 @@
-package com.example.dartscoreboard.user;
+package com.example.dartscoreboard.match.presentation;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.dartscoreboard.application.DartsScoreboardApplication;
 import com.example.dartscoreboard.R;
+import com.example.dartscoreboard.match.data.models.User;
 
 import java.util.ArrayList;
 import java.util.List;

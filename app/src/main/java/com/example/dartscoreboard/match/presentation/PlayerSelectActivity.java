@@ -14,8 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dartscoreboard.R;
-import com.example.dartscoreboard.user.User;
-import com.example.dartscoreboard.user.UserViewModel;
+import com.example.dartscoreboard.match.data.models.User;
 import com.example.dartscoreboard.util.PreferencesController;
 
 import java.util.ArrayList;

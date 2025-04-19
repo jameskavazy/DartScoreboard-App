@@ -1,4 +1,4 @@
-package com.example.dartscoreboard.user;
+package com.example.dartscoreboard.match.data.models;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;

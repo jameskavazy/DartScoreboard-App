@@ -19,7 +19,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.dartscoreboard.match.data.models.Match;
 import com.example.dartscoreboard.match.data.models.MatchType;
 import com.example.dartscoreboard.R;
-import com.example.dartscoreboard.user.User;
+import com.example.dartscoreboard.match.data.models.User;
 import com.example.dartscoreboard.util.PreferencesController;
 
 import java.util.ArrayList;

@@ -1,10 +1,13 @@
-package com.example.dartscoreboard.user;
+package com.example.dartscoreboard.match.presentation;
 
 import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+
+import com.example.dartscoreboard.match.data.models.User;
+import com.example.dartscoreboard.match.data.repository.UserRepository;
 
 import java.util.List;
 

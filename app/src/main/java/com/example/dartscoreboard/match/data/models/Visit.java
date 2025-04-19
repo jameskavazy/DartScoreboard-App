@@ -1,12 +1,9 @@
 package com.example.dartscoreboard.match.data.models;
 
-import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
-
-import com.example.dartscoreboard.user.User;
 
 @Entity(tableName = "visit",
         foreignKeys = {
