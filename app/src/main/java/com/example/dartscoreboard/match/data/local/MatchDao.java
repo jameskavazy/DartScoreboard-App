@@ -103,6 +103,7 @@ public interface MatchDao {
     LiveData<Integer> countUserVisits(String legId, int userId);
 
 
+    //Stats
 
     @Query("SELECT COUNT(winnerId) FROM `match` WHERE winnerId = :userId")
     Single<Integer> getUserMatchWins(int userId);
@@ -113,13 +114,16 @@ public interface MatchDao {
             "WHERE winnerId != :userId AND winnerId != 0 AND mu.userId = :userId")
     Single<Integer> getUserMatchLosses(int userId);
 
-    @Query("SELECT COUNT(userId) FROM MatchUsers WHERE userId = :userId")
+    @Query("SELECT COUNT(userId) " +
+            "FROM MatchUsers mu " +
+            "JOIN `match` m ON mu.matchId = m.matchId " +
+            "WHERE mu.userId = :userId AND m.winnerId != 0")
     Single<Integer> getUserMatchesPlayed(int userId);
 
     @Query("SELECT COALESCE( (" +
             "SELECT COUNT(winnerId) * 100.0 / (SELECT COUNT(matchId) FROM `match` WHERE winnerId != 0)" +
-                "FROM `match`" +
-                "WHERE winnerId = :userId " +
+            "FROM `match`" +
+            "WHERE winnerId = :userId " +
             "), 0)")
     Single<Integer> getMatchWinRate(int userId);
 
@@ -143,7 +147,7 @@ public interface MatchDao {
     Single<Integer> getCheckoutRate(int userId);
 
     @Query("SELECT COALESCE( (" +
-            "SELECT COUNT(winnerId) * 100.0 / IFNULL(" +
+            "SELECT COUNT(winnerId) * 100.0 / " +
             "(" +
                 "SELECT COUNT(DISTINCT v.legId) " +
                 "FROM visit v " +
@@ -151,7 +155,6 @@ public interface MatchDao {
                 "JOIN MatchUsers mu ON l.matchId = mu.matchId " +
                 "WHERE v.userId = :userId AND mu.userId = :userId AND l.winnerId != 0" +
             ")" +
-            ", 0)" +
             "FROM leg" +
             " WHERE winnerId = :userId" +
             "), 0)")
