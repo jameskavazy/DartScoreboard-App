@@ -44,12 +44,10 @@ public class MatchViewModel extends AndroidViewModel {
     private final MutableLiveData<Boolean> finished = new MutableLiveData<>(false);
     private final static String BUST = "BUST";
     private final static String NO_SCORE = "No score";
-
     private static final int NO_LEG_OR_SET_WON = -1;
     private static final int LEG_WON_NOT_SET = -2;
 
     java.util.Set<Integer> impossibleCheckouts = new HashSet<>(Arrays.asList(169, 168, 166, 165, 163, 162, 159));
-
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public MatchViewModel(@NonNull Application application) {
@@ -69,7 +67,7 @@ public class MatchViewModel extends AndroidViewModel {
             toastMessage(NO_SCORE);
         }
         if (scoreInt <= 180) {
-            User user = matchWithUsers.users.get(legWithVisits.leg.turnIndex);
+            User user = matchWithUsers.getOrderedUsers().get(legWithVisits.leg.turnIndex);
             int userId = user.userId;
             int startingScore = matchWithUsers.match.getMatchType().startingScore;
 
@@ -85,7 +83,7 @@ public class MatchViewModel extends AndroidViewModel {
     }
 
     private int calculateScore(int playerScore, int input) {
-        User currentPlayer = matchWithUsers.users.get(legWithVisits.leg.turnIndex);
+        User currentPlayer = matchWithUsers.getOrderedUsers().get(legWithVisits.leg.turnIndex);
 
         if (currentPlayer.isGuy) {
             if (playerScore > 100
@@ -164,7 +162,7 @@ public class MatchViewModel extends AndroidViewModel {
         } else if (setsWon == LEG_WON_NOT_SET) {
             int turnIndex = (int) (matchWithUsers.legs.stream().filter(game -> game.setId.equals(legWithVisits.leg.setId)).count()
                     +  matchWithUsers.sets.size() - 1)
-                    % matchWithUsers.users.size();
+                    % matchWithUsers.matchUserWithUserData.size();
             Leg leg = new Leg(UUID.randomUUID().toString(), legWithVisits.leg.setId, matchWithUsers.match.matchId, turnIndex);
             matchRepository.insertLeg(leg).subscribeOn(Schedulers.io()).subscribe();
         } else if (setsWon == matchWithUsers.match.matchSettings.getTotalSets()) {
@@ -174,7 +172,7 @@ public class MatchViewModel extends AndroidViewModel {
             Set set = new Set(UUID.randomUUID().toString(), matchWithUsers.match.matchId);
             matchRepository.insertSet(set).subscribeOn(Schedulers.io()).subscribe();
 
-            int turnIndex = matchWithUsers.sets.size() % matchWithUsers.users.size();
+            int turnIndex = matchWithUsers.sets.size() % matchWithUsers.matchUserWithUserData.size();
             Leg leg = new Leg(UUID.randomUUID().toString(), set.setId, matchWithUsers.match.matchId, turnIndex);
             matchRepository.insertLeg(leg).subscribeOn(Schedulers.io()).subscribe();
         }
@@ -214,12 +212,12 @@ public class MatchViewModel extends AndroidViewModel {
     }
 
     public void incrementTurnIndex() {
-        legWithVisits.leg.turnIndex = (legWithVisits.leg.turnIndex + 1) % matchWithUsers.users.size();
+        legWithVisits.leg.turnIndex = (legWithVisits.leg.turnIndex + 1) % matchWithUsers.getOrderedUsers().size();
         matchRepository.updateTurnIndex(legWithVisits.leg.turnIndex, legWithVisits.leg.getLegId());
     }
 
     public void decrementTurnIndex() {
-        legWithVisits.leg.turnIndex = (legWithVisits.leg.turnIndex - 1 + matchWithUsers.users.size()) % matchWithUsers.users.size();
+        legWithVisits.leg.turnIndex = (legWithVisits.leg.turnIndex - 1 + matchWithUsers.getOrderedUsers().size()) % matchWithUsers.getOrderedUsers().size();
         matchRepository.updateTurnIndex(legWithVisits.leg.turnIndex, legWithVisits.leg.getLegId());
     }
 
@@ -258,7 +256,6 @@ public class MatchViewModel extends AndroidViewModel {
         visit.setScore(finalScore);
         return visit;
     }
-
     private boolean isSetWon(String penultimateGameSetId) {
         return !legWithVisits.leg.setId.equals(penultimateGameSetId);
     }

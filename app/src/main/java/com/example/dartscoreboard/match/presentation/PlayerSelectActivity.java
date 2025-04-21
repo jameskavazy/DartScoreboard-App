@@ -5,11 +5,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,6 +20,7 @@ import com.example.dartscoreboard.match.data.models.User;
 import com.example.dartscoreboard.util.PreferencesController;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class PlayerSelectActivity extends AppCompatActivity implements View.OnClickListener {
@@ -40,7 +43,7 @@ public class PlayerSelectActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void setAdapter(){
-        adapter = new PlayerSelectAdapter();
+        adapter = new PlayerSelectAdapter(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
@@ -62,7 +65,7 @@ public class PlayerSelectActivity extends AppCompatActivity implements View.OnCl
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.button_done){
-            Intent intent = new Intent(this, SetupGameActivity.class);
+            Intent intent = new Intent(this, SetupMatchActivity.class);
             startActivity(intent);
             finish();
         }

@@ -11,10 +11,15 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dartscoreboard.match.data.models.Match;
 import com.example.dartscoreboard.match.data.models.MatchType;
@@ -23,9 +28,11 @@ import com.example.dartscoreboard.match.data.models.User;
 import com.example.dartscoreboard.util.PreferencesController;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
-public class SetupGameActivity extends AppCompatActivity implements View.OnClickListener {
+public class SetupMatchActivity extends AppCompatActivity implements View.OnClickListener {
 
 
     private final String[] gameSelectList = {"501", "301", "170"};
@@ -34,20 +41,23 @@ public class SetupGameActivity extends AppCompatActivity implements View.OnClick
 
     private Toolbar toolbar;
 
+    private PlayerSelectAdapter adapter;
+
     private AutoCompleteTextView gameTypeAutoCompleteTextView;
     private AutoCompleteTextView legsAutoCompleteTextView;
 
     private AutoCompleteTextView setsAutoCompleteTextView;
 
-    private TextView playerListTextViewButton;
+    private RecyclerView recyclerView;
 
-    private SetupGameViewModel setupGameViewModel;
+    private SetupMatchViewModel setupMatchViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("dom test", "HomeActivityOnCreate");
         super.onCreate(savedInstanceState);
         setupUI();
+        setAdapter();
     }
 
     @Override
@@ -62,8 +72,8 @@ public class SetupGameActivity extends AppCompatActivity implements View.OnClick
         Button startGameBtn = findViewById(R.id.gameStartButton);
         Button randomisePlayersBtn = findViewById(R.id.randomise_players_button);
         Button clearPlayersBtn = findViewById(R.id.remove_players_button);
-        Button addPlayersBtn = findViewById(R.id.NameDropDownBox);
-        playerListTextViewButton = findViewById(R.id.list_of_match_players);
+        Button addPlayersBtn = findViewById(R.id.name_drop_down_box);
+        recyclerView = findViewById(R.id.selected_players_recycler);
         legsAutoCompleteTextView = findViewById(R.id.legs_drop_down);
         setsAutoCompleteTextView = findViewById(R.id.sets_drop_down);
         gameTypeAutoCompleteTextView = findViewById(R.id.gameTypeDropDownBox);
@@ -72,43 +82,110 @@ public class SetupGameActivity extends AppCompatActivity implements View.OnClick
         addPlayersBtn.setOnClickListener(this);
         randomisePlayersBtn.setOnClickListener(this);
         clearPlayersBtn.setOnClickListener(this);
-        playerListTextViewButton.setOnClickListener(this);
         gameTypeAutoCompleteTextView.setOnClickListener(this);
 
         if (PreferencesController.getInstance().getGameSelected() != null) {
             gameTypeAutoCompleteTextView.setText(PreferencesController.getInstance().getGameSelected());
         }
 
-        setupGameViewModel = new ViewModelProvider(this).get(SetupGameViewModel.class);
-        setPlayersTextBox(setupGameViewModel.getSelectedPlayers());
-
+        setupMatchViewModel = new ViewModelProvider(this).get(SetupMatchViewModel.class);
 
         setUpGameTypeDropDownMenu();
         setUpLegsListDropDownMenu();
         setUpSetsListDropDownMenu();
     }
 
+    private void setAdapter(){
+        adapter = new PlayerSelectAdapter(false);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(adapter);
+        adapter.setUsersList(PreferencesController.getInstance().getPlayers());
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(
+                ItemTouchHelper.UP | ItemTouchHelper.DOWN, 0) {
+
+            int source = -1;
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                int fromPosition = viewHolder.getBindingAdapterPosition();
+                int toPosition = target.getBindingAdapterPosition();
+
+                adapter.notifyItemMoved(fromPosition, toPosition);
+
+                List<User> savedPlayers = PreferencesController.getInstance().getPlayers();
+//                List<User> adapterList = adapter.getUsersList();
+
+                // TODO reorders list here but then saves everyone to be put into the game. Need logic to save players if they're onbly selected...
+                // maybe just change prefs to user ids... suck it up and do some rxjava now you're better at ot//
+
+                Collections.swap(savedPlayers, fromPosition, toPosition);
+                PreferencesController.getInstance().savePlayers(savedPlayers);
+
+               for (int i = 0; i < savedPlayers.size(); i++) {
+                   Log.d("userlist", i + savedPlayers.get(i).getUsername());
+               }
+                return true;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+
+            }
+
+            @Override
+            public void onSelectedChanged(@Nullable RecyclerView.ViewHolder viewHolder, int actionState) {
+                super.onSelectedChanged(viewHolder, actionState);
+                if (actionState != ItemTouchHelper.ACTION_STATE_IDLE && viewHolder != null){
+                    source = viewHolder.getBindingAdapterPosition();
+                }
+            }
+
+            @Override
+            public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+                super.clearView(recyclerView, viewHolder);
+//                List<User> players = adapter.getUsersList();
+                List<User> players = PreferencesController.getInstance().getPlayers();
+                for (int i = 0; i < players.size(); i++) {
+                    Log.d("userlist", "On ClearViewCalled: " + i + players.get(i).getUsername());
+                }
+//                List<User> players = adapter.getUsersList();
+//                if (source != -1 & source != viewHolder.getBindingAdapterPosition()) {
+//                    Collections.swap(players, source, viewHolder.getBindingAdapterPosition());
+//                    PreferencesController.getInstance().savePlayers(players);
+//                    adapter.notifyItemMoved(source, viewHolder.getBindingAdapterPosition());
+////                    setupMatchViewModel.setSelectedPlayers(players);
+//                    //TODO order of players , find out how determined
+//                   for (int i = 0; i < players.size(); i++) {
+//                    Log.d("userlist", i + players.get(i).getUsername());
+//                   }
+//                }
+//                source = -1;
+            }
+        }).attachToRecyclerView(recyclerView);
+    }
+
     @Override
     public void onClick(View v) {
+        List<User> selectedPlayers = PreferencesController.getInstance().getPlayers();
         int viewId = v.getId();
         if (viewId == R.id.gameStartButton) {
-            if (setupGameViewModel.getSelectedPlayers().isEmpty()) {
+            if (selectedPlayers.isEmpty()) {
                 Toast.makeText(this, "You must select at least one player to start the match", Toast.LENGTH_SHORT).show();
             } else {
                 startGameActivity();
-                PreferencesController.getInstance().clearSelectedGame();
                 finish();
             }
-        } else if (viewId == R.id.NameDropDownBox) {
+        } else if (viewId == R.id.name_drop_down_box) {
             openPlayerSelectActivity();
             PreferencesController.getInstance().saveSelectedGame(gameTypeAutoCompleteTextView.getText().toString());
             finish();
         } else if (viewId == R.id.remove_players_button) {
             PreferencesController.getInstance().savePlayers(new ArrayList<>());
-            playerListTextViewButton.setText(null);
+            adapter.setUsersList(PreferencesController.getInstance().getPlayers());
         } else if (viewId == R.id.randomise_players_button) {
-            setupGameViewModel.randomisePlayerOrder();
-            setPlayersTextBox(setupGameViewModel.getSelectedPlayers());
+            setupMatchViewModel.randomisePlayerOrder(selectedPlayers);
+            PreferencesController.getInstance().savePlayers(selectedPlayers);
         }
     }
 
@@ -123,6 +200,7 @@ public class SetupGameActivity extends AppCompatActivity implements View.OnClick
             Toast.makeText(this, "You must select a game type", Toast.LENGTH_SHORT).show();
         } else {
             MatchType matchType = getMatchType(gameTypeSelected);
+            PreferencesController.getInstance().clearSelectedGame();
             openGameActivity(matchType);
         }
     }
@@ -159,7 +237,7 @@ public class SetupGameActivity extends AppCompatActivity implements View.OnClick
     private Match initialiseMatch(MatchType matchType) {
         int legs = Integer.parseInt(legsAutoCompleteTextView.getText().toString());
         int sets = Integer.parseInt(setsAutoCompleteTextView.getText().toString());
-        return setupGameViewModel.createMatch(matchType, legs, sets);
+        return setupMatchViewModel.createMatch(matchType, legs, sets);
     }
 
     private void setUpGameTypeDropDownMenu() {
@@ -180,15 +258,7 @@ public class SetupGameActivity extends AppCompatActivity implements View.OnClick
         setsAutoCompleteTextView.setText(adapterSetsItems.getItem(0), false);
     }
 
-    private void setPlayersTextBox(List<User> playersToGame) {
-        if (!playersToGame.isEmpty()) {
-            String[] namesToGame = new String[playersToGame.size()];
-            for (int i = 0; i < playersToGame.size(); i++) {
-                namesToGame[i] = playersToGame.get(i).getUsername();
-            }
-            playerListTextViewButton.setText(String.join("\n", namesToGame));
-        }
-    }
+
 }
 
 

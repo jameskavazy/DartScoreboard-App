@@ -48,8 +48,7 @@ public interface MatchDao {
 
     @Transaction
     @Query("SELECT * FROM `match` WHERE matchId = :matchId")
-    Flowable<MatchWithUsers> getMatchData(String matchId);
-
+    Flowable<MatchWithUsers> getMatchWithUsers(String matchId);
 
     //Sets
     @Insert

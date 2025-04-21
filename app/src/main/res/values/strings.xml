@@ -92,5 +92,6 @@
     <string name="percent">%</string>
     <string name="legs_won">Legs Won</string>
     <string name="leg_win_rate">Leg Win Rate</string>
+    <string name="order_players">Order Players</string>
 
 </resources>

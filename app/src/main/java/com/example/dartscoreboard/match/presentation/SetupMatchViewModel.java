@@ -1,6 +1,7 @@
 package com.example.dartscoreboard.match.presentation;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -26,21 +27,21 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
-public class SetupGameViewModel extends AndroidViewModel {
+public class SetupMatchViewModel extends AndroidViewModel {
 
     private String matchId;
     private final UserRepository userRepository;
 
     private final MatchRepository matchRepository;
-    private List<User> selectedPlayers;
+//    private List<User> selectedPlayers;
 
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    public SetupGameViewModel(@NonNull Application application) {
+    public SetupMatchViewModel(@NonNull Application application) {
         super(application);
         userRepository = new UserRepository(application);
         matchRepository = new MatchRepository(application);
-        selectedPlayers = PreferencesController.getInstance().getPlayers();
+//        selectedPlayers = PreferencesController.getInstance().getPlayers();
     }
 
     @Override
@@ -56,7 +57,7 @@ public class SetupGameViewModel extends AndroidViewModel {
     public Match createMatch(MatchType matchType, int legs, int sets) {
         matchId = UUID.randomUUID().toString();
         Match match = new Match(matchId, matchType, getMatchSettings(legs, sets), OffsetDateTime.now());
-        match.setPlayersCSV(getSelectedPlayers());
+        match.setPlayersCSV(PreferencesController.getInstance().getPlayers());
         addUsersToMatch();
         Disposable d = matchRepository.insertMatch(match).subscribeOn(Schedulers.io()).subscribe(() -> {
                 String setId = UUID.randomUUID().toString();
@@ -67,26 +68,32 @@ public class SetupGameViewModel extends AndroidViewModel {
         return match;
     }
 
-    public List<User> getSelectedPlayers() {
-        if (selectedPlayers == null) {
-            selectedPlayers = new ArrayList<>();
-        }
-        return selectedPlayers;
-    }
-
-    public void setSelectedPlayers(List<User> selectedPlayers){
-        this.selectedPlayers = selectedPlayers;
-    }
+//    public List<User> getSelectedPlayers() {
+//        if (selectedPlayers == null) {
+//            selectedPlayers = new ArrayList<>();
+//        }
+//        return selectedPlayers;
+//    }
+//
+//    public void setSelectedPlayers(List<User> selectedPlayers){
+//        this.selectedPlayers = selectedPlayers;
+//    }
 
     public void addUsersToMatch(){
+        List<User> selectedPlayers = PreferencesController.getInstance().getPlayers();
+        if (selectedPlayers == null) return;
+
+
+
         for (User player :
                 selectedPlayers) {
+            Log.d("userlist", "addUsersToMatch: " + player.getUsername() + " " + selectedPlayers.indexOf(player));
             MatchUsers matchUsers = new MatchUsers(player.userId, matchId, selectedPlayers.indexOf(player));
             userRepository.addUsersToMatch(matchUsers);
         }
     }
 
-    public void randomisePlayerOrder(){
+    public void randomisePlayerOrder(List<User> selectedPlayers){
         Collections.shuffle(selectedPlayers);
     }
 

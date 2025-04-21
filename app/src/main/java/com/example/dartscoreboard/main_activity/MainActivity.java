@@ -14,7 +14,7 @@ import com.example.dartscoreboard.live_matches.presentation.LiveProMatchesActivi
 import com.example.dartscoreboard.match.presentation.MatchHistoryActivity;
 import com.example.dartscoreboard.R;
 import com.example.dartscoreboard.reminders.ReminderActivity;
-import com.example.dartscoreboard.match.presentation.SetupGameActivity;
+import com.example.dartscoreboard.match.presentation.SetupMatchActivity;
 import com.example.dartscoreboard.match.presentation.StatisticsActivity;
 import com.example.dartscoreboard.match.presentation.UsersActivity;
 
@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void openStartGameActivity(){
         Log.d("dom test", "openStartGameActivity");
-        Intent intent = new Intent(this, SetupGameActivity.class);
+        Intent intent = new Intent(this, SetupMatchActivity.class);
         startActivity(intent);
     }
 

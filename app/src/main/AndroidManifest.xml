@@ -58,7 +58,7 @@
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".match.presentation.SetupGameActivity"
+            android:name=".match.presentation.SetupMatchActivity"
             android:exported="true" />
 
         <receiver android:name=".reminders.ReminderNotificationReceiver" />

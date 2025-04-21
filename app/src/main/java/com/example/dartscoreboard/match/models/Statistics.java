@@ -9,8 +9,6 @@ public class Statistics {
     private int matchesPlayed;
     private int legsWon;
     private int legWinRate;
-
-
     private int checkoutRate;
 
     public int getWins() {

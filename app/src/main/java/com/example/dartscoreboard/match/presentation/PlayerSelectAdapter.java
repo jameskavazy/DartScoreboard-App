@@ -20,17 +20,19 @@ public class PlayerSelectAdapter extends RecyclerView.Adapter<PlayerSelectAdapte
 
     private List<User> usersList = new ArrayList<>();
 
+    private boolean playersToGame;
+
     private OnItemClickListener listener;
     public interface OnItemClickListener {
         void onClick(User user, int position);
     }
 
-    public PlayerSelectAdapter(){
+    public PlayerSelectAdapter(boolean playersToGame){
+        this.playersToGame = playersToGame;
     }
     public class ViewHolderPTG extends RecyclerView.ViewHolder {
         private final TextView nameText;
         private final CheckBox checkBox;
-
         public ViewHolderPTG(final View view){
             super(view);
             nameText = view.findViewById(R.id.name_text1);
@@ -54,6 +56,10 @@ public class PlayerSelectAdapter extends RecyclerView.Adapter<PlayerSelectAdapte
         notifyDataSetChanged();
     }
 
+    public List<User> getUsersList(){
+        return usersList;
+    }
+
     @NonNull
     @Override
     public PlayerSelectAdapter.ViewHolderPTG onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -72,6 +78,11 @@ public class PlayerSelectAdapter extends RecyclerView.Adapter<PlayerSelectAdapte
             savedUsers = new ArrayList<>();
         }
         boolean selected = savedUsers.stream().anyMatch(player -> player.userId == user.userId);
+        if (!playersToGame) {
+            holder.checkBox.setVisibility(View.INVISIBLE);
+            //todo add a drag icon and hide it here...
+            //todo inflate diff layout
+        }
         holder.checkBox.setChecked(selected);
     }
 
@@ -79,6 +90,8 @@ public class PlayerSelectAdapter extends RecyclerView.Adapter<PlayerSelectAdapte
     public int getItemCount() {
         return usersList.size();
     }
+
+
 
 
 }

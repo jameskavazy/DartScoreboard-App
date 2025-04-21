@@ -13,6 +13,7 @@ import com.example.dartscoreboard.match.data.models.MatchWithUsers;
 import com.example.dartscoreboard.match.data.models.Set;
 import com.example.dartscoreboard.match.data.models.Visit;
 
+import java.util.Comparator;
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
@@ -31,7 +32,7 @@ public class MatchRepository {
     }
     // Match and Leg Data
     public Flowable<MatchWithUsers> getMatchWithUsers(String matchId){
-        return matchDao.getMatchData(matchId);
+        return matchDao.getMatchWithUsers(matchId);
     }
 
     public Flowable<LegWithVisits> getLegWithVisits(String matchId){
@@ -39,7 +40,6 @@ public class MatchRepository {
     }
 
     // Matches
-
     public Completable insertMatch(Match match){
         return Completable.fromAction(() -> matchDao.insertMatch(match));
     }

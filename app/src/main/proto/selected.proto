@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+option java_package = "com.example.dartscoreboard.proto";
+option java_multiple_files = true;
+
+message Selected {
+  string user_id = 1;
+  int32 position = 2;
+}

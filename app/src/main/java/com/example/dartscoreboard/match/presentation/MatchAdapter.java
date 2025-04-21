@@ -51,8 +51,8 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.GameViewHold
     @Override
     public void onBindViewHolder(@NonNull GameViewHolder holder, int position) {
 
-        String name = matchWithUsers.users.get(position).getUsername();
-        int userId = matchWithUsers.users.get(position).userId;
+        String name = matchWithUsers.getOrderedUsers().get(position).getUsername();
+        int userId = matchWithUsers.getOrderedUsers().get(position).userId;
         
         int startingScore = matchWithUsers.match.getMatchType().startingScore;
         int visitScores = getVisitScores(userId);
@@ -94,7 +94,7 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.GameViewHold
 
     @Override
     public int getItemCount() {
-        return (matchWithUsers != null && matchWithUsers.users != null) ? matchWithUsers.users.size() : 0;
+        return (matchWithUsers != null && matchWithUsers.matchUserWithUserData != null) ? matchWithUsers.matchUserWithUserData.size() : 0;
     }
 
     public void setMatchData(MatchWithUsers matchWithUsers) {

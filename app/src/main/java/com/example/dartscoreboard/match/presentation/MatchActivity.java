@@ -30,7 +30,6 @@ import java.util.OptionalDouble;
 
 
 public class MatchActivity extends AppCompatActivity implements View.OnClickListener {
-
     public static final String MATCH_KEY = "GAME_STATE";
     private Toolbar toolbar;
     private MatchViewModel matchViewModel;
@@ -180,9 +179,9 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
 
     private void setBanana(MatchData matchData) {
         int visitCount = getVisitCountForCurrentUser(matchData);
-        boolean isGuy = matchData.getMatchWithUsers().users
+        boolean isGuy = matchData.getMatchWithUsers().matchUserWithUserData
                 .stream()
-                .anyMatch(user -> user.userId == getCurrentUserId(matchData) && user.isGuy);
+                .anyMatch(wrapper -> wrapper.user.userId == getCurrentUserId(matchData) && wrapper.user.isGuy);
 
         if (visitCount % 7 == 0 && isGuy) {
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -211,6 +210,6 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
     }
     private int getCurrentUserId(MatchData matchData) {
         int turnIndex = matchData.getLegWithVisits().leg.turnIndex;
-        return matchData.getMatchWithUsers().users.get(turnIndex).userId;
+        return matchData.getMatchWithUsers().matchUserWithUserData.get(turnIndex).user.userId;
     }
 }

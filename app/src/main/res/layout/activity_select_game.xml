@@ -1,123 +1,151 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/home_activity_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal"
-    android:orientation="vertical"
-    tools:context=".match.presentation.SetupGameActivity">
+    tools:context=".match.presentation.SetupMatchActivity">
 
     <include layout="@layout/toolbar"/>
 
-
-    <com.google.android.material.textfield.TextInputLayout
-
-        android:id="@+id/textInputLayout"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:hint="@string/select"
-        android:translationY="100dp">
-
-        <AutoCompleteTextView
-            android:id="@+id/gameTypeDropDownBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="none" />
-
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-
-    <com.google.android.material.textfield.TextInputLayout
-
-        android:id="@+id/legs_input_layout"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:hint="@string/no_of_legs"
-        android:translationY="200dp">
-
-        <AutoCompleteTextView
-            android:id="@+id/legs_drop_down"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="none" />
-
-
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-
-        android:id="@+id/sets_input_layout"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:hint="@string/no_of_sets"
-        android:translationY="300dp">
-
-        <AutoCompleteTextView
-            android:id="@+id/sets_drop_down"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="none" />
-
-
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <TextView
-        android:id="@+id/list_of_match_players"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:textSize="20sp"
-        android:lineSpacingMultiplier="1.3"
-        android:hint="No Players"
-        android:translationY="400dp" />
-
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center|bottom"
-        android:padding="1dp"
-        android:layout_marginBottom="45dp"
-        android:orientation="vertical">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_marginTop="75dp"
 
-        <Button
-            android:id="@+id/NameDropDownBox"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/select_players" />
 
+            android:hint="@string/select"
+            >
+
+            <AutoCompleteTextView
+                android:id="@+id/gameTypeDropDownBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:inputType="none" />
+
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+
+            android:id="@+id/legs_input_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/no_of_legs"
+            >
+
+            <AutoCompleteTextView
+                android:id="@+id/legs_drop_down"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:inputType="none" />
+
+
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+
+            android:id="@+id/sets_input_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/no_of_sets"
+            >
+
+            <AutoCompleteTextView
+                android:id="@+id/sets_drop_down"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:inputType="none" />
+
+
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/selected_players_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:clipToPadding="false"
+            android:layout_marginBottom="220dp"
+            />
+
+    </LinearLayout>
+
+    <GridLayout
+        android:id="@+id/bottom_button_grid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:alignmentMode="alignMargins"
+        android:columnCount="2"
+        android:useDefaultMargins="true"
+        android:padding="16dp"
+        android:background="?attr/colorSurface">
+
+        <!-- Select Players Button -->
+        <Button
+            android:id="@+id/name_drop_down_box"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/square_button"
+            android:text="@string/select_players"
+            android:layout_margin="8dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill" />
+
+        <!-- Randomise Players Button -->
         <Button
             android:id="@+id/randomise_players_button"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/randomise_players_button" />
+            android:background="@drawable/square_button"
+            android:text="@string/randomise_players_button"
+            android:layout_margin="8dp"
+            android:layout_gravity="fill"
+            android:layout_columnWeight="1"/>
 
+        <!-- Remove Players Button -->
         <Button
             android:id="@+id/remove_players_button"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/remove_all_players_button" />
+            android:background="@drawable/square_button"
+            android:text="@string/remove_all_players_button"
+            android:layout_margin="8dp"
+            android:layout_gravity="fill"
+            android:layout_columnWeight="1"/>
 
+        <!-- Start Game Button -->
         <Button
             android:id="@+id/gameStartButton"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:ellipsize="end"
-            android:text="@string/start_game_button" />
-    </LinearLayout>
+            android:text="@string/start_game_button"
+            android:layout_margin="8dp"
+            android:background="@drawable/square_button"
+            android:layout_gravity="fill"
+            android:layout_columnWeight="1"/>
+    </GridLayout>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
