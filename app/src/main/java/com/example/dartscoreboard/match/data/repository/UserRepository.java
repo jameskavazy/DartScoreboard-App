@@ -1,6 +1,7 @@
 package com.example.dartscoreboard.match.data.repository;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
@@ -47,8 +48,8 @@ public class UserRepository {
         return allUsers;
     }
 
-    public void addUsersToMatch(MatchUsers matchUsers) {
-        Completable.fromAction(() -> userDao.insertToGame(matchUsers)).subscribeOn(Schedulers.io()).subscribe();
+    public Completable addUsersToMatch(MatchUsers matchUsers) {
+        return userDao.insertToGame(matchUsers);
     }
 
     public Single<String> getUsernameById(int userId){

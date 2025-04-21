@@ -173,8 +173,8 @@ public class SetupMatchActivity extends AppCompatActivity implements View.OnClic
         if (matchType != null) {
             Intent intent = new Intent(this, MatchActivity.class);
             Bundle arguments = new Bundle();
-            Match match = initialiseMatch(matchType);
-            arguments.putString(MatchActivity.MATCH_KEY, match.matchId);
+            String matchId = initialiseMatch(matchType);
+            arguments.putString(MatchActivity.MATCH_KEY, matchId);
             intent.putExtras(arguments);
             startActivity(intent);
             finish();
@@ -198,7 +198,7 @@ public class SetupMatchActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
-    private Match initialiseMatch(MatchType matchType) {
+    private String initialiseMatch(MatchType matchType) {
         int legs = Integer.parseInt(legsAutoCompleteTextView.getText().toString());
         int sets = Integer.parseInt(setsAutoCompleteTextView.getText().toString());
         return setupMatchViewModel.createMatch(matchType, legs, sets);

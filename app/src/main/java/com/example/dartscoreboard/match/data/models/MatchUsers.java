@@ -7,7 +7,7 @@ import androidx.room.Index;
 
 @Entity(
         primaryKeys = {"userId", "matchId"},
-        indices = {@Index(value = "matchId")},
+        indices = {@Index(value = "matchId"), @Index(value = "userId")},
         foreignKeys = {@ForeignKey(
                 entity = Match.class,
                 parentColumns = "matchId",
