@@ -11,23 +11,37 @@
     android:clickable="true"
     android:focusable="true">
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="8dp"
         >
 
+        <View
+            android:id="@+id/drag_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="gone"
+            android:background="@drawable/baseline_drag_indicator_24" />
+
     <TextView
         android:id="@+id/name_text1"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:maxLines="1"
+        android:layout_toEndOf="@id/drag_icon"
         android:layout_toStartOf="@id/checkbox"
-        android:layout_alignParentStart="true"
         android:ellipsize="end"
-        tools:text="James"
+        app:layout_constraintStart_toEndOf="@id/drag_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/checkbox"
+        android:maxLines="1"
         android:padding="8dp"
+        tools:text="James"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
          />
 
         <CheckBox
@@ -37,9 +51,12 @@
             android:layout_alignParentEnd="true"
             android:layout_centerInParent="true"
             android:textColor="@color/custom_blue_accent"
-            android:theme="@style/MyCheckBox" />
+            android:theme="@style/MyCheckBox"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.cardview.widget.CardView>

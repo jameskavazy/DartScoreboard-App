@@ -1,5 +1,6 @@
 package com.example.dartscoreboard.match.presentation;
 
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,10 +34,12 @@ public class PlayerSelectAdapter extends RecyclerView.Adapter<PlayerSelectAdapte
     public class ViewHolderPTG extends RecyclerView.ViewHolder {
         private final TextView nameText;
         private final CheckBox checkBox;
+        private final View dragIcon;
         public ViewHolderPTG(final View view){
             super(view);
             nameText = view.findViewById(R.id.name_text1);
             checkBox = view.findViewById(R.id.checkbox);
+            dragIcon = view.findViewById(R.id.drag_icon);
             view.setOnClickListener(v -> {
                 int position = getBindingAdapterPosition();
                 if (listener != null && position != RecyclerView.NO_POSITION){
@@ -80,8 +83,8 @@ public class PlayerSelectAdapter extends RecyclerView.Adapter<PlayerSelectAdapte
         boolean selected = savedUsers.stream().anyMatch(player -> player.userId == user.userId);
         if (!playersToGame) {
             holder.checkBox.setVisibility(View.INVISIBLE);
-            //todo add a drag icon and hide it here...
-            //todo inflate diff layout
+            holder.dragIcon.setVisibility(View.VISIBLE);
+            holder.nameText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
         }
         holder.checkBox.setChecked(selected);
     }
