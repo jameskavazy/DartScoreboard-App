@@ -119,9 +119,7 @@ public class SetupMatchActivity extends AppCompatActivity implements View.OnClic
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-
             }
-
             @Override
             public void onSelectedChanged(@Nullable RecyclerView.ViewHolder viewHolder, int actionState) {
                 super.onSelectedChanged(viewHolder, actionState);
@@ -135,12 +133,15 @@ public class SetupMatchActivity extends AppCompatActivity implements View.OnClic
     @Override
     public void onClick(View v) {
         List<User> selectedPlayers = PreferencesController.getInstance().getPlayers();
+        String gameTypeSelected = gameTypeAutoCompleteTextView.getText().toString();
         int viewId = v.getId();
         if (viewId == R.id.gameStartButton) {
             if (selectedPlayers.isEmpty()) {
                 Toast.makeText(this, "You must select at least one player to start the match", Toast.LENGTH_SHORT).show();
+            } else if (gameTypeSelected.equals("")) {
+                Toast.makeText(this, "You must select a game type", Toast.LENGTH_SHORT).show();
             } else {
-                startGameActivity();
+                startGameActivity(gameTypeSelected);
                 finish();
             }
         } else if (viewId == R.id.name_drop_down_box) {
@@ -162,15 +163,10 @@ public class SetupMatchActivity extends AppCompatActivity implements View.OnClic
         startActivity(intent);
     }
 
-    public void startGameActivity() {
-        String gameTypeSelected = gameTypeAutoCompleteTextView.getText().toString();
-        if (gameTypeSelected.equals("")) {
-            Toast.makeText(this, "You must select a game type", Toast.LENGTH_SHORT).show();
-        } else {
-            MatchType matchType = getMatchType(gameTypeSelected);
-            PreferencesController.getInstance().clearSelectedGame();
-            openGameActivity(matchType);
-        }
+    public void startGameActivity(String gameTypeSelected) {
+        MatchType matchType = getMatchType(gameTypeSelected);
+        PreferencesController.getInstance().clearSelectedGame();
+        openGameActivity(matchType);
     }
 
     private void openGameActivity(MatchType matchType) {
