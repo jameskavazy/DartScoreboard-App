@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".match.presentation.CreateUserActivity">
+    tools:context=".match.presentation.UserCreateActivity">
 
     <include layout="@layout/toolbar"/>
 

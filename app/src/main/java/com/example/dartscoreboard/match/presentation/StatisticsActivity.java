@@ -18,7 +18,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 public class StatisticsActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private RecyclerAdapterUsers adapter;
+    private UserAdapter adapter;
     Toolbar toolbar;
     public static String userStatKey = "USER_STAT_KEY";
 
@@ -45,7 +45,7 @@ public class StatisticsActivity extends AppCompatActivity {
     }
 
     private void setAdapter(){
-        adapter = new RecyclerAdapterUsers();
+        adapter = new UserAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);

@@ -15,10 +15,10 @@ import com.example.dartscoreboard.match.data.models.User;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecyclerAdapterUsers extends RecyclerView.Adapter<RecyclerAdapterUsers.MyViewHolder> {
+public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> {
     private List<User> usersList = new ArrayList<>();
 
-    public RecyclerAdapterUsers(){
+    public UserAdapter(){
     }
 
     private OnItemClickListener listener;
@@ -55,7 +55,7 @@ public class RecyclerAdapterUsers extends RecyclerView.Adapter<RecyclerAdapterUs
 
     @NonNull
     @Override
-    public RecyclerAdapterUsers.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public UserAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.users_list, parent, false);
         return new MyViewHolder(itemView);
     }
@@ -66,7 +66,7 @@ public class RecyclerAdapterUsers extends RecyclerView.Adapter<RecyclerAdapterUs
 
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerAdapterUsers.MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull UserAdapter.MyViewHolder holder, int position) {
         String name = usersList.get(position).getUsername();
         holder.nameTxt.setText(name);
         holder.checkBox.setVisibility(View.INVISIBLE);

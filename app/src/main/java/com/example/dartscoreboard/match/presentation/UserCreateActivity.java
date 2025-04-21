@@ -19,7 +19,7 @@ import com.example.dartscoreboard.match.data.models.User;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CreateUserActivity extends AppCompatActivity implements View.OnClickListener {
+public class UserCreateActivity extends AppCompatActivity implements View.OnClickListener {
 
     private List<User> usersList = new ArrayList<>();
     private EditText enterUsernameEditText;

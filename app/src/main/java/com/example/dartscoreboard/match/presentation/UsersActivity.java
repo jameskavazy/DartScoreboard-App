@@ -23,7 +23,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 public class UsersActivity extends AppCompatActivity implements OnClickListener {
 
     private RecyclerView recyclerView;
-    private RecyclerAdapterUsers adapter;
+    private UserAdapter adapter;
     private UserViewModel userViewModel;
 
     private Toolbar toolbar;
@@ -43,7 +43,7 @@ public class UsersActivity extends AppCompatActivity implements OnClickListener 
     }
 
     private void setAdapter() {
-            adapter = new RecyclerAdapterUsers();
+            adapter = new UserAdapter();
             recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
             recyclerView.setItemAnimator(new DefaultItemAnimator());
             recyclerView.setAdapter(adapter);
@@ -61,7 +61,7 @@ public class UsersActivity extends AppCompatActivity implements OnClickListener 
     }
 
     private void openCreateUserActivity() {
-        Intent intent = new Intent(this, CreateUserActivity.class);
+        Intent intent = new Intent(this, UserCreateActivity.class);
         startActivity(intent);
     }
 

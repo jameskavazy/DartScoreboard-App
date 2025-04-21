@@ -35,7 +35,7 @@
             android:name=".match.presentation.MatchHistoryActivity"
             android:exported="false" />
         <activity
-            android:name=".match.presentation.CreateUserActivity"
+            android:name=".match.presentation.UserCreateActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
         <activity
