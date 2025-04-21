@@ -5,13 +5,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,7 +18,6 @@ import com.example.dartscoreboard.match.data.models.User;
 import com.example.dartscoreboard.util.PreferencesController;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class PlayerSelectActivity extends AppCompatActivity implements View.OnClickListener {

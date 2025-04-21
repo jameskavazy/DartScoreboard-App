@@ -110,21 +110,10 @@ public class SetupMatchActivity extends AppCompatActivity implements View.OnClic
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
                 int fromPosition = viewHolder.getBindingAdapterPosition();
                 int toPosition = target.getBindingAdapterPosition();
-
                 adapter.notifyItemMoved(fromPosition, toPosition);
-
                 List<User> savedPlayers = PreferencesController.getInstance().getPlayers();
-//                List<User> adapterList = adapter.getUsersList();
-
-                // TODO reorders list here but then saves everyone to be put into the game. Need logic to save players if they're onbly selected...
-                // maybe just change prefs to user ids... suck it up and do some rxjava now you're better at ot//
-
                 Collections.swap(savedPlayers, fromPosition, toPosition);
                 PreferencesController.getInstance().savePlayers(savedPlayers);
-
-               for (int i = 0; i < savedPlayers.size(); i++) {
-                   Log.d("userlist", i + savedPlayers.get(i).getUsername());
-               }
                 return true;
             }
 
@@ -139,28 +128,6 @@ public class SetupMatchActivity extends AppCompatActivity implements View.OnClic
                 if (actionState != ItemTouchHelper.ACTION_STATE_IDLE && viewHolder != null){
                     source = viewHolder.getBindingAdapterPosition();
                 }
-            }
-
-            @Override
-            public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
-                super.clearView(recyclerView, viewHolder);
-//                List<User> players = adapter.getUsersList();
-                List<User> players = PreferencesController.getInstance().getPlayers();
-                for (int i = 0; i < players.size(); i++) {
-                    Log.d("userlist", "On ClearViewCalled: " + i + players.get(i).getUsername());
-                }
-//                List<User> players = adapter.getUsersList();
-//                if (source != -1 & source != viewHolder.getBindingAdapterPosition()) {
-//                    Collections.swap(players, source, viewHolder.getBindingAdapterPosition());
-//                    PreferencesController.getInstance().savePlayers(players);
-//                    adapter.notifyItemMoved(source, viewHolder.getBindingAdapterPosition());
-////                    setupMatchViewModel.setSelectedPlayers(players);
-//                    //TODO order of players , find out how determined
-//                   for (int i = 0; i < players.size(); i++) {
-//                    Log.d("userlist", i + players.get(i).getUsername());
-//                   }
-//                }
-//                source = -1;
             }
         }).attachToRecyclerView(recyclerView);
     }
