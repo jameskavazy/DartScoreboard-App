@@ -84,7 +84,7 @@ public class PlayerSelectAdapter extends RecyclerView.Adapter<PlayerSelectAdapte
         if (!playersToGame) {
             holder.checkBox.setVisibility(View.INVISIBLE);
             holder.dragIcon.setVisibility(View.VISIBLE);
-            holder.nameText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+            holder.nameText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
         }
         holder.checkBox.setChecked(selected);
     }

@@ -153,6 +153,7 @@ public class SetupMatchActivity extends AppCompatActivity implements View.OnClic
         } else if (viewId == R.id.randomise_players_button) {
             setupMatchViewModel.randomisePlayerOrder(selectedPlayers);
             PreferencesController.getInstance().savePlayers(selectedPlayers);
+            adapter.setUsersList(selectedPlayers);
         }
     }
 
