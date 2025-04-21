@@ -91,6 +91,7 @@ public class PlayerSelectAdapter extends RecyclerView.Adapter<PlayerSelectAdapte
 
     @Override
     public int getItemCount() {
+        if (usersList == null) return 0;
         return usersList.size();
     }
 

@@ -2,9 +2,25 @@ package com.example.dartscoreboard.match.data.models;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.Index;
 
-@Entity(primaryKeys = {"userId", "matchId"}, indices = {@Index(value = "matchId")})
+@Entity(
+        primaryKeys = {"userId", "matchId"},
+        indices = {@Index(value = "matchId")},
+        foreignKeys = {@ForeignKey(
+                entity = Match.class,
+                parentColumns = "matchId",
+                childColumns = "matchId",
+                onDelete = ForeignKey.CASCADE
+        ),
+        @ForeignKey(
+                entity = User.class,
+                parentColumns = "userId",
+                childColumns = "userId",
+                onDelete = ForeignKey.CASCADE
+        )}
+)
 public class MatchUsers {
 
     public long userId;

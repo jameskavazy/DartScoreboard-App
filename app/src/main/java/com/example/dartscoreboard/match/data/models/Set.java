@@ -3,11 +3,20 @@ package com.example.dartscoreboard.match.data.models;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
 import java.time.OffsetDateTime;
 
-@Entity(tableName = "set")
+@Entity(
+        tableName = "set",
+        foreignKeys =  @ForeignKey(
+                entity = Match.class,
+                parentColumns = "matchId",
+                childColumns = "matchId",
+                onDelete = ForeignKey.CASCADE
+        )
+)
 public class Set {
 
     @NonNull

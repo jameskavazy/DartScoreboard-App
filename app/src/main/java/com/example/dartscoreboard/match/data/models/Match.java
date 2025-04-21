@@ -4,12 +4,15 @@ package com.example.dartscoreboard.match.data.models;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
 import java.time.OffsetDateTime;
 import java.util.List;
 
-@Entity(tableName = "match")
+@Entity(
+        tableName = "match"
+)
 public class Match {
 
     @PrimaryKey

@@ -58,26 +58,15 @@ public class SetupMatchViewModel extends AndroidViewModel {
         matchId = UUID.randomUUID().toString();
         Match match = new Match(matchId, matchType, getMatchSettings(legs, sets), OffsetDateTime.now());
         match.setPlayersCSV(PreferencesController.getInstance().getPlayers());
-        addUsersToMatch();
         Disposable d = matchRepository.insertMatch(match).subscribeOn(Schedulers.io()).subscribe(() -> {
                 String setId = UUID.randomUUID().toString();
+                addUsersToMatch();
                 matchRepository.insertSet(new Set(setId, match.matchId)).subscribeOn(Schedulers.io()).subscribe();
                 matchRepository.insertLeg(new Leg(UUID.randomUUID().toString(), setId, match.matchId, 0)).subscribeOn(Schedulers.io()).subscribe();
             });
         compositeDisposable.add(d);
         return match;
     }
-
-//    public List<User> getSelectedPlayers() {
-//        if (selectedPlayers == null) {
-//            selectedPlayers = new ArrayList<>();
-//        }
-//        return selectedPlayers;
-//    }
-//
-//    public void setSelectedPlayers(List<User> selectedPlayers){
-//        this.selectedPlayers = selectedPlayers;
-//    }
 
     public void addUsersToMatch(){
         List<User> selectedPlayers = PreferencesController.getInstance().getPlayers();

@@ -10,12 +10,15 @@ import androidx.room.PrimaryKey;
                 @ForeignKey(
                         entity = Leg.class,
                         parentColumns = "legId",
-                        childColumns = "legId"
+                        childColumns = "legId",
+                        onDelete = ForeignKey.CASCADE
+
                 ),
                 @ForeignKey(
                         entity = User.class,
                         parentColumns = "userId",
-                        childColumns = "userId"
+                        childColumns = "userId",
+                        onDelete = ForeignKey.CASCADE
                 )
         },
         indices = {

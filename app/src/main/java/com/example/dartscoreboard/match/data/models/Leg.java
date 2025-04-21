@@ -3,14 +3,24 @@ package com.example.dartscoreboard.match.data.models;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
 import java.time.OffsetDateTime;
 
 
-@Entity (tableName = "leg")
+@Entity (
+        tableName = "leg",
+        foreignKeys =  @ForeignKey(
+                entity = Match.class,
+                parentColumns = "matchId",
+                childColumns = "matchId",
+                onDelete = ForeignKey.CASCADE
+        )
+)
 public class Leg implements Serializable {
+
     @PrimaryKey
     @NonNull
     public String legId;
@@ -18,7 +28,6 @@ public class Leg implements Serializable {
     public String setId;
 
     public String matchId;
-
     @ColumnInfo(name = "turn_index")
     public int turnIndex;
     public int winnerId;
