@@ -33,16 +33,10 @@ import java.util.List;
 import java.util.Locale;
 
 public class SetupMatchActivity extends AppCompatActivity implements View.OnClickListener {
-
-
     private final String[] gameSelectList = {"501", "301", "170"};
-
     private final String[] numberOfLegsSetsList = {"1", "2", "3", "4", "5"};
-
     private Toolbar toolbar;
-
     private PlayerSelectAdapter adapter;
-
     private AutoCompleteTextView gameTypeAutoCompleteTextView;
     private AutoCompleteTextView legsAutoCompleteTextView;
 

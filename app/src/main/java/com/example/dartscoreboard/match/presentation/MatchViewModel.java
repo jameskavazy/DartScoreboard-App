@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Application;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -31,6 +32,7 @@ import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.functions.Consumer;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subscribers.DisposableSubscriber;
 
@@ -76,8 +78,14 @@ public class MatchViewModel extends AndroidViewModel {
                     .flatMap(userScore -> checklegWonSingle(userId, userScore))
                     .flatMap(legsWon -> checkSetsWonSingle(userId, legsWon))
                     .subscribeOn(Schedulers.io())
-                    .subscribe(setsWon -> handleGameProgression(user, setsWon), Throwable::printStackTrace);
-
+                    .subscribe(
+                            setsWon -> handleGameProgression(user, setsWon),
+                            throwable -> {
+                                throwable.printStackTrace();
+                                Log.e("ScoreInsert", "Error processing score submission", throwable);
+                                toastMessage("Could not update the game. Please try again.");
+                            }
+                    );
             compositeDisposable.add(d);
         }
     }
@@ -234,6 +242,15 @@ public class MatchViewModel extends AndroidViewModel {
                .subscribeWith(new DisposableSubscriber<Pair<MatchWithUsers, LegWithVisits>>() {
                    @Override
                    public void onNext(Pair<MatchWithUsers, LegWithVisits> data) {
+                       if (data == null) {
+                           throw new NullPointerException("Received null Pair<MatchWithUsers, LegWithVisits>");
+                       }
+                       if (data.first == null) {
+                           throw new NullPointerException("MatchWithUsers (data.first) is null");
+                       }
+                       if (data.second == null) {
+                           throw new NullPointerException("LegWithVisits (data.second) is null");
+                       }
                        MatchData matchData = new MatchData(data.first, data.second);
                        liveMatchData.postValue(matchData);
                        setMatchWithUsers(data.first);
@@ -241,10 +258,14 @@ public class MatchViewModel extends AndroidViewModel {
                    }
 
                    @Override
-                   public void onError(Throwable t) {}
+                   public void onError(Throwable t) {
+                        Log.e("MatchDataFlowable", "Error encountered in data flow", t);
+                   }
 
                    @Override
-                   public void onComplete() {}
+                   public void onComplete() {
+
+                   }
                }));
     }
 
@@ -263,11 +284,16 @@ public class MatchViewModel extends AndroidViewModel {
     private void handleGameWonUndo(int latestSetPosition) {
         Disposable d = matchRepository.deleteLegById(legWithVisits.leg.legId)
                 .andThen(matchRepository.getLatestLegId(matchWithUsers.match.matchId))
-                .flatMapCompletable(gameId -> matchRepository.setLegWinner(0, gameId)
-                        .andThen(matchRepository.setMatchWinner(0, matchWithUsers.match.matchId)))
+                .flatMapCompletable(gameId ->
+                        matchRepository.setLegWinner(0, gameId)
+                        .andThen(matchRepository.setMatchWinner(0, matchWithUsers.match.matchId))
+                )
                 .andThen(matchRepository.addSetWinner(matchWithUsers.sets.get(latestSetPosition).setId, 0))
                 .subscribeOn(Schedulers.io())
-                .subscribe(matchRepository::deleteLatestVisit, Throwable::printStackTrace);
+                .subscribe(
+                        matchRepository::deleteLatestVisit,
+                        handleError("Undo latest visit")
+                );
 
         compositeDisposable.add(d);
     }
@@ -280,7 +306,10 @@ public class MatchViewModel extends AndroidViewModel {
                 .andThen(matchRepository.getLatestSetId(matchWithUsers.match.matchId))
                 .flatMapCompletable(setId -> matchRepository.addSetWinner(setId,0))
                 .subscribeOn(Schedulers.io())
-                .subscribe(matchRepository::deleteLatestVisit, Throwable::printStackTrace);
+                .subscribe(
+                        matchRepository::deleteLatestVisit,
+                        handleError("Undo latest visit")
+                );
         compositeDisposable.add(d);
     }
 
@@ -289,7 +318,10 @@ public class MatchViewModel extends AndroidViewModel {
                 .andThen(matchRepository.addSetWinner(matchWithUsers.sets.get(latestSetPosition).setId, 0))
                 .andThen(matchRepository.setMatchWinner(0, matchWithUsers.match.matchId))
                 .subscribeOn(Schedulers.io())
-                .subscribe(matchRepository::deleteLatestVisit, Throwable::printStackTrace);
+                .subscribe(
+                        matchRepository::deleteLatestVisit,
+                        handleError("Undo latest visit")
+                );
         compositeDisposable.add(d);
     }
 
@@ -317,5 +349,12 @@ public class MatchViewModel extends AndroidViewModel {
 
     public void setLegWithVisits(LegWithVisits legWithVisits) {
         this.legWithVisits = legWithVisits;
+    }
+
+    private Consumer<Throwable> handleError(String operation) {
+        return throwable -> {
+            Log.e(operation, "Error occurred", throwable);
+            toastMessage("An error occurred during " + operation + ". Please try again.");
+        };
     }
 }
