@@ -28,16 +28,6 @@ public class Converters {
         return timestamp.format(formatter);
     }
 
-    @TypeConverter
-    public List<User> userListFromString (String userListJsonString){
-        Type type = new TypeToken<List<User>>() {}.getType();
-        return new Gson().fromJson(userListJsonString, type);
-    }
-    @TypeConverter
-    public String userListToString (List<User> usersList){
-        return new Gson().toJson(usersList);
-    }
-
     //type converter using clone to help keep Guy User intact.
 
     @TypeConverter
@@ -59,15 +49,6 @@ public class Converters {
         return new Gson().toJson(matchType);
     }
 
-    @TypeConverter
-    public List<MatchWithUsers> gameWithUsersFromJSON(String json) {
-        return new Gson().fromJson(json, new TypeToken<List<MatchWithUsers>>() {}.getType());
-    }
-
-    @TypeConverter
-    public String gameWithUsersToJsonString(List<MatchWithUsers> gameWithUsers) {
-        return new Gson().toJson(gameWithUsers);
-    }
 
 
 
