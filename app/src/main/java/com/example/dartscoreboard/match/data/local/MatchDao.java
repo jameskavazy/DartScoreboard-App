@@ -127,9 +127,11 @@ public interface MatchDao {
     Single<Integer> getMatchWinRate(int userId);
 
     @Query("SELECT COALESCE( (" +
-            "SELECT SUM(score) / (SELECT COUNT(visitId) FROM visit WHERE userId = :userId)" +
-            "FROM visit" +
-            " WHERE userId = :userId " +
+            "SELECT SUM(v.score) / (SELECT COUNT(v.visitId))" +
+            "FROM visit v " +
+            "JOIN leg l ON v.legId = l.legId " +
+            "JOIN `match` m ON l.matchId = m.matchId" +
+            " WHERE v.userId = :userId AND m.winnerId != 0" +
             "), 0)")
     Single<Integer> getAvgAllMatches(int userId);
 
