@@ -14,8 +14,6 @@ import com.example.dartscoreboard.match.data.models.MatchUsers;
 import com.example.dartscoreboard.match.data.models.Match;
 import com.example.dartscoreboard.match.data.models.Set;
 import com.example.dartscoreboard.match.data.models.Visit;
-import com.example.dartscoreboard.live_matches.data.LiveProMatchesDao;
-import com.example.dartscoreboard.live_matches.data.ProMatch;
 import com.example.dartscoreboard.match.data.models.User;
 import com.example.dartscoreboard.match.data.local.UserDao;
 import com.example.dartscoreboard.util.Converters;
@@ -26,7 +24,6 @@ import com.example.dartscoreboard.util.Converters;
                 Leg.class,
                 Set.class,
                 Match.class,
-                ProMatch.class,
                 MatchUsers.class,
                 Visit.class
         },
@@ -36,7 +33,6 @@ public abstract class Database extends RoomDatabase {
 
     public abstract UserDao userDao();
     public abstract MatchDao matchesDao();
-    public abstract LiveProMatchesDao liveProMatchesDao();
     private static volatile Database instance;
 
     public static synchronized Database getInstance(Context context){

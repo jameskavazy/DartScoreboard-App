@@ -9,17 +9,10 @@ import android.widget.Button;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
-import com.example.dartscoreboard.live_matches.presentation.LiveProMatchesActivity;
-import com.example.dartscoreboard.match.presentation.MatchHistoryActivity;
 import com.example.dartscoreboard.R;
-import com.example.dartscoreboard.reminders.ReminderActivity;
-import com.example.dartscoreboard.match.presentation.SetupMatchActivity;
-import com.example.dartscoreboard.match.presentation.StatisticsActivity;
-import com.example.dartscoreboard.match.presentation.UsersActivity;
+
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-
 
     private Button continueButton;
     private Toolbar toolbar;
@@ -44,14 +37,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Button usersButton = findViewById(R.id.users_button);
         continueButton = findViewById(R.id.continueButton);
         Button statsButton = findViewById(R.id.statsButton);
-        Button trainingReminderButton = findViewById(R.id.trainingRemindersButton);
-        Button liveProMatchesButton = findViewById(R.id.live_pro_matches_button);
         statsButton.setOnClickListener(this);
         newGameButton.setOnClickListener(this);
         usersButton.setOnClickListener(this);
         continueButton.setOnClickListener(this);
-        trainingReminderButton.setOnClickListener(this);
-        liveProMatchesButton.setOnClickListener(this);
         setContinueBtnVisibility();
     }
 
@@ -74,20 +63,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             onContinueClicked();
         } else if (viewId == R.id.statsButton){
             onStatsButtonClicked();
-        } else if (viewId == R.id.trainingRemindersButton){
-            onTrainingReminderClicked();
-        } else if (viewId == R.id.live_pro_matches_button){
-            onLiveProMatchesButtonClicked();
         }
-    }
-
-    private void onLiveProMatchesButtonClicked() {
-        openLiveMatchesActivity();
-    }
-
-    private void openLiveMatchesActivity() {
-        Intent intent = new Intent(this, LiveProMatchesActivity.class);
-        startActivity(intent);
     }
 
     private void onStatsButtonClicked() {
@@ -126,16 +102,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void openMatchHistoryActivity(){
         Intent intent = new Intent(this, MatchHistoryActivity.class);
-        startActivity(intent);
-    }
-
-
-    private void onTrainingReminderClicked(){
-        openTrainingReminderActivity();
-    }
-
-    private void openTrainingReminderActivity() {
-        Intent intent = new Intent(this, ReminderActivity.class);
         startActivity(intent);
     }
 }
