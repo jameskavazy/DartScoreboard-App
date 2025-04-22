@@ -19,7 +19,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("dom test", "MainActivityOnCreate");
         super.onCreate(savedInstanceState);
         setupUI();
     }
@@ -54,10 +53,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int viewId = v.getId();
 
         if (viewId == R.id.startNewGameButton) {
-            Log.d("dom test", "fiveoBtn click");
             onStartGameActivityClick();
         } else if (viewId == R.id.users_button){
-            Log.d("dom test", "usersButton click");
             onUsersButtonClick();
         } else if (viewId == R.id.continueButton) {
             onContinueClicked();
@@ -85,18 +82,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void onStartGameActivityClick(){
-        Log.d("dom test", "onStartGameActivity");
         openStartGameActivity();
     }
 
     private void openStartGameActivity(){
-        Log.d("dom test", "openStartGameActivity");
         Intent intent = new Intent(this, SetupMatchActivity.class);
         startActivity(intent);
     }
 
     private void onContinueClicked() {
-        Log.d("dom test", "onContinueClicked");
         openMatchHistoryActivity();
     }
 
