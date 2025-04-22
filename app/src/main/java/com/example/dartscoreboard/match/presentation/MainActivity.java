@@ -1,4 +1,4 @@
-package com.example.dartscoreboard.main_activity;
+package com.example.dartscoreboard.match.presentation;
 
 import android.content.Intent;
 import android.os.Bundle;
