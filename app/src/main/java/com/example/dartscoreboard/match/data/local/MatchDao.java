@@ -104,13 +104,13 @@ public interface MatchDao {
 
     //Stats
 
-    @Query("SELECT COUNT(winnerId) FROM `match` WHERE winnerId = :userId")
+    @Query("SELECT COUNT(DISTINCT matchId) FROM valid_match_performance_view WHERE matchWinner = :userId")
     Single<Integer> getUserMatchWins(int userId);
 
-    @Query("SELECT COUNT(winnerId) " +
-            "FROM `match` m " +
-            "JOIN matchusers mu ON m.matchId = mu.matchId " +
-            "WHERE winnerId != :userId AND winnerId != 0 AND mu.userId = :userId")
+    @Query("SELECT COUNT(DISTINCT matchId) " +
+            "FROM valid_match_performance_view " +
+            "WHERE matchWinner != :userId"
+    )
     Single<Integer> getUserMatchLosses(int userId);
 
     @Query("SELECT COUNT(userId) " +
@@ -126,13 +126,14 @@ public interface MatchDao {
             "), 0)")
     Single<Integer> getMatchWinRate(int userId);
 
-    @Query("SELECT COALESCE( (" +
-            "SELECT SUM(v.score) / (SELECT COUNT(v.visitId))" +
-            "FROM visit v " +
-            "JOIN leg l ON v.legId = l.legId " +
-            "JOIN `match` m ON l.matchId = m.matchId" +
-            " WHERE v.userId = :userId AND m.winnerId != 0" +
-            "), 0)")
+    @Query(
+            "SELECT COALESCE( (" +
+                    "SELECT SUM(score) / (SELECT COUNT(visitId))" +
+                    "FROM valid_match_performance_view " +
+                    "WHERE userId = :userId " +
+                    ")" +
+            ", 0)"
+    )
     Single<Integer> getAvgAllMatches(int userId);
 
     @Query("SELECT COUNT(winnerId) FROM leg WHERE winnerId = :userId")

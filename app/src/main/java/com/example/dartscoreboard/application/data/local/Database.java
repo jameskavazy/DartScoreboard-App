@@ -13,6 +13,7 @@ import com.example.dartscoreboard.match.data.models.Leg;
 import com.example.dartscoreboard.match.data.models.MatchUsers;
 import com.example.dartscoreboard.match.data.models.Match;
 import com.example.dartscoreboard.match.data.models.Set;
+import com.example.dartscoreboard.match.data.models.ValidMatchPerformanceView;
 import com.example.dartscoreboard.match.data.models.Visit;
 import com.example.dartscoreboard.match.data.models.User;
 import com.example.dartscoreboard.match.data.local.UserDao;
@@ -27,6 +28,7 @@ import com.example.dartscoreboard.util.Converters;
                 MatchUsers.class,
                 Visit.class
         },
+        views = ValidMatchPerformanceView.class,
         version = 1)
 @TypeConverters({Converters.class})
 public abstract class Database extends RoomDatabase {
