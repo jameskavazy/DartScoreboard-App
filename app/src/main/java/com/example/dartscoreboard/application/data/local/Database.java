@@ -9,6 +9,7 @@ import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.example.dartscoreboard.match.data.local.MatchDao;
+import com.example.dartscoreboard.match.data.local.StatsDao;
 import com.example.dartscoreboard.match.data.models.Leg;
 import com.example.dartscoreboard.match.data.models.MatchUsers;
 import com.example.dartscoreboard.match.data.models.Match;
@@ -35,6 +36,7 @@ public abstract class Database extends RoomDatabase {
 
     public abstract UserDao userDao();
     public abstract MatchDao matchesDao();
+    public abstract StatsDao statsDao();
     private static volatile Database instance;
 
     public static synchronized Database getInstance(Context context){

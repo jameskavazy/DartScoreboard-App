@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.lifecycle.LiveData;
 
 import com.example.dartscoreboard.application.data.local.Database;
+import com.example.dartscoreboard.match.data.local.StatsDao;
 import com.example.dartscoreboard.match.data.models.LegWithVisits;
 import com.example.dartscoreboard.match.data.local.MatchDao;
 import com.example.dartscoreboard.match.data.models.Leg;
@@ -23,11 +24,13 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class MatchRepository {
     private final MatchDao matchDao;
+    private final StatsDao statsDao;
     private final LiveData<List<Match>> unfinishedMatches;
     Database database;
     public MatchRepository(Application application){
         database = Database.getInstance(application);
         matchDao = database.matchesDao();
+        statsDao = database.statsDao();
         unfinishedMatches = matchDao.getUnfinishedGameHistory();
     }
     // Match and Leg Data
@@ -135,35 +138,35 @@ public class MatchRepository {
     }
 
     public Single<Integer> getUserMatchWins(int userId){
-        return matchDao.getUserMatchWins(userId);
+        return statsDao.getUserMatchWins(userId);
     }
 
     public Single<Integer> getUserMatchLosses(int userId){
-        return matchDao.getUserMatchLosses(userId);
+        return statsDao.getUserMatchLosses(userId);
     }
 
     public Single<Integer> getUserMatchesPlayed(int userId){
-        return matchDao.getUserMatchesPlayed(userId);
+        return statsDao.getUserMatchesPlayed(userId);
     }
 
     public Single<Integer> getMatchWinRate(int userId){
-        return matchDao.getMatchWinRate(userId);
+        return statsDao.getMatchWinRate(userId);
     }
 
     public Single<Integer> getAvgAllMatches(int userId){
-        return matchDao.getAvgAllMatches(userId);
+        return statsDao.getAvgAllMatches(userId);
     }
 
     public Single<Integer> getLegsWon(int userId){
-        return matchDao.getLegsWon(userId);
+        return statsDao.getLegsWon(userId);
     }
 
     public Single<Integer> getLegWinRate(int userId){
-        return matchDao.getLegWinRate(userId);
+        return statsDao.getLegWinRate(userId);
     }
 
     public Single<Integer> getCheckoutRate(int userId) {
-        return matchDao.getCheckoutRate(userId);
+        return statsDao.getCheckoutRate(userId);
     }
 
 }
