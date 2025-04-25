@@ -87,8 +87,8 @@ public class SetupMatchViewModel extends AndroidViewModel {
     }
 
     public void randomisePlayerOrder(List<User> selectedPlayers){
-        Collections.shuffle(selectedPlayers);
+        if (selectedPlayers != null) {
+            Collections.shuffle(selectedPlayers);
+        }
     }
-
-
 }
