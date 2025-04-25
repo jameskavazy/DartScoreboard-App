@@ -1,8 +1,10 @@
 package com.example.dartscoreboard.match.presentation;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.core.util.Pair;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
@@ -14,9 +16,13 @@ import com.example.dartscoreboard.match.data.repository.MatchRepository;
 import com.example.dartscoreboard.match.models.Statistics;
 import com.example.dartscoreboard.match.data.repository.UserRepository;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.core.SingleObserver;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -24,12 +30,16 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class UserStatsViewModel extends AndroidViewModel {
 
     private final int userId;
-    private final Statistics _statistics = new Statistics();
+//    private Statistics _statistics;
     private final MutableLiveData<Statistics> statistics = new MutableLiveData<>();
     private final UserRepository userRepository;
     private final MatchRepository matchRepository;
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
     private final MutableLiveData<String> username = new MutableLiveData<>();
+
+    private final Set<Pair<Integer, Integer>> scoreSegments
+            = new HashSet<>(Arrays.asList(
+            Pair.create(0, 59), Pair.create(60, 99), Pair.create(100, 139), Pair.create(140, 179), Pair.create(180, 180)));
 
     @Override
     protected void onCleared() {
@@ -70,30 +80,9 @@ public class UserStatsViewModel extends AndroidViewModel {
     }
 
     public void getAllData(){
-        queryAndUpdateStats(matchRepository.getUserMatchWins(userId), _statistics::setWins);
-        queryAndUpdateStats(matchRepository.getUserMatchLosses(userId), _statistics::setLosses);
-        queryAndUpdateStats(matchRepository.getUserMatchesPlayed(userId), _statistics::setMatchesPlayed);
-        queryAndUpdateStats(matchRepository.getMatchWinRate(userId), _statistics::setMatchWinRate);
-        queryAndUpdateStats(matchRepository.getAvgAllMatches(userId), _statistics::setAverageScore);
-        queryAndUpdateStats(matchRepository.getLegsWon(userId), _statistics::setLegsWon);
-        queryAndUpdateStats(matchRepository.getLegWinRate(userId), _statistics::setLegWinRate);
-        queryAndUpdateStats(matchRepository.getCheckoutRate(userId), _statistics::setCheckoutRate);
-    }
-
-
-
-    public void queryAndUpdateStats(Single<Integer> query, Consumer<Integer> updater){
-        Disposable d = query
-                .doOnSuccess(value -> {
-                    updater.accept(value);
-                    statistics.postValue(_statistics);
-                })
-                .doOnError(throwable -> {
-                    updater.accept(0);
-                    throwable.printStackTrace();
-                })
+        Disposable d = matchRepository.getUserStats(userId)
                 .subscribeOn(Schedulers.io())
-                .subscribe();
+                .subscribe(statistics::postValue);
         compositeDisposable.add(d);
     }
 

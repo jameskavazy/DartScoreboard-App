@@ -6,6 +6,7 @@ import com.example.dartscoreboard.match.data.models.MatchWithUsers;
 import com.example.dartscoreboard.match.data.models.MatchSettings;
 import com.example.dartscoreboard.match.data.models.MatchType;
 import com.example.dartscoreboard.match.data.models.User;
+import com.example.dartscoreboard.match.models.Statistics;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -60,13 +61,13 @@ public class Converters {
     }
 
     @TypeConverter
-    public List<MatchWithUsers> gameWithUsersFromJSON(String json) {
-        return new Gson().fromJson(json, new TypeToken<List<MatchWithUsers>>() {}.getType());
+    public Statistics userStatsFromJson(String json) {
+        return new Gson().fromJson(json, Statistics.class);
     }
 
     @TypeConverter
-    public String gameWithUsersToJsonString(List<MatchWithUsers> gameWithUsers) {
-        return new Gson().toJson(gameWithUsers);
+    public String userStatsToJson(Statistics statistics) {
+        return new Gson().toJson(statistics);
     }
 
 

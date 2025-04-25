@@ -13,6 +13,7 @@ import com.example.dartscoreboard.match.data.models.Match;
 import com.example.dartscoreboard.match.data.models.MatchWithUsers;
 import com.example.dartscoreboard.match.data.models.Set;
 import com.example.dartscoreboard.match.data.models.Visit;
+import com.example.dartscoreboard.match.models.Statistics;
 
 import java.util.Comparator;
 import java.util.List;
@@ -167,6 +168,18 @@ public class MatchRepository {
 
     public Single<Integer> getCheckoutRate(int userId) {
         return statsDao.getCheckoutRate(userId);
+    }
+
+    public Single<Integer> getScoreSegments(int userId, int scoreA, int scoreB){
+        return statsDao.getScoreSegments(userId, scoreA, scoreB);
+    }
+
+    public Single<Integer> getNonCheckoutAvg(int userId){
+        return statsDao.getNonCheckoutAvg(userId);
+    }
+
+    public Single<Statistics> getUserStats(int userId){
+        return statsDao.getUserStats(userId);
     }
 
 }
