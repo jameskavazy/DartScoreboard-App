@@ -11,13 +11,16 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import com.example.dartscoreboard.match.data.local.MatchDao;
 import com.example.dartscoreboard.match.data.local.StatsDao;
 import com.example.dartscoreboard.match.data.models.Leg;
+import com.example.dartscoreboard.match.data.models.LegStatsView;
 import com.example.dartscoreboard.match.data.models.MatchUsers;
 import com.example.dartscoreboard.match.data.models.Match;
 import com.example.dartscoreboard.match.data.models.Set;
-import com.example.dartscoreboard.match.data.models.ValidMatchPerformanceView;
+import com.example.dartscoreboard.match.data.models.MatchStatsView;
+import com.example.dartscoreboard.match.data.models.ValidMatchView;
 import com.example.dartscoreboard.match.data.models.Visit;
 import com.example.dartscoreboard.match.data.models.User;
 import com.example.dartscoreboard.match.data.local.UserDao;
+import com.example.dartscoreboard.match.data.models.VisitStatsView;
 import com.example.dartscoreboard.util.Converters;
 
 @androidx.room.Database(
@@ -29,7 +32,12 @@ import com.example.dartscoreboard.util.Converters;
                 MatchUsers.class,
                 Visit.class
         },
-        views = ValidMatchPerformanceView.class,
+        views = {
+                MatchStatsView.class,
+                LegStatsView.class,
+                VisitStatsView.class,
+                ValidMatchView.class
+        },
         version = 1)
 @TypeConverters({Converters.class})
 public abstract class Database extends RoomDatabase {
