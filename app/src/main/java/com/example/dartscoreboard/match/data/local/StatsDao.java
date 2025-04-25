@@ -93,7 +93,7 @@ public interface StatsDao {
                     "COUNT(DISTINCT CASE WHEN ms.winnerId != :userId AND ms.userId = :userId THEN ms.matchId END) AS losses, " +
                     "COUNT(DISTINCT ms.matchId) AS matchesPlayed, " +
                     "(SELECT SUM(score) / COUNT(DISTINCT visitId) FROM visit_stats_view WHERE userId = :userId) AS averageScore,"+
-                    "COALESCE( COUNT(DISTINCT CASE WHEN ms.winnerId = :userId THEN ms.matchId END) / COUNT(DISTINCT ms.matchId) , 0) AS matchWinRate, " +
+                    "COALESCE( COUNT(DISTINCT CASE WHEN ms.winnerId = :userId THEN ms.matchId END) * 100.0 / COUNT(DISTINCT ms.matchId) , 0) AS matchWinRate, " +
                     "COALESCE(SUM(CASE WHEN vs.checkout = 0 THEN vs.score ELSE 0 END) / COUNT(DISTINCT CASE WHEN checkout = 0 THEN visitId END), 0) AS nonCheckoutAvg," +
                     "COUNT(DISTINCT CASE WHEN ls.winnerId = :userId THEN ls.legId END) AS legsWon, " +
                     "COALESCE( (COUNT(DISTINCT CASE WHEN ls.winnerId = :userId THEN ls.legId END) * 100.0 / COUNT(DISTINCT CASE WHEN vs.checkout = 1 THEN ls.legId END)), 0) AS checkoutRate, " +
