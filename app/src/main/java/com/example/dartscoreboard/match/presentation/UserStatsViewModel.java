@@ -37,10 +37,6 @@ public class UserStatsViewModel extends AndroidViewModel {
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
     private final MutableLiveData<String> username = new MutableLiveData<>();
 
-    private final Set<Pair<Integer, Integer>> scoreSegments
-            = new HashSet<>(Arrays.asList(
-            Pair.create(0, 59), Pair.create(60, 99), Pair.create(100, 139), Pair.create(140, 179), Pair.create(180, 180)));
-
     @Override
     protected void onCleared() {
         compositeDisposable.clear();
