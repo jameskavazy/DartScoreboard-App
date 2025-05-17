@@ -134,50 +134,7 @@ public class MatchRepository {
        Completable.fromAction(matchDao::deleteLastVisit).subscribeOn(Schedulers.io()).subscribe();
     }
 
-    public LiveData<Integer> countUserVisits(String legId, int userId){
-        return matchDao.countUserVisits(legId, userId);
-    }
-
-    public Single<Integer> getUserMatchWins(int userId){
-        return statsDao.getUserMatchWins(userId);
-    }
-
-    public Single<Integer> getUserMatchLosses(int userId){
-        return statsDao.getUserMatchLosses(userId);
-    }
-
-    public Single<Integer> getUserMatchesPlayed(int userId){
-        return statsDao.getUserMatchesPlayed(userId);
-    }
-
-    public Single<Integer> getMatchWinRate(int userId){
-        return statsDao.getMatchWinRate(userId);
-    }
-
-    public Single<Integer> getAvgAllMatches(int userId){
-        return statsDao.getAvgAllMatches(userId);
-    }
-
-    public Single<Integer> getLegsWon(int userId){
-        return statsDao.getLegsWon(userId);
-    }
-
-    public Single<Integer> getLegWinRate(int userId){
-        return statsDao.getLegWinRate(userId);
-    }
-
-    public Single<Integer> getCheckoutRate(int userId) {
-        return statsDao.getCheckoutRate(userId);
-    }
-
-    public Single<Integer> getScoreSegments(int userId, int scoreA, int scoreB){
-        return statsDao.getScoreSegments(userId, scoreA, scoreB);
-    }
-
-    public Single<Integer> getNonCheckoutAvg(int userId){
-        return statsDao.getNonCheckoutAvg(userId);
-    }
-
+   // Stats
     public Single<Statistics> getUserStats(int userId){
         return statsDao.getUserStats(userId);
     }

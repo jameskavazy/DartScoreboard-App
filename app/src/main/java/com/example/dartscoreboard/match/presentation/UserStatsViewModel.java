@@ -1,13 +1,10 @@
 package com.example.dartscoreboard.match.presentation;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.core.util.Pair;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -16,13 +13,6 @@ import com.example.dartscoreboard.match.data.repository.MatchRepository;
 import com.example.dartscoreboard.match.models.Statistics;
 import com.example.dartscoreboard.match.data.repository.UserRepository;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.function.Consumer;
-
-import io.reactivex.rxjava3.core.Single;
-import io.reactivex.rxjava3.core.SingleObserver;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -30,7 +20,6 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class UserStatsViewModel extends AndroidViewModel {
 
     private final int userId;
-//    private Statistics _statistics;
     private final MutableLiveData<Statistics> statistics = new MutableLiveData<>();
     private final UserRepository userRepository;
     private final MatchRepository matchRepository;

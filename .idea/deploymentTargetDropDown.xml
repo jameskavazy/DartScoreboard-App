@@ -2,7 +2,22 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
+      <entry key="DatabaseTest">
+        <State />
+      </entry>
       <entry key="app">
+        <State />
+      </entry>
+      <entry key="testDeleteUser()">
+        <State />
+      </entry>
+      <entry key="testInsertUser()">
+        <State />
+      </entry>
+      <entry key="testInsertVisit()">
+        <State />
+      </entry>
+      <entry key="writeUser()">
         <State />
       </entry>
     </value>

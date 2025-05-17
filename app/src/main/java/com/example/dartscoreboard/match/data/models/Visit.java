@@ -34,6 +34,7 @@ public class Visit {
     public int userId;
 
     public String legId;
+
     public int score;
     public boolean checkout = false;
 
@@ -71,7 +72,5 @@ public class Visit {
     public void setScore(int score) {
         this.score = score;
     }
-
-
 
 }
