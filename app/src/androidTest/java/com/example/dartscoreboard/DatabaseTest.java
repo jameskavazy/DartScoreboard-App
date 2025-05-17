@@ -6,7 +6,6 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.room.Room;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.filters.SmallTest;
 
 import org.junit.After;
 import org.junit.Before;
@@ -21,6 +20,7 @@ import com.example.dartscoreboard.match.data.local.MatchDao;
 import com.example.dartscoreboard.match.data.local.StatsDao;
 import com.example.dartscoreboard.match.data.local.UserDao;
 import com.example.dartscoreboard.match.data.models.Leg;
+import com.example.dartscoreboard.match.data.models.LegWithVisits;
 import com.example.dartscoreboard.match.data.models.Match;
 import com.example.dartscoreboard.match.data.models.MatchSettings;
 import com.example.dartscoreboard.match.data.models.MatchType;
@@ -89,27 +89,71 @@ public class DatabaseTest {
                 });
     }
 
-//    @Test
-//    public void testInsertVisit() throws InterruptedException {
-//        userDao.insertUser(new User("player"));
-//
-//        Match match = new Match("testMatchId", MatchType.FiveO, new MatchSettings(1,1), OffsetDateTime.now());
-//        matchDao.insertMatch(match);
-//
-//
-//        Set set = new Set("testSetId", match.matchId);
-//        matchDao.insertSet(set);
-//        matchDao.insertLeg(new Leg("testLegId", set.setId, match.matchId, 0));
-//
-//        Visit visit = new Visit();
-//        visit.score = 60;
-//        visit.legId = "testLegId";
-//        visit.userId = 1;
-//        matchDao.insertVisit(visit);
-//
-//        int count = LiveDataTestUtil.getOrAwaitValue(matchDao.countUserVisits("legId",1));
-//        assertEquals("number of visits is 1", 1, count);
-//    }
+    @Test
+    public void testInsertMatch() throws InterruptedException {
+        Match match = new Match("testMatchId", MatchType.FiveO, new MatchSettings(1,1), OffsetDateTime.now());
+        matchDao.insertMatch(match);
+        List<Match> matches = LiveDataTestUtil.getOrAwaitValue(matchDao.getAllMatchHistory());
+        assertEquals("testMatchId", matches.get(0).matchId);
+    }
+
+    @Test
+    public void testInsertSet() {
+        Match match = new Match("testMatchId", MatchType.FiveO, new MatchSettings(1,1), OffsetDateTime.now());
+        matchDao.insertMatch(match);
+
+        Set set = new Set("testSetId", match.matchId);
+        matchDao.insertSet(set);
+
+        String got = matchDao.getLatestSetId(match.matchId).blockingGet();
+        String want = set.setId;
+        assertEquals(got, want);
+    }
+
+    @Test
+    public void testInsertLeg(){
+        Match match = new Match("testMatchId", MatchType.FiveO, new MatchSettings(1,1), OffsetDateTime.now());
+        matchDao.insertMatch(match);
+
+        Set set = new Set("testSetId", match.matchId);
+        matchDao.insertSet(set);
+
+        Leg leg = new Leg("testLegId", set.setId, match.matchId,0);
+        matchDao.insertLeg(leg).subscribe();
+
+        String got = matchDao.getLatestLegId(match.matchId).blockingGet();
+        String want = "testLegId";
+
+        assertEquals(got, want);
+    }
+
+
+    @Test
+    public void testInsertVisit() throws InterruptedException {
+        User user = new User("testPLayer");
+        userDao.insertUser(user);
+
+        Match match = new Match("testMatchId", MatchType.FiveO, new MatchSettings(1,1), OffsetDateTime.now());
+        matchDao.insertMatch(match);
+
+        Set set = new Set("testSetId", match.matchId);
+        matchDao.insertSet(set);
+
+        Leg leg = new Leg("testLegId", set.setId, match.matchId,0);
+        matchDao.insertLeg(leg).subscribe();
+
+        Visit visit = new Visit();
+
+        visit.userId = 1;
+        visit.score = 22;
+        visit.legId = leg.legId;
+        matchDao.insertVisit(visit);
+
+        long got = matchDao.getLatestLegWithVisits(match.matchId).blockingFirst().visits.get(0).visitId;
+        long want = 1;
+
+        assertEquals(got, want);
+    }
     
 
     @Rule

@@ -96,11 +96,10 @@ public interface MatchDao {
     void deleteLastVisit();
     @Transaction
     @Query("SELECT * FROM leg WHERE matchId = :matchId ORDER BY created_at DESC LIMIT 1")
-    Flowable<LegWithVisits> getLatestGameWithVisits(String matchId);
+    Flowable<LegWithVisits> getLatestLegWithVisits(String matchId);
 
     @Query("SELECT COUNT(visitId) FROM visit WHERE legId = :legId AND userId = :userId")
     LiveData<Integer> countUserVisits(String legId, int userId);
-
 
 
 }

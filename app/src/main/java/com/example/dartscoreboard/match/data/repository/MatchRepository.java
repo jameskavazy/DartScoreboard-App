@@ -15,7 +15,6 @@ import com.example.dartscoreboard.match.data.models.Set;
 import com.example.dartscoreboard.match.data.models.Visit;
 import com.example.dartscoreboard.match.models.Statistics;
 
-import java.util.Comparator;
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
@@ -40,7 +39,7 @@ public class MatchRepository {
     }
 
     public Flowable<LegWithVisits> getLegWithVisits(String matchId){
-        return matchDao.getLatestGameWithVisits(matchId);
+        return matchDao.getLatestLegWithVisits(matchId);
     }
 
     // Matches

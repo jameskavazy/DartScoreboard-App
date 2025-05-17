@@ -11,13 +11,13 @@
       <entry key="testDeleteUser()">
         <State />
       </entry>
-      <entry key="testInsertUser()">
+      <entry key="testInsertMatch()">
+        <State />
+      </entry>
+      <entry key="testInsertSet()">
         <State />
       </entry>
       <entry key="testInsertVisit()">
-        <State />
-      </entry>
-      <entry key="writeUser()">
         <State />
       </entry>
     </value>
