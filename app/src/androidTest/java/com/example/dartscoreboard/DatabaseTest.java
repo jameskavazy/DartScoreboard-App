@@ -77,8 +77,12 @@ public class DatabaseTest {
 
     @Test
     public void testDeleteUser() throws InterruptedException {
+
+
         User user = new User("TEST");
         User user2 = new User("TEST2");
+
+
         Completable.fromAction(() -> userDao.insertUser(user))
                 .andThen(Completable.fromAction(() -> userDao.insertUser(user2)))
                 .andThen(Completable.fromAction(() -> userDao.deleteUser(user)))
@@ -158,7 +162,6 @@ public class DatabaseTest {
 
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
-
 
 
 //    @Test

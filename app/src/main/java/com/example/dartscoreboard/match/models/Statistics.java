@@ -5,7 +5,7 @@ public class Statistics {
     private int wins;
     private int losses;
     private int matchWinRate;
-    private int averageScore;
+    private double averageScore;
     private int matchesPlayed;
     private int legsWon;
     private int legWinRate;
@@ -17,7 +17,7 @@ public class Statistics {
     private int segment140To179;
     private int segment180;
 
-    public Statistics(int wins, int losses, int matchWinRate, int averageScore, int matchesPlayed,
+    public Statistics(int wins, int losses, int matchWinRate, double averageScore, int matchesPlayed,
                       int legsWon, int legWinRate, int checkoutRate, int nonCheckoutAvg,
                       int segmentBelow60, int segment60To99, int segment100To139,
                       int segment140To179, int segment180) {
@@ -62,11 +62,11 @@ public class Statistics {
         this.matchWinRate = matchWinRate;
     }
 
-    public int getAverageScore() {
+    public double getAverageScore() {
         return averageScore;
     }
 
-    public void setAverageScore(int averageScore) {
+    public void setAverageScore(double averageScore) {
         this.averageScore = averageScore;
     }
 
