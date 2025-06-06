@@ -81,7 +81,7 @@ public class SetupMatchViewModel extends AndroidViewModel {
 
         for (User player : selectedPlayers) {
             MatchUsers matchUsers = new MatchUsers(player.userId, matchId, selectedPlayers.indexOf(player));
-            insertions.add(userRepository.addUsersToMatch(matchUsers));
+            insertions.add(Completable.fromAction(() -> userRepository.addUsersToMatch(matchUsers)));
         }
         return Completable.merge(insertions);
     }

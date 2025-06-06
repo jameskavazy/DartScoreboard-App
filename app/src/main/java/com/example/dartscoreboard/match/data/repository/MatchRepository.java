@@ -95,7 +95,7 @@ public class MatchRepository {
     // Legs
 
     public Completable insertLeg(Leg leg){
-        return matchDao.insertLeg(leg);
+        return Completable.fromAction(() -> matchDao.insertLeg(leg));
     }
 
     public Completable deleteLegById(String gameId){

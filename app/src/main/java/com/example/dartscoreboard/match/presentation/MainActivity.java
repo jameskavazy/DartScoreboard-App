@@ -17,6 +17,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button continueButton;
     private Toolbar toolbar;
 
+    private Button signInButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,11 +37,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Button newGameButton = findViewById(R.id.startNewGameButton);
         Button usersButton = findViewById(R.id.users_button);
         continueButton = findViewById(R.id.continueButton);
+        signInButton = findViewById(R.id.sign_in_button);
         Button statsButton = findViewById(R.id.statsButton);
         statsButton.setOnClickListener(this);
         newGameButton.setOnClickListener(this);
         usersButton.setOnClickListener(this);
         continueButton.setOnClickListener(this);
+        signInButton.setOnClickListener(this);
         setContinueBtnVisibility();
     }
 
@@ -60,7 +64,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             onContinueClicked();
         } else if (viewId == R.id.statsButton){
             onStatsButtonClicked();
+        } else if (viewId == R.id.sign_in_button) {
+            onSignInClicked();
         }
+    }
+
+    private void onSignInClicked() {
+
     }
 
     private void onStatsButtonClicked() {

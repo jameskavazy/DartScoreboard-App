@@ -68,7 +68,7 @@ public interface MatchDao {
 
     // Legs
     @Insert
-    Completable insertLeg(Leg leg);
+    void insertLeg(Leg leg);
 
     @Query("DELETE FROM leg WHERE legId = :legId")
     void deleteLegById(String legId);

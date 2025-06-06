@@ -4,32 +4,32 @@ public class Statistics {
 
     private int wins;
     private int losses;
-    private int matchWinRate;
-    private double averageScore;
     private int matchesPlayed;
-    private int legsWon;
-    private int legWinRate;
-    private int checkoutRate;
+    private double averageScore;
+    private int matchWinRate;
     private int nonCheckoutAvg;
+    private int legsWon;
+    private int checkoutRate;
+    private int legWinRate;
     private int segmentBelow60;
     private int segment60To99;
     private int segment100To139;
     private int segment140To179;
     private int segment180;
 
-    public Statistics(int wins, int losses, int matchWinRate, double averageScore, int matchesPlayed,
-                      int legsWon, int legWinRate, int checkoutRate, int nonCheckoutAvg,
+    public Statistics(int wins, int losses, int matchesPlayed, double averageScore, int matchWinRate,
+                      int nonCheckoutAvg, int legsWon, int checkoutRate, int legWinRate,
                       int segmentBelow60, int segment60To99, int segment100To139,
                       int segment140To179, int segment180) {
         this.wins = wins;
         this.losses = losses;
-        this.matchWinRate = matchWinRate;
-        this.averageScore = averageScore;
         this.matchesPlayed = matchesPlayed;
-        this.legsWon = legsWon;
-        this.legWinRate = legWinRate;
-        this.checkoutRate = checkoutRate;
+        this.averageScore = averageScore;
+        this.matchWinRate = matchWinRate;
         this.nonCheckoutAvg = nonCheckoutAvg;
+        this.legsWon = legsWon;
+        this.checkoutRate = checkoutRate;
+        this.legWinRate = legWinRate;
         this.segmentBelow60 = segmentBelow60;
         this.segment60To99 = segment60To99;
         this.segment100To139 = segment100To139;

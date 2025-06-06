@@ -94,5 +94,6 @@
     <string name="leg_win_rate">Leg Win Rate</string>
     <string name="order_players">Order Players</string>
     <string name="dart_scoreboard">Dart Scoreboard</string>
+    <string name="sign_in">Sign In</string>
 
 </resources>

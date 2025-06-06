@@ -53,6 +53,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment:2.6.0'
     implementation 'androidx.navigation:navigation-ui:2.6.0'
     implementation "androidx.fragment:fragment:1.8.6"
+    implementation 'com.google.android.gms:play-services-auth:21.3.0'
 
     def paging_version = "3.2.1"
     implementation "androidx.paging:paging-runtime:$paging_version"

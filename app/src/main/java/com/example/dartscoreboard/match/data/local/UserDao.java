@@ -37,7 +37,7 @@ public interface UserDao {
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    Completable insertToGame(MatchUsers matchUsers);
+    void insertToGame(MatchUsers matchUsers);
     @Query("SELECT username FROM user WHERE userId = :userId")
     Single<String> getUsernameById(int userId);
 

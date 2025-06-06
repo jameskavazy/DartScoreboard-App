@@ -96,13 +96,13 @@ public interface StatsDao {
                     "COALESCE( COUNT(DISTINCT CASE WHEN ms.winnerId = :userId THEN ms.matchId END) * 100.0 / COUNT(DISTINCT ms.matchId) , 0) AS matchWinRate, " +
                     "COALESCE(SUM(CASE WHEN vs.checkout = 0 THEN vs.score ELSE 0 END) / COUNT(DISTINCT CASE WHEN checkout = 0 THEN visitId END), 0) AS nonCheckoutAvg," +
                     "COUNT(DISTINCT CASE WHEN ls.winnerId = :userId THEN ls.legId END) AS legsWon, " +
-                    "COALESCE( (COUNT(DISTINCT CASE WHEN ls.winnerId = :userId THEN ls.legId END) * 100.0 / COUNT(DISTINCT CASE WHEN vs.checkout = 1 THEN ls.legId END)), 0) AS checkoutRate, " +
+                    "COALESCE( (COUNT(DISTINCT CASE WHEN ls.winnerId = :userId THEN ls.legId END) * 100.0 / COUNT(DISTINCT CASE WHEN vs.checkout = 1 THEN vs.visitId END)), 0) AS checkoutRate, " +
                     "COALESCE( (COUNT(DISTINCT CASE WHEN ls.winnerId = :userId THEN ls.legId END) * 100.0 / COUNT(DISTINCT CASE WHEN ms.userId = :userId THEN ls.legId END)), 0) AS legWinRate, " +
-                    "COUNT(CASE WHEN vs.score BETWEEN 0 AND 59 THEN visitId END) AS segmentBelow60, " +
-                    "COUNT(CASE WHEN vs.score BETWEEN 60 AND 99 THEN visitId END) AS segment60To99, " +
-                    "COUNT(CASE WHEN vs.score BETWEEN 100 AND 139 THEN visitId END) AS segment100To139, " +
-                    "COUNT(CASE WHEN vs.score BETWEEN 140 AND 179 THEN visitId END) AS segment140To179, " +
-                    "COUNT(CASE WHEN vs.score = 180 THEN visitId END) AS segment180 " +
+                    "COUNT(DISTINCT CASE WHEN vs.userId = :userId AND vs.score BETWEEN 0 AND 59 THEN visitId END) AS segmentBelow60, " +
+                    "COUNT(DISTINCT CASE WHEN vs.userId = :userId AND vs.score BETWEEN 60 AND 99 THEN visitId END) AS segment60To99, " +
+                    "COUNT(DISTINCT CASE WHEN vs.userId = :userId AND vs.score BETWEEN 100 AND 139 THEN visitId END) AS segment100To139, " +
+                    "COUNT(DISTINCT CASE WHEN vs.userId = :userId AND vs.score BETWEEN 140 AND 179 THEN visitId END) AS segment140To179, " +
+                    "COUNT(DISTINCT CASE WHEN vs.userId = :userId AND vs.score = 180 THEN visitId END) AS segment180 " +
                     "FROM match_stats_view ms " +
                     "JOIN visit_stats_view vs ON vs.matchId = ms.matchId " +
                     "JOIN leg_stats_view ls ON ls.matchId = ms.matchId " +

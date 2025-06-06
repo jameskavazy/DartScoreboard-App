@@ -2,22 +2,22 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="DatabaseTest">
+      <entry key="DaoTest">
         <State />
       </entry>
       <entry key="app">
         <State />
       </entry>
-      <entry key="testDeleteUser()">
+      <entry key="testCheckoutRate()">
         <State />
       </entry>
-      <entry key="testInsertMatch()">
+      <entry key="testLegWinRate()">
         <State />
       </entry>
-      <entry key="testInsertSet()">
+      <entry key="testMatchesPlayedIncludingPracticeMatch()">
         <State />
       </entry>
-      <entry key="testInsertVisit()">
+      <entry key="testSegments()">
         <State />
       </entry>
     </value>

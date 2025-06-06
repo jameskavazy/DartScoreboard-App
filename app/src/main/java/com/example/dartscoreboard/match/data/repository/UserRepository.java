@@ -48,8 +48,8 @@ public class UserRepository {
         return allUsers;
     }
 
-    public Completable addUsersToMatch(MatchUsers matchUsers) {
-        return userDao.insertToGame(matchUsers);
+    public void addUsersToMatch(MatchUsers matchUsers) {
+        userDao.insertToGame(matchUsers);
     }
 
     public Single<String> getUsernameById(int userId){
